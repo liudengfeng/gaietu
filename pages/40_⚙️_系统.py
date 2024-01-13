@@ -30,6 +30,7 @@ from mypylib.st_helper import (
     get_blob_service_client,
     google_translate,
     load_vertex_model,
+    select_word_image_indices,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -1026,7 +1027,23 @@ elif menu == "词典管理":
     }
 
     # region 词典管理
-
+    include = st.sidebar.checkbox("是否包含短语", key="include-2", value=True)
+    cate = st.sidebar.selectbox(
+        "选择分类",
+        options=[
+            "all",
+            "A1",
+            "A2",
+            "B1",
+            "B2",
+            "C1",
+            "C2",
+            "人教版_小学",
+            "人教版_初中",
+            "人教版_高中",
+        ],
+        key="cate-2",
+    )
     with dict_tabs[dict_items.index("词典管理")]:
         st.subheader("词典管理", divider="rainbow", anchor=False)
         btn_cols = st.columns(10)
@@ -1072,23 +1089,6 @@ elif menu == "词典管理":
     # region 下载图片
 
     with dict_tabs[dict_items.index("图片网址")]:
-        include = st.sidebar.checkbox("是否包含短语", key="include-2", value=True)
-        cate = st.sidebar.selectbox(
-            "选择分类",
-            options=[
-                "all",
-                "A1",
-                "A2",
-                "B1",
-                "B2",
-                "C1",
-                "C2",
-                "人教版_小学",
-                "人教版_初中",
-                "人教版_高中",
-            ],
-            key="cate-2",
-        )
         st.subheader("关联图片网址", divider="rainbow", anchor=False)
         st.markdown("使用 serper Google api 添加单词关联图片网址")
         progress_pic_bar = st.progress(0)
@@ -1111,23 +1111,7 @@ elif menu == "词典管理":
 
     # region 单词图片
 
-    with dict_tabs[dict_items.index("单词关联照片")]:
-        # include = st.sidebar.checkbox("是否包含短语", key="include", value=True)
-        # cate = st.sidebar.selectbox(
-        #     "选择分类",
-        #     options=[
-        #         "all",
-        #         "A1",
-        #         "A2",
-        #         "B1",
-        #         "B2",
-        #         "C1",
-        #         "C2",
-        #         "人教版_小学",
-        #         "人教版_初中",
-        #         "人教版_高中",
-        #     ],
-        # )
+    with dict_tabs[dict_items.index("关联照片")]:
         st.subheader("准备单词关联照片", divider="rainbow", anchor=False)
         st.text("使用 gemini 多模态挑选能形象解释单词含义的图片")
         progress_pic_bar = st.progress(0)
@@ -1147,10 +1131,10 @@ elif menu == "词典管理":
                 start_time = time.time()  # 记录开始时间
                 q = word.replace("/", " or ")
                 update_and_display_progress(i + 1, n, progress_pic_bar, word)
-                if st.session_state.dbi.word_has_image_urls(q):
-                    logger.info(f"✅ 单词：{word} 已经有图片Urls，跳过")
+                if st.session_state.dbi.word_has_image_indices(q):
+                    logger.info(f"✅ 单词：{word} 已经有图片序号，跳过")
                     continue
-                select_word_image_urls(q)
+                select_word_image_indices(q)
                 end_time = time.time()  # 记录结束时间
                 elapsed_time = end_time - start_time  # 计算运行时间
                 # 确保不超限
