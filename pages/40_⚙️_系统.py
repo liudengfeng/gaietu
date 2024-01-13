@@ -369,6 +369,34 @@ def init_mini_dict():
         time.sleep(0.5)
 
 
+def update_mini_dict():
+    st.text("更新简版词典")
+    target_language_code = "zh-CN"
+    db = st.session_state.dbi.db
+    mini_dict_ref = db.collection("mini_dict")
+    mini_progress = st.progress(0)
+
+    # 获取 mini_dict 集合中所有的文档
+    mini_dict_docs = [doc for doc in mini_dict_ref.stream()]
+
+    for i, doc in enumerate(mini_dict_docs):
+        update_and_display_progress(i + 1, len(mini_dict_docs), mini_progress)
+        doc_name = doc.id
+        data = doc.to_dict()
+
+        # 检查是否存在 'level' 和 'translation' 字段
+        if "level" not in data and "translation" not in data:
+            # 更新文档
+            p = {
+                "translation": translate_text(doc_name, target_language_code),
+                "level": get_lowest_cefr_level(doc_name),
+            }
+            mini_dict_ref.document(doc_name).set(p, merge=True)
+            logger.info(f"🎇 单词：{doc_name} 更新完成")
+            # 每次写入操作后休眠 0.5 秒
+            time.sleep(0.5)
+
+
 def add_new_words_from_mini_dict_to_words():
     st.text("添加简版词典到默认词典")
     target_language_code = "zh-CN"
@@ -1053,6 +1081,9 @@ elif menu == "词典管理":
 
         if btn_cols[1].button("添加", key="add-btn-3", help="✨ 将简版词典单词添加到默认词典"):
             add_new_words_from_mini_dict_to_words()
+
+        if btn_cols[2].button("更新", key="update-btn-3", help="✨ 更新简版词典"):
+            update_mini_dict()
 
     # endregion
 
