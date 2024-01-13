@@ -259,7 +259,9 @@ def extract_word_image_urls(db, word: str):
         image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
 
         # 保存 image_urls 到数据库
-        db.collection("mini_dict").document(word).set({"image_urls": image_urls})
+        db.collection("mini_dict").document(word).set(
+            {"image_urls": image_urls}, merge=True
+        )
 
     return image_urls
 
