@@ -378,9 +378,10 @@ def update_mini_dict():
 
     # 获取 mini_dict 集合中所有的文档
     mini_dict_docs = [doc for doc in mini_dict_ref.stream()]
+    n = len(mini_dict_docs)
 
     for i, doc in enumerate(mini_dict_docs):
-        update_and_display_progress(i + 1, len(mini_dict_docs), mini_progress)
+        update_and_display_progress(i + 1, n, mini_progress)
         doc_name = doc.id
         data = doc.to_dict()
 
