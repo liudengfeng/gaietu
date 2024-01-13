@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Streamlit",
+            "type": "python",
+            "request": "launch",
+            "module": "streamlit",
+            "args": ["run", "${workspaceFolder}/Home.py"],
+            "env": {
+                "STREAMLIT_SERVER_PORT": "8501"
+            },
+            "console": "integratedTerminal"
+        }
+    ]
+}

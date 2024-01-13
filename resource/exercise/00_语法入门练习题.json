@@ -1,0 +1,3872 @@
+[
+    {
+        "header": "英语语法入门练习题（一）",
+        "questions": [
+            {
+                "question": " How ______ you?",
+                "cn": "你好吗?",
+                "options": [
+                    "A. is",
+                    "B. are",
+                    "C. am",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " That is not ______ book.",
+                "cn": "那不是我的书。",
+                "options": [
+                    "A. my",
+                    "B. mine",
+                    "C. me",
+                    "D. my a"
+                ]
+            },
+            {
+                "question": " Please ______ sit down.",
+                "cn": "请不要坐下。",
+                "options": [
+                    "A. no",
+                    "B. not",
+                    "C. don't",
+                    "D. be not"
+                ]
+            },
+            {
+                "question": " ______ are English books.",
+                "cn": "这些是英文书。",
+                "options": [
+                    "A. These",
+                    "B. Those",
+                    "C. This",
+                    "D. That"
+                ]
+            },
+            {
+                "question": " They are ______ friends.",
+                "cn": "他们是我的朋友。",
+                "options": [
+                    "A. mine",
+                    "B. me",
+                    "C. my",
+                    "D. my a"
+                ]
+            },
+            {
+                "question": " They are very good ______.",
+                "cn": "它们是非常好的手表。",
+                "options": [
+                    "A. watches",
+                    "B. watch",
+                    "C. watching",
+                    "D. a watch"
+                ]
+            },
+            {
+                "question": " She teaches ______.",
+                "cn": "她教英文。",
+                "options": [
+                    "A. English",
+                    "B. the English",
+                    "C. an English",
+                    "D. a English"
+                ]
+            },
+            {
+                "question": " ______ Parking!",
+                "cn": "禁止泊车!",
+                "options": [
+                    "A. Be not",
+                    "B. Not",
+                    "C. Never",
+                    "D. No"
+                ]
+            },
+            {
+                "question": " My mother is cooking ______.",
+                "cn": "我的妈妈正在做早餐。",
+                "options": [
+                    "A. breakfast",
+                    "B. the breakfast",
+                    "C. a breakfast",
+                    "D. breakfasts"
+                ]
+            },
+            {
+                "question": " My parents ______ TV.",
+                "cn": "我父母正在看电视。",
+                "options": [
+                    "A. watch",
+                    "B. are watching",
+                    "C. watched",
+                    "D. is to watch"
+                ]
+            },
+            {
+                "question": " There are ______ boys.",
+                "cn": "有十个小男孩。",
+                "options": [
+                    "A. the ten little",
+                    "B. little ten",
+                    "C. ten little",
+                    "D. the little"
+                ]
+            },
+            {
+                "question": " Do you ______?",
+                "cn": "你感冒了吗?",
+                "options": [
+                    "A. have an cold",
+                    "B. have the cold",
+                    "C. have cold",
+                    "D. have a cold"
+                ]
+            },
+            {
+                "question": " ______ are watching TV.",
+                "cn": "林家一家人在看电视。",
+                "options": [
+                    "A. The Lin",
+                    "B. The Lins",
+                    "C. The Lin's",
+                    "D. Lin's"
+                ]
+            },
+            {
+                "question": " Can you play ______?",
+                "cn": "你会踢足球吗?",
+                "options": [
+                    "A. a football",
+                    "B. the football",
+                    "C. football",
+                    "D. footballs"
+                ]
+            },
+            {
+                "question": " Why not ______ him?",
+                "cn": "为什么不问他?",
+                "options": [
+                    "A. asking",
+                    "B. asked",
+                    "C. asks",
+                    "D. ask"
+                ]
+            },
+            {
+                "question": " ______ like football games.",
+                "cn": "中国人喜欢足球运动。",
+                "options": [
+                    "A. The Chinese",
+                    "B. Chinese",
+                    "C. The chinese",
+                    "D. chinese"
+                ]
+            },
+            {
+                "question": " Can you speak ______?",
+                "cn": "你会说中国话吗?",
+                "options": [
+                    "A. chinese",
+                    "B. Chinese",
+                    "C. the Chinese",
+                    "D. the chinese"
+                ]
+            },
+            {
+                "question": " Keep on ______, David.",
+                "cn": "大卫,继续唱歌。",
+                "options": [
+                    "A. to sing",
+                    "B. sing",
+                    "C. singing",
+                    "D. sings"
+                ]
+            },
+            {
+                "question": " I ______ good today.",
+                "cn": "我今天身体感觉不好。",
+                "options": [
+                    "A. wasn't feeling",
+                    "B. did't feel",
+                    "C. ain't feeling",
+                    "D. don't feel"
+                ]
+            },
+            {
+                "question": " ______ watching TV.",
+                "cn": "帕克一家正在看电视。",
+                "options": [
+                    "A. The Parker's are",
+                    "B. The Parkers are",
+                    "C. The Parker's is",
+                    "D. The Parkers is"
+                ]
+            },
+            {
+                "question": " It is very cold ______.",
+                "cn": "一月份天气很冷。",
+                "options": [
+                    "A. in Januaries",
+                    "B. on January",
+                    "C. in January",
+                    "D. on Januaries"
+                ]
+            },
+            {
+                "question": " Why not ______ it today?",
+                "cn": "为什么不今天做?",
+                "options": [
+                    "A. do",
+                    "B. did",
+                    "C. doing",
+                    "D. does"
+                ]
+            },
+            {
+                "question": " Let me ______ it.",
+                "cn": "让我做这事。",
+                "options": [
+                    "A. did",
+                    "B. doing",
+                    "C. do",
+                    "D. to do"
+                ]
+            },
+            {
+                "question": " I ______ you.",
+                "cn": "我同意你的意见。",
+                "options": [
+                    "A. agree to",
+                    "B. agree with",
+                    "C. agree by",
+                    "D. agree on"
+                ]
+            },
+            {
+                "question": " ______ do that again!",
+                "cn": "不要再那样做了!",
+                "options": [
+                    "A. Doesn't",
+                    "B. Not",
+                    "C. Not to",
+                    "D. Don't"
+                ]
+            },
+            {
+                "question": " Good morning, ______.",
+                "cn": "同学们,早安。",
+                "options": [
+                    "A. a student",
+                    "B. the student",
+                    "C. students",
+                    "D. student"
+                ]
+            },
+            {
+                "question": " It's ______.",
+                "cn": "它是一张书桌。",
+                "options": [
+                    "A. desk",
+                    "B. the desks",
+                    "C. a desks",
+                    "D. a desk"
+                ]
+            },
+            {
+                "question": " I ______ a teacher.",
+                "cn": "我不是老师。",
+                "options": [
+                    "A. is not",
+                    "B. am not",
+                    "C. not are",
+                    "D. not"
+                ]
+            },
+            {
+                "question": " ______ this picture.",
+                "cn": "看看这张图画。",
+                "options": [
+                    "A. Look at",
+                    "B. Look to",
+                    "C. Looking for",
+                    "D. Look on"
+                ]
+            },
+            {
+                "question": " Sue, please ______.",
+                "cn": "苏,请站起来。",
+                "options": [
+                    "A. be standing up",
+                    "B. stood up",
+                    "C. stand up",
+                    "D. standed up"
+                ]
+            },
+            {
+                "question": " ______ is that tall boy?",
+                "cn": "那位高个子男孩是谁?",
+                "options": [
+                    "A. Whose",
+                    "B. Who",
+                    "C. Why",
+                    "D. Whom"
+                ]
+            },
+            {
+                "question": " He is in the ______ room.",
+                "cn": "他在客厅。",
+                "options": [
+                    "A. life's",
+                    "B. life",
+                    "C. live",
+                    "D. living"
+                ]
+            },
+            {
+                "question": " What ______ reading?",
+                "cn": "他正在阅读什么?",
+                "options": [
+                    "A. his is",
+                    "B. he is",
+                    "C. is he",
+                    "D. is him"
+                ]
+            },
+            {
+                "question": " He ______ opening the door.",
+                "cn": "他不是正在开门。",
+                "options": [
+                    "A. is not",
+                    "B. is no",
+                    "C. not be",
+                    "D. not is"
+                ]
+            },
+            {
+                "question": " ______ are John's classmate.",
+                "cn": "你是约翰的同班同学。",
+                "options": [
+                    "A. They",
+                    "B. You",
+                    "C. We",
+                    "D. He"
+                ]
+            },
+            {
+                "question": " My watch ______.",
+                "cn": "我的手表停了。",
+                "options": [
+                    "A. is not running",
+                    "B. was not running",
+                    "C. runs",
+                    "D. run"
+                ]
+            },
+            {
+                "question": " ______ starts at eight.",
+                "cn": "汤姆的课在八点开始。",
+                "options": [
+                    "A. Tom of class",
+                    "B. The class of Tom",
+                    "C. Tom's class",
+                    "D. Tom's lessons"
+                ]
+            },
+            {
+                "question": " Mr. Wang is ______.",
+                "cn": "王先生是一位老师。",
+                "options": [
+                    "A. teacher",
+                    "B. a teacher",
+                    "C. the teacher",
+                    "D. an teacher"
+                ]
+            },
+            {
+                "question": " Is Mrs. Wang ______?",
+                "cn": "王太太是一位老师吗?",
+                "options": [
+                    "A. one teacher",
+                    "B. an teacher",
+                    "C. the teacher",
+                    "D. a teacher"
+                ]
+            },
+            {
+                "question": " Open ______ book, Bill.",
+                "cn": "比尔,打开你的书。",
+                "options": [
+                    "A. yours",
+                    "B. you",
+                    "C. your",
+                    "D. you're"
+                ]
+            },
+            {
+                "question": " ______ stand up, John.",
+                "cn": "约翰,不要站起来。",
+                "options": [
+                    "A. Don't",
+                    "B. Not",
+                    "C. Isn't",
+                    "D. No"
+                ]
+            },
+            {
+                "question": " I will ______ goodbye to you.",
+                "cn": "我将会跟你道别的。",
+                "options": [
+                    "A. saying",
+                    "B. am saying",
+                    "C. says",
+                    "D. say"
+                ]
+            },
+            {
+                "question": " What is ______ name, please?",
+                "cn": "请问你叫什么名字?",
+                "options": [
+                    "A. your",
+                    "B. his",
+                    "C. their",
+                    "D. her"
+                ]
+            },
+            {
+                "question": " This school has fourteen ______.",
+                "cn": "这个学校有十四个班级。",
+                "options": [
+                    "A. teacher",
+                    "B. student",
+                    "C. classes",
+                    "D. class"
+                ]
+            },
+            {
+                "question": " My brother ______ a new watch.",
+                "cn": "我的兄弟有一只新表。",
+                "options": [
+                    "A. is having",
+                    "B. has",
+                    "C. is hasing",
+                    "D. have"
+                ]
+            },
+            {
+                "question": " Mr. Lin is a factory ______.",
+                "cn": "林先生是一家工厂的工人。",
+                "options": [
+                    "A. a worker",
+                    "B. workers",
+                    "C. the worker",
+                    "D. worker"
+                ]
+            },
+            {
+                "question": " Tom Smith lives ______ America.",
+                "cn": "汤姆史密斯住在美国。",
+                "options": [
+                    "A. at",
+                    "B. on",
+                    "C. of",
+                    "D. in"
+                ]
+            },
+            {
+                "question": " The children don't look ______.",
+                "cn": "孩子们看起来不高兴。",
+                "options": [
+                    "A. happiest",
+                    "B. happily",
+                    "C. happiness",
+                    "D. happy"
+                ]
+            },
+            {
+                "question": " It is ______.",
+                "cn": "这是一枝铅笔。",
+                "options": [
+                    "A. a pencil",
+                    "B. pencil",
+                    "C. pencils",
+                    "D. the pencil"
+                ]
+            },
+            {
+                "question": " Mrs. Wang ______ a teacher.",
+                "cn": "王太太不是老师。",
+                "options": [
+                    "A. not is",
+                    "B. is not",
+                    "C. are not",
+                    "D. not are"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（二）",
+        "questions": [
+            {
+                "question": " Bill, say ______ \"teacher\".",
+                "cn": "比尔,说\"老师\"这个字。",
+                "options": [
+                    "A. a word",
+                    "B. the word",
+                    "C. word",
+                    "D. the words"
+                ]
+            },
+            {
+                "question": " ______ pen is good.",
+                "cn": "我的笔是好的。",
+                "options": [
+                    "A. My an",
+                    "B. My",
+                    "C. My a",
+                    "D. My the"
+                ]
+            },
+            {
+                "question": " \"Two\" ______ a number.",
+                "cn": "\"二\"是一个数字。",
+                "options": [
+                    "A. are",
+                    "B. is",
+                    "C. be",
+                    "D. was"
+                ]
+            },
+            {
+                "question": " He is ______ boy.",
+                "cn": "他是一个印第安男孩。",
+                "options": [
+                    "A. an Indian",
+                    "B. a Indian",
+                    "C. the Indian",
+                    "D. India"
+                ]
+            },
+            {
+                "question": " Many people ______ him.",
+                "cn": "许多人认识他。",
+                "options": [
+                    "A. are knowing",
+                    "B. knew",
+                    "C. know",
+                    "D. will know"
+                ]
+            },
+            {
+                "question": " We are studying ______.",
+                "cn": "我们正在学习第六课。",
+                "options": [
+                    "A. Lesson Six",
+                    "B. the lesson six",
+                    "C. lesson six",
+                    "D. six lesson"
+                ]
+            },
+            {
+                "question": " ______ day is today?",
+                "cn": "今天是星期几?",
+                "options": [
+                    "A. Where",
+                    "B. How",
+                    "C. What",
+                    "D. Why"
+                ]
+            },
+            {
+                "question": " This ______ a pencil.",
+                "cn": "这不是一枝铅笔。",
+                "options": [
+                    "A. isn't",
+                    "B. is'nt",
+                    "C. aren't",
+                    "D. no is"
+                ]
+            },
+            {
+                "question": " He learns English ______.",
+                "cn": "他英文学得好。",
+                "options": [
+                    "A. well",
+                    "B. nicely",
+                    "C. finely",
+                    "D. goodly"
+                ]
+            },
+            {
+                "question": " ______ your book, Mike.",
+                "cn": "打开你的书,麦克。",
+                "options": [
+                    "A. Opening",
+                    "B. open",
+                    "C. To open",
+                    "D. Open"
+                ]
+            },
+            {
+                "question": " ______ room is very large.",
+                "cn": "他的房间非常大。",
+                "options": [
+                    "A. His",
+                    "B. That his",
+                    "C. His a",
+                    "D. His this"
+                ]
+            },
+            {
+                "question": " This is ______ river.",
+                "cn": "这不是一条长河。",
+                "options": [
+                    "A. not long",
+                    "B. not a long",
+                    "C. a not long",
+                    "D. a long not"
+                ]
+            },
+            {
+                "question": " I am reading, not ______.",
+                "cn": "我在读,而不是在写。",
+                "options": [
+                    "A. write",
+                    "B. am writing",
+                    "C. writing",
+                    "D. to write"
+                ]
+            },
+            {
+                "question": " ______ boys are students.",
+                "cn": "那些男孩是学生。",
+                "options": [
+                    "A. This",
+                    "B. Their",
+                    "C. Its",
+                    "D. Those"
+                ]
+            },
+            {
+                "question": " Lesson ______ is very easy.",
+                "cn": "第一课非常简单。",
+                "options": [
+                    "A. one",
+                    "B. One",
+                    "C. First",
+                    "D. the first"
+                ]
+            },
+            {
+                "question": " How is ______?",
+                "cn": "妈妈怎么样?",
+                "options": [
+                    "A. mother",
+                    "B. you mother",
+                    "C. Mother",
+                    "D. your Mother"
+                ]
+            },
+            {
+                "question": " Her hair ______ very long.",
+                "cn": "她的头发很长。",
+                "options": [
+                    "A. have",
+                    "B. are",
+                    "C. has",
+                    "D. is"
+                ]
+            },
+            {
+                "question": " ______ make noise, Bob.",
+                "cn": "别吵,鲍伯。",
+                "options": [
+                    "A. Don't",
+                    "B. Not",
+                    "C. Isn't",
+                    "D. Doesn't"
+                ]
+            },
+            {
+                "question": " After class I go ______.",
+                "cn": "下课后我回家。",
+                "options": [
+                    "A. to home",
+                    "B. home",
+                    "C. in home",
+                    "D. at home"
+                ]
+            },
+            {
+                "question": " She is ______ teacher.",
+                "cn": "她是我的第一位老师。",
+                "options": [
+                    "A. the my first",
+                    "B. first",
+                    "C. my first",
+                    "D. a my first"
+                ]
+            },
+            {
+                "question": " His family ______ all very kind.",
+                "cn": "他家里的人都很和气。",
+                "options": [
+                    "A. do",
+                    "B. is",
+                    "C. have",
+                    "D. are"
+                ]
+            },
+            {
+                "question": " Never ______ it again, Bob.",
+                "cn": "鲍伯,别再做这事了。",
+                "options": [
+                    "A. does",
+                    "B. do",
+                    "C. did",
+                    "D. doing"
+                ]
+            },
+            {
+                "question": " He can ______ good English.",
+                "cn": "他能说很好的英语。",
+                "options": [
+                    "A. be spoken",
+                    "B. speaks",
+                    "C. speak",
+                    "D. speaking"
+                ]
+            },
+            {
+                "question": " Thank you ______.",
+                "cn": "多谢您。",
+                "options": [
+                    "A. a lot",
+                    "B. very",
+                    "C. so",
+                    "D. much"
+                ]
+            },
+            {
+                "question": " I have some ______.",
+                "cn": "我有几枝铅笔。",
+                "options": [
+                    "A. foods",
+                    "B. waters",
+                    "C. pencils",
+                    "D. math"
+                ]
+            },
+            {
+                "question": " These books are ______.",
+                "cn": "这些书是他的。",
+                "options": [
+                    "A. he's",
+                    "B. his",
+                    "C. him",
+                    "D. his'"
+                ]
+            },
+            {
+                "question": " Here ______.",
+                "cn": "书在这里。",
+                "options": [
+                    "A. have the books",
+                    "B. the books are",
+                    "C. the books have",
+                    "D. are the books"
+                ]
+            },
+            {
+                "question": " He runs ______.",
+                "cn": "他跑得快。",
+                "options": [
+                    "A. quickly",
+                    "B. fastly",
+                    "C. fast",
+                    "D. quick"
+                ]
+            },
+            {
+                "question": " Don't let him ______.",
+                "cn": "别让他走。",
+                "options": [
+                    "A. go",
+                    "B. going",
+                    "C. to go",
+                    "D. goes"
+                ]
+            },
+            {
+                "question": " Let's ______ the song.",
+                "cn": "让我们听这首歌吧。",
+                "options": [
+                    "A. listening to",
+                    "B. to listen to",
+                    "C. to listening to",
+                    "D. listen to"
+                ]
+            },
+            {
+                "question": " ______ is a large country.",
+                "cn": "德国是一个大国。",
+                "options": [
+                    "A. Germany",
+                    "B. The German",
+                    "C. The Germany",
+                    "D. German"
+                ]
+            },
+            {
+                "question": " ______ is a liquid.",
+                "cn": "水是一种液体。",
+                "options": [
+                    "A. The water",
+                    "B. A water",
+                    "C. Water",
+                    "D. An water"
+                ]
+            },
+            {
+                "question": " ______ I come in?",
+                "cn": "我可以进来吗?",
+                "options": [
+                    "A. Might",
+                    "B. May",
+                    "C. Shall",
+                    "D. Should"
+                ]
+            },
+            {
+                "question": " What ______ John doing?",
+                "cn": "约翰在做什么?",
+                "options": [
+                    "A. were",
+                    "B. are",
+                    "C. was",
+                    "D. is"
+                ]
+            },
+            {
+                "question": " What ______ this?",
+                "cn": "这是什么?",
+                "options": [
+                    "A. are",
+                    "B. be",
+                    "C. is",
+                    "D. am"
+                ]
+            },
+            {
+                "question": " Look at ______ picture, John.",
+                "cn": "约翰,看这张图画。",
+                "options": [
+                    "A. A",
+                    "B. a",
+                    "C. an",
+                    "D. the"
+                ]
+            },
+            {
+                "question": " ______ please spell the word.",
+                "cn": "比尔,请拼这个字。",
+                "options": [
+                    "A. Bill",
+                    "B. Bill,",
+                    "C. bill",
+                    "D. Bill."
+                ]
+            },
+            {
+                "question": " ______ is your name?",
+                "cn": "你叫什么名字?",
+                "options": [
+                    "A. What",
+                    "B. Who",
+                    "C. How",
+                    "D. Why"
+                ]
+            },
+            {
+                "question": " My books are ______ the desk.",
+                "cn": "我的书在书桌上。",
+                "options": [
+                    "A. over",
+                    "B. at",
+                    "C. on",
+                    "D. to"
+                ]
+            },
+            {
+                "question": " You are ______ a book.",
+                "cn": "你正在阅读一本书。",
+                "options": [
+                    "A. read",
+                    "B. reading",
+                    "C. readed",
+                    "D. be reading"
+                ]
+            },
+            {
+                "question": " They ______ playing.",
+                "cn": "他们没在玩。",
+                "options": [
+                    "A. arenot",
+                    "B. not are",
+                    "C. are not",
+                    "D. be not"
+                ]
+            },
+            {
+                "question": " These are not ______.",
+                "cn": "这些不是书。",
+                "options": [
+                    "A. books",
+                    "B. book",
+                    "C. a book",
+                    "D. the book"
+                ]
+            },
+            {
+                "question": " Tom is a new student, ______.",
+                "cn": "汤姆也是一位新生。",
+                "options": [
+                    "A. either",
+                    "B. too",
+                    "C. neither",
+                    "D. also"
+                ]
+            },
+            {
+                "question": " She is ______.",
+                "cn": "她正在上班。",
+                "options": [
+                    "A. at work",
+                    "B. by work",
+                    "C. in work",
+                    "D. on work"
+                ]
+            },
+            {
+                "question": " They are little ______ boys.",
+                "cn": "他们是印第安小男孩。",
+                "options": [
+                    "A. Indians'",
+                    "B. Indians",
+                    "C. Indian",
+                    "D. Indian's"
+                ]
+            },
+            {
+                "question": " They walk to ______ every day.",
+                "cn": "他们每天走路去上学。",
+                "options": [
+                    "A. the school",
+                    "B. school",
+                    "C. a school",
+                    "D. schools"
+                ]
+            },
+            {
+                "question": " They are walking ______.",
+                "cn": "他们正走着回家。",
+                "options": [
+                    "A. homely",
+                    "B. at home",
+                    "C. in home",
+                    "D. home"
+                ]
+            },
+            {
+                "question": " We are studying ______ Eight.",
+                "cn": "我们正在研读第八课。",
+                "options": [
+                    "A. Lesson's",
+                    "B. Lessons'",
+                    "C. Lessons",
+                    "D. Lesson"
+                ]
+            },
+            {
+                "question": " Winter is a ______ season.",
+                "cn": "冬天是一个寒冷的季节。",
+                "options": [
+                    "A. cold",
+                    "B. old",
+                    "C. cold's",
+                    "D. cool"
+                ]
+            },
+            {
+                "question": " Spring comes before ______.",
+                "cn": "夏天之前是春天。",
+                "options": [
+                    "A. summer",
+                    "B. winter",
+                    "C. fall",
+                    "D. season"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（三）",
+        "questions": [
+            {
+                "question": " My ______ are new.",
+                "cn": "我的衣服是新的。",
+                "options": [
+                    "A. cloth",
+                    "B. clothes",
+                    "C. clothing",
+                    "D. clothe"
+                ]
+            },
+            {
+                "question": " ______ she is right.",
+                "cn": "或许她对了。",
+                "options": [
+                    "A. Only",
+                    "B. Maybe",
+                    "C. Likely",
+                    "D. Merely"
+                ]
+            },
+            {
+                "question": " Tom may ______ late.",
+                "cn": "汤姆或许迟到了。",
+                "options": [
+                    "A. been",
+                    "B. be",
+                    "C. is",
+                    "D. being"
+                ]
+            },
+            {
+                "question": " Tom can ______.",
+                "cn": "汤姆跑得快。",
+                "options": [
+                    "A. run fastly",
+                    "B. fast run",
+                    "C. run fast",
+                    "D. fastly run"
+                ]
+            },
+            {
+                "question": " Can she ______ English?",
+                "cn": "她会说英语吗?",
+                "options": [
+                    "A. speak",
+                    "B. say",
+                    "C. talk",
+                    "D. tell"
+                ]
+            },
+            {
+                "question": " You are ______, Tom.",
+                "cn": "汤姆,你是个学生。",
+                "options": [
+                    "A. student",
+                    "B. students",
+                    "C. a student",
+                    "D. the student"
+                ]
+            },
+            {
+                "question": " ______ a chair.",
+                "cn": "这是一把椅子。",
+                "options": [
+                    "A. It's",
+                    "B. it is",
+                    "C. Its",
+                    "D. its"
+                ]
+            },
+            {
+                "question": " ______ not a pencil.",
+                "cn": "那不是一枝铅笔。",
+                "options": [
+                    "A. it's",
+                    "B. It",
+                    "C. That's",
+                    "D. that's"
+                ]
+            },
+            {
+                "question": " It ______ a pen.",
+                "cn": "这不是一枝钢笔。",
+                "options": [
+                    "A. isn't",
+                    "B. not",
+                    "C. isnot",
+                    "D. aren't"
+                ]
+            },
+            {
+                "question": " That is ______ \"A\".",
+                "cn": "那是一个字母\"A\"。",
+                "options": [
+                    "A. A",
+                    "B. a",
+                    "C. an",
+                    "D. the"
+                ]
+            },
+            {
+                "question": " Please ______ your book.",
+                "cn": "请打开你的书。",
+                "options": [
+                    "A. open",
+                    "B. opened",
+                    "C. opening",
+                    "D. opens"
+                ]
+            },
+            {
+                "question": " ______ a good student.",
+                "cn": "做个好学生。",
+                "options": [
+                    "A. Be",
+                    "B. Are",
+                    "C. Is",
+                    "D. Being"
+                ]
+            },
+            {
+                "question": " This is ______ pen.",
+                "cn": "这是汤姆的笔。",
+                "options": [
+                    "A. Toms'",
+                    "B. Tom's",
+                    "C. Tom'",
+                    "D. Toms"
+                ]
+            },
+            {
+                "question": " She is ______ girl.",
+                "cn": "她是个高个子女孩。",
+                "options": [
+                    "A. tall a",
+                    "B. tall",
+                    "C. a tall",
+                    "D. an tall"
+                ]
+            },
+            {
+                "question": " ______ watch is very good.",
+                "cn": "她的手表很好。",
+                "options": [
+                    "A. She's",
+                    "B. Hers",
+                    "C. She",
+                    "D. Her"
+                ]
+            },
+            {
+                "question": " Who ______ the door?",
+                "cn": "谁打开门?",
+                "options": [
+                    "A. opens",
+                    "B. open",
+                    "C. opening",
+                    "D. is open"
+                ]
+            },
+            {
+                "question": " Where ______ your sisters?",
+                "cn": "你的姐妹们在哪里?",
+                "options": [
+                    "A. is",
+                    "B. am",
+                    "C. are",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " Is ______ in the room?",
+                "cn": "李博士在房间里吗?",
+                "options": [
+                    "A. Dr. li.",
+                    "B. dr li",
+                    "C. dr Li",
+                    "D. Dr. Li"
+                ]
+            },
+            {
+                "question": " My mother is reading ______.",
+                "cn": "我母亲正在那里看书。",
+                "options": [
+                    "A. there",
+                    "B. on there",
+                    "C. at there",
+                    "D. about there"
+                ]
+            },
+            {
+                "question": " This is ______.",
+                "cn": "这是九号房间。",
+                "options": [
+                    "A. nine number room",
+                    "B. number nine room",
+                    "C. room number nine",
+                    "D. room nine number"
+                ]
+            },
+            {
+                "question": " What time is ______?",
+                "cn": "现在是几点钟?",
+                "options": [
+                    "A. he",
+                    "B. this",
+                    "C. that",
+                    "D. it"
+                ]
+            },
+            {
+                "question": " He is ______.",
+                "cn": "他是一个印地安人。",
+                "options": [
+                    "A. an Indian",
+                    "B. a indian",
+                    "C. Indian",
+                    "D. Indians"
+                ]
+            },
+            {
+                "question": " We are ______.",
+                "cn": "我们是中国人。",
+                "options": [
+                    "A. Chineses",
+                    "B. Chinese",
+                    "C. the Chineses",
+                    "D. the Chinese"
+                ]
+            },
+            {
+                "question": " Please ______ the word again.",
+                "cn": "请把这个字再说一遍。",
+                "options": [
+                    "A. tell",
+                    "B. speak",
+                    "C. say",
+                    "D. talk"
+                ]
+            },
+            {
+                "question": " Where is ______?",
+                "cn": "第二册书在哪里?",
+                "options": [
+                    "A. Book Two",
+                    "B. Second Book",
+                    "C. Two book",
+                    "D. Two Books"
+                ]
+            },
+            {
+                "question": " Her family ______ very busy.",
+                "cn": "她全家人都很忙。",
+                "options": [
+                    "A. is",
+                    "B. are",
+                    "C. be",
+                    "D. being"
+                ]
+            },
+            {
+                "question": " John plays ______ on Sundays.",
+                "cn": "约翰每星期天打篮球。",
+                "options": [
+                    "A. basketballs",
+                    "B. a basketball",
+                    "C. the basketball",
+                    "D. basketball"
+                ]
+            },
+            {
+                "question": " My watch is a little ______.",
+                "cn": "我的手表有点慢。",
+                "options": [
+                    "A. fast",
+                    "B. slower",
+                    "C. slow",
+                    "D. faster"
+                ]
+            },
+            {
+                "question": " The ______ live near here.",
+                "cn": "琼斯一家住得离这里很近。",
+                "options": [
+                    "A. Joneses",
+                    "B. Jones'",
+                    "C. Jones's",
+                    "D. Jones"
+                ]
+            },
+            {
+                "question": " He doesn't need ______ help.",
+                "cn": "他不需要你的帮助。",
+                "options": [
+                    "A. you's",
+                    "B. yours",
+                    "C. you",
+                    "D. your"
+                ]
+            },
+            {
+                "question": " He cannot speak English ______.",
+                "cn": "他说不好英语。",
+                "options": [
+                    "A. the best",
+                    "B. well",
+                    "C. better",
+                    "D. best"
+                ]
+            },
+            {
+                "question": " The window is ______.",
+                "cn": "窗户是关闭的。",
+                "options": [
+                    "A. closing",
+                    "B. close",
+                    "C. closed",
+                    "D. closes"
+                ]
+            },
+            {
+                "question": " ______ is believing.",
+                "cn": "眼见为实(百闻不如一见)。",
+                "options": [
+                    "A. Seen",
+                    "B. Seeing",
+                    "C. See",
+                    "D. Sees"
+                ]
+            },
+            {
+                "question": " I have ______ blue car.",
+                "cn": "我有一辆蓝色的车。",
+                "options": [
+                    "A. A",
+                    "B. an",
+                    "C. the",
+                    "D. a"
+                ]
+            },
+            {
+                "question": " It's time ______ harvest.",
+                "cn": "收获的季节到了。",
+                "options": [
+                    "A. in",
+                    "B. of",
+                    "C. for",
+                    "D. about"
+                ]
+            },
+            {
+                "question": " Why not ______ again?",
+                "cn": "为什么不再尝试一下呢?",
+                "options": [
+                    "A. try",
+                    "B. to try",
+                    "C. tried",
+                    "D. trying"
+                ]
+            },
+            {
+                "question": " Please don't talk ______.",
+                "cn": "上课时请不要闲谈。",
+                "options": [
+                    "A. with class",
+                    "B. in school",
+                    "C. for class",
+                    "D. in class"
+                ]
+            },
+            {
+                "question": " Thank you ______.",
+                "cn": "尽管如此,还是要感谢你。",
+                "options": [
+                    "A. remaining the same",
+                    "B. all the same",
+                    "C. still all",
+                    "D. all same"
+                ]
+            },
+            {
+                "question": " Is Bill ______?",
+                "cn": "比尔在家吗?",
+                "options": [
+                    "A. in home",
+                    "B. at homes",
+                    "C. at home",
+                    "D. in homes"
+                ]
+            },
+            {
+                "question": " The plane landed ______.",
+                "cn": "这架飞机准时降落了。",
+                "options": [
+                    "A. on times",
+                    "B. on time",
+                    "C. in times",
+                    "D. in time"
+                ]
+            },
+            {
+                "question": " Mike sits ______ me.",
+                "cn": "麦克坐在我旁边。",
+                "options": [
+                    "A. near from",
+                    "B. close to",
+                    "C. close by",
+                    "D. next to"
+                ]
+            },
+            {
+                "question": " We traveled ______.",
+                "cn": "我们骑脚踏车旅行。",
+                "options": [
+                    "A. of our bicycles",
+                    "B. with our bicycles",
+                    "C. by bicycle",
+                    "D. from bicycle"
+                ]
+            },
+            {
+                "question": " We ______ breakfast at seven.",
+                "cn": "我们七点吃早饭。",
+                "options": [
+                    "A. have",
+                    "B. swallow",
+                    "C. serve",
+                    "D. snatch"
+                ]
+            },
+            {
+                "question": " Mary ______ her mother.",
+                "cn": "玛丽像她妈妈。",
+                "options": [
+                    "A. seems like",
+                    "B. appears like",
+                    "C. seems as if",
+                    "D. looks like"
+                ]
+            },
+            {
+                "question": " ______ a good student, Bill.",
+                "cn": "比尔,做个好学生。",
+                "options": [
+                    "A. Is",
+                    "B. Be",
+                    "C. To be",
+                    "D. Being"
+                ]
+            },
+            {
+                "question": " Please ______ up, John.",
+                "cn": "约翰,请站起来。",
+                "options": [
+                    "A. to stand",
+                    "B. stands",
+                    "C. stand",
+                    "D. standing"
+                ]
+            },
+            {
+                "question": " Who ______ the tall boys?",
+                "cn": "这些高个子男孩是谁?",
+                "options": [
+                    "A. is",
+                    "B. are",
+                    "C. am",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " What is he ______?",
+                "cn": "他正在做什么?",
+                "options": [
+                    "A. to do",
+                    "B. do",
+                    "C. done",
+                    "D. doing"
+                ]
+            },
+            {
+                "question": " Who ______ those boys?",
+                "cn": "那些男孩是谁?",
+                "options": [
+                    "A. being",
+                    "B. is",
+                    "C. was",
+                    "D. are"
+                ]
+            },
+            {
+                "question": " Bill ______ to school every day.",
+                "cn": "比尔每天走路上学。",
+                "options": [
+                    "A. walk",
+                    "B. is walking",
+                    "C. walkes",
+                    "D. walks"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（四）",
+        "questions": [
+            {
+                "question": " Does he ______ English every day?",
+                "cn": "他每天说英文吗?",
+                "options": [
+                    "A. speak",
+                    "B. speaks",
+                    "C. speaking",
+                    "D. speakes"
+                ]
+            },
+            {
+                "question": " I ______ Tom.",
+                "cn": "我认识汤姆。",
+                "options": [
+                    "A. know",
+                    "B. am know",
+                    "C. am knowing",
+                    "D. knows"
+                ]
+            },
+            {
+                "question": " Why not ______ TV, Helen?",
+                "cn": "海伦,为什么不看电视呢?",
+                "options": [
+                    "A. watches",
+                    "B. watch",
+                    "C. watched",
+                    "D. is watching"
+                ]
+            },
+            {
+                "question": " He can ______ a motorcycle.",
+                "cn": "他会骑摩托车。",
+                "options": [
+                    "A. rides",
+                    "B. ride",
+                    "C. to ride",
+                    "D. riding"
+                ]
+            },
+            {
+                "question": " This is a ______ room.",
+                "cn": "这是一间客厅。",
+                "options": [
+                    "A. live",
+                    "B. living",
+                    "C. life",
+                    "D. to live"
+                ]
+            },
+            {
+                "question": " The pencil ______ well.",
+                "cn": "这枝铅笔很好写。",
+                "options": [
+                    "A. write",
+                    "B. was written",
+                    "C. writes",
+                    "D. is written"
+                ]
+            },
+            {
+                "question": " Sleep is ______ to health.",
+                "cn": "睡眠对维持健康是必要的。",
+                "options": [
+                    "A. necessary",
+                    "B. necessitate",
+                    "C. necessity",
+                    "D. necessarily"
+                ]
+            },
+            {
+                "question": " Helen is a ______.",
+                "cn": "海伦是位佳人。",
+                "options": [
+                    "A. beautiful",
+                    "B. beautifully",
+                    "C. beauty",
+                    "D. beau"
+                ]
+            },
+            {
+                "question": " Bring the doctor ______.",
+                "cn": "赶快请医生。",
+                "options": [
+                    "A. in haste",
+                    "B. in the haste",
+                    "C. in a haste",
+                    "D. in hastes"
+                ]
+            },
+            {
+                "question": " The boy is a ______ boy.",
+                "cn": "这个男孩是个可爱的男孩。",
+                "options": [
+                    "A. lovely",
+                    "B. love",
+                    "C. loving",
+                    "D. loved"
+                ]
+            },
+            {
+                "question": " ______ room is that?",
+                "cn": "那是谁的房间?",
+                "options": [
+                    "A. Whom",
+                    "B. Who",
+                    "C. Whose",
+                    "D. Which"
+                ]
+            },
+            {
+                "question": " You are good ______.",
+                "cn": "你们是好学生。",
+                "options": [
+                    "A. students",
+                    "B. student",
+                    "C. a student",
+                    "D. studentes"
+                ]
+            },
+            {
+                "question": " Sue ______ a good student.",
+                "cn": "苏是一位好学生。",
+                "options": [
+                    "A. was",
+                    "B. are",
+                    "C. am",
+                    "D. is"
+                ]
+            },
+            {
+                "question": " You ______ today.",
+                "cn": "今天你气色不错。",
+                "options": [
+                    "A. look fine",
+                    "B. look pleasing",
+                    "C. look nice",
+                    "D. look finely"
+                ]
+            },
+            {
+                "question": " Is ______ teacher tall?",
+                "cn": "她的老师高吗?",
+                "options": [
+                    "A. she's",
+                    "B. she",
+                    "C. her",
+                    "D. hers"
+                ]
+            },
+            {
+                "question": " Where ______?",
+                "cn": "我在哪里?",
+                "options": [
+                    "A. I was",
+                    "B. I am",
+                    "C. was I",
+                    "D. am I"
+                ]
+            },
+            {
+                "question": " It is ______ the table.",
+                "cn": "它在桌子上面。",
+                "options": [
+                    "A. on",
+                    "B. in",
+                    "C. at",
+                    "D. off"
+                ]
+            },
+            {
+                "question": " Tom ______ to Bob.",
+                "cn": "汤姆正在跟鲍伯谈话。",
+                "options": [
+                    "A. is talk",
+                    "B. is talking",
+                    "C. talk",
+                    "D. talks"
+                ]
+            },
+            {
+                "question": " ______ is the weather today?",
+                "cn": "今天天气如何?",
+                "options": [
+                    "A. Where",
+                    "B. What",
+                    "C. How",
+                    "D. Which"
+                ]
+            },
+            {
+                "question": " This is a ______ school.",
+                "cn": "这是一所男生学校。",
+                "options": [
+                    "A. boys'",
+                    "B. boy",
+                    "C. boys",
+                    "D. boy's"
+                ]
+            },
+            {
+                "question": " No ______ in class.",
+                "cn": "课上禁止讲话。",
+                "options": [
+                    "A. talk",
+                    "B. talking",
+                    "C. talks",
+                    "D. to talk"
+                ]
+            },
+            {
+                "question": " The great noise caused everyone ______.",
+                "cn": "这样大的声音把每个人都吓了一跳。",
+                "options": [
+                    "A. starting",
+                    "B. start",
+                    "C. to start",
+                    "D. started"
+                ]
+            },
+            {
+                "question": " They are my ______ books.",
+                "cn": "它们是我的英文书。",
+                "options": [
+                    "A. English's",
+                    "B. the English",
+                    "C. Englishes",
+                    "D. English"
+                ]
+            },
+            {
+                "question": " Are you ______?",
+                "cn": "你们是中国人吗?",
+                "options": [
+                    "A. chineses",
+                    "B. Chinese",
+                    "C. the Chinese",
+                    "D. a Chinese"
+                ]
+            },
+            {
+                "question": " Please sit down, ______.",
+                "cn": "大家请坐下。",
+                "options": [
+                    "A. the everyone",
+                    "B. every one",
+                    "C. everyone",
+                    "D. everyones"
+                ]
+            },
+            {
+                "question": " ______ is it today?",
+                "cn": "今天天气如何?",
+                "options": [
+                    "A. How",
+                    "B. What about",
+                    "C. How about",
+                    "D. What"
+                ]
+            },
+            {
+                "question": " Please ______, students.",
+                "cn": "同学们,请坐下。",
+                "options": [
+                    "A. sit on",
+                    "B. sit down",
+                    "C. sit in",
+                    "D. sit up"
+                ]
+            },
+            {
+                "question": " ______ is not my sister.",
+                "cn": "这个女孩不是我的妹妹。",
+                "options": [
+                    "A. This girls",
+                    "B. A Girl",
+                    "C. That girl",
+                    "D. The girl"
+                ]
+            },
+            {
+                "question": " It is ______ today.",
+                "cn": "今天天气很好。",
+                "options": [
+                    "A. better",
+                    "B. good",
+                    "C. fine",
+                    "D. well"
+                ]
+            },
+            {
+                "question": " ______ is he?",
+                "cn": "他有多高?",
+                "options": [
+                    "A. How tall",
+                    "B. How high",
+                    "C. How many tall",
+                    "D. How much tall"
+                ]
+            },
+            {
+                "question": " What is ______ name?",
+                "cn": "他叫什么名字?",
+                "options": [
+                    "A. his's",
+                    "B. his",
+                    "C. he's",
+                    "D. hes"
+                ]
+            },
+            {
+                "question": " ______ is my cup?",
+                "cn": "我的杯子在哪里?",
+                "options": [
+                    "A. Where",
+                    "B. What there",
+                    "C. There",
+                    "D. Here"
+                ]
+            },
+            {
+                "question": " He is reading ______.",
+                "cn": "他正在阅读英语。",
+                "options": [
+                    "A. an English",
+                    "B. a English",
+                    "C. English",
+                    "D. the English"
+                ]
+            },
+            {
+                "question": " Cars are not ______.",
+                "cn": "轿车不是公车。",
+                "options": [
+                    "A. buss",
+                    "B. buses",
+                    "C. bus",
+                    "D. the bus"
+                ]
+            },
+            {
+                "question": " She doesn't ______ English well.",
+                "cn": "她英语讲得不好。",
+                "options": [
+                    "A. say",
+                    "B. talk",
+                    "C. read",
+                    "D. speak"
+                ]
+            },
+            {
+                "question": " ______ Li is a student.",
+                "cn": "李小姐是一位学生。",
+                "options": [
+                    "A. Mis",
+                    "B. miss",
+                    "C. Miss",
+                    "D. Miss."
+                ]
+            },
+            {
+                "question": " He ______ a book.",
+                "cn": "他正在看书。",
+                "options": [
+                    "A. has been reading",
+                    "B. was reading",
+                    "C. reads",
+                    "D. is reading"
+                ]
+            },
+            {
+                "question": " Tom, ______ your book.",
+                "cn": "汤姆, 打开你的书。",
+                "options": [
+                    "A. opens",
+                    "B. open",
+                    "C. opened",
+                    "D. to open"
+                ]
+            },
+            {
+                "question": " They are reading ______.",
+                "cn": "他们正在阅读英语。",
+                "options": [
+                    "A. English",
+                    "B. a English",
+                    "C. the English",
+                    "D. english"
+                ]
+            },
+            {
+                "question": " He ______ a cat.",
+                "cn": "他正在观察一只猫。",
+                "options": [
+                    "A. watched",
+                    "B. is to watch",
+                    "C. is watching",
+                    "D. watches"
+                ]
+            },
+            {
+                "question": " The class ______ small.",
+                "cn": "这个班很小。",
+                "options": [
+                    "A. be",
+                    "B. is",
+                    "C. have been",
+                    "D. are"
+                ]
+            },
+            {
+                "question": " It is ______.",
+                "cn": "现在是三点二十五分。",
+                "options": [
+                    "A. threetwentyfive",
+                    "B. three twenty five",
+                    "C. three-twenty five",
+                    "D. three twenty-five"
+                ]
+            },
+            {
+                "question": " I have no ______.",
+                "cn": "我没有时间。",
+                "options": [
+                    "A. time",
+                    "B. time's",
+                    "C. times'",
+                    "D. times"
+                ]
+            },
+            {
+                "question": " I ______ Mary now.",
+                "cn": "我现在认识玛丽了。",
+                "options": [
+                    "A. am know",
+                    "B. knows",
+                    "C. knowing",
+                    "D. know"
+                ]
+            },
+            {
+                "question": " It is ______.",
+                "cn": "它是一只老鼠。",
+                "options": [
+                    "A. a mice",
+                    "B. a mouse",
+                    "C. mouse",
+                    "D. mice"
+                ]
+            },
+            {
+                "question": " It is ______ turn.",
+                "cn": "该轮到我了。",
+                "options": [
+                    "A. my",
+                    "B. I",
+                    "C. me",
+                    "D. mine"
+                ]
+            },
+            {
+                "question": " It is a ______.",
+                "cn": "这是一本绿色的书。",
+                "options": [
+                    "A. green books",
+                    "B. green's book",
+                    "C. green book",
+                    "D. book green"
+                ]
+            },
+            {
+                "question": " ______ is she?",
+                "cn": "她是谁?",
+                "options": [
+                    "A. Which",
+                    "B. Whose",
+                    "C. What",
+                    "D. Who"
+                ]
+            },
+            {
+                "question": " ______ the room.",
+                "cn": "打扫这个房间。",
+                "options": [
+                    "A. Clear of",
+                    "B. Clean down",
+                    "C. Clear out",
+                    "D. Clean up"
+                ]
+            },
+            {
+                "question": " I ______ like candy.",
+                "cn": "我不喜欢吃糖果。",
+                "options": [
+                    "A. don't",
+                    "B. doesn't",
+                    "C. don't to",
+                    "D. not do"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（五）",
+        "questions": [
+            {
+                "question": " ______ you like chicken?",
+                "cn": "你喜欢吃鸡肉吗?",
+                "options": [
+                    "A. Will",
+                    "B. Do",
+                    "C. Does",
+                    "D. Are"
+                ]
+            },
+            {
+                "question": " It is hot ______ summer.",
+                "cn": "夏天天气热。",
+                "options": [
+                    "A. at",
+                    "B. in",
+                    "C. on",
+                    "D. of"
+                ]
+            },
+            {
+                "question": " It's ______.",
+                "cn": "这是一件新夹克。",
+                "options": [
+                    "A. a news jacket",
+                    "B. a new jackets",
+                    "C. a new jacket",
+                    "D. a news jackets"
+                ]
+            },
+            {
+                "question": " ______ back to your seat.",
+                "cn": "回到你的的座位上。",
+                "options": [
+                    "A. Go",
+                    "B. To go",
+                    "C. Going",
+                    "D. To going"
+                ]
+            },
+            {
+                "question": " I ______ both.",
+                "cn": "两个我都喜欢。",
+                "options": [
+                    "A. like",
+                    "B. likes",
+                    "C. am liking",
+                    "D. is liking"
+                ]
+            },
+            {
+                "question": " I ______ have a pencil.",
+                "cn": "我没有一枝铅笔。",
+                "options": [
+                    "A. don't",
+                    "B. am not",
+                    "C. won't",
+                    "D. not"
+                ]
+            },
+            {
+                "question": " ______ a book?",
+                "cn": "你有一本书吗?",
+                "options": [
+                    "A. Do you had",
+                    "B. Does you having",
+                    "C. Do you have",
+                    "D. Do have you"
+                ]
+            },
+            {
+                "question": " It is ______ tonight.",
+                "cn": "今晚天气很冷。",
+                "options": [
+                    "A. cold",
+                    "B. cool",
+                    "C. colder",
+                    "D. cooler"
+                ]
+            },
+            {
+                "question": " She is ______ home.",
+                "cn": "她不在家。",
+                "options": [
+                    "A. nor",
+                    "B. no",
+                    "C. never",
+                    "D. not"
+                ]
+            },
+            {
+                "question": " ______ I sit here?",
+                "cn": "我能坐在这里吗?",
+                "options": [
+                    "A. Can",
+                    "B. Will",
+                    "C. Would",
+                    "D. Must"
+                ]
+            },
+            {
+                "question": " Let's ______ a hat.",
+                "cn": "我们来做个帽子吧。",
+                "options": [
+                    "A. making",
+                    "B. to make",
+                    "C. make",
+                    "D. to making"
+                ]
+            },
+            {
+                "question": " It is ______ the box.",
+                "cn": "它在盒子下面。",
+                "options": [
+                    "A. at",
+                    "B. in",
+                    "C. on",
+                    "D. under"
+                ]
+            },
+            {
+                "question": " ______ is a bell.",
+                "cn": "它是一个铃铛。",
+                "options": [
+                    "A. It",
+                    "B. That",
+                    "C. This",
+                    "D. These"
+                ]
+            },
+            {
+                "question": " ______ this your pencil?",
+                "cn": "这是你的铅笔吗?",
+                "options": [
+                    "A. Are",
+                    "B. Is",
+                    "C. Am",
+                    "D. Be"
+                ]
+            },
+            {
+                "question": " Blake is ______.",
+                "cn": "布莱克是一个新生。",
+                "options": [
+                    "A. new a student",
+                    "B. an new student",
+                    "C. a new student",
+                    "D. new students"
+                ]
+            },
+            {
+                "question": " ______ you a teacher?",
+                "cn": "你是老师吗?",
+                "options": [
+                    "A. Be",
+                    "B. Is",
+                    "C. Am",
+                    "D. Are"
+                ]
+            },
+            {
+                "question": " I ______ a nurse.",
+                "cn": "我是护士。",
+                "options": [
+                    "A. am",
+                    "B. is",
+                    "C. are",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " ______ are you today?",
+                "cn": "你今天好吗?",
+                "options": [
+                    "A. What",
+                    "B. How",
+                    "C. When",
+                    "D. Where"
+                ]
+            },
+            {
+                "question": " I'm ______ well, thank you.",
+                "cn": "我很好,谢谢你。",
+                "options": [
+                    "A. enough",
+                    "B. too",
+                    "C. very",
+                    "D. much"
+                ]
+            },
+            {
+                "question": " ______ is Mr. Li?",
+                "cn": "李先生好吗?",
+                "options": [
+                    "A. How",
+                    "B. What",
+                    "C. Who",
+                    "D. However"
+                ]
+            },
+            {
+                "question": " He is fine, ______.",
+                "cn": "他很好,谢谢你。",
+                "options": [
+                    "A. thank me",
+                    "B. thank you",
+                    "C. thank he",
+                    "D. thank she"
+                ]
+            },
+            {
+                "question": " ______ this your pen?",
+                "cn": "这是你的笔吗?",
+                "options": [
+                    "A. Were",
+                    "B. Be",
+                    "C. Is",
+                    "D. Are"
+                ]
+            },
+            {
+                "question": " It is ______ my pen.",
+                "cn": "这不是我的笔。",
+                "options": [
+                    "A. not",
+                    "B. no",
+                    "C. never",
+                    "D. nor"
+                ]
+            },
+            {
+                "question": " That is ______.",
+                "cn": "那是一件好大衣。",
+                "options": [
+                    "A. nice a coat",
+                    "B. a coat nice",
+                    "C. a nice coat",
+                    "D. nice coats"
+                ]
+            },
+            {
+                "question": " ______ your books?",
+                "cn": "这些是你的书吗?",
+                "options": [
+                    "A. Do these",
+                    "B. Are these",
+                    "C. These are",
+                    "D. These do"
+                ]
+            },
+            {
+                "question": " They are very ______.",
+                "cn": "他们很忙。",
+                "options": [
+                    "A. lazy",
+                    "B. busier",
+                    "C. busy",
+                    "D. easy"
+                ]
+            },
+            {
+                "question": " ______ me a book, please.",
+                "cn": "请给我一本书。",
+                "options": [
+                    "A. Give",
+                    "B. Take",
+                    "C. Send",
+                    "D. Get"
+                ]
+            },
+            {
+                "question": " The box is ______.",
+                "cn": "箱子是空的。",
+                "options": [
+                    "A. emptily",
+                    "B. emptier",
+                    "C. emptiest",
+                    "D. empty"
+                ]
+            },
+            {
+                "question": " The ______ is large.",
+                "cn": "客厅很大。",
+                "options": [
+                    "A. living room",
+                    "B. livingroom",
+                    "C. liveroom",
+                    "D. live room"
+                ]
+            },
+            {
+                "question": " ______ the door, please.",
+                "cn": "请关上门。",
+                "options": [
+                    "A. Shutting",
+                    "B. To shut",
+                    "C. Shut",
+                    "D. To shutting"
+                ]
+            },
+            {
+                "question": " Mother is ______.",
+                "cn": "妈妈很生气。",
+                "options": [
+                    "A. much angry",
+                    "B. very angry",
+                    "C. many angry",
+                    "D. large angry"
+                ]
+            },
+            {
+                "question": " ______ him go home.",
+                "cn": "让他回家吧。",
+                "options": [
+                    "A. Letting",
+                    "B. To let",
+                    "C. Let",
+                    "D. To letting"
+                ]
+            },
+            {
+                "question": " The sun is ______.",
+                "cn": "阳光灿烂。",
+                "options": [
+                    "A. shining",
+                    "B. shine",
+                    "C. shines",
+                    "D. to shine"
+                ]
+            },
+            {
+                "question": " The shop isn't ______.",
+                "cn": "商店没有开门。",
+                "options": [
+                    "A. opening",
+                    "B. opened",
+                    "C. close",
+                    "D. open"
+                ]
+            },
+            {
+                "question": " She ______ a black dog.",
+                "cn": "她有一只黑狗。",
+                "options": [
+                    "A. have",
+                    "B. has",
+                    "C. is having",
+                    "D. are having"
+                ]
+            },
+            {
+                "question": " Give it to ______.",
+                "cn": "把它给我。",
+                "options": [
+                    "A. me",
+                    "B. I",
+                    "C. my",
+                    "D. mine"
+                ]
+            },
+            {
+                "question": " Put the desk ______.",
+                "cn": "把书桌放在这儿。",
+                "options": [
+                    "A. there",
+                    "B. the here",
+                    "C. here",
+                    "D. the there"
+                ]
+            },
+            {
+                "question": " ______ a cup of coffee.",
+                "cn": "喝杯咖啡吧。",
+                "options": [
+                    "A. To having",
+                    "B. To have",
+                    "C. Having",
+                    "D. Have"
+                ]
+            },
+            {
+                "question": " This box is ______.",
+                "cn": "这盒子很大。",
+                "options": [
+                    "A. largest",
+                    "B. larger",
+                    "C. large",
+                    "D. small"
+                ]
+            },
+            {
+                "question": " It's ______ old film.",
+                "cn": "这是一部老电影。",
+                "options": [
+                    "A. an",
+                    "B. a",
+                    "C. the",
+                    "D. one"
+                ]
+            },
+            {
+                "question": " It ______.",
+                "cn": "天正在下雨。",
+                "options": [
+                    "A. rains",
+                    "B. is raining",
+                    "C. was raining",
+                    "D. rained"
+                ]
+            },
+            {
+                "question": " ______ your car?",
+                "cn": "那是你的汽车吗?",
+                "options": [
+                    "A. Is that",
+                    "B. Does that",
+                    "C. That is",
+                    "D. That does"
+                ]
+            },
+            {
+                "question": " I ______ to bed at nine.",
+                "cn": "我九点上床。",
+                "options": [
+                    "A. have gone",
+                    "B. going",
+                    "C. go",
+                    "D. will go"
+                ]
+            },
+            {
+                "question": " ______ is a long time.",
+                "cn": "那是很长的时间。",
+                "options": [
+                    "A. This",
+                    "B. That",
+                    "C. These",
+                    "D. Those"
+                ]
+            },
+            {
+                "question": " Betty ______ the house.",
+                "cn": "贝蒂喜欢这房子。",
+                "options": [
+                    "A. is liking",
+                    "B. liking",
+                    "C. has liked",
+                    "D. likes"
+                ]
+            },
+            {
+                "question": " Susan ______ a good doctor.",
+                "cn": "苏珊是个好医生。",
+                "options": [
+                    "A. will be",
+                    "B. was",
+                    "C. has been",
+                    "D. is"
+                ]
+            },
+            {
+                "question": " He will ______.",
+                "cn": "他将要去上学。",
+                "options": [
+                    "A. go to school",
+                    "B. go in school",
+                    "C. go for school",
+                    "D. go forward school"
+                ]
+            },
+            {
+                "question": " She is ______ Paris.",
+                "cn": "她在巴黎。",
+                "options": [
+                    "A. at",
+                    "B. in",
+                    "C. on",
+                    "D. inside"
+                ]
+            },
+            {
+                "question": " ______ have a drink.",
+                "cn": "我们喝点什么吧。",
+                "options": [
+                    "A. Let",
+                    "B. Let's",
+                    "C. Lets",
+                    "D. Let is"
+                ]
+            },
+            {
+                "question": " ______ these monkeys.",
+                "cn": "看看这些猴子。",
+                "options": [
+                    "A. Watch at",
+                    "B. Look at",
+                    "C. See at",
+                    "D. Look in"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（六）",
+        "questions": [
+            {
+                "question": " The bear ______.",
+                "cn": "这只熊正在睡觉。",
+                "options": [
+                    "A. sleeps",
+                    "B. is sleep",
+                    "C. is sleeping",
+                    "D. sleep"
+                ]
+            },
+            {
+                "question": " My sister is ______.",
+                "cn": "我姊姊不在家。",
+                "options": [
+                    "A. out",
+                    "B. in",
+                    "C. at home",
+                    "D. out of"
+                ]
+            },
+            {
+                "question": " Please ______.",
+                "cn": "请关上门。",
+                "options": [
+                    "A. turn off the door",
+                    "B. close off the door",
+                    "C. close the door",
+                    "D. shut off the door"
+                ]
+            },
+            {
+                "question": " Mary ______ a watch.",
+                "cn": "玛丽有一只手表。",
+                "options": [
+                    "A. has",
+                    "B. was had",
+                    "C. have",
+                    "D. is having"
+                ]
+            },
+            {
+                "question": " ______ is my friend.",
+                "cn": "这是我的朋友。",
+                "options": [
+                    "A. This",
+                    "B. That",
+                    "C. He",
+                    "D. She"
+                ]
+            },
+            {
+                "question": " ______ are birds.",
+                "cn": "那些是小鸟。",
+                "options": [
+                    "A. That",
+                    "B. These",
+                    "C. Those",
+                    "D. This"
+                ]
+            },
+            {
+                "question": " My father is ______.",
+                "cn": "我爸爸是一个工人。",
+                "options": [
+                    "A. a worker",
+                    "B. work",
+                    "C. worker",
+                    "D. working"
+                ]
+            },
+            {
+                "question": " ______ your mother a nurse?",
+                "cn": "你妈妈是一个护士吗?",
+                "options": [
+                    "A. Have been",
+                    "B. Was",
+                    "C. Will be",
+                    "D. Is"
+                ]
+            },
+            {
+                "question": " The elephant's nose ______ long.",
+                "cn": "大象的鼻子长。",
+                "options": [
+                    "A. is",
+                    "B. are",
+                    "C. was",
+                    "D. were"
+                ]
+            },
+            {
+                "question": " ______ I help you?",
+                "cn": "有什么要帮忙吗?",
+                "options": [
+                    "A. Must",
+                    "B. Can",
+                    "C. Would",
+                    "D. Need"
+                ]
+            },
+            {
+                "question": " Sit ______.",
+                "cn": "坐下。",
+                "options": [
+                    "A. on",
+                    "B. up",
+                    "C. down",
+                    "D. over"
+                ]
+            },
+            {
+                "question": " ______ your book.",
+                "cn": "合上你的书。",
+                "options": [
+                    "A. Close",
+                    "B. To close",
+                    "C. Open",
+                    "D. To open"
+                ]
+            },
+            {
+                "question": " ______ your pencil.",
+                "cn": "拿出你的铅笔。",
+                "options": [
+                    "A. Take it out",
+                    "B. Take out",
+                    "C. To take out",
+                    "D. To take it out"
+                ]
+            },
+            {
+                "question": " ______ your nose.",
+                "cn": "摸摸你的鼻子。",
+                "options": [
+                    "A. To touch",
+                    "B. Feel",
+                    "C. Touch",
+                    "D. To feel"
+                ]
+            },
+            {
+                "question": " ______ welcome.",
+                "cn": "别客气。",
+                "options": [
+                    "A. you is",
+                    "B. You is",
+                    "C. you're",
+                    "D. You're"
+                ]
+            },
+            {
+                "question": " He is ______ brother.",
+                "cn": "他是我哥哥。",
+                "options": [
+                    "A. my",
+                    "B. me",
+                    "C. my's",
+                    "D. mine"
+                ]
+            },
+            {
+                "question": " Let's ______.",
+                "cn": "让我们去溜冰。",
+                "options": [
+                    "A. to skate",
+                    "B. skate",
+                    "C. skating",
+                    "D. to skating"
+                ]
+            },
+            {
+                "question": " I am ______.",
+                "cn": "我累了。",
+                "options": [
+                    "A. tireless",
+                    "B. tire",
+                    "C. tired",
+                    "D. tiring"
+                ]
+            },
+            {
+                "question": " ______ over here.",
+                "cn": "过来。",
+                "options": [
+                    "A. To coming",
+                    "B. To come",
+                    "C. Coming",
+                    "D. Come"
+                ]
+            },
+            {
+                "question": " ______ little.",
+                "cn": "它是小的。",
+                "options": [
+                    "A. It is",
+                    "B. It are",
+                    "C. it's",
+                    "D. Its"
+                ]
+            },
+            {
+                "question": " I am ______.",
+                "cn": "我饿了。",
+                "options": [
+                    "A. hungrily",
+                    "B. hunger",
+                    "C. hungry",
+                    "D. being hungry"
+                ]
+            },
+            {
+                "question": " ______ some chicken.",
+                "cn": "吃些鸡肉吧。",
+                "options": [
+                    "A. Have",
+                    "B. To have",
+                    "C. Having",
+                    "D. To having"
+                ]
+            },
+            {
+                "question": " ______ some water.",
+                "cn": "喝些水吧。",
+                "options": [
+                    "A. Having",
+                    "B. To having",
+                    "C. Have",
+                    "D. To have"
+                ]
+            },
+            {
+                "question": " I ______ candy.",
+                "cn": "我喜欢吃糖果。",
+                "options": [
+                    "A. dislike",
+                    "B. like",
+                    "C. care",
+                    "D. want"
+                ]
+            },
+            {
+                "question": " Be ______.",
+                "cn": "小心点。",
+                "options": [
+                    "A. carefully",
+                    "B. care",
+                    "C. careless",
+                    "D. careful"
+                ]
+            },
+            {
+                "question": " I ______ swim.",
+                "cn": "我会游泳。",
+                "options": [
+                    "A. do",
+                    "B. am able",
+                    "C. can",
+                    "D. will"
+                ]
+            },
+            {
+                "question": " ______ the bedroom.",
+                "cn": "到卧室去。",
+                "options": [
+                    "A. Go to",
+                    "B. Go at",
+                    "C. Go in",
+                    "D. Go on"
+                ]
+            },
+            {
+                "question": " ______ bed.",
+                "cn": "睡觉去。",
+                "options": [
+                    "A. Go in",
+                    "B. Go to",
+                    "C. Go up",
+                    "D. Go on"
+                ]
+            },
+            {
+                "question": " That's ______.",
+                "cn": "没关系。",
+                "options": [
+                    "A. all right",
+                    "B. right",
+                    "C. alright",
+                    "D. rightly"
+                ]
+            },
+            {
+                "question": " ______ in.",
+                "cn": "进来。",
+                "options": [
+                    "A. Coming",
+                    "B. To come",
+                    "C. Come",
+                    "D. To coming"
+                ]
+            },
+            {
+                "question": " ______ your hand.",
+                "cn": "举起你的手。",
+                "options": [
+                    "A. To raising",
+                    "B. Raise",
+                    "C. To raise",
+                    "D. Raising"
+                ]
+            },
+            {
+                "question": " ______ a pencil?",
+                "cn": "你有一枝铅笔吗?",
+                "options": [
+                    "A. Do have you",
+                    "B. Does you having",
+                    "C. Did you have",
+                    "D. Do you have"
+                ]
+            },
+            {
+                "question": " Let's ______ now.",
+                "cn": "现在让我们开始。",
+                "options": [
+                    "A. beginning",
+                    "B. to begin",
+                    "C. begin",
+                    "D. to beginning"
+                ]
+            },
+            {
+                "question": " We ______ Chinese.",
+                "cn": "我们讲中文。",
+                "options": [
+                    "A. speak",
+                    "B. say",
+                    "C. talk",
+                    "D. tell"
+                ]
+            },
+            {
+                "question": " He ______.",
+                "cn": "他正在游泳。",
+                "options": [
+                    "A. swims",
+                    "B. is swimming",
+                    "C. was swimming",
+                    "D. swam"
+                ]
+            },
+            {
+                "question": " It's ______ today.",
+                "cn": "今天阳光明媚。",
+                "options": [
+                    "A. sunny",
+                    "B. sun",
+                    "C. suny",
+                    "D. suns"
+                ]
+            },
+            {
+                "question": " They ______ desks.",
+                "cn": "它们是书桌。",
+                "options": [
+                    "A. am",
+                    "B. is",
+                    "C. are",
+                    "D. was"
+                ]
+            },
+            {
+                "question": " ______ coat is red.",
+                "cn": "我的外衣是红色的。",
+                "options": [
+                    "A. Mine",
+                    "B. My",
+                    "C. I",
+                    "D. Me"
+                ]
+            },
+            {
+                "question": " ______ she work?",
+                "cn": "她工作吗?",
+                "options": [
+                    "A. Done",
+                    "B. Do",
+                    "C. Does",
+                    "D. Will do"
+                ]
+            },
+            {
+                "question": " Don't ______ it!",
+                "cn": "别把它摔了！",
+                "options": [
+                    "A. drop",
+                    "B. take",
+                    "C. throw",
+                    "D. put"
+                ]
+            },
+            {
+                "question": " Tom is ______.",
+                "cn": "汤姆在楼上。",
+                "options": [
+                    "A. up stairs",
+                    "B. upstair",
+                    "C. up stair",
+                    "D. upstairs"
+                ]
+            },
+            {
+                "question": " Is dinner ______?",
+                "cn": "晚餐好了吗?",
+                "options": [
+                    "A. ready",
+                    "B. readying",
+                    "C. good",
+                    "D. well"
+                ]
+            },
+            {
+                "question": " I don't ______.",
+                "cn": "我不知道。",
+                "options": [
+                    "A. knowing",
+                    "B. know",
+                    "C. knows",
+                    "D. to know"
+                ]
+            },
+            {
+                "question": " I ______ now.",
+                "cn": "现在我知道了。",
+                "options": [
+                    "A. know",
+                    "B. understand",
+                    "C. believe",
+                    "D. remember"
+                ]
+            },
+            {
+                "question": " I ______ decide.",
+                "cn": "我决定不了。",
+                "options": [
+                    "A. don't",
+                    "B. can't",
+                    "C. doesn't",
+                    "D. won't"
+                ]
+            },
+            {
+                "question": " She ______ birds.",
+                "cn": "她喜欢鸟类。",
+                "options": [
+                    "A. loves",
+                    "B. love",
+                    "C. like",
+                    "D. is like"
+                ]
+            },
+            {
+                "question": " ______ some apples.",
+                "cn": "吃些苹果吧。",
+                "options": [
+                    "A. To have",
+                    "B. Has",
+                    "C. Have",
+                    "D. Having"
+                ]
+            },
+            {
+                "question": " ______ name is Mark.",
+                "cn": "我的名字叫马克。",
+                "options": [
+                    "A. Me",
+                    "B. I",
+                    "C. Mine",
+                    "D. My"
+                ]
+            },
+            {
+                "question": " It ______ ten thirty.",
+                "cn": "现在是十点三十分。",
+                "options": [
+                    "A. was",
+                    "B. is",
+                    "C. are",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " I ______ American.",
+                "cn": "我是美国人。",
+                "options": [
+                    "A. are",
+                    "B. is",
+                    "C. am",
+                    "D. be"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（七）",
+        "questions": [
+            {
+                "question": " ______ in touch.",
+                "cn": "保持联系。",
+                "options": [
+                    "A. To keep",
+                    "B. Keeping",
+                    "C. Kept",
+                    "D. Keep"
+                ]
+            },
+            {
+                "question": " He is ______ son.",
+                "cn": "他是彼得的儿子。",
+                "options": [
+                    "A. Peter's",
+                    "B. Peter",
+                    "C. Peters'",
+                    "D. Peter'"
+                ]
+            },
+            {
+                "question": " ______ you are.",
+                "cn": "给你。",
+                "options": [
+                    "A. Where",
+                    "B. There",
+                    "C. Here",
+                    "D. Wherever"
+                ]
+            },
+            {
+                "question": " ______ to, sir?",
+                "cn": "先生,去什么地方?",
+                "options": [
+                    "A. Where",
+                    "B. When",
+                    "C. How",
+                    "D. Why"
+                ]
+            },
+            {
+                "question": " No, ______ at all.",
+                "cn": "不,一点也不。",
+                "options": [
+                    "A. any",
+                    "B. not",
+                    "C. none",
+                    "D. never"
+                ]
+            },
+            {
+                "question": " ______ the matter?",
+                "cn": "怎么回事?",
+                "options": [
+                    "A. Which's",
+                    "B. How's",
+                    "C. What's",
+                    "D. Where's"
+                ]
+            },
+            {
+                "question": " I'll ______.",
+                "cn": "我尽力而为。",
+                "options": [
+                    "A. try my best",
+                    "B. try my good",
+                    "C. try my better",
+                    "D. try one's best"
+                ]
+            },
+            {
+                "question": " ______ a surprise!",
+                "cn": "真令人惊奇!",
+                "options": [
+                    "A. That",
+                    "B. How",
+                    "C. What",
+                    "D. This"
+                ]
+            },
+            {
+                "question": " ______ is not bad!",
+                "cn": "我们的运气不错!",
+                "options": [
+                    "A. Our lucky",
+                    "B. Our luck",
+                    "C. We luck",
+                    "D. We lucky"
+                ]
+            },
+            {
+                "question": " Certainly, I'm ______.",
+                "cn": "当然,我很乐意。",
+                "options": [
+                    "A. glad for",
+                    "B. glad on",
+                    "C. glad to",
+                    "D. glad in"
+                ]
+            },
+            {
+                "question": " It's ______ there.",
+                "cn": "就在那里。",
+                "options": [
+                    "A. over",
+                    "B. at",
+                    "C. by",
+                    "D. on"
+                ]
+            },
+            {
+                "question": " It's a ______ bargain.",
+                "cn": "价钱很便宜。",
+                "options": [
+                    "A. the best",
+                    "B. better",
+                    "C. best",
+                    "D. good"
+                ]
+            },
+            {
+                "question": " I ______ Frank Kurdyla.",
+                "cn": "我是法兰克?克迪拉。",
+                "options": [
+                    "A. is",
+                    "B. am",
+                    "C. are",
+                    "D. be"
+                ]
+            },
+            {
+                "question": " ______, thank you.",
+                "cn": "非常好,谢谢。",
+                "options": [
+                    "A. Very well",
+                    "B. Right well",
+                    "C. Well very",
+                    "D. Well right"
+                ]
+            },
+            {
+                "question": " ______ be sunny.",
+                "cn": "天气将很晴朗。",
+                "options": [
+                    "A. It has gone to",
+                    "B. It goes to",
+                    "C. It's going to",
+                    "D. It was going to"
+                ]
+            },
+            {
+                "question": " ______ you crazy?",
+                "cn": "你疯了啊?",
+                "options": [
+                    "A. Have",
+                    "B. Are",
+                    "C. Do",
+                    "D. Did"
+                ]
+            },
+            {
+                "question": " I ______ think so.",
+                "cn": "我不这样认为。",
+                "options": [
+                    "A. haven't",
+                    "B. not",
+                    "C. don't",
+                    "D. no"
+                ]
+            },
+            {
+                "question": " Chinese is a ______ language.",
+                "cn": "中文是一种很难的语言。",
+                "options": [
+                    "A. difficult",
+                    "B. difficulty",
+                    "C. more difficult",
+                    "D. less difficult"
+                ]
+            },
+            {
+                "question": " Is it ______?",
+                "cn": "它贵吗?",
+                "options": [
+                    "A. priceless",
+                    "B. cheap",
+                    "C. worthless",
+                    "D. expensive"
+                ]
+            },
+            {
+                "question": " I have many things ______.",
+                "cn": "我有很多事情要做。",
+                "options": [
+                    "A. do",
+                    "B. to do",
+                    "C. doing",
+                    "D. done"
+                ]
+            },
+            {
+                "question": " That's ______ true.",
+                "cn": "很正确。",
+                "options": [
+                    "A. quite",
+                    "B. quietly",
+                    "C. quickly",
+                    "D. much"
+                ]
+            },
+            {
+                "question": " Love is ______.",
+                "cn": "爱情是盲目的。",
+                "options": [
+                    "A. dumb",
+                    "B. deaf",
+                    "C. blind",
+                    "D. eyeless"
+                ]
+            },
+            {
+                "question": " His ______ sport is shooting.",
+                "cn": "他最喜欢的体育运动是射击。",
+                "options": [
+                    "A. favorable",
+                    "B. favorite",
+                    "C. favored",
+                    "D. favoring"
+                ]
+            },
+            {
+                "question": " It's ______ outside.",
+                "cn": "外面有雾。",
+                "options": [
+                    "A. fogged",
+                    "B. rainy",
+                    "C. cloudy",
+                    "D. foggy"
+                ]
+            },
+            {
+                "question": " I ______ the date.",
+                "cn": "我把日期忘了。",
+                "options": [
+                    "A. forgot",
+                    "B. am forgetting",
+                    "C. will forget",
+                    "D. should forget"
+                ]
+            },
+            {
+                "question": " I can ______ you.",
+                "cn": "我可以帮助你。",
+                "options": [
+                    "A. helped",
+                    "B. to help",
+                    "C. helping",
+                    "D. help"
+                ]
+            },
+            {
+                "question": " I'll ______ traveling.",
+                "cn": "我要去旅行。",
+                "options": [
+                    "A. to go",
+                    "B. go",
+                    "C. going",
+                    "D. go to"
+                ]
+            },
+            {
+                "question": " That'll ______ good.",
+                "cn": "那太好了。",
+                "options": [
+                    "A. be",
+                    "B. is",
+                    "C. were",
+                    "D. been"
+                ]
+            },
+            {
+                "question": " That's ______.",
+                "cn": "那太棒了。",
+                "options": [
+                    "A. huge",
+                    "B. pleased",
+                    "C. great",
+                    "D. well"
+                ]
+            },
+            {
+                "question": " ______ happened?",
+                "cn": "发生什么事情了?",
+                "options": [
+                    "A. When",
+                    "B. What",
+                    "C. Why",
+                    "D. How"
+                ]
+            },
+            {
+                "question": " ______ you have the plan?",
+                "cn": "你有这项计画吗?",
+                "options": [
+                    "A. Will",
+                    "B. Are",
+                    "C. Have",
+                    "D. Do"
+                ]
+            },
+            {
+                "question": " ______ it.",
+                "cn": "坚持下去。",
+                "options": [
+                    "A. Stick up",
+                    "B. Stick by",
+                    "C. Stick out",
+                    "D. Stick at"
+                ]
+            },
+            {
+                "question": " ______ the house is!",
+                "cn": "这房子好漂亮啊!",
+                "options": [
+                    "A. How beautiful",
+                    "B. How beauty",
+                    "C. What beautiful",
+                    "D. What beauty"
+                ]
+            },
+            {
+                "question": " Do you ______ him?",
+                "cn": "你认识他吗?",
+                "options": [
+                    "A. know",
+                    "B. to know",
+                    "C. knowing",
+                    "D. known"
+                ]
+            },
+            {
+                "question": " I had a very ______.",
+                "cn": "我过得很愉快。",
+                "options": [
+                    "A. well time",
+                    "B. good time",
+                    "C. better time",
+                    "D. best time"
+                ]
+            },
+            {
+                "question": " ______ I have a try?",
+                "cn": "我可以试试吗?",
+                "options": [
+                    "A. Must",
+                    "B. May",
+                    "C. Need",
+                    "D. Should"
+                ]
+            },
+            {
+                "question": " What ______ is your car?",
+                "cn": "你的汽车是什么牌子?",
+                "options": [
+                    "A. making",
+                    "B. make",
+                    "C. makes",
+                    "D. made"
+                ]
+            },
+            {
+                "question": " Tom is ______.",
+                "cn": "汤姆正在线上 。",
+                "options": [
+                    "A. on the line",
+                    "B. on-line",
+                    "C. in-line",
+                    "D. in the line"
+                ]
+            },
+            {
+                "question": " They are ______.",
+                "cn": "它们是我的。",
+                "options": [
+                    "A. my",
+                    "B. me",
+                    "C. mine",
+                    "D. I"
+                ]
+            },
+            {
+                "question": " He is ______ old friend.",
+                "cn": "他是我的老朋友。",
+                "options": [
+                    "A. me",
+                    "B. mine",
+                    "C. my",
+                    "D. I"
+                ]
+            },
+            {
+                "question": " It is ______ miracle!",
+                "cn": "真是奇迹!",
+                "options": [
+                    "A. a",
+                    "B. an",
+                    "C. the",
+                    "D. one"
+                ]
+            },
+            {
+                "question": " I am a network ______.",
+                "cn": "我是一名网路设计师。",
+                "options": [
+                    "A. designing",
+                    "B. designers",
+                    "C. designer",
+                    "D. designings"
+                ]
+            },
+            {
+                "question": " Is it ______?",
+                "cn": "有必要吗?",
+                "options": [
+                    "A. necessary",
+                    "B. necessity",
+                    "C. necessarily",
+                    "D. necessities"
+                ]
+            },
+            {
+                "question": " It is quite ______.",
+                "cn": "它是相当充足的。",
+                "options": [
+                    "A. plentying",
+                    "B. plentifully",
+                    "C. plentiful",
+                    "D. plentiable"
+                ]
+            },
+            {
+                "question": " I ______ believe it.",
+                "cn": "我不相信。",
+                "options": [
+                    "A. don't",
+                    "B. am not",
+                    "C. not",
+                    "D. no"
+                ]
+            },
+            {
+                "question": " ______ Chicago.",
+                "cn": "我要去芝加哥。",
+                "options": [
+                    "A. I'm going to",
+                    "B. I've gone to",
+                    "C. I went to",
+                    "D. I'd gone to"
+                ]
+            },
+            {
+                "question": " I am ______.",
+                "cn": "我很沮丧。",
+                "options": [
+                    "A. in high spirits",
+                    "B. in low spirits",
+                    "C. on low spirits",
+                    "D. on high spirits"
+                ]
+            },
+            {
+                "question": " I ______ seafood.",
+                "cn": "我喜欢吃海鲜。",
+                "options": [
+                    "A. prefered",
+                    "B. prefers",
+                    "C. prefering",
+                    "D. prefer"
+                ]
+            },
+            {
+                "question": " Don't ______ it.",
+                "cn": "不用谢!",
+                "options": [
+                    "A. mention",
+                    "B. say",
+                    "C. speak",
+                    "D. tell"
+                ]
+            },
+            {
+                "question": " Please don't ______ it.",
+                "cn": "你太客气了。",
+                "options": [
+                    "A. say",
+                    "B. speak",
+                    "C. mention",
+                    "D. tell"
+                ]
+            }
+        ]
+    },
+    {
+        "header": "英语语法入门练习题（八）",
+        "questions": [
+            {
+                "question": " It is ______ secret!",
+                "cn": "保密!",
+                "options": [
+                    "A. one",
+                    "B. an",
+                    "C. the",
+                    "D. a"
+                ]
+            },
+            {
+                "question": " The server is ______.",
+                "cn": "伺服器坏了。",
+                "options": [
+                    "A. over",
+                    "B. down",
+                    "C. low",
+                    "D. out"
+                ]
+            },
+            {
+                "question": " I know ______ telephone number.",
+                "cn": "我知道她的电话号码。",
+                "options": [
+                    "A. its",
+                    "B. hers",
+                    "C. his",
+                    "D. her"
+                ]
+            },
+            {
+                "question": " I'll go ______.",
+                "cn": "我要去购物。",
+                "options": [
+                    "A. shopping",
+                    "B. a shop",
+                    "C. shops",
+                    "D. shopped"
+                ]
+            },
+            {
+                "question": " I like ______.",
+                "cn": "我喜欢跳舞和唱歌。",
+                "options": [
+                    "A. to dancing and singing",
+                    "B. dance and sing",
+                    "C. dancing and singing",
+                    "D. to dance and sing"
+                ]
+            },
+            {
+                "question": " It's ______ soup.",
+                "cn": "是鸡汤。",
+                "options": [
+                    "A. chicken",
+                    "B. chickful",
+                    "C. chicking",
+                    "D. chickly"
+                ]
+            },
+            {
+                "question": " It wasn't ______ trouble.",
+                "cn": "一点不麻烦。",
+                "options": [
+                    "A. every",
+                    "B. any",
+                    "C. some",
+                    "D. all"
+                ]
+            },
+            {
+                "question": " ______ is a sort of painkiller.",
+                "cn": "这是一种止痛药。",
+                "options": [
+                    "A. This",
+                    "B. That",
+                    "C. These",
+                    "D. Those"
+                ]
+            },
+            {
+                "question": " We ______ chat online.",
+                "cn": "我们可以线上聊天。",
+                "options": [
+                    "A. must",
+                    "B. will",
+                    "C. can",
+                    "D. need"
+                ]
+            },
+            {
+                "question": " I want ______ English and French.",
+                "cn": "我想学英语和法语。",
+                "options": [
+                    "A. learned",
+                    "B. learn",
+                    "C. learning",
+                    "D. to learn"
+                ]
+            },
+            {
+                "question": " I am just ______.",
+                "cn": "我只是随便看看。",
+                "options": [
+                    "A. surf",
+                    "B. surfed",
+                    "C. surfing",
+                    "D. to surf"
+                ]
+            },
+            {
+                "question": " That's ______.",
+                "cn": "好极了。",
+                "options": [
+                    "A. terrible",
+                    "B. terrified",
+                    "C. terrify",
+                    "D. terrific"
+                ]
+            },
+            {
+                "question": " I've ______ fine.",
+                "cn": "我很好。",
+                "options": [
+                    "A. be",
+                    "B. been",
+                    "C. being",
+                    "D. to be"
+                ]
+            },
+            {
+                "question": " I don't know ______.",
+                "cn": "我不太了解。",
+                "options": [
+                    "A. exaction",
+                    "B. exact",
+                    "C. exactly",
+                    "D. exacting"
+                ]
+            },
+            {
+                "question": " Take it ______.",
+                "cn": "别着急。",
+                "options": [
+                    "A. to be easy",
+                    "B. easy",
+                    "C. easier",
+                    "D. easist"
+                ]
+            },
+            {
+                "question": " I hope ______.",
+                "cn": "我希望如此。",
+                "options": [
+                    "A. also",
+                    "B. well",
+                    "C. so",
+                    "D. too"
+                ]
+            },
+            {
+                "question": " It's ______!",
+                "cn": "真令人难以置信!",
+                "options": [
+                    "A. unbelievable",
+                    "B. unbelieving",
+                    "C. believeful",
+                    "D. unbelieveful"
+                ]
+            },
+            {
+                "question": " I'd like to exchange marks ______ NT dollars.",
+                "cn": "我想把马克换成台币。",
+                "options": [
+                    "A. by",
+                    "B. for",
+                    "C. from",
+                    "D. with"
+                ]
+            },
+            {
+                "question": " You are ______!",
+                "cn": "你太想家了。",
+                "options": [
+                    "A. homesick",
+                    "B. homesicken",
+                    "C. homesicked",
+                    "D. homesicker"
+                ]
+            },
+            {
+                "question": " Do you go ______?",
+                "cn": "你一起去吗?",
+                "options": [
+                    "A. collectively",
+                    "B. jointly",
+                    "C. together",
+                    "D. simultaneously"
+                ]
+            },
+            {
+                "question": " It is ______ to say.",
+                "cn": "难说。",
+                "options": [
+                    "A. hardly",
+                    "B. hard",
+                    "C. heavy",
+                    "D. heavily"
+                ]
+            },
+            {
+                "question": " Sorry, I ______ don't understand.",
+                "cn": "对不起,我还是不懂。",
+                "options": [
+                    "A. neither",
+                    "B. too",
+                    "C. yet",
+                    "D. still"
+                ]
+            },
+            {
+                "question": " ______ you very much.",
+                "cn": "真是太谢谢你了。",
+                "options": [
+                    "A. Thanking",
+                    "B. Thanks",
+                    "C. To thank",
+                    "D. Thank"
+                ]
+            },
+            {
+                "question": " I'm ______ the States.",
+                "cn": "我来自美国。",
+                "options": [
+                    "A. from",
+                    "B. in",
+                    "C. with",
+                    "D. at"
+                ]
+            },
+            {
+                "question": " That's quite ______.",
+                "cn": "没有关系。",
+                "options": [
+                    "A. at right",
+                    "B. all right",
+                    "C. some right",
+                    "D. any right"
+                ]
+            },
+            {
+                "question": " It was not very ______.",
+                "cn": "它不是很有意思。",
+                "options": [
+                    "A. fun",
+                    "B. funny",
+                    "C. funned",
+                    "D. funning"
+                ]
+            },
+            {
+                "question": " It ______ three o'clock now.",
+                "cn": "现在是三点钟。",
+                "options": [
+                    "A. was",
+                    "B. is",
+                    "C. were",
+                    "D. are"
+                ]
+            },
+            {
+                "question": " That's a ______ idea.",
+                "cn": "这是个好主意。",
+                "options": [
+                    "A. best",
+                    "B. well",
+                    "C. good",
+                    "D. better"
+                ]
+            },
+            {
+                "question": " That ______ good.",
+                "cn": "听起来不错。",
+                "options": [
+                    "A. sounds",
+                    "B. hears",
+                    "C. listens",
+                    "D. feels"
+                ]
+            },
+            {
+                "question": " ______ did you know?",
+                "cn": "你怎么知道?",
+                "options": [
+                    "A. How",
+                    "B. What",
+                    "C. Why",
+                    "D. When"
+                ]
+            },
+            {
+                "question": " ______ not buy one?",
+                "cn": "为什么不买一个呢?",
+                "options": [
+                    "A. How",
+                    "B. What",
+                    "C. Why",
+                    "D. Which"
+                ]
+            },
+            {
+                "question": " It's very kind ______ you.",
+                "cn": "你太好了!",
+                "options": [
+                    "A. for",
+                    "B. with",
+                    "C. of",
+                    "D. in"
+                ]
+            },
+            {
+                "question": " My computer ______.",
+                "cn": "我的电脑系统当机了。",
+                "options": [
+                    "A. crashed",
+                    "B. was crashing",
+                    "C. crash",
+                    "D. is crashing"
+                ]
+            }
+        ]
+    }
+]
