@@ -1011,7 +1011,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "单词关联照片"]
+    dict_items = ["词典管理", "图片网址", "关联照片"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
