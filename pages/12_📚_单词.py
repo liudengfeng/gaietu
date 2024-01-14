@@ -186,10 +186,13 @@ def display_word_images(word, container):
         response = requests.get(urls[i])
         img = Image.open(BytesIO(response.content))
 
+        # # 调整图片尺寸
+        # max_size = (400, 400)
+        # img.thumbnail(max_size)
+        
         # 调整图片尺寸
-        max_size = (400, 400)
-        img.thumbnail(max_size)
-
+        new_size = (400, 400)
+        img = img.resize(new_size)
         # 显示图片
         col.image(img, use_column_width=True, caption=caption[i])
 
