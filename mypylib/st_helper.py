@@ -271,12 +271,12 @@ def select_word_image_indices(word: str):
     if len(image_indices) > 0:
         return image_indices
     # 查找 image_urls
-    urls = get_mini_dict_doc(word).get("image_urls", [])
+    image_urls = get_mini_dict_doc(word).get("image_urls", [])
     model = load_vertex_model("gemini-pro-vision")
-    images = []
-    if len(urls) == 0:
+    if len(image_urls) == 0:
         image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
 
+    images = []
     n = len(image_urls)
     for i, url in enumerate(image_urls):
         try:
