@@ -803,8 +803,9 @@ def get_my_word_lib():
 # region 加载数据
 
 if "word_dict" not in st.session_state:
+    d = load_word_dict().copy()
     # 注意要使用副本
-    st.session_state["word_dict"] = load_word_dict().copy()
+    st.session_state["word_dict"] = {key: set(value) for key, value in d.items()}
 
 with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
     voice_style_options = json.load(f)
