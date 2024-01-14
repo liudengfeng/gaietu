@@ -242,28 +242,12 @@ def get_mini_dict_doc(word):
         return {}
 
 
-def extract_word_image_urls(db, word: str):
-    # 获取文档
-    doc = db.collection("mini_dict").document(word).get()
-
-    # 如果文档存在，尝试获取 image_urls
-    if doc.exists:
-        doc_dict = doc.to_dict()
-        image_urls = doc_dict.get("image_urls", [])
-    else:
-        image_urls = []
-
-    # 如果 image_urls 列表为空，使用 get_word_image_urls 获取图像URL
-    # TODO:尾部去掉
-    if not image_urls or len(image_urls) <= 4:
-        image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
-
-        # 保存 image_urls 到数据库
-        db.collection("mini_dict").document(word).set(
-            {"image_urls": image_urls}, merge=True
-        )
-
-    return image_urls
+def get_and_save_word_image_urls(word: str):
+    image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
+    # 保存 image_urls 到数据库
+    st.session_state.dbi.db.collection("mini_dict").document(word).set(
+        {"image_urls": image_urls}, merge=True
+    )
 
 
 def select_word_image_indices(word: str):

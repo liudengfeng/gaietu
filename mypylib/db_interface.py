@@ -613,6 +613,26 @@ class DbInterface:
         # 如果文档存在，将其转换为字典，否则返回一个空字典
         return doc.to_dict() if doc.exists else {}
 
+    def find_docs_with_empty_image_urls(self):
+        # 获取 mini_dict 集合的引用
+        mini_dict_ref = self.db.collection("mini_dict")
+
+        # 初始化一个空列表来存储 image_urls 为空的文档名称
+        docs_with_empty_image_urls = []
+
+        # 遍历 mini_dict 集合中的所有文档
+        for doc in mini_dict_ref.stream():
+            # 将 DocumentSnapshot 对象转换为字典
+            doc_dict = doc.to_dict()
+
+            # 检查 image_urls 字段是否不存在或者为空
+            if "image_urls" not in doc_dict or not doc_dict["image_urls"]:
+                # 如果 image_urls 字段不存在或者为空，将文档名称添加到列表中
+                docs_with_empty_image_urls.append(doc.id)
+
+        # 返回 image_urls 为空的文档名称列表
+        return docs_with_empty_image_urls
+
     def word_has_image_urls(self, word: str) -> bool:
         # 获取文档
         doc = self.db.collection("mini_dict").document(word).get()

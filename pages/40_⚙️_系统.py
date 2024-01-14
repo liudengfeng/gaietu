@@ -25,7 +25,7 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    extract_word_image_urls,
+    get_and_save_word_image_urls,
     get_blob_container_client,
     get_blob_service_client,
     google_translate,
@@ -1040,7 +1040,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "挑选照片"]
+    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
@@ -1137,7 +1137,23 @@ elif menu == "词典管理":
             for i, word in enumerate(words):
                 q = word.replace("/", " or ")
                 update_and_display_progress(i + 1, n, progress_pic_bar, word)
-                extract_word_image_urls(db, q)
+                get_and_save_word_image_urls(q)
+
+    # endregion
+
+    # region 查漏补缺
+
+    with dict_tabs[dict_items.index("查漏补缺")]:
+        st.subheader("查漏补缺", divider="rainbow", anchor=False)
+        st.markdown("使用 serper Google api 为没有图片网址的单词添加图片网址")
+        progress_pic_bar = st.progress(0)
+        # 创建一个按钮，当用户点击这个按钮时，执行 process_images 函数
+        if st.button("开始", key="images-urls-btn-2", help="✨ 图片网址补缺"):
+            words = st.session_state.dbi.find_docs_with_empty_image_urls()
+            n = len(words)
+            for i, word in enumerate(words):
+                update_and_display_progress(i + 1, n, progress_pic_bar, word)
+                get_and_save_word_image_urls(word)
 
     # endregion
 
