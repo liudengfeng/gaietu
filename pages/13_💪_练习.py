@@ -18,9 +18,14 @@ check_access(False)
 configure_google_apis()
 
 # endregion
-
-menu_items = [":ear: 听说练习", ":open_book: 阅读练习", ":pencil2: 写作练习"]
-menu = st.sidebar.selectbox("菜单", menu_items, help="请选择您要进行的练习项目")
+menu_emoji = [
+    "🗣️",
+    "📖",
+    "✍️",
+]
+menu_names = ["听说练习", "阅读练习", "写作练习"]
+menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
+menu = st.sidebar.selectbox("菜单", menu_opts, help="请选择您要进行的练习项目")
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
