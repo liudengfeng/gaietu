@@ -250,15 +250,25 @@ with col2:
     st.image(logo_image, width=320)
 st.divider()
 
+# step_cols = st.columns(5)
+# with step_cols[1]:
+#     st.link_button(":bust_in_silhouette: 注册用户", "注册订阅#用户注册")
+
+# with step_cols[2]:
+#     st.link_button(":package: 订阅套餐", "注册订阅#订阅套餐")
+
+# with step_cols[3]:
+#     st.link_button(":key: 登录使用", "#")
+
 step_cols = st.columns(5)
-with step_cols[1]:
-    st.link_button(":bust_in_silhouette: 注册用户", "注册订阅#用户注册")
+if step_cols[1].button(":bust_in_silhouette: 注册用户", key="注册用户"):
+    st.switch_page("注册")
 
-with step_cols[2]:
-    st.link_button(":package: 订阅套餐", "注册订阅#订阅套餐")
+if step_cols[2].button(":package: 订阅套餐", key="订阅套餐"):
+    st.switch_page("注册")
 
-with step_cols[3]:
-    st.link_button(":key: 登录使用", "#")
+if step_cols[3].button(":key: 登录使用", key="登录使用"):
+    st.switch_page("Home")
 
 log_cols = st.columns(3)
 welcome_image = Image.open(LOGO_DIR / "welcome-1.jpg")
