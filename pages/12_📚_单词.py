@@ -4,12 +4,15 @@ import random
 import re
 import time
 from datetime import timedelta
+from io import BytesIO
 from pathlib import Path
 
 import pandas as pd
+import PIL.Image
+import requests
 import streamlit as st
 import streamlit.components.v1 as components
-import PIL.Image
+from PIL import Image
 
 from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.google_ai import generate_word_test
@@ -166,12 +169,30 @@ def on_include_cb_change():
     add_personal_dictionary(st.session_state["include-personal-dictionary"])
 
 
+# def display_word_images(word, container):
+#     urls = select_word_image_urls(word)
+#     cols = container.columns(len(urls))
+#     caption = [f"图片 {i+1}" for i in range(len(urls))]
+#     for i, col in enumerate(cols):
+#         col.image(urls[i], use_column_width=True, caption=caption[i])
+
+
 def display_word_images(word, container):
     urls = select_word_image_urls(word)
     cols = container.columns(len(urls))
     caption = [f"图片 {i+1}" for i in range(len(urls))]
+
     for i, col in enumerate(cols):
-        col.image(urls[i], use_column_width=True, caption=caption[i])
+        # 下载图片
+        response = requests.get(urls[i])
+        img = Image.open(BytesIO(response.content))
+
+        # 调整图片尺寸
+        max_size = (400, 400)
+        img.thumbnail(max_size, Image.ANTIALIAS)
+
+        # 显示图片
+        col.image(img, use_column_width=True, caption=caption[i])
 
 
 # endregion
