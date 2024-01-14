@@ -8,7 +8,6 @@ from io import BytesIO
 from pathlib import Path
 
 import pandas as pd
-import PIL.Image
 import requests
 import streamlit as st
 import streamlit.components.v1 as components
@@ -189,7 +188,7 @@ def display_word_images(word, container):
 
         # 调整图片尺寸
         max_size = (400, 400)
-        img.thumbnail(max_size, Image.ANTIALIAS)
+        img.thumbnail(max_size)
 
         # 显示图片
         col.image(img, use_column_width=True, caption=caption[i])
@@ -612,7 +611,7 @@ def view_pic_question(container):
     for f, o in zip("ABC", o_options):
         options.append(f"{f}. {o}")
 
-    image = PIL.Image.open(tests[idx]["image_fp"])  # type: ignore
+    image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
     user_prev_answer = st.session_state.user_pic_answer.get(idx, options[0])
     user_prev_answer_idx = options.index(user_prev_answer)
@@ -648,7 +647,7 @@ def check_pic_answer(container):
         for f, o in zip("ABC", o_options):
             options.append(f"{f}. {o}")
         answer = tests[idx]["answer"]
-        image = PIL.Image.open(tests[idx]["image_fp"])  # type: ignore
+        image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
         user_answer = st.session_state.user_pic_answer.get(idx, options[0])
         user_answer_idx = options.index(user_answer)
