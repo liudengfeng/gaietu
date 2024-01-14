@@ -1167,6 +1167,7 @@ elif menu == "词典管理":
                     logger.info(f"✅ 单词：{word} 已经有图片序号，跳过")
                     continue
                 select_word_image_indices(q)
+                logger.info(f"🎆 单词：{word}")
                 end_time = time.time()  # 记录结束时间
                 elapsed_time = end_time - start_time  # 计算运行时间
                 # 确保不超限
