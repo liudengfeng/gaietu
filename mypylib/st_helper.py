@@ -310,7 +310,8 @@ def select_word_image_indices(word: str):
 
     # 如果清单为空，则触发异常
     if not image_indices:
-        raise ValueError(f"{word} 序号列表为空，没有合格的序号")
+        # raise ValueError(f"{word} 序号列表为空，没有合格的序号")
+        image_indices = list(range(n))[:4]
 
     st.session_state.dbi.update_image_indices(word, image_indices)
 
