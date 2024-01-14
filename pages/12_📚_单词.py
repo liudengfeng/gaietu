@@ -1190,7 +1190,9 @@ elif menu and menu.endswith("看图猜词"):
 
 elif menu and menu.endswith("词意测试"):
     sidebar_status.markdown(
-        f"当前令牌数：{st.session_state.current_token_count}，累计令牌数：{format_token_count(st.session_state.total_token_count)}",
+        f"""当前令牌数：{st.session_state.current_token_count}
+
+累计令牌数：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
     # region 边栏

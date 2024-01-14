@@ -278,7 +278,9 @@ if menu == "聊天机器人":
 
     sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
-        f"当前令牌数：{st.session_state.current_token_count}，累计令牌数：{format_token_count(st.session_state.total_token_count)}",
+        f"""当前令牌数：{st.session_state.current_token_count}
+
+累计令牌数：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
     # endregion
@@ -386,7 +388,9 @@ elif menu == "多模态AI":
     )
     sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
-        f"当前令牌数：{st.session_state.current_token_count}，累计令牌数：{format_token_count(st.session_state.total_token_count)}",
+        f"""当前令牌数：{st.session_state.current_token_count}
+
+累计令牌数：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
 
@@ -574,7 +578,9 @@ elif menu == "示例教程":
     # region 边栏
     sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
-        f"当前令牌数：{st.session_state.current_token_count}，累计令牌数：{format_token_count(st.session_state.total_token_count)}",
+        f"""当前令牌数：{st.session_state.current_token_count}
+
+累计令牌数：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
     # endregion
