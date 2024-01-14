@@ -1145,18 +1145,18 @@ elif menu and menu.endswith("看图猜词"):
         help="✨ 只有在完成至少一道测试题后，才能点击按钮查看测验得分。",
     )
 
-    add_btn = pic_word_test_btn_cols[4].button(
-        "添加[:heavy_plus_sign:]",
-        key="pic-add",
-        help="✨ 将当前单词添加到个人词库",
-        disabled=st.session_state.pic_idx == -1,
-    )
-    del_btn = pic_word_test_btn_cols[5].button(
-        "删除[:heavy_minus_sign:]",
-        key="pic-del",
-        help="✨ 将当前单词从个人词库中删除",
-        disabled=st.session_state.pic_idx == -1,
-    )
+    # add_btn = pic_word_test_btn_cols[4].button(
+    #     "添加[:heavy_plus_sign:]",
+    #     key="pic-add",
+    #     help="✨ 将当前单词添加到个人词库",
+    #     disabled=st.session_state.pic_idx == -1,
+    # )
+    # del_btn = pic_word_test_btn_cols[5].button(
+    #     "删除[:heavy_minus_sign:]",
+    #     key="pic-del",
+    #     help="✨ 将当前单词从个人词库中删除",
+    #     disabled=st.session_state.pic_idx == -1,
+    # )
 
     container = st.container()
     if sumbit_pic_btn:
@@ -1170,19 +1170,19 @@ elif menu and menu.endswith("看图猜词"):
     elif st.session_state.pic_idx != -1:
         view_pic_question(container)
 
-    if add_btn:
-        tests = st.session_state.pic_tests
-        idx = st.session_state.pic_idx
-        word = tests[idx]["answer"]
-        st.session_state.dbi.add_words_to_personal_dictionary([word])
-        st.toast(f"添加单词：{word} 到个人词库。")
+    # if add_btn:
+    #     tests = st.session_state.pic_tests
+    #     idx = st.session_state.pic_idx
+    #     word = tests[idx]["answer"]
+    #     st.session_state.dbi.add_words_to_personal_dictionary([word])
+    #     st.toast(f"添加单词：{word} 到个人词库。")
 
-    if del_btn:
-        tests = st.session_state.pic_tests
-        idx = st.session_state.pic_idx
-        word = tests[idx]["answer"]
-        st.session_state.dbi.delete_words_from_personal_dictionary([word])
-        st.toast(f"从个人词库中删除单词：{word}。")
+    # if del_btn:
+    #     tests = st.session_state.pic_tests
+    #     idx = st.session_state.pic_idx
+    #     word = tests[idx]["answer"]
+    #     st.session_state.dbi.delete_words_from_personal_dictionary([word])
+    #     st.toast(f"从个人词库中删除单词：{word}。")
 
 # endregion
 
