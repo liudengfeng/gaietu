@@ -273,36 +273,37 @@ def select_word_image_indices(word: str):
     # 查找 image_urls
     urls = get_mini_dict_doc(word).get("image_urls", [])
     model = load_vertex_model("gemini-pro-vision")
+    images = []
     if len(urls) == 0:
-        images = []
         image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
-        n = len(image_urls)
-        for i, url in enumerate(image_urls):
-            try:
-                image_bytes = load_image_bytes_from_url(url)
-                images.append(Image.from_bytes(image_bytes))
-            except Exception as e:
-                logger.error(f"加载单词{word}第{i+1}张图片时出错:{str(e)}")
-                continue
 
-        # 生成 image_indices
-        image_indices = select_best_images_for_word(model, word, images)
+    n = len(image_urls)
+    for i, url in enumerate(image_urls):
+        try:
+            image_bytes = load_image_bytes_from_url(url)
+            images.append(Image.from_bytes(image_bytes))
+        except Exception as e:
+            logger.error(f"加载单词{word}第{i+1}张图片时出错:{str(e)}")
+            continue
 
-        # 检查 indices 是否为列表且列表中的每个元素是否都是整数
-        if not isinstance(image_indices, list) or not all(
-            isinstance(i, int) for i in image_indices
-        ):
-            msg = f"{word} 序号必须是一个列表，且列表中的每个元素都必须是整数，但是得到的类型是 {type(image_indices)} 或 {[(type(i), i) for i in image_indices]}"
-            raise TypeError(msg)
+    # 生成 image_indices
+    image_indices = select_best_images_for_word(model, word, images)
 
-        # 剔除不合格的序号
-        image_indices = [i for i in image_indices if i < n]
+    # 检查 indices 是否为列表且列表中的每个元素是否都是整数
+    if not isinstance(image_indices, list) or not all(
+        isinstance(i, int) for i in image_indices
+    ):
+        msg = f"{word} 序号必须是一个列表，且列表中的每个元素都必须是整数，但是得到的类型是 {type(image_indices)} 或 {[(type(i), i) for i in image_indices]}"
+        raise TypeError(msg)
 
-        # 如果清单为空，则触发异常
-        if not image_indices:
-            raise ValueError(f"{word} 序号列表为空，没有合格的序号")
+    # 剔除不合格的序号
+    image_indices = [i for i in image_indices if i < n]
 
-        st.session_state.dbi.update_image_indices(word, image_indices)
+    # 如果清单为空，则触发异常
+    if not image_indices:
+        raise ValueError(f"{word} 序号列表为空，没有合格的序号")
+
+    st.session_state.dbi.update_image_indices(word, image_indices)
 
     return image_indices
 
