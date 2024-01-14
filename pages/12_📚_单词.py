@@ -168,14 +168,6 @@ def on_include_cb_change():
     add_personal_dictionary(st.session_state["include-personal-dictionary"])
 
 
-# def display_word_images(word, container):
-#     urls = select_word_image_urls(word)
-#     cols = container.columns(len(urls))
-#     caption = [f"图片 {i+1}" for i in range(len(urls))]
-#     for i, col in enumerate(cols):
-#         col.image(urls[i], use_column_width=True, caption=caption[i])
-
-
 def display_word_images(word, container):
     urls = select_word_image_urls(word)
     cols = container.columns(len(urls))
@@ -186,10 +178,6 @@ def display_word_images(word, container):
         response = requests.get(urls[i])
         img = Image.open(BytesIO(response.content))
 
-        # # 调整图片尺寸
-        # max_size = (400, 400)
-        # img.thumbnail(max_size)
-        
         # 调整图片尺寸
         new_size = (400, 400)
         img = img.resize(new_size)
