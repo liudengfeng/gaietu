@@ -1040,7 +1040,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "关联照片"]
+    dict_items = ["词典管理", "图片网址", "挑选照片"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
@@ -1143,8 +1143,8 @@ elif menu == "词典管理":
 
     # region 单词图片
 
-    with dict_tabs[dict_items.index("关联照片")]:
-        st.subheader("准备单词关联照片", divider="rainbow", anchor=False)
+    with dict_tabs[dict_items.index("挑选照片")]:
+        st.subheader("挑选单词关联照片", divider="rainbow", anchor=False)
         st.text("使用 gemini 多模态挑选能形象解释单词含义的图片")
         progress_pic_bar = st.progress(0)
         fp = (

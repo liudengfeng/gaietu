@@ -267,16 +267,9 @@ def extract_word_image_urls(db, word: str):
 
 
 def select_word_image_indices(word: str):
-    """
-    选择单词的图像URL列表。
-
-    参数：
-    - word：要选择图像URL的单词（字符串类型）
-
-    返回值：
-    - urls：选择的图像URL列表（列表类型）
-    """
-
+    image_indices = st.session_state.dbi.get_image_indices(word)
+    if len(image_indices) > 0:
+        return image_indices
     # 查找 image_urls
     urls = get_mini_dict_doc(word).get("image_urls", [])
     model = load_vertex_model("gemini-pro-vision")
@@ -311,7 +304,7 @@ def select_word_image_indices(word: str):
 
         st.session_state.dbi.update_image_indices(word, image_indices)
 
-    return urls
+    return image_indices
 
 
 @st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址...")
