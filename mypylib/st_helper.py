@@ -283,34 +283,23 @@ def select_word_image_indices(word: str):
             logger.error(f"加载单词{word}第{i+1}张图片时出错:{str(e)}")
             continue
 
-    max_attempts = 3
-    for attempt in range(max_attempts):
-        try:
-            # 生成 image_indices
-            image_indices = select_best_images_for_word(model, word, images)
+    # 生成 image_indices
+    image_indices = select_best_images_for_word(model, word, images)
 
-            # 检查 indices 是否为列表且列表中的每个元素是否都是整数
-            if not isinstance(image_indices, list) or not all(
-                isinstance(i, int) for i in image_indices
-            ):
-                msg = f"{word} 序号必须是一个列表，且列表中的每个元素都必须是整数，但是得到的类型是 {type(image_indices)} 或 {[(type(i), i) for i in image_indices]}"
-                raise TypeError(msg)
-            break
-        except Exception as e:
-            if attempt < max_attempts - 1:  # i.e. if it's not the last attempt
-                logger.error(
-                    f"Error occurred while processing word '{word}', attempt number {attempt + 1}: {e}"
-                )
-                time.sleep(6)  # wait for 6 seconds before trying again
-            else:
-                raise e  # re-raise the last exception if all attempts fail
-
-    # 剔除不合格的序号
-    image_indices = [i for i in image_indices if i < n]
+    # 检查 indices 是否为列表且列表中的每个元素是否都是整数
+    if not isinstance(image_indices, list) or not all(
+        isinstance(i, int) for i in image_indices
+    ):
+        msg = f"{word} 序号必须是一个列表，且列表中的每个元素都必须是整数，但是得到的类型是 {type(image_indices)} 或 {[(type(i), i) for i in image_indices]}"
+        logger.error(msg)
+        # 使用默认值
+        image_indices = list(range(n))[:4]
+    else:
+        # 剔除不合格的序号
+        image_indices = [i for i in image_indices if i < n]
 
     # 如果清单为空，则触发异常
     if not image_indices:
-        # raise ValueError(f"{word} 序号列表为空，没有合格的序号")
         image_indices = list(range(n))[:4]
 
     st.session_state.dbi.update_image_indices(word, image_indices)

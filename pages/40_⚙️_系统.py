@@ -1171,7 +1171,7 @@ elif menu == "词典管理":
                 end_time = time.time()  # 记录结束时间
                 elapsed_time = end_time - start_time  # 计算运行时间
                 # 确保不超限
-                sleep_time = max(6 - elapsed_time, 0)  # 如果运行时间小于6秒，等待剩余的时间
+                sleep_time = max(7 - elapsed_time, 0)  # 如果运行时间小于6秒，等待剩余的时间
                 time.sleep(sleep_time)
 
     # endregion
