@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from functools import wraps
 from io import BytesIO
 from pathlib import Path
-
+from collections import defaultdict
 import pandas as pd
 import requests
 import streamlit as st
@@ -92,6 +92,9 @@ VIDEO_DIR = CURRENT_CWD / "resource/video_tip"
 TIME_LIMIT = 10 * 60  # 10分钟
 OP_THRESHOLD = 10000  # 操作阈值
 
+# 学习记录
+if "learning_records" not in st.session_state:
+    st.session_state.learning_records = defaultdict(dict)
 
 # endregion
 
@@ -185,15 +188,13 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-def record_learning(action):
+def record_learning():
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
-            start_time = st.session_state.learning_start_time
-            end_time = datetime.now(timezone.utc)
-            logger.info(f"词汇：{word}，行为：{action}，开始时间：{start_time}，结束时间：{end_time}")
-            return func(*args, **kwargs)
+            result = func(*args, **kwargs)
+            logger.info(f"学习记录：{st.session_state.learning_records}")
+            return result
 
         return wrapper
 
@@ -234,8 +235,28 @@ def on_prev_btn_click():
     st.session_state["flashcard_idx"] -= 1
 
 
+@record_learning
 def on_next_btn_click():
-    st.session_state["flashcard_idx"] += 1
+    current_time = datetime.now(timezone.utc)
+    if st.session_state.flashcard_idx != -1:
+        # 记录上一单词的结束时间
+        last_word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+        st.session_state.learning_records[last_word]["结束时间"] = current_time
+        elapsed_time = (
+            current_time - st.session_state.learning_records[last_word]["开始时间"]
+        ).total_seconds()
+        st.session_state.learning_records[last_word]["学习时长"] = (
+            st.session_state.learning_records[last_word].get("学习时长", 0) + elapsed_time
+        )
+
+    # 记录当前单词的开始时间
+    st.session_state.flashcard_idx += 1
+    current_word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+    st.session_state.learning_records[current_word] = {
+        "行为": "查看",
+        "开始时间": current_time,
+        "结束时间": None,
+    }
 
 
 template = """
