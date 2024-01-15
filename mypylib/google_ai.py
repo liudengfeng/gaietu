@@ -3,16 +3,17 @@ import threading
 import time
 from collections import deque
 from typing import Callable, List
-
+from datetime import datetime
 import streamlit as st
 from faker import Faker
 from vertexai.preview.generative_models import GenerationConfig, GenerativeModel, Part
-
+import pytz
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
 
 MAX_CALLS = 10
 PER_SECONDS = 60
+shanghai_tz = pytz.timezone("Asia/Shanghai")
 
 
 @st.cache_resource
@@ -27,6 +28,7 @@ class ModelRateLimiter:
         self.per_seconds = per_seconds
         self.calls = {}
         self.lock = threading.Lock()
+        self.records = {}
 
     def _allow_call(self, model_name):
         with self.lock:
@@ -45,9 +47,18 @@ class ModelRateLimiter:
                 return False
 
     def call_func(self, model_name, func, *args, **kwargs):
+        start_time = time.time()  # 记录开始时间
         while not self._allow_call(model_name):
             time.sleep(0.2)
-        return func(*args, **kwargs)
+        result = func(*args, **kwargs)
+        end_time = time.time()  # 记录结束时间
+        elapsed_time = end_time - start_time  # 计算用时
+        now = datetime.now(pytz.utc).astimezone(shanghai_tz)  # 获取当前时间并转换为上海时区
+        current_time = now.strftime("%Y-%m-%d %H:%M:%S")  # 获取当前时间并转换为字符串格式
+        self.records[model_name] = self.records.get(model_name, []) + [
+            f"{current_time}: {elapsed_time:.2f}s"
+        ]  # 记录用时
+        return result
 
 
 # if "user_name" not in st.session_state:
