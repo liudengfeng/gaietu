@@ -44,9 +44,6 @@ class RateLimiter:
 #     fake = Faker("zh_CN")
 #     st.session_state.user_name = fake.name()
 
-if "rate_limiter" not in st.session_state:
-    st.session_state.rate_limiter = RateLimiter(MAX_CALLS, PER_SECONDS)
-
 
 def display_generated_content_and_update_token(
     item_name: str,

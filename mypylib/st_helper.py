@@ -11,7 +11,7 @@ from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
 
 from .db_interface import DbInterface
-from .google_ai import select_best_images_for_word
+from .google_ai import MAX_CALLS, PER_SECONDS, RateLimiter, select_best_images_for_word
 from .google_cloud_configuration import (
     LOCATION,
     PROJECT_ID,
@@ -130,6 +130,9 @@ def configure_google_apis():
             google_configure(st.secrets)
             # vertexai.init(project=PROJECT_ID, location=LOCATION)
             st.session_state["inited_google_ai"] = True
+
+        if "rate_limiter" not in st.session_state:
+            st.session_state.rate_limiter = RateLimiter(MAX_CALLS, PER_SECONDS)
 
         if "google_translate_client" not in st.session_state:
             st.session_state["google_translate_client"] = get_translation_client()
