@@ -188,19 +188,6 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-def record_learning():
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            logger.info(f"学习记录：{st.session_state.learning_records}")
-            return result
-
-        return wrapper
-
-    return decorator
-
-
 # endregion
 
 # region 闪卡状态
@@ -235,7 +222,6 @@ def on_prev_btn_click():
     st.session_state["flashcard_idx"] -= 1
 
 
-@record_learning
 def on_next_btn_click():
     current_time = datetime.now(timezone.utc)
     if st.session_state.flashcard_idx != -1:
@@ -257,6 +243,8 @@ def on_next_btn_click():
         "开始时间": current_time,
         "结束时间": None,
     }
+
+    logger.info(f"学习记录：{st.session_state.learning_records}")
 
 
 template = """
