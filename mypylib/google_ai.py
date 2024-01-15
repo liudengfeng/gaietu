@@ -1,52 +1,51 @@
 import json
+import threading
 import time
+from collections import deque
 from typing import Callable, List
 
 import streamlit as st
+from faker import Faker
 from vertexai.preview.generative_models import GenerationConfig, GenerativeModel, Part
 
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
-import time
-import collections
-import threading
+
+MAX_CALLS = 10
+PER_SECONDS = 60
 
 
+@st.cache_resource
 class RateLimiter:
-    def __init__(self, max_requests, per_seconds):
-        self.max_requests = max_requests
+    def __init__(self, max_calls, per_seconds):
+        self.max_calls = max_calls
         self.per_seconds = per_seconds
-        self.timestamps = collections.deque()
+        self.calls = deque()
         self.lock = threading.Lock()
 
-    def allow_request(self):
+    def _allow_call(self):
         with self.lock:
-            while (
-                self.timestamps and self.timestamps[0] < time.time() - self.per_seconds
-            ):
-                self.timestamps.popleft()
-
-            if len(self.timestamps) < self.max_requests:
-                self.timestamps.append(time.time())
+            now = time.time()
+            while self.calls and now - self.calls[0] > self.per_seconds:
+                self.calls.popleft()
+            if len(self.calls) < self.max_calls:
+                self.calls.append(now)
                 return True
             else:
                 return False
 
+    def call_func(self, func, *args, **kwargs):
+        while not self._allow_call():
+            time.sleep(0.2)
+        return func(*args, **kwargs)
 
-rate_limiter = RateLimiter(100, 60)  # 允许每60秒内最多100次请求
 
+# if "user_name" not in st.session_state:
+#     fake = Faker("zh_CN")
+#     st.session_state.user_name = fake.name()
 
-def request_model():
-    if rate_limiter.allow_request():
-        responses = model.generate_content(
-            contents,
-            generation_config=generation_config,
-            safety_settings=DEFAULT_SAFETY_SETTINGS,
-            stream=stream,
-        )
-        # 处理响应...
-    else:
-        print("请求过多，请稍后再试")
+if "rate_limiter" not in st.session_state:
+    st.session_state.rate_limiter = RateLimiter(MAX_CALLS, PER_SECONDS)
 
 
 def display_generated_content_and_update_token(
@@ -57,7 +56,8 @@ def display_generated_content_and_update_token(
     stream: bool,
     placeholder,
 ):
-    responses = model.generate_content(
+    responses = st.session_state.rate_limiter.call_func(
+        model.generate_content,
         contents,
         generation_config=generation_config,
         safety_settings=DEFAULT_SAFETY_SETTINGS,
@@ -100,7 +100,8 @@ def parse_generated_content_and_update_token(
     stream: bool,
     parser: Callable,
 ):
-    responses = model.generate_content(
+    responses = st.session_state.rate_limiter.call_func(
+        model.generate_content,
         contents,
         generation_config=generation_config,
         safety_settings=DEFAULT_SAFETY_SETTINGS,

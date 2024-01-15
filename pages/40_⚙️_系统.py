@@ -510,13 +510,6 @@ def save_dataframe_changes_to_database(current_df):
 @st.spinner("使用 Gemini 准备单词关联照片...")
 def fetch_and_update_word_image_indices(word):
     container_name = "word-images"
-    # connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
-
-    # # 创建 BlobServiceClient 对象
-    # blob_service_client = BlobServiceClient.from_connection_string(connect_str)
-
-    # # 获取 ContainerClient 对象
-    # container_client = blob_service_client.get_container_client(container_name)
 
     blob_service_client = get_blob_service_client()
     container_client = get_blob_container_client(container_name)
@@ -1176,7 +1169,6 @@ elif menu == "词典管理":
             # to_do = st.session_state.dbi.find_docs_without_image_indices(words)
             # st.write(f"待处理的文档数量：{len(to_do)}")
             for i, word in enumerate(words):
-                start_time = time.time()  # 记录开始时间
                 q = word.replace("/", " or ")
                 update_and_display_progress(i + 1, n, progress_pic_bar, word)
                 if st.session_state.dbi.word_has_image_indices(q):
@@ -1184,11 +1176,6 @@ elif menu == "词典管理":
                     continue
                 select_word_image_indices(q)
                 logger.info(f"🎆 单词：{word}")
-                end_time = time.time()  # 记录结束时间
-                elapsed_time = end_time - start_time  # 计算运行时间
-                # 确保不超限
-                sleep_time = max(7 - elapsed_time, 0)  # 如果运行时间小于6秒，等待剩余的时间
-                time.sleep(sleep_time)
 
     # endregion
 
