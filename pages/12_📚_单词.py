@@ -3,7 +3,8 @@ import logging
 import random
 import re
 import time
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
+from functools import wraps
 from io import BytesIO
 from pathlib import Path
 
@@ -182,6 +183,21 @@ def display_word_images(word, container):
         img = img.resize(new_size)
         # 显示图片
         col.image(img, use_column_width=True, caption=caption[i])
+
+
+def record_learning(action):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+            start_time = st.session_state.learning_start_time
+            end_time = datetime.now(timezone.utc)
+            logger.info(f"词汇：{word}，行为：{action}，开始时间：{start_time}，结束时间：{end_time}")
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 # endregion
