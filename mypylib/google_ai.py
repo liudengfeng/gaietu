@@ -16,6 +16,11 @@ PER_SECONDS = 60
 
 
 @st.cache_resource
+def load_vertex_model(model_name):
+    return GenerativeModel(model_name)
+
+
+@st.cache_resource
 class RateLimiter:
     def __init__(self, max_calls, per_seconds):
         self.max_calls = max_calls

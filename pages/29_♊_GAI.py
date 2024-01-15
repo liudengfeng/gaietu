@@ -7,7 +7,10 @@ import streamlit as st
 from PIL import Image as PImage
 from vertexai.preview.generative_models import GenerationConfig, Part
 
-from mypylib.google_ai import display_generated_content_and_update_token
+from mypylib.google_ai import (
+    display_generated_content_and_update_token,
+    load_vertex_model,
+)
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -15,7 +18,6 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
-    load_vertex_model,
     setup_logger,
 )
 

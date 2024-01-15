@@ -14,7 +14,7 @@ import streamlit.components.v1 as components
 from PIL import Image
 
 from mypylib.constants import CEFR_LEVEL_MAPS
-from mypylib.google_ai import generate_word_test
+from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     check_access,
@@ -22,7 +22,6 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     get_mini_dict_doc,
-    load_vertex_model,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,

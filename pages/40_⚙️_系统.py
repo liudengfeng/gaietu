@@ -19,7 +19,7 @@ from vertexai.preview.generative_models import GenerationConfig, Image, Part
 from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
-from mypylib.google_ai import select_best_images_for_word
+from mypylib.google_ai import load_vertex_model, select_best_images_for_word
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     check_access,
@@ -29,7 +29,6 @@ from mypylib.st_helper import (
     get_blob_container_client,
     get_blob_service_client,
     google_translate,
-    load_vertex_model,
     select_word_image_indices,
     select_word_image_urls,
     setup_logger,

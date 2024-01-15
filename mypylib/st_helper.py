@@ -11,7 +11,13 @@ from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
 
 from .db_interface import DbInterface
-from .google_ai import MAX_CALLS, PER_SECONDS, RateLimiter, select_best_images_for_word
+from .google_ai import (
+    MAX_CALLS,
+    PER_SECONDS,
+    RateLimiter,
+    load_vertex_model,
+    select_best_images_for_word,
+)
 from .google_cloud_configuration import (
     LOCATION,
     PROJECT_ID,
@@ -84,11 +90,6 @@ def get_firestore_client():
     credentials = Credentials.from_service_account_info(service_account_info)
     # 使用凭据初始化客户端
     return firestore.Client(credentials=credentials, project=PROJECT_ID)
-
-
-@st.cache_resource
-def load_vertex_model(model_name):
-    return GenerativeModel(model_name)
 
 
 @st.cache_resource
