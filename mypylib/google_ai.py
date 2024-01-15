@@ -21,26 +21,31 @@ def load_vertex_model(model_name):
 
 
 @st.cache_resource
-class RateLimiter:
+class ModelRateLimiter:
     def __init__(self, max_calls, per_seconds):
         self.max_calls = max_calls
         self.per_seconds = per_seconds
-        self.calls = deque()
+        self.calls = {}
         self.lock = threading.Lock()
 
-    def _allow_call(self):
+    def _allow_call(self, model_name):
         with self.lock:
             now = time.time()
-            while self.calls and now - self.calls[0] > self.per_seconds:
-                self.calls.popleft()
-            if len(self.calls) < self.max_calls:
-                self.calls.append(now)
+            if model_name not in self.calls:
+                self.calls[model_name] = deque()
+            while (
+                self.calls[model_name]
+                and now - self.calls[model_name][0] > self.per_seconds
+            ):
+                self.calls[model_name].popleft()
+            if len(self.calls[model_name]) < self.max_calls:
+                self.calls[model_name].append(now)
                 return True
             else:
                 return False
 
-    def call_func(self, func, *args, **kwargs):
-        while not self._allow_call():
+    def call_func(self, model_name, func, *args, **kwargs):
+        while not self._allow_call(model_name):
             time.sleep(0.2)
         return func(*args, **kwargs)
 
@@ -52,6 +57,7 @@ class RateLimiter:
 
 def display_generated_content_and_update_token(
     item_name: str,
+    model_name: str,
     model: GenerativeModel,
     contents: List[Part],
     generation_config: GenerationConfig,
@@ -59,6 +65,7 @@ def display_generated_content_and_update_token(
     placeholder,
 ):
     responses = st.session_state.rate_limiter.call_func(
+        model_name,
         model.generate_content,
         contents,
         generation_config=generation_config,
@@ -96,6 +103,7 @@ def display_generated_content_and_update_token(
 
 def parse_generated_content_and_update_token(
     item_name: str,
+    model_name: str,
     model: GenerativeModel,
     contents: List[Part],
     generation_config: GenerationConfig,
@@ -103,6 +111,7 @@ def parse_generated_content_and_update_token(
     parser: Callable,
 ):
     responses = st.session_state.rate_limiter.call_func(
+        model_name,
         model.generate_content,
         contents,
         generation_config=generation_config,
@@ -152,7 +161,7 @@ WORD_IMAGE_PROMPT_TEMPLATE = """
 """
 
 
-def select_best_images_for_word(model, word, images: List[Part]):
+def select_best_images_for_word(model_name, model, word, images: List[Part]):
     """
     为给定的单词选择最佳解释单词含义的图片。
 
@@ -173,6 +182,7 @@ def select_best_images_for_word(model, word, images: List[Part]):
     )
     return parse_generated_content_and_update_token(
         "挑选图片",
+        model_name,
         model,
         contents,
         generation_config,
@@ -202,7 +212,7 @@ WORD_TEST_PROMPT_TEMPLATE = """
 """
 
 
-def generate_word_test(model, word, level):
+def generate_word_test(model_name, model, word, level):
     prompt = WORD_TEST_PROMPT_TEMPLATE.format(word=word, level=level)
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
@@ -210,6 +220,7 @@ def generate_word_test(model, word, level):
     )
     return parse_generated_content_and_update_token(
         "单词理解考题",
+        model_name,
         model,
         contents,
         generation_config,

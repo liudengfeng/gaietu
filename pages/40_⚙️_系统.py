@@ -529,8 +529,9 @@ def fetch_and_update_word_image_indices(word):
         logger.error(f"没有找到单词 {word} 的图片")
         return
 
-    model = load_vertex_model("gemini-pro-vision")
-    indices = select_best_images_for_word(model, word, images)
+    model_name = "gemini-pro-vision"
+    model = load_vertex_model(model_name)
+    indices = select_best_images_for_word(model_name, model, word, images)
 
     if indices:
         # 检查 indices 是否为列表

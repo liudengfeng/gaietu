@@ -14,7 +14,7 @@ from .db_interface import DbInterface
 from .google_ai import (
     MAX_CALLS,
     PER_SECONDS,
-    RateLimiter,
+    ModelRateLimiter,
     load_vertex_model,
     select_best_images_for_word,
 )
@@ -133,7 +133,7 @@ def configure_google_apis():
             st.session_state["inited_google_ai"] = True
 
         if "rate_limiter" not in st.session_state:
-            st.session_state.rate_limiter = RateLimiter(MAX_CALLS, PER_SECONDS)
+            st.session_state.rate_limiter = ModelRateLimiter(MAX_CALLS, PER_SECONDS)
 
         if "google_translate_client" not in st.session_state:
             st.session_state["google_translate_client"] = get_translation_client()
@@ -272,7 +272,9 @@ def select_word_image_indices(word: str):
             continue
 
     # 生成 image_indices
-    image_indices = select_best_images_for_word(model, word, images)
+    image_indices = select_best_images_for_word(
+        "gemini-pro-vision", model, word, images
+    )
 
     # 检查 indices 是否为列表且列表中的每个元素是否都是整数
     if not isinstance(image_indices, list) or not all(

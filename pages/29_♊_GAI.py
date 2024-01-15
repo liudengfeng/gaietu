@@ -70,7 +70,8 @@ if "multimodal_examples" not in st.session_state:
 
 
 def initialize_chat_session():
-    model = load_vertex_model("gemini-pro")
+    model_name = "gemini-pro"
+    model = load_vertex_model(model_name)
     history = []
     for user, ai in st.session_state["examples_pair"]:
         history.append({"role": "user", "parts": [user]})
@@ -136,7 +137,8 @@ def process_files_and_prompt(uploaded_files, prompt):
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
-    model = load_vertex_model("gemini-pro-vision")
+    model_name = "gemini-pro-vision"
+    model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         temperature=st.session_state["temperature"],
         top_p=st.session_state["top_p"],
@@ -145,6 +147,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
     )
     display_generated_content_and_update_token(
         "多模态AI",
+        model_name,
         model,
         [p["part"] for p in contents],
         generation_config,
@@ -318,6 +321,7 @@ if menu == "聊天机器人":
             message_placeholder = st.empty()
             display_generated_content_and_update_token(
                 "聊天机器人",
+                "gemini-pro",
                 st.session_state.chat_model,
                 [Part.from_text(prompt)],
                 config,
@@ -668,6 +672,7 @@ elif menu == "示例教程":
                     placeholder = st.empty()
                     display_generated_content_and_update_token(
                         "演示：生成故事",
+                        "gemini-pro",
                         text_model,
                         [Part.from_text(prompt)],
                         GenerationConfig(**config),
@@ -775,6 +780,7 @@ elif menu == "示例教程":
                     placeholder = st.empty()
                     display_generated_content_and_update_token(
                         "演示：营销活动",
+                        "gemini-pro",
                         text_model,
                         [Part.from_text(prompt)],
                         GenerationConfig(**config),
@@ -875,6 +881,7 @@ elif menu == "示例教程":
                         ]
                         display_generated_content_and_update_token(
                             "演示：家具推荐",
+                            "gemini-pro-vision",
                             vision_model,
                             new_contents,
                             GenerationConfig(
@@ -917,6 +924,7 @@ elif menu == "示例教程":
                         new_contents = [stove_screen_img, Part.from_text(prompt)]
                         display_generated_content_and_update_token(
                             "烤箱使用说明演示",
+                            "gemini-pro-vision",
                             vision_model,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
@@ -954,6 +962,7 @@ elif menu == "示例教程":
                     with st.spinner("生成..."):
                         display_generated_content_and_update_token(
                             "演示：ER 图",
+                            "gemini-pro-vision",
                             vision_model,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1027,6 +1036,7 @@ elif menu == "示例教程":
                     with st.spinner("使用 Gemini 生成推荐..."):
                         display_generated_content_and_update_token(
                             "演示：眼镜推荐",
+                            "gemini-pro-vision",
                             vision_model,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1075,6 +1085,7 @@ elif menu == "示例教程":
                     with st.spinner("使用 Gemini 生成公式答案..."):
                         display_generated_content_and_update_token(
                             "演示：数学推理",
+                            "gemini-pro-vision",
                             vision_model,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1119,6 +1130,7 @@ elif menu == "示例教程":
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
                                 "演示：视频描述",
+                                "gemini-pro-vision",
                                 vision_model,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1158,6 +1170,7 @@ elif menu == "示例教程":
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
                                 "演示：为视频生成标签",
+                                "gemini-pro-vision",
                                 vision_model,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1203,6 +1216,7 @@ elif menu == "示例教程":
                         with st.spinner("使用 Gemini 生成视频集锦..."):
                             display_generated_content_and_update_token(
                                 "演示：视频集锦",
+                                "gemini-pro-vision",
                                 vision_model,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
@@ -1259,6 +1273,7 @@ elif menu == "示例教程":
                         with st.spinner("使用 Gemini 生成位置标签..."):
                             display_generated_content_and_update_token(
                                 "演示：视频位置标签",
+                                "gemini-pro-vision",
                                 vision_model,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),

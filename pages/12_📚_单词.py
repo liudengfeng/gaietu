@@ -1297,7 +1297,10 @@ elif menu and menu.endswith("词意测试"):
             if not st.session_state.word_tests[idx]:
                 with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
                     st.session_state.word_tests[idx] = generate_word_test(
-                        st.session_state["gemini-pro-model"], word, level
+                        "gemini-pro",
+                        st.session_state["gemini-pro-model"],
+                        word,
+                        level,
                     )
 
     if next_test_btn:
@@ -1306,7 +1309,7 @@ elif menu and menu.endswith("词意测试"):
         if not st.session_state.word_tests[idx]:
             with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
                 st.session_state.word_tests[idx] = generate_word_test(
-                    st.session_state["gemini-pro-model"], word, level
+                    "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
 
     if refresh_btn:
