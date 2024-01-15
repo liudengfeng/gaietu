@@ -28,7 +28,7 @@ class ModelRateLimiter:
         self.per_seconds = per_seconds
         self.calls = {}
         self.lock = threading.Lock()
-        self.records = {}
+        # self.records = {}
 
     def _allow_call(self, model_name):
         with self.lock:
@@ -47,17 +47,17 @@ class ModelRateLimiter:
                 return False
 
     def call_func(self, model_name, func, *args, **kwargs):
-        start_time = time.time()  # 记录开始时间
+        # start_time = time.time()  # 记录开始时间
         while not self._allow_call(model_name):
             time.sleep(0.2)
         result = func(*args, **kwargs)
-        end_time = time.time()  # 记录结束时间
-        elapsed_time = end_time - start_time  # 计算用时
-        now = datetime.now(pytz.utc).astimezone(shanghai_tz)  # 获取当前时间并转换为上海时区
-        current_time = now.strftime("%Y-%m-%d %H:%M:%S")  # 获取当前时间并转换为字符串格式
-        self.records[model_name] = self.records.get(model_name, []) + [
-            f"{current_time}: {elapsed_time:.2f}s"
-        ]  # 记录用时
+        # end_time = time.time()  # 记录结束时间
+        # elapsed_time = end_time - start_time  # 计算用时
+        # now = datetime.now(pytz.utc).astimezone(shanghai_tz)  # 获取当前时间并转换为上海时区
+        # current_time = now.strftime("%Y-%m-%d %H:%M:%S")  # 获取当前时间并转换为字符串格式
+        # self.records[model_name] = self.records.get(model_name, []) + [
+        #     f"{current_time}: {elapsed_time:.2f}s"
+        # ]  # 记录用时
         return result
 
 
@@ -153,22 +153,27 @@ def parse_generated_content_and_update_token(
 
 
 WORD_IMAGE_PROMPT_TEMPLATE = """
-你的任务是分步找出最能解释单词含义的前4张图片编号：
-第一步：图片按输入顺序从0开始编号；
-第二步：按解释程度评分，最低0分，最高1.0，形成一个得分字典。评分越高，图片越能解释单词的含义；
-第三步：对每一张照片逐项分析是否满足以下条件，如果满足，每项加0.1分，更新得分字典；
-- 图片的清晰度和可读性是最重要的，用户应该能够轻松地理解图片所传达的信息。
-- 图片应该准确地反映单词的含义，避免出现误导或混淆。
-- 图片应该生动形象，能够引起用户的注意力和兴趣，从而促进对单词的理解和记忆。
-- 图片的主题应该与单词的含义相关，能够帮助用户理解单词的具体含义。
-- 图片的构图应该合理，能够突出单词的重点内容。
-- 图片的色彩应该鲜明，能够引起用户的注意力。
-第四步：分析得分字典，剔除包含色情、暴力、毒品等内容或者得分少于0.6的编号；
-第五步：选择得分最高的前4张图像编号。如果满足条件的图像不足4张，我们将选择所有满足条件的图像编号。
+Your task is to find the top 4 image IDs that best explain the meaning of a word in a step-by-step process:
 
-输出python list格式。
+Step 1: Image IDs are numbered from 0 to n in the order of input.
 
-单词：{word}
+Step 2: Images are scored for their explanatory power, with a minimum of 0 and a maximum of 1.0, to form a scoring dictionary. The higher the score, the better the image can explain the meaning of the word.
+
+Step 3: For each image, each of the following conditions is analyzed to determine whether it is met. If met, 0.1 points are added for each item, and the scoring dictionary is updated.
+
+- Image clarity and readability are most important. Users should be able to easily understand the information conveyed by the image.
+- The image should accurately reflect the meaning of the word, avoiding misleading or confusing content.
+- The image should be vivid and imaginative, able to attract user attention and interest, thereby promoting understanding and memorization of the word.
+- The theme of the image should be relevant to the meaning of the word, helping users understand the specific meaning of the word.
+- The composition of the image should be reasonable, highlighting the key content of the word.
+
+Step 4: The scoring dictionary is analyzed to remove image IDs that contain pornographic, violent, or drug-related content or have a score of less than 0.6.
+
+Step 5: The top 4 image IDs with the highest scores are selected. If the number of images that meet the conditions is less than 4, we will select all the image IDs that meet the conditions.
+
+Output: A Python list format.
+
+word:{word}
 """
 
 

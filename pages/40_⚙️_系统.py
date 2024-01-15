@@ -1176,7 +1176,7 @@ elif menu == "词典管理":
                     continue
                 select_word_image_indices(q)
                 logger.info(f"🎆 单词：{word}")
-                logger.info(f"{st.session_state.rate_limiter.records}")
+                # logger.info(f"{st.session_state.rate_limiter.records}")
 
     # endregion
 
