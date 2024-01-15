@@ -7,6 +7,47 @@ from vertexai.preview.generative_models import GenerationConfig, GenerativeModel
 
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
+import time
+import collections
+import threading
+
+
+class RateLimiter:
+    def __init__(self, max_requests, per_seconds):
+        self.max_requests = max_requests
+        self.per_seconds = per_seconds
+        self.timestamps = collections.deque()
+        self.lock = threading.Lock()
+
+    def allow_request(self):
+        with self.lock:
+            while (
+                self.timestamps and self.timestamps[0] < time.time() - self.per_seconds
+            ):
+                self.timestamps.popleft()
+
+            if len(self.timestamps) < self.max_requests:
+                self.timestamps.append(time.time())
+                return True
+            else:
+                return False
+
+
+rate_limiter = RateLimiter(100, 60)  # 允许每60秒内最多100次请求
+
+
+def request_model():
+    if rate_limiter.allow_request():
+        responses = model.generate_content(
+            contents,
+            generation_config=generation_config,
+            safety_settings=DEFAULT_SAFETY_SETTINGS,
+            stream=stream,
+        )
+        # 处理响应...
+    else:
+        print("请求过多，请稍后再试")
+
 
 def display_generated_content_and_update_token(
     item_name: str,
