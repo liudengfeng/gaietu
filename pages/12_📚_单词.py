@@ -1003,7 +1003,7 @@ if menu and menu.endswith("闪卡记忆"):
             for r in st.session_state.learning_records[item]:
                 r.end()
             # 保存到数据库
-            st.dbi.save_records(st.session_state.learning_records[item])
+            st.session_state.dbi.save_records(st.session_state.learning_records[item])
             # 清空原记录
             st.session_state.learning_records[item] = []
 
