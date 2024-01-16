@@ -1050,6 +1050,7 @@ if menu and menu.endswith("闪卡记忆"):
         audio_html = get_audio_html(word, voice_style)
         components.html(audio_html)
         record.end()
+        logger.info(f"{record.duration:.2f} 秒")
 
     if add_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
