@@ -352,22 +352,36 @@ def create_learning_records(item):
 
 
 def save_and_clear_learning_records(item):
-    if "learning-time" not in st.session_state:
-        return
-    # 如果有学习记录
-    if len(st.session_state["learning-time"][item]) >= 1:
-        # 结束所有学习记录
-        for r in st.session_state["learning-time"][item]:
-            r.end()
-        records = st.session_state["learning-time"][item]
-        # 统计时长大于0的记录
-        n = len([r for r in records if r.duration > 0])
-        # 保存学习记录到数据库
-        st.session_state.dbi.save_learning_time(records)
-        # 清空学习记录
-        st.session_state["learning-time"][item] = []
+    current_time = time.time()
 
-        st.toast(f"自动存储`{item}` {n:04}条学习记录")
+    # 如果 "last_save_time" 字典不存在，创建它
+    if "last_save_time" not in st.session_state:
+        st.session_state["last_save_time"] = {}
+
+    # 如果这个项目的最后保存时间不存在，或者当前时间与最后保存时间的间隔超过 10 分钟
+    if (
+        item not in st.session_state["last_save_time"]
+        or current_time - st.session_state["last_save_time"][item] > 10 * 60
+    ):
+        if "learning-time" not in st.session_state:
+            return
+        # 如果有学习记录
+        if len(st.session_state["learning-time"][item]) >= 1:
+            # 结束所有学习记录
+            for r in st.session_state["learning-time"][item]:
+                r.end()
+            records = st.session_state["learning-time"][item]
+            # 统计时长大于0的记录
+            n = len([r for r in records if r.duration > 0])
+            # 保存学习记录到数据库
+            st.session_state.dbi.save_learning_time(records)
+            # 清空学习记录
+            st.session_state["learning-time"][item] = []
+
+            st.toast(f"自动存储`{item}` {n:04}条学习记录")
+
+        # 更新这个项目的最后保存时间
+        st.session_state["last_save_time"][item] = current_time
 
 
 def save_and_clear_all_learning_records():
