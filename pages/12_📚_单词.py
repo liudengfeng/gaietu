@@ -850,19 +850,20 @@ def view_test_word(container):
 # region 个人词库辅助
 
 
-@st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取基础词库...")
+@st.cache_data(ttl=timedelta(hours=24), max_entries=100, show_spinner="获取基础词库...")
 def gen_base_lib(word_lib):
-    words = st.session_state.word_dict[word_lib]
-    data = []
-    for word in words:
-        info = get_mini_dict_doc(word)
-        data.append(
-            {
-                "单词": word,
-                "CEFR最低分级": info.get("level", "") if info else "",
-                "翻译": info.get("translation", "") if info else "",
-            }
-        )
+    # words = st.session_state.word_dict[word_lib]
+    # data = []
+    # for word in words:
+    #     info = get_mini_dict_doc(word)
+    #     data.append(
+    #         {
+    #             "单词": word,
+    #             "CEFR最低分级": info.get("level", "") if info else "",
+    #             "翻译": info.get("translation", "") if info else "",
+    #         }
+    #     )
+    data = st.session_state.dbi.find_docs_with_category(word_lib)
     return pd.DataFrame.from_records(data)
 
 
@@ -1487,18 +1488,19 @@ elif menu and menu.endswith("词库管理"):
     mylib_placeholder = content_cols[1].container()
     view_placeholder = content_cols[2].container()
 
-    start = time.time()
-    
-    base_lib_df = gen_base_lib(word_lib)
-
-    elapsed_time = time.time() - start
-    average_time_per_line = elapsed_time / len(word_lib)
-    logger.info(f"生成基础词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
-    
-    lib_df = get_my_word_lib()
-
     view_selected_list = word_lib.split("-", 1)[1]
     base_placeholder.text(f"基础词库({view_selected_list})")
+
+    start = time.time()
+
+    base_lib_df = gen_base_lib(view_selected_list)
+
+    elapsed_time = time.time() - start
+    average_time_per_line = elapsed_time / base_lib_df.shape[0]
+    logger.info(f"生成基础词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
+
+    lib_df = get_my_word_lib()
+
     mylib_placeholder.text(
         f"可删列表（{0 if lib_df.empty else lib_df.shape[0]}） 个单词",
         help="在这里删除你的个人词库中的单词（显示的是最近1小时的缓存数据）",

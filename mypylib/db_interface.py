@@ -620,6 +620,26 @@ class DbInterface:
         # 如果文档存在，将其转换为字典，否则返回一个空字典
         return doc.to_dict() if doc.exists else {}
 
+    def find_docs_with_category(self, category):
+        # 获取 mini_dict 集合的引用
+        mini_dict_ref = self.db.collection("mini_dict")
+
+        field = "categories"
+        # 查询所有 categories 字段包含指定类别的文档
+        docs = mini_dict_ref.where(
+            filter=FieldFilter(field, "array_contains", category).stream()
+        )
+        # 获取所有文档的数据
+        doc_data = [
+            {
+                "单词": doc.id,
+                "CEFR最低分级": doc.get("level", ""),
+                "翻译": doc.get("translation", ""),
+            }
+            for doc in docs
+        ]
+        return doc_data
+
     def find_docs_with_empty_image_urls(self):
         # 获取 mini_dict 集合的引用
         mini_dict_ref = self.db.collection("mini_dict")
