@@ -703,8 +703,9 @@ def check_pic_answer(container):
         answer = tests[idx]["answer"]
         image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
-        user_answer = st.session_state.user_pic_answer.get(idx, options[0])
-        user_answer_idx = options.index(user_answer)
+        # user_answer = st.session_state.user_pic_answer.get(idx, options[0])
+        # user_answer_idx = options.index(user_answer)
+        user_answer_idx = st.session_state.user_pic_answer[idx]
         container.divider()
         container.markdown(question)
         container.image(image, caption=tests[idx]["iamge_label"], width=400)  # type: ignore
@@ -717,7 +718,7 @@ def check_pic_answer(container):
             key=f"pic_options_{idx}",
         )
         msg = ""
-        if user_answer.strip().endswith(answer.strip()):
+        if options[user_answer_idx].strip().endswith(answer.strip()):
             score += 1
             msg = f"正确答案：{answer} :white_check_mark:"
         else:
