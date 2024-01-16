@@ -1190,7 +1190,7 @@ elif menu == "词典管理":
             CURRENT_CWD / "resource" / "dictionary" / "word_lists_by_edition_grade.json"
         )
         if st.button(
-            "执行", key="add-category-btn", help="✨ 使用 gemini 多模态检验图片是否能形象解释单词的含义"
+            "执行", key="add-category-btn", help="✨ 为简版词典添加类别列表"
         ):
             with open(fp, "r", encoding="utf-8") as f:
                 data = json.load(f)
