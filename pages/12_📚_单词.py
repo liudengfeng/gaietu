@@ -796,7 +796,7 @@ def check_word_test_answer(container, level):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
-        "phone_number": st.session_state.dbi.cache["phone_number"],
+        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "level": level,
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
