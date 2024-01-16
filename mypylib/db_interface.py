@@ -627,8 +627,8 @@ class DbInterface:
         field = "categories"
         # 查询所有 categories 字段包含指定类别的文档
         docs = mini_dict_ref.where(
-            filter=FieldFilter(field, "array_contains", category).stream()
-        )
+            filter=FieldFilter(field, "array_contains", category)
+        ).stream()
         # 获取所有文档的数据
         doc_data = [
             {
