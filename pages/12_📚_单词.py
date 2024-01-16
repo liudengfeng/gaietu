@@ -244,6 +244,7 @@ def handle_learning_record(direction):
     item = st.session_state["current-page"]
     if len(st.session_state["learning-records"][item]) == 0:
         create_learning_records()
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             # 执行原函数
@@ -1105,7 +1106,9 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     update_and_display_progress(
-        st.session_state["puzzle-idx"] + 1 if st.session_state["puzzle-idx"] != -1 else 0,
+        st.session_state["puzzle-idx"] + 1
+        if st.session_state["puzzle-idx"] != -1
+        else 0,
         len(st.session_state["puzzle-words"])
         if len(st.session_state["puzzle-words"]) != 0
         else 1,
