@@ -1200,20 +1200,20 @@ elif menu == "词典管理":
                 standard_category = (
                     category.split("-", 1)[1] if "-" in category else category
                 )
-                logger.info(f"🎆 类别：{standard_category}")
+                # logger.info(f"🎆 类别：{standard_category}")
                 for word in words:
                     w = word.replace("/", " or ")
                     if w not in new_data:
                         new_data[w] = []
                     new_data[w].append(standard_category)
 
-            # db = st.session_state.dbi.db
-            # n = len(new_data)
-            # # 遍历 new_data，更新文档
-            # for i, (w, categories) in enumerate(new_data.items()):
-            #     update_and_display_progress(i + 1, n, progress_bar, w)
-            #     doc_ref = db.collection("mini_dict").document(w)
-            #     doc_ref.set({"categories": categories}, merge=True)
+            db = st.session_state.dbi.db
+            n = len(new_data)
+            # 遍历 new_data，更新文档
+            for i, (w, categories) in enumerate(new_data.items()):
+                update_and_display_progress(i + 1, n, progress_bar, w)
+                doc_ref = db.collection("mini_dict").document(w)
+                doc_ref.set({"categories": categories}, merge=True)
 
     # endregion
 
