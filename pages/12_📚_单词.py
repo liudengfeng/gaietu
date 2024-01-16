@@ -336,7 +336,7 @@ def view_pos(container, word_info, word):
         _view_pos(container, key, en[key], zh[key], word)
 
 
-@st.cache_data(ttl=timedelta(hours=12), max_entries=1000, show_spinner="获取音频元素...")
+@st.cache_data(ttl=timedelta(hours=12), max_entries=10000, show_spinner="获取音频元素...")
 def get_audio_html(word, voice_style):
     """
     获取单词的音频HTML代码，可供浏览器内自动播放。
@@ -850,7 +850,7 @@ def view_test_word(container):
 # region 个人词库辅助
 
 
-@st.cache_data(ttl=timedelta(hours=24), max_entries=100, show_spinner="获取基础词库...")
+@st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取基础词库...")
 def gen_base_lib(word_lib):
     words = st.session_state.word_dict[word_lib]
     data = []
