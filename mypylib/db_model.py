@@ -69,10 +69,10 @@ class LearningRecord(BaseModel):
         self.start_time = datetime.now(timezone.utc)
 
     def end(self):
-        self.end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(timezone.utc)
         if self.start_time:
-            elapsed_time = (self.end_time - self.start_time).total_seconds()
-            if self.duration:
+            elapsed_time = (end_time - self.start_time).total_seconds()
+            if self.duration is not None:
                 self.duration += elapsed_time
             else:
                 self.duration = elapsed_time
