@@ -993,14 +993,15 @@ if menu and menu.endswith("闪卡记忆"):
 
     if refresh_btn:
         reset_flashcard_word(False)
+        item = "闪卡记忆"
         # 原记录
-        if st.session_state.learning_records["闪卡记忆"]:
-            for r in st.session_state.learning_records["闪卡记忆"]:
+        if st.session_state.learning_records[item]:
+            for r in st.session_state.learning_records[item]:
                 r.end()
             # 保存到数据库
-            st.dbi.save_records(st.session_state.learning_records["闪卡记忆"])
+            st.dbi.save_records(st.session_state.learning_records[item])
             # 清空原记录
-            st.session_state.learning_records["闪卡记忆"] = []
+            st.session_state.learning_records[item] = []
 
         # 新记录
         for i in range(num_word):
@@ -1009,7 +1010,7 @@ if menu and menu.endswith("闪卡记忆"):
                 project="词汇-闪卡记忆",
                 content=st.session_state.flashcard_words[i],
             )
-            st.session_state.learning_records["闪卡记忆"][i] = record
+            st.session_state.learning_records[item][i] = record
         st.rerun()
 
     if play_btn:
