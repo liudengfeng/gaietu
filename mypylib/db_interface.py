@@ -633,10 +633,11 @@ class DbInterface:
         doc_data = [
             {
                 "单词": doc.id,
-                "CEFR最低分级": doc.get("level", ""),
-                "翻译": doc.get("translation", ""),
+                "CEFR最低分级": doc_dict.get("level", ""),
+                "翻译": doc_dict.get("translation", ""),
             }
             for doc in docs
+            for doc_dict in [doc.to_dict()]
         ]
         return doc_data
 
