@@ -15,7 +15,12 @@ from mypylib.azure_speech import speech_synthesis_get_available_voices
 from mypylib.constants import LANGUAGES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
-from mypylib.st_helper import check_and_force_logout, get_firestore_client, setup_logger
+from mypylib.st_helper import (
+    check_and_force_logout,
+    get_firestore_client,
+    save_and_clear_all_learning_records,
+    setup_logger,
+)
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -31,6 +36,9 @@ st.set_page_config(
     page_icon="🏠",
     layout="wide",
 )
+
+st.session_state["current-page"] = "Home"
+save_and_clear_all_learning_records()
 
 if "dbi" not in st.session_state:
     st.session_state["dbi"] = DbInterface(get_firestore_client())

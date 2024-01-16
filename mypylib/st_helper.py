@@ -338,15 +338,27 @@ WORD_MAPS = {
 
 
 def save_and_clear_learning_records(item):
+    if "learning-records" not in st.session_state:
+        return
     # 如果有学习记录
     if len(st.session_state["learning-records"][item]):
         # 结束所有学习记录
         for r in st.session_state["learning-records"][item]:
             r.end()
+        records = st.session_state["learning-records"][item]
+        # 统计时长大于0的记录
+        n = len([r for r in records if r.duration > 0])
         # 保存学习记录到数据库
-        st.session_state.dbi.save_records(st.session_state["learning-records"][item])
+        st.session_state.dbi.save_records(records)
         # 清空学习记录
         st.session_state["learning-records"][item] = []
+
+        st.toast(f"自动存储`{item}` {n:04}学习记录")
+
+
+def save_and_clear_all_learning_records():
+    for k in WORD_IDX_MAPS.keys():
+        save_and_clear_learning_records(k)
 
 
 # endregion

@@ -91,9 +91,6 @@ def create_learning_records():
 def on_menu_change():
     item = st.session_state["current-page"]
     save_and_clear_learning_records(item)
-    st.toast(f"存储`{item}`学习记录")
-    # 更新当前页面
-    st.session_state["current-page"] = st.session_state.word_dict_menu.split(" ", 1)[1]
 
 
 menu = st.sidebar.selectbox(
@@ -103,8 +100,9 @@ menu = st.sidebar.selectbox(
     on_change=on_menu_change,
     help="在这里选择你想要进行的操作。",
 )
-logger.info(f"当前页面：{st.session_state['word_dict_menu']}")
-logger.info(f"当前页面：{menu = }")
+# 更新当前页面
+st.session_state["current-page"] = menu.split(" ", 1)[1]
+
 st.sidebar.divider()
 
 # endregion
