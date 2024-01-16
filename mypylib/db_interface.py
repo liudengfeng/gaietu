@@ -734,8 +734,12 @@ class DbInterface:
 
         # 添加记录
         for record in records:
-            doc_ref = collection.document()
-            batch.set(doc_ref, record.model_dump())
+            # 将 LearningRecord 对象转换为字典
+            record_dict = record.model_dump()
+            # 只保存时长大于 0 的记录
+            if record_dict.get('duration', 0) > 0:
+                doc_ref = collection.document()
+                batch.set(doc_ref, record_dict)
 
         # 提交批处理
         batch.commit()

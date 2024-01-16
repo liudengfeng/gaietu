@@ -60,13 +60,68 @@ menu_emoji = [
     "🗂️",
 ]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
-# 初始化 session_state
-if "current_page" not in st.session_state:
-    st.session_state["current_page"] = menu_opts[0]
+
+if "current-page" not in st.session_state:
+    st.session_state["current-page"] = menu_opts[0]
+
+# 学习记录
+IDX_MAPS = {
+    "闪卡记忆": "flashcard-idx",
+    "拼图游戏": "puzzle-idx",
+    "词意测试": "word-test-idx",
+}
+
+NUM_MAPS = {
+    "闪卡记忆": "flashcard-words-num",
+    "拼图游戏": "puzzle-words-num",
+    "词意测试": "test-word-num",
+}
+
+WORD_MAPS = {
+    "闪卡记忆": "flashcard-words",
+    "拼图游戏": "puzzle-words",
+    "词意测试": "test-words",
+}
+
+if "learning-records" not in st.session_state:
+    d = {}
+    for item in menu_names:
+        d[item] = []
+    st.session_state["learning-records"] = d
+
+
+def save_and_clear_learning_records():
+    item = st.session_state["current-page"]
+    # 如果有学习记录
+    if len(st.session_state["learning-records"][item]):
+        # 结束所有学习记录
+        for r in st.session_state["learning-records"][item]:
+            r.end()
+        # 保存学习记录到数据库
+        st.session_state.dbi.save_records(st.session_state["learning-records"][item])
+        # 清空学习记录
+        st.session_state["learning-records"][item] = []
+
+
+def create_learning_records():
+    num_word = len(st.session_state[WORD_MAPS[item]])
+    item = st.session_state["current-page"]
+    for i in range(num_word):
+        # idx = st.session_state[IDX_MAPS[item]]
+        record = LearningRecord(
+            phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+            project=f"词汇-{item}",
+            content=st.session_state[WORD_MAPS[item]][i],
+        )
+        st.session_state["learning-records"][item].append(record)
 
 
 def on_menu_change():
-    st.session_state["current_page"] = st.session_state.word_dict_menu
+    item = st.session_state["current-page"]
+    save_and_clear_learning_records()
+    st.toast(f"存储`{item}`学习记录")
+    # 更新当前页面
+    st.session_state["current-page"] = st.session_state.word_dict_menu.split(" ", 1)[1]
 
 
 menu = st.sidebar.selectbox(
@@ -92,21 +147,7 @@ VIDEO_DIR = CURRENT_CWD / "resource/video_tip"
 TIME_LIMIT = 10 * 60  # 10分钟
 OP_THRESHOLD = 10000  # 操作阈值
 
-# 学习记录
-if "learning_records" not in st.session_state:
-    st.session_state.learning_records = {
-        "闪卡记忆": [],
-        "拼图游戏": [],
-        "看图猜词": [],
-        "词意测试": [],
-    }
 
-IDX_MAPS = {
-    "闪卡记忆": "flashcard_idx",
-    "拼图游戏": "puzzle_idx",
-    "看图猜词": "pic_idx",
-    "词意测试": "word_test_idx",
-}
 # endregion
 
 # region 通用函数
@@ -199,28 +240,28 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-def handle_learning_record(item, direction):
+def handle_learning_record(direction):
+    item = st.session_state["current-page"]
+    if len(st.session_state["learning-records"][item]) == 0:
+        create_learning_records()
     def decorator(func):
         def wrapper(*args, **kwargs):
             # 执行原函数
             result = func(*args, **kwargs)
             idx = st.session_state[IDX_MAPS[item]]
             # 获取当前单词的学习记录
-            current_record = st.session_state.learning_records[item][idx]
+            current_record = st.session_state["learning-records"][item][idx]
             # 开始记录
             current_record.start()
-            logger.info(f"current_record:{current_record.content} {current_record.start_time}")
 
-            # 根据 direction 参数来计算下一个单词的索引
+            # 根据 direction 参数来计算上一个单词的索引
             prev_idx = idx - 1 if direction == "next" else idx + 1
             # 如果下一个单词有效
-            if 0 <= prev_idx < len(st.session_state.learning_records[item]):
+            if 0 <= prev_idx < len(st.session_state["learning-records"][item]):
                 # 获取下一个单词的学习记录
-                prev_record = st.session_state.learning_records[item][prev_idx]
+                prev_record = st.session_state["learning-records"][item][prev_idx]
                 # 结束此前单词的学习记录
                 prev_record.end()
-                # 检查结果
-                logger.info(f"prev_record:{prev_record.content} {prev_record.duration}")
 
             return result
 
@@ -233,18 +274,18 @@ def handle_learning_record(item, direction):
 
 # region 闪卡状态
 
-if "flashcard_words" not in st.session_state:
-    st.session_state["flashcard_words"] = []
+if "flashcard-words" not in st.session_state:
+    st.session_state["flashcard-words"] = []
 
-if "flashcard_word_info" not in st.session_state:
-    st.session_state["flashcard_word_info"] = {}
+if "flashcard-word-info" not in st.session_state:
+    st.session_state["flashcard-word-info"] = {}
 
 if "flashcard_display_state" not in st.session_state:
     st.session_state["flashcard_display_state"] = "全部"
 
 # 初始化单词的索引
-if "flashcard_idx" not in st.session_state:
-    st.session_state["flashcard_idx"] = -1
+if "flashcard-idx" not in st.session_state:
+    st.session_state["flashcard-idx"] = -1
 
 # endregion
 
@@ -254,20 +295,20 @@ if "flashcard_idx" not in st.session_state:
 def reset_flashcard_word(clear=True):
     # 恢复初始显示状态
     if clear:
-        st.session_state.flashcard_words = []
+        st.session_state["flashcard-words"] = []
     st.session_state.flashcard_display_state = "全部"
-    st.session_state["flashcard_idx"] = -1
+    st.session_state["flashcard-idx"] = -1
 
 
-@handle_learning_record("闪卡记忆", "prev")
+@handle_learning_record("prev")
 def on_prev_btn_click():
-    st.session_state["flashcard_idx"] -= 1
+    st.session_state["flashcard-idx"] -= 1
 
 
-@handle_learning_record("闪卡记忆", "next")
+@handle_learning_record("next")
 def on_next_btn_click():
     # 记录当前单词的开始时间
-    st.session_state.flashcard_idx += 1
+    st.session_state["flashcard-idx"] += 1
 
 
 template = """
@@ -360,11 +401,11 @@ def view_flash_word(container):
         None
     """
 
-    word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
-    if word not in st.session_state.flashcard_word_info:
-        st.session_state.flashcard_word_info[word] = get_word_info(word)
+    word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
+    if word not in st.session_state["flashcard-word-info"]:
+        st.session_state["flashcard-word-info"][word] = get_word_info(word)
 
-    word_info = st.session_state.flashcard_word_info.get(word, {})
+    word_info = st.session_state["flashcard-word-info"].get(word, {})
     if not word_info:
         st.error(f"没有该单词：“{word}”的信息。TODO：添加到单词库。")
         st.stop()
@@ -398,11 +439,11 @@ def view_flash_word(container):
 
 # region 单词拼图状态
 
-if "puzzle_idx" not in st.session_state:
-    st.session_state["puzzle_idx"] = -1
+if "puzzle-idx" not in st.session_state:
+    st.session_state["puzzle-idx"] = -1
 
-if "puzzle_words" not in st.session_state:
-    st.session_state["puzzle_words"] = []
+if "puzzle-words" not in st.session_state:
+    st.session_state["puzzle-words"] = []
 
 # if "puzzle_answer_value" not in st.session_state:
 #     st.session_state["puzzle_answer_value"] = ""
@@ -423,7 +464,7 @@ if "puzzle_test_score" not in st.session_state:
 
 def reset_puzzle_word():
     # 恢复初始显示状态
-    st.session_state.puzzle_idx = -1
+    st.session_state["puzzle-idx"] = -1
     st.session_state["puzzle_view_word"] = []
     st.session_state["puzzle_test_score"] = {}
     # st.session_state.puzzle_answer_value = ""
@@ -442,7 +483,7 @@ def get_word_definition(word):
 
 
 def prepare_puzzle():
-    word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     # 打乱单词字符顺序
     ws = [w for w in word]
     random.shuffle(ws)
@@ -471,27 +512,27 @@ def view_puzzle_word():
 
 
 def display_puzzle_translation():
-    word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     t_word = get_mini_dict_doc(word).get("translation", "")
     msg = f"中译文：{t_word}"
     st.markdown(msg)
 
 
 def display_puzzle_definition():
-    word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     definition = get_word_definition(word)
     msg = f"{definition}"
     st.markdown(msg)
 
 
 def on_prev_puzzle_btn_click():
-    st.session_state["puzzle_idx"] -= 1
+    st.session_state["puzzle-idx"] -= 1
     # st.session_state.puzzle_answer_value = ""
     st.session_state.puzzle_answer = ""
 
 
 def on_next_puzzle_btn_click():
-    st.session_state["puzzle_idx"] += 1
+    st.session_state["puzzle-idx"] += 1
     # st.session_state.puzzle_answer_value = ""
     st.session_state.puzzle_answer = ""
 
@@ -517,11 +558,11 @@ def handle_puzzle_input():
         st.rerun()
 
     if sumbit_cols[1].button("检查[:mag:]", help="✨ 点击按钮，检查您的答案是否正确。"):
-        word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
-        if word not in st.session_state.flashcard_word_info:
-            st.session_state.flashcard_word_info[word] = get_word_info(word)
+        word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
+        if word not in st.session_state["flashcard-word-info"]:
+            st.session_state["flashcard-word-info"][word] = get_word_info(word)
 
-        msg = f'单词：{word}\t翻译：{st.session_state.flashcard_word_info[word]["zh-CN"]["translation"]}'
+        msg = f'单词：{word}\t翻译：{st.session_state["flashcard-word-info"][word]["zh-CN"]["translation"]}'
         if user_input == word:
             st.balloons()
             st.session_state.puzzle_test_score[word] = True
@@ -531,7 +572,7 @@ def handle_puzzle_input():
 
         score = (
             sum(st.session_state.puzzle_test_score.values())
-            / len(st.session_state["puzzle_words"])
+            / len(st.session_state["puzzle-words"])
             * 100
         )
         msg = f":red[您的得分：{score:.0f}%]\t{msg}"
@@ -543,7 +584,7 @@ def handle_puzzle():
     view_puzzle_word()
     handle_puzzle_input()
 
-    word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     st.divider()
     st.info("如果字符中包含空格，这可能表示该单词是一个复合词或短语。", icon="ℹ️")
     container = st.container()
@@ -720,49 +761,49 @@ def check_pic_answer(container):
 
 # 单词序号
 
-if "word_test_idx" not in st.session_state:
-    st.session_state["word_test_idx"] = -1
+if "word-test-idx" not in st.session_state:
+    st.session_state["word-test-idx"] = -1
 # 用于测试的单词
-if "words_for_test" not in st.session_state:
-    st.session_state["words_for_test"] = []
+if "test-words" not in st.session_state:
+    st.session_state["test-words"] = []
 # 单词理解测试题列表，按自然序号顺序存储测试题、选项、答案、解释字典
-if "word_tests" not in st.session_state:
-    st.session_state["word_tests"] = []
+if "word-tests" not in st.session_state:
+    st.session_state["word-tests"] = []
 # 用户答案
-if "user_answer" not in st.session_state:
-    st.session_state["user_answer"] = []
+if "user-answer" not in st.session_state:
+    st.session_state["user-answer"] = []
 
 
 def reset_test_words():
-    st.session_state.word_test_idx = -1
-    st.session_state.word_tests = []
-    st.session_state.user_answer = []
+    st.session_state["word-test-idx"] = -1
+    st.session_state["word-tests"] = []
+    st.session_state["user-answer"] = []
 
 
 def on_prev_test_btn_click():
-    st.session_state["word_test_idx"] -= 1
+    st.session_state["word-test-idx"] -= 1
 
 
 def on_next_test_btn_click():
-    st.session_state["word_test_idx"] += 1
+    st.session_state["word-test-idx"] += 1
 
 
 def check_word_test_answer(container):
-    if count_non_none(st.session_state.user_answer) == 0:
+    if count_non_none(st.session_state["user-answer"]) == 0:
         container.warning("您尚未答题。")
         container.stop()
 
     score = 0
-    n = count_non_none(st.session_state.word_tests)
-    for idx, test in enumerate(st.session_state.word_tests):
+    n = count_non_none(st.session_state["word-tests"])
+    for idx, test in enumerate(st.session_state["word-tests"]):
         question = test["问题"]
         options = test["选项"]
         answer = test["答案"]
         explanation = test["解释"]
 
-        word = st.session_state.words_for_test[idx]
+        word = st.session_state["test-words"][idx]
         # 存储的是 None 或者 0、1、2、3
-        user_answer_idx = st.session_state.user_answer[idx]
+        user_answer_idx = st.session_state["user-answer"][idx]
         container.divider()
         container.markdown(question)
         container.radio(
@@ -794,15 +835,15 @@ def check_word_test_answer(container):
 def on_word_test_radio_change(idx, options):
     current = st.session_state["test_options"]
     # 转换为索引
-    st.session_state.user_answer[idx] = options.index(current)
+    st.session_state["user-answer"][idx] = options.index(current)
 
 
 def view_test_word(container):
-    idx = st.session_state.word_test_idx
-    test = st.session_state.word_tests[idx]
+    idx = st.session_state["word-test-idx"]
+    test = st.session_state["word-tests"][idx]
     question = test["问题"]
     options = test["选项"]
-    user_answer_idx = st.session_state.user_answer[idx]
+    user_answer_idx = st.session_state["user-answer"][idx]
 
     container.markdown(question)
     container.radio(
@@ -815,8 +856,8 @@ def view_test_word(container):
         key="test_options",
     )
     # 保存用户答案
-    st.session_state.user_answer[idx] = user_answer_idx
-    # logger.info(f"用户答案：{st.session_state.user_answer}")
+    st.session_state["user-answer"][idx] = user_answer_idx
+    # logger.info(f"用户答案：{st.session_state["user-answer"]}")
 
 
 # endregion
@@ -902,7 +943,7 @@ if menu and menu.endswith("闪卡记忆"):
         10,
         50,
         step=5,
-        key="flashcard-num-words",
+        key="flashcard-words-num",
         on_change=reset_flashcard_word,
         help="✨ 请选择计划记忆的单词数量。",
     )
@@ -914,14 +955,14 @@ if menu and menu.endswith("闪卡记忆"):
     )
 
     update_and_display_progress(
-        st.session_state.flashcard_idx + 1
-        if st.session_state.flashcard_idx != -1
+        st.session_state["flashcard-idx"] + 1
+        if st.session_state["flashcard-idx"] != -1
         else 0,
-        len(st.session_state.flashcard_words)
-        if len(st.session_state.flashcard_words) != 0
+        len(st.session_state["flashcard-words"])
+        if len(st.session_state["flashcard-words"]) != 0
         else 1,
         st.empty(),
-        f"\t 当前单词：{st.session_state.flashcard_words[st.session_state.flashcard_idx] if st.session_state.flashcard_idx != -1 else ''}",
+        f"\t 当前单词：{st.session_state["flashcard-words"][st.session_state["flashcard-idx"]] if st.session_state["flashcard-idx"] != -1 else ''}",
     )
 
     btn_cols = st.columns(8)
@@ -930,7 +971,7 @@ if menu and menu.endswith("闪卡记忆"):
         "刷新[:arrows_counterclockwise:]",
         key="flashcard-refresh",
         on_click=generate_page_words,
-        args=(word_lib, num_word, "flashcard_words"),
+        args=(word_lib, num_word, "flashcard-words"),
         help="✨ 点击按钮，从词库中抽取单词，开始或重新开始记忆闪卡游戏。",
     )
     display_status_button = btn_cols[1].button(
@@ -943,34 +984,34 @@ if menu and menu.endswith("闪卡记忆"):
         key="flashcard-prev",
         help="✨ 点击按钮，切换到上一个单词。",
         on_click=on_prev_btn_click,
-        disabled=st.session_state.flashcard_idx < 0,
+        disabled=st.session_state["flashcard-idx"] < 0,
     )
     next_btn = btn_cols[3].button(
         "下一[:arrow_right_hook:]",
         key="flashcard-next",
         help="✨ 点击按钮，切换到下一个单词。",
         on_click=on_next_btn_click,
-        disabled=len(st.session_state.flashcard_words) == 0
-        or st.session_state.flashcard_idx
-        == len(st.session_state.flashcard_words) - 1,  # type: ignore
+        disabled=len(st.session_state["flashcard-words"]) == 0
+        or st.session_state["flashcard-idx"]
+        == len(st.session_state["flashcard-words"]) - 1,  # type: ignore
     )
     play_btn = btn_cols[4].button(
         "播放[:sound:]",
         key="flashcard-play",
         help="✨ 聆听单词发音",
-        disabled=st.session_state.flashcard_idx == -1,
+        disabled=st.session_state["flashcard-idx"] == -1,
     )
     add_btn = btn_cols[5].button(
         "添加[:heavy_plus_sign:]",
         key="flashcard-add",
         help="✨ 将当前单词添加到个人词库",
-        disabled=st.session_state.flashcard_idx == -1 or "个人词库" in word_lib,  # type: ignore
+        disabled=st.session_state["flashcard-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
     )
     del_btn = btn_cols[6].button(
         "删除[:heavy_minus_sign:]",
         key="flashcard-del",
         help="✨ 将当前单词从个人词库中删除",
-        disabled=st.session_state.flashcard_idx == -1,
+        disabled=st.session_state["flashcard-idx"] == -1,
     )
 
     # 创建按钮
@@ -983,61 +1024,39 @@ if menu and menu.endswith("闪卡记忆"):
             st.session_state.flashcard_display_state = "全部"
 
     if prev_btn:
-        if len(st.session_state.flashcard_words) == 0:
+        if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-        # for r in st.session_state.learning_records["闪卡记忆"]:
-        #     logger.info(f"{r}")
-        # logger.info("=" * 20)
 
     if next_btn:
-        if len(st.session_state.flashcard_words) == 0:
+        if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-        # for r in st.session_state.learning_records["闪卡记忆"]:
-        #     logger.info(f"{r}")
-        # logger.info("=" * 20)
 
     if refresh_btn:
         reset_flashcard_word(False)
-        item = "闪卡记忆"
-        # 原记录
-        if len(st.session_state.learning_records[item]):
-            for r in st.session_state.learning_records[item]:
-                r.end()
-            # 保存到数据库
-            st.session_state.dbi.save_records(st.session_state.learning_records[item])
-            # 清空原记录
-            st.session_state.learning_records[item] = []
-
+        save_and_clear_learning_records()
         # 新记录
-        for i in range(num_word):
-            record = LearningRecord(
-                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-                project="词汇-闪卡记忆",
-                content=st.session_state.flashcard_words[i],
-            )
-            st.session_state.learning_records[item].append(record)
-
+        create_learning_records()
         st.rerun()
 
     if play_btn:
-        word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         # 使用会话缓存，避免重复请求
         audio_html = get_audio_html(word, voice_style)
         components.html(audio_html)
 
     if add_btn:
-        word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
-        word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
+        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
-    if st.session_state.flashcard_idx != -1:
+    if st.session_state["flashcard-idx"] != -1:
         view_flash_word(st.container())
 
 # endregion
@@ -1068,7 +1087,7 @@ elif menu and menu.endswith("拼图游戏"):
         10,
         50,
         step=5,
-        key="puzzle-num-words",
+        key="puzzle-words-num",
         on_change=reset_puzzle_word,
         help="✨ 单词拼图的数量。",
     )
@@ -1080,9 +1099,9 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     update_and_display_progress(
-        st.session_state.puzzle_idx + 1 if st.session_state.puzzle_idx != -1 else 0,
-        len(st.session_state.puzzle_words)
-        if len(st.session_state.puzzle_words) != 0
+        st.session_state["puzzle-idx"] + 1 if st.session_state["puzzle-idx"] != -1 else 0,
+        len(st.session_state["puzzle-words"])
+        if len(st.session_state["puzzle-words"]) != 0
         else 1,
         st.empty(),
     )
@@ -1093,35 +1112,35 @@ elif menu and menu.endswith("拼图游戏"):
         key="puzzle-refresh",
         help="✨ 点击按钮，将从词库中抽取单词，开始或重新开始单词拼图游戏。",
         on_click=generate_page_words,
-        args=(word_lib, num_word, "puzzle_words", True),
+        args=(word_lib, num_word, "puzzle-words", True),
     )
     prev_btn = puzzle_cols[1].button(
         "上一[:leftwards_arrow_with_hook:]",
         key="puzzle-prev",
         help="✨ 点击按钮，切换到上一单词拼图。",
         on_click=on_prev_puzzle_btn_click,
-        disabled=st.session_state.puzzle_idx < 0,
+        disabled=st.session_state["puzzle-idx"] < 0,
     )
     next_btn = puzzle_cols[2].button(
         "下一[:arrow_right_hook:]",
         key="puzzle-next",
         help="✨ 点击按钮，切换到下一单词拼图。",
         on_click=on_next_puzzle_btn_click,
-        disabled=len(st.session_state.puzzle_words) == 0
-        or st.session_state.puzzle_idx
-        == len(st.session_state.puzzle_words) - 1,  # type: ignore
+        disabled=len(st.session_state["puzzle-words"]) == 0
+        or st.session_state["puzzle-idx"]
+        == len(st.session_state["puzzle-words"]) - 1,  # type: ignore
     )
     add_btn = puzzle_cols[3].button(
         "添加[:heavy_plus_sign:]",
         key="puzzle-add",
         help="✨ 将当前单词添加到个人词库",
-        disabled=st.session_state.puzzle_idx == -1 or "个人词库" in word_lib,  # type: ignore
+        disabled=st.session_state["puzzle-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
     )
     del_btn = puzzle_cols[4].button(
         "删除[:heavy_minus_sign:]",
         key="puzzle-del",
         help="✨ 将当前单词从个人词库中删除",
-        disabled=st.session_state.puzzle_idx == -1,
+        disabled=st.session_state["puzzle-idx"] == -1,
     )
 
     if refresh_btn:
@@ -1135,16 +1154,16 @@ elif menu and menu.endswith("拼图游戏"):
         prepare_puzzle()
 
     if add_btn:
-        word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+        word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
-        word = st.session_state.puzzle_words[st.session_state.puzzle_idx]
+        word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
-    if st.session_state.puzzle_idx != -1:
+    if st.session_state["puzzle-idx"] != -1:
         handle_puzzle()
 
 # endregion
@@ -1303,15 +1322,15 @@ elif menu and menu.endswith("词意测试"):
         st.session_state["gemini-pro-model"] = load_vertex_model("gemini-pro")
 
     update_and_display_progress(
-        st.session_state.word_test_idx + 1
-        if st.session_state.word_test_idx != -1
+        st.session_state["word-test-idx"] + 1
+        if st.session_state["word-test-idx"] != -1
         else 0,
-        len(st.session_state.words_for_test)
-        if len(st.session_state.words_for_test) != 0
+        len(st.session_state["test-words"])
+        if len(st.session_state["test-words"]) != 0
         else 1,
         st.empty(),
-        # message=st.session_state.words_for_test[st.session_state.word_test_idx]
-        # if st.session_state.word_test_idx != -1
+        # message=st.session_state["test-words"][st.session_state["word-test-idx"]]
+        # if st.session_state["word-test-idx"] != -1
         # else "",
     )
 
@@ -1327,7 +1346,7 @@ elif menu and menu.endswith("词意测试"):
         key="prev-test-word",
         help="✨ 点击按钮，切换到上一题。",
         on_click=on_prev_test_btn_click,
-        disabled=st.session_state.word_test_idx < 0,
+        disabled=st.session_state["word-test-idx"] < 0,
     )
     next_test_btn = test_btns[2].button(
         "下一[:arrow_right_hook:]",
@@ -1335,40 +1354,40 @@ elif menu and menu.endswith("词意测试"):
         help="✨ 点击按钮，切换到下一题。",
         on_click=on_next_test_btn_click,
         # 选择单词后才开始出题
-        disabled=len(st.session_state.words_for_test) == 0
-        or st.session_state.word_test_idx == len(st.session_state.words_for_test) - 1,
+        disabled=len(st.session_state["test-words"]) == 0
+        or st.session_state["word-test-idx"] == len(st.session_state["test-words"]) - 1,
     )
     # 答题即可提交检查
     sumbit_test_btn = test_btns[3].button(
         "检查[:mag:]",
         key="submit-test-word",
-        disabled=st.session_state.word_test_idx == -1
-        or len(st.session_state.user_answer) == 0,
+        disabled=st.session_state["word-test-idx"] == -1
+        or len(st.session_state["user-answer"]) == 0,
         help="✨ 至少完成一道测试题后，才可点击按钮，显示测验得分。",
     )
     add_btn = test_btns[4].button(
         "添加[:heavy_plus_sign:]",
         key="test-word-add",
         help="✨ 将当前单词添加到个人词库",
-        disabled=st.session_state.word_test_idx == -1 or "个人词库" in word_lib,  # type: ignore
+        disabled=st.session_state["word-test-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
     )
     del_btn = test_btns[5].button(
         "删除[:heavy_minus_sign:]",
         key="test-word-del",
         help="✨ 将当前单词从个人词库中删除",
-        disabled=st.session_state.word_test_idx == -1,
+        disabled=st.session_state["word-test-idx"] == -1,
     )
 
     st.divider()
     container = st.container()
 
     if prev_test_btn:
-        idx = st.session_state.word_test_idx
+        idx = st.session_state["word-test-idx"]
         if idx != -1:
-            word = st.session_state.words_for_test[idx]
-            if not st.session_state.word_tests[idx]:
+            word = st.session_state["test-words"][idx]
+            if not st.session_state["word-tests"][idx]:
                 with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-                    st.session_state.word_tests[idx] = generate_word_test(
+                    st.session_state["word-tests"][idx] = generate_word_test(
                         "gemini-pro",
                         st.session_state["gemini-pro-model"],
                         word,
@@ -1376,43 +1395,43 @@ elif menu and menu.endswith("词意测试"):
                     )
 
     if next_test_btn:
-        idx = st.session_state.word_test_idx
-        word = st.session_state.words_for_test[idx]
-        if not st.session_state.word_tests[idx]:
+        idx = st.session_state["word-test-idx"]
+        word = st.session_state["test-words"][idx]
+        if not st.session_state["word-tests"][idx]:
             with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-                st.session_state.word_tests[idx] = generate_word_test(
+                st.session_state["word-tests"][idx] = generate_word_test(
                     "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
 
     if refresh_btn:
         reset_test_words()
-        st.session_state.user_answer = [None] * test_num
-        st.session_state.word_tests = [None] * test_num
-        generate_page_words(word_lib, test_num, "words_for_test", True)
+        st.session_state["user-answer"] = [None] * test_num
+        st.session_state["word-tests"] = [None] * test_num
+        generate_page_words(word_lib, test_num, "test-words", True)
         st.rerun()
 
     if (
-        st.session_state.word_test_idx != -1
-        and st.session_state.word_tests[st.session_state.word_test_idx]
+        st.session_state["word-test-idx"] != -1
+        and st.session_state["word-tests"][st.session_state["word-test-idx"]]
         and not sumbit_test_btn
     ):
         view_test_word(container)
 
     if sumbit_test_btn:
         container.empty()
-        if count_non_none(st.session_state.user_answer) != count_non_none(
-            st.session_state.word_tests
+        if count_non_none(st.session_state["user-answer"]) != count_non_none(
+            st.session_state["word-tests"]
         ):
             container.warning("您尚未完成测试。")
         check_word_test_answer(container)
 
     if add_btn:
-        word = st.session_state.words_for_test[st.session_state.word_test_idx]
+        word = st.session_state["test-words"][st.session_state["word-test-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
-        word = st.session_state.words_for_test[st.session_state.word_test_idx]
+        word = st.session_state["test-words"][st.session_state["word-test-idx"]]
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
