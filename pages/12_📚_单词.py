@@ -1503,7 +1503,7 @@ elif menu and menu.endswith("词库管理"):
 
     mylib_placeholder.text(
         f"可删列表（{0 if lib_df.empty else lib_df.shape[0]}） 个单词",
-        help="在这里删除你的个人词库中的单词（显示的是最近1小时的缓存数据）",
+        help="在这里删除你的个人词库中的单词（显示的是最近10分钟的缓存数据）",
     )
 
     base_placeholder.data_editor(
