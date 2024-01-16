@@ -487,6 +487,7 @@ def display_puzzle_definition():
     msg = f"{definition}"
     st.markdown(msg)
 
+
 if menu and menu.endswith("拼图游戏"):
 
     @handle_learning_record("prev")
@@ -495,7 +496,6 @@ if menu and menu.endswith("拼图游戏"):
         # st.session_state.puzzle_answer_value = ""
         st.session_state.puzzle_answer = ""
 
-
     @handle_learning_record("next")
     def on_next_puzzle_btn_click():
         st.session_state["puzzle-idx"] += 1
@@ -503,7 +503,7 @@ if menu and menu.endswith("拼图游戏"):
         st.session_state.puzzle_answer = ""
 
 
-def handle_puzzle_input():
+def handle_puzzle_input(word_lib):
     # Use the get method since the keys won't be in session_state
     # on the first script run
     if st.session_state.get("retry"):
@@ -524,7 +524,8 @@ def handle_puzzle_input():
         st.rerun()
 
     if sumbit_cols[1].button("检查[:mag:]", help="✨ 点击按钮，检查您的答案是否正确。"):
-        word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
+        idx = st.session_state["puzzle-idx"]
+        word = st.session_state["puzzle-words"][idx]
         if word not in st.session_state["flashcard-word-info"]:
             st.session_state["flashcard-word-info"][word] = get_word_info(word)
 
@@ -536,19 +537,25 @@ def handle_puzzle_input():
             st.write(f"对不起，您回答错误。正确的单词应该为：{word}")
             st.session_state.puzzle_test_score[word] = False
 
-        score = (
-            sum(st.session_state.puzzle_test_score.values())
-            / len(st.session_state["puzzle-words"])
-            * 100
-        )
+        n = len(st.session_state["puzzle-words"])
+        score = sum(st.session_state.puzzle_test_score.values()) / n * 100
         msg = f":red[您的得分：{score:.0f}%]\t{msg}"
         puzzle_score.markdown(msg)
+        if idx == n - 1:
+            d = {
+                "item": st.session_state["current-page"],
+                "level": word_lib,
+                "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+                "record_time": datetime.now(timezone.utc),
+                "score": score,
+            }
+            st.session_state.dbi.save_daily_quiz_results(d)
 
 
-def handle_puzzle():
+def handle_puzzle(word_lib):
     display_puzzle_translation()
     view_puzzle_word()
-    handle_puzzle_input()
+    handle_puzzle_input(word_lib)
 
     word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     st.divider()
@@ -1154,7 +1161,7 @@ elif menu and menu.endswith("拼图游戏"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if st.session_state["puzzle-idx"] != -1:
-        handle_puzzle()
+        handle_puzzle(word_lib)
 
 # endregion
 
