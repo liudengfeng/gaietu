@@ -262,15 +262,16 @@ def reset_flashcard_word(clear=True):
     st.session_state["flashcard-idx"] = -1
 
 
-@handle_learning_record("prev")
-def on_prev_btn_click():
-    st.session_state["flashcard-idx"] -= 1
+if menu and menu.endswith("闪卡记忆"):
 
+    @handle_learning_record("prev")
+    def on_prev_btn_click():
+        st.session_state["flashcard-idx"] -= 1
 
-@handle_learning_record("next")
-def on_next_btn_click():
-    # 记录当前单词的开始时间
-    st.session_state["flashcard-idx"] += 1
+    @handle_learning_record("next")
+    def on_next_btn_click():
+        # 记录当前单词的开始时间
+        st.session_state["flashcard-idx"] += 1
 
 
 template = """
@@ -486,19 +487,20 @@ def display_puzzle_definition():
     msg = f"{definition}"
     st.markdown(msg)
 
+if menu and menu.endswith("拼图游戏"):
 
-@handle_learning_record("prev")
-def on_prev_puzzle_btn_click():
-    st.session_state["puzzle-idx"] -= 1
-    # st.session_state.puzzle_answer_value = ""
-    st.session_state.puzzle_answer = ""
+    @handle_learning_record("prev")
+    def on_prev_puzzle_btn_click():
+        st.session_state["puzzle-idx"] -= 1
+        # st.session_state.puzzle_answer_value = ""
+        st.session_state.puzzle_answer = ""
 
 
-@handle_learning_record("next")
-def on_next_puzzle_btn_click():
-    st.session_state["puzzle-idx"] += 1
-    # st.session_state.puzzle_answer_value = ""
-    st.session_state.puzzle_answer = ""
+    @handle_learning_record("next")
+    def on_next_puzzle_btn_click():
+        st.session_state["puzzle-idx"] += 1
+        # st.session_state.puzzle_answer_value = ""
+        st.session_state.puzzle_answer = ""
 
 
 def handle_puzzle_input():
@@ -744,14 +746,15 @@ def reset_test_words():
     st.session_state["user-answer"] = []
 
 
-@handle_learning_record("prev")
-def on_prev_test_btn_click():
-    st.session_state["word-test-idx"] -= 1
+if menu and menu.endswith("词意测试"):
 
+    @handle_learning_record("prev")
+    def on_prev_test_btn_click():
+        st.session_state["word-test-idx"] -= 1
 
-@handle_learning_record("next")
-def on_next_test_btn_click():
-    st.session_state["word-test-idx"] += 1
+    @handle_learning_record("next")
+    def on_next_test_btn_click():
+        st.session_state["word-test-idx"] += 1
 
 
 def check_word_test_answer(container, level):
