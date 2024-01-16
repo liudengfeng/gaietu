@@ -54,7 +54,7 @@ class LearningRecord(BaseModel):
     phone_number: str = Field("", max_length=15)
     project: str = Field(default="")
     content: str = Field(default="")
-    duration: Optional[float] = Field(default=None)
+    duration: Optional[float] = Field(default=0)
     start_time: Optional[datetime] = Field(default=None)
     progress: Optional[float] = Field(default=None)
     performance: Optional[str] = Field(default=None)
