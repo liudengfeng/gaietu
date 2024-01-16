@@ -1041,10 +1041,15 @@ if menu and menu.endswith("闪卡记忆"):
         st.rerun()
 
     if play_btn:
-        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
+        item = st.session_state["current-page"]
+        idx = st.session_state["flashcard-idx"]
+        record = st.session_state[item][idx]
+        record.start()
+        word = st.session_state["flashcard-words"][idx]
         # 使用会话缓存，避免重复请求
         audio_html = get_audio_html(word, voice_style)
         components.html(audio_html)
+        record.end()
 
     if add_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
