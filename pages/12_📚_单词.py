@@ -999,7 +999,7 @@ if menu and menu.endswith("闪卡记忆"):
         reset_flashcard_word(False)
         item = "闪卡记忆"
         # 原记录
-        if st.session_state.learning_records[item]:
+        if len(st.session_state.learning_records[item]):
             for r in st.session_state.learning_records[item]:
                 r.end()
             # 保存到数据库
