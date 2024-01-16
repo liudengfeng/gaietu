@@ -101,6 +101,12 @@ if "learning_records" not in st.session_state:
         "词意测试": [],
     }
 
+IDX_MAPS = {
+    "闪卡记忆": "flashcard_idx",
+    "拼图游戏": "puzzle_idx",
+    "看图猜词": "pic_idx",
+    "词意测试": "word_test_idx",
+}
 # endregion
 
 # region 通用函数
@@ -196,30 +202,24 @@ def display_word_images(word, container):
 def handle_learning_record(item, direction):
     def decorator(func):
         def wrapper(*args, **kwargs):
-            # 根据 direction 参数来计算前一个单词的索引
-            prev_idx = (
-                st.session_state.flashcard_idx - 1
-                if direction == "next"
-                else st.session_state.flashcard_idx + 1
-            )
-            # 观察装饰函数执行顺序
-            logger.info(f"prev_idx: {prev_idx}")
-            # 如果前一个单词有效
-            if 0 <= prev_idx < len(st.session_state.learning_records[item]):
-                # 获取前一个单词的学习记录
-                prev_record = st.session_state.learning_records[item][prev_idx]
-                # 结束前一个单词的学习记录
-                prev_record.end()
-
+            # 执行原函数
+            result = func(*args, **kwargs)
+            idx = st.session_state[IDX_MAPS[item]]
             # 获取当前单词的学习记录
-            current_record = st.session_state.learning_records[item][
-                st.session_state.flashcard_idx
-            ]
-            # 开始当前单词的学习记录
+            current_record = st.session_state.learning_records[item][idx]
+            # 开始记录
             current_record.start()
 
-            # 调用原函数
-            return func(*args, **kwargs)
+            # 根据 direction 参数来计算下一个单词的索引
+            prev_idx = idx - 1 if direction == "next" else idx + 1
+            # 如果下一个单词有效
+            if 0 <= prev_idx < len(st.session_state.learning_records[item]):
+                # 获取下一个单词的学习记录
+                prev_record = st.session_state.learning_records[item][prev_idx]
+                # 结束此前单词的学习记录
+                prev_record.end()
+
+            return result
 
         return wrapper
 
@@ -983,11 +983,13 @@ if menu and menu.endswith("闪卡记忆"):
         if len(st.session_state.flashcard_words) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
+        logger.info(f"{st.session_state.learning_records=}")
 
     if next_btn:
         if len(st.session_state.flashcard_words) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
+        logger.info(f"{st.session_state.learning_records=}")
 
     if refresh_btn:
         reset_flashcard_word(False)
