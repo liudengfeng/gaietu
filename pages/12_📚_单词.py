@@ -209,6 +209,7 @@ def handle_learning_record(item, direction):
             current_record = st.session_state.learning_records[item][idx]
             # 开始记录
             current_record.start()
+            logger.info(f"current_record:{current_record.content} {current_record.start_time}")
 
             # 根据 direction 参数来计算下一个单词的索引
             prev_idx = idx - 1 if direction == "next" else idx + 1
@@ -218,6 +219,8 @@ def handle_learning_record(item, direction):
                 prev_record = st.session_state.learning_records[item][prev_idx]
                 # 结束此前单词的学习记录
                 prev_record.end()
+                # 检查结果
+                logger.info(f"prev_record:{prev_record.content} {prev_record.duration}")
 
             return result
 
