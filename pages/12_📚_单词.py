@@ -695,8 +695,6 @@ def check_pic_answer(container):
         answer = tests[idx]["answer"]
         image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
-        # user_answer = st.session_state.user_pic_answer.get(idx, options[0])
-        # user_answer_idx = options.index(user_answer)
         user_answer_idx = st.session_state.user_pic_answer[idx]
         container.divider()
         container.markdown(question)
