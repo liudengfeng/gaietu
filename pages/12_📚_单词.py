@@ -665,9 +665,7 @@ def view_pic_question(container):
 
     image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
-    # user_prev_answer = st.session_state.user_pic_answer.get(idx, options[0])
     user_prev_answer_idx = st.session_state.user_pic_answer[idx]
-    # user_prev_answer_idx = options.index(user_prev_answer)
 
     st.divider()
     container.markdown(question)
@@ -682,12 +680,6 @@ def view_pic_question(container):
         on_change=on_pic_radio_change,
         args=(options, idx),
     )
-    # # 🎀
-    # # 兼顾 改变选项和默认二者的影响
-    # # on_change 选项变化时赋值
-    # # 没有赋值时使用 user_prev_answer
-    # # st.session_state.user_pic_answer[idx] = user_prev_answer
-    # st.session_state.user_pic_answer[idx] = options.index(answer)
 
 
 def check_pic_answer(container):
