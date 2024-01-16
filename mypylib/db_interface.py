@@ -736,8 +736,9 @@ class DbInterface:
         for record in records:
             # 将 LearningRecord 对象转换为字典
             record_dict = record.model_dump()
+            logger.info(record_dict)
             # 获取手机号码并从字典中删除
-            phone_number = record_dict.pop('phone_number', None)
+            phone_number = record_dict.pop("phone_number", None)
             # 使用手机号码作为文档名称
             doc_ref = collection.document(phone_number)
             batch.set(doc_ref, record_dict)

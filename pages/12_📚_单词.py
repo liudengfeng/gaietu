@@ -983,17 +983,17 @@ if menu and menu.endswith("闪卡记忆"):
         if len(st.session_state.flashcard_words) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-        for r in st.session_state.learning_records["闪卡记忆"]:
-            logger.info(f"{r}")
-        logger.info("=" * 20)
+        # for r in st.session_state.learning_records["闪卡记忆"]:
+        #     logger.info(f"{r}")
+        # logger.info("=" * 20)
 
     if next_btn:
         if len(st.session_state.flashcard_words) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-        for r in st.session_state.learning_records["闪卡记忆"]:
-            logger.info(f"{r}")
-        logger.info("=" * 20)
+        # for r in st.session_state.learning_records["闪卡记忆"]:
+        #     logger.info(f"{r}")
+        # logger.info("=" * 20)
 
     if refresh_btn:
         reset_flashcard_word(False)
