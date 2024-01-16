@@ -353,7 +353,7 @@ def save_and_clear_learning_records(item):
         # 清空学习记录
         st.session_state["learning-records"][item] = []
 
-        st.toast(f"自动存储`{item}` {n:04}学习记录")
+        st.toast(f"自动存储`{item}` {n:04}条学习记录")
 
 
 def save_and_clear_all_learning_records():
