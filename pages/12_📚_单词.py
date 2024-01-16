@@ -7,7 +7,6 @@ from datetime import datetime, timedelta, timezone
 from functools import wraps
 from io import BytesIO
 from pathlib import Path
-from collections import defaultdict
 import pandas as pd
 import requests
 import streamlit as st
@@ -15,6 +14,7 @@ import streamlit.components.v1 as components
 from PIL import Image
 
 from mypylib.constants import CEFR_LEVEL_MAPS
+from mypylib.db_model import LearningRecord
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -94,7 +94,12 @@ OP_THRESHOLD = 10000  # 操作阈值
 
 # 学习记录
 if "learning_records" not in st.session_state:
-    st.session_state.learning_records = defaultdict(dict)
+    st.session_state.learning_records = {
+        "闪卡记忆": [],
+        "拼图游戏": [],
+        "看图猜词": [],
+        "词意测试": [],
+    }
 
 # endregion
 
@@ -188,6 +193,39 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
+def handle_learning_record(item, direction):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # 根据 direction 参数来计算前一个单词的索引
+            prev_idx = (
+                st.session_state.flashcard_idx - 1
+                if direction == "next"
+                else st.session_state.flashcard_idx + 1
+            )
+            # 观察装饰函数执行顺序
+            logger.info(f"prev_idx: {prev_idx}")
+            # 如果前一个单词有效
+            if 0 <= prev_idx < len(st.session_state.learning_records[item]):
+                # 获取前一个单词的学习记录
+                prev_record = st.session_state.learning_records[item][prev_idx]
+                # 结束前一个单词的学习记录
+                prev_record.end()
+
+            # 获取当前单词的学习记录
+            current_record = st.session_state.learning_records[item][
+                st.session_state.flashcard_idx
+            ]
+            # 开始当前单词的学习记录
+            current_record.start()
+
+            # 调用原函数
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
 # endregion
 
 # region 闪卡状态
@@ -218,33 +256,15 @@ def reset_flashcard_word(clear=True):
     st.session_state["flashcard_idx"] = -1
 
 
+@handle_learning_record("闪卡记忆", "prev")
 def on_prev_btn_click():
     st.session_state["flashcard_idx"] -= 1
 
 
+@handle_learning_record("闪卡记忆", "next")
 def on_next_btn_click():
-    current_time = datetime.now(timezone.utc)
-    if st.session_state.flashcard_idx != -1:
-        # 记录上一单词的结束时间
-        last_word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
-        st.session_state.learning_records[last_word]["结束时间"] = current_time
-        elapsed_time = (
-            current_time - st.session_state.learning_records[last_word]["开始时间"]
-        ).total_seconds()
-        st.session_state.learning_records[last_word]["学习时长"] = (
-            st.session_state.learning_records[last_word].get("学习时长", 0) + elapsed_time
-        )
-
     # 记录当前单词的开始时间
     st.session_state.flashcard_idx += 1
-    current_word = st.session_state.flashcard_words[st.session_state.flashcard_idx]
-    st.session_state.learning_records[current_word] = {
-        "行为": "查看",
-        "开始时间": current_time,
-        "结束时间": None,
-    }
-
-    logger.info(f"学习记录：{st.session_state.learning_records}")
 
 
 template = """
@@ -849,7 +869,6 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 
 # region 闪卡记忆
 
-
 if menu and menu.endswith("闪卡记忆"):
     # region 侧边栏
     # 让用户选择语音风格
@@ -972,6 +991,23 @@ if menu and menu.endswith("闪卡记忆"):
 
     if refresh_btn:
         reset_flashcard_word(False)
+        # 原记录
+        if st.session_state.learning_records["闪卡记忆"]:
+            for r in st.session_state.learning_records["闪卡记忆"]:
+                r.end()
+            # 保存到数据库
+            st.dbi.save_records(st.session_state.learning_records["闪卡记忆"])
+            # 清空原记录
+            st.session_state.learning_records["闪卡记忆"] = []
+
+        # 新记录
+        for i in range(num_word):
+            record = LearningRecord(
+                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+                project="词汇-闪卡记忆",
+                content=st.session_state.flashcard_words[i],
+            )
+            st.session_state.learning_records["闪卡记忆"][i] = record
         st.rerun()
 
     if play_btn:
@@ -1372,6 +1408,7 @@ elif menu and menu.endswith("词意测试"):
 # endregion
 
 # region 个人词库
+
 elif menu and menu.endswith("词库管理"):
     # 基准词库不包含个人词库
     add_personal_dictionary(False)

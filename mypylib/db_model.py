@@ -53,17 +53,37 @@ class TokenUsageRecord(BaseModel):
 class LearningRecord(BaseModel):
     phone_number: str = Field("", max_length=15)
     project: str = Field(default="")
-    start_time: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    end_time: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     content: str = Field(default="")
-    progress: str = Field(default="")
-    performance: str = Field(default="")
+    duration: Optional[float] = Field(default=None)
+    start_time: Optional[datetime] = Field(default=None)
+    progress: Optional[float] = Field(default=None)
+    performance: Optional[str] = Field(default=None)
     feedback: Optional[str] = Field(default=None)
     difficulty: Optional[str] = Field(default=None)
 
     @classmethod
     def from_doc(cls, doc: dict):
         return cls(**doc)
+
+    def start(self):
+        self.start_time = datetime.now(timezone.utc)
+
+    def end(self):
+        self.end_time = datetime.now(timezone.utc)
+        if self.start_time:
+            elapsed_time = (self.end_time - self.start_time).total_seconds()
+            if self.duration:
+                self.duration += elapsed_time
+            else:
+                self.duration = elapsed_time
+            self.start_time = None  # 将开始时间设置为空
+        else:
+            self.duration = 0
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
 
 def str_to_enum(s: str, enum_type: Type[Enum]) -> Union[Enum, str]:

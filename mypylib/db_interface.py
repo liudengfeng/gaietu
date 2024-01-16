@@ -12,7 +12,14 @@ from google.cloud import firestore
 from google.cloud.firestore import FieldFilter
 
 from .constants import FAKE_EMAIL_DOMAIN
-from .db_model import Payment, PaymentStatus, PurchaseType, TokenUsageRecord, User
+from .db_model import (
+    LearningRecord,
+    Payment,
+    PaymentStatus,
+    PurchaseType,
+    TokenUsageRecord,
+    User,
+)
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -713,5 +720,24 @@ class DbInterface:
                 doc_names_without_image_indices.append(doc_name)
 
         return doc_names_without_image_indices
+
+    # endregion
+
+    # region 学习记录
+
+    def save_records(self, records: List[LearningRecord]):
+        # 获取 "learning_records" 集合
+        collection = self.db.collection("learning_records")
+
+        # 创建一个 WriteBatch 对象
+        batch = self.db.batch()
+
+        # 添加记录
+        for record in records:
+            doc_ref = collection.document()
+            batch.set(doc_ref, record.model_dump())
+
+        # 提交批处理
+        batch.commit()
 
     # endregion
