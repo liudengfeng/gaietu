@@ -1487,7 +1487,14 @@ elif menu and menu.endswith("词库管理"):
     mylib_placeholder = content_cols[1].container()
     view_placeholder = content_cols[2].container()
 
+    start = time.time()
+    
     base_lib_df = gen_base_lib(word_lib)
+
+    elapsed_time = time.time() - start
+    average_time_per_line = elapsed_time / len(word_lib)
+    logger.info(f"生成基础词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
+    
     lib_df = get_my_word_lib()
 
     view_selected_list = word_lib.split("-", 1)[1]
