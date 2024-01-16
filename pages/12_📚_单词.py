@@ -1039,7 +1039,7 @@ if menu and menu.endswith("闪卡记忆"):
         save_and_clear_learning_records()
         # 新记录
         create_learning_records()
-        st.rerun()
+        # st.rerun()
 
     if play_btn:
         item = st.session_state["current-page"]
