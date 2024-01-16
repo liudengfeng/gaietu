@@ -77,8 +77,6 @@ class LearningRecord(BaseModel):
             else:
                 self.duration = elapsed_time
             self.start_time = None  # 将开始时间设置为空
-        else:
-            self.duration = 0
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
