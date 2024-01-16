@@ -736,10 +736,11 @@ class DbInterface:
         for record in records:
             # 将 LearningRecord 对象转换为字典
             record_dict = record.model_dump()
+            results_dict = {k: v for k, v in record_dict.items() if v is not None}
             # 只保存时长大于 0 的记录
-            if record_dict.get("duration", 0) > 0:
+            if results_dict.get("duration", 0) > 0:
                 doc_ref = collection.document()
-                batch.set(doc_ref, record_dict)
+                batch.set(doc_ref, results_dict)
 
         # 提交批处理
         batch.commit()
