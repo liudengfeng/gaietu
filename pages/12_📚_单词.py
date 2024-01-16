@@ -104,8 +104,8 @@ def save_and_clear_learning_records():
 
 
 def create_learning_records():
-    num_word = len(st.session_state[WORD_MAPS[item]])
     item = st.session_state["current-page"]
+    num_word = len(st.session_state[WORD_MAPS[item]])
     for i in range(num_word):
         # idx = st.session_state[IDX_MAPS[item]]
         record = LearningRecord(
