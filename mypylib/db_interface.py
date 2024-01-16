@@ -13,7 +13,7 @@ from google.cloud.firestore import FieldFilter
 
 from .constants import FAKE_EMAIL_DOMAIN
 from .db_model import (
-    LearningRecord,
+    LearningTime,
     Payment,
     PaymentStatus,
     PurchaseType,
@@ -725,9 +725,9 @@ class DbInterface:
 
     # region 学习记录
 
-    def save_records(self, records: List[LearningRecord]):
+    def save_learning_time(self, records: List[LearningTime]):
         # 获取 "learning_records" 集合
-        collection = self.db.collection("learning_records")
+        collection = self.db.collection("learning_time")
 
         # 创建一个 WriteBatch 对象
         batch = self.db.batch()
@@ -737,11 +737,21 @@ class DbInterface:
             # 将 LearningRecord 对象转换为字典
             record_dict = record.model_dump()
             # 只保存时长大于 0 的记录
-            if record_dict.get('duration', 0) > 0:
+            if record_dict.get("duration", 0) > 0:
                 doc_ref = collection.document()
                 batch.set(doc_ref, record_dict)
 
         # 提交批处理
         batch.commit()
+
+    def save_daily_quiz_results(self, results: dict):
+        # 获取 "daily_quiz_results" 集合
+        collection = self.db.collection("daily_quiz_results")
+
+        # 将结果字典转换为 Firestore 可接受的格式
+        results_dict = {k: v for k, v in results.items() if v is not None}
+
+        # 创建一个新的文档并设置其内容
+        collection.document().set(results_dict)
 
     # endregion

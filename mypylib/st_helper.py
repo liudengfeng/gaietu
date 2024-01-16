@@ -10,6 +10,8 @@ from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
 
+from mypylib.db_model import LearningTime
+
 from .db_interface import DbInterface
 from .google_ai import (
     MAX_CALLS,
@@ -337,21 +339,33 @@ WORD_MAPS = {
 }
 
 
+def create_learning_records(item):
+    num_word = len(st.session_state[WORD_MAPS[item]])
+    for i in range(num_word):
+        # idx = st.session_state[WORD_IDX_MAPS[item]]
+        record = LearningTime(
+            phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+            project=f"词汇-{item}",
+            content=st.session_state[WORD_MAPS[item]][i],
+        )
+        st.session_state["learning-time"][item].append(record)
+
+
 def save_and_clear_learning_records(item):
-    if "learning-records" not in st.session_state:
+    if "learning-time" not in st.session_state:
         return
     # 如果有学习记录
-    if len(st.session_state["learning-records"][item]):
+    if len(st.session_state["learning-time"][item]):
         # 结束所有学习记录
-        for r in st.session_state["learning-records"][item]:
+        for r in st.session_state["learning-time"][item]:
             r.end()
-        records = st.session_state["learning-records"][item]
+        records = st.session_state["learning-time"][item]
         # 统计时长大于0的记录
         n = len([r for r in records if r.duration > 0])
         # 保存学习记录到数据库
-        st.session_state.dbi.save_records(records)
+        st.session_state.dbi.save_learning_time(records)
         # 清空学习记录
-        st.session_state["learning-records"][item] = []
+        st.session_state["learning-time"][item] = []
 
         st.toast(f"自动存储`{item}` {n:04}条学习记录")
 

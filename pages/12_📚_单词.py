@@ -14,15 +14,15 @@ import streamlit.components.v1 as components
 from PIL import Image
 
 from mypylib.constants import CEFR_LEVEL_MAPS
-from mypylib.db_model import LearningRecord
+from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     WORD_IDX_MAPS,
-    WORD_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    create_learning_records,
     format_token_count,
     get_mini_dict_doc,
     save_and_clear_all_learning_records,
@@ -71,24 +71,11 @@ if "current-page" not in st.session_state:
     st.session_state["current-page"] = menu_opts[0].split(" ", 1)[1]
 
 
-if "learning-records" not in st.session_state:
+if "learning-time" not in st.session_state:
     d = {}
     for item in menu_names:
         d[item] = []
-    st.session_state["learning-records"] = d
-
-
-def create_learning_records():
-    item = st.session_state["current-page"]
-    num_word = len(st.session_state[WORD_MAPS[item]])
-    for i in range(num_word):
-        # idx = st.session_state[WORD_IDX_MAPS[item]]
-        record = LearningRecord(
-            phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-            project=f"词汇-{item}",
-            content=st.session_state[WORD_MAPS[item]][i],
-        )
-        st.session_state["learning-records"][item].append(record)
+    st.session_state["learning-time"] = d
 
 
 def on_menu_change():
@@ -216,8 +203,8 @@ def display_word_images(word, container):
 
 def handle_learning_record(direction):
     item = st.session_state["current-page"]
-    if len(st.session_state["learning-records"][item]) == 0:
-        create_learning_records()
+    if len(st.session_state["learning-time"][item]) == 0:
+        create_learning_records(item)
 
     def decorator(func):
         def wrapper(*args, **kwargs):
@@ -225,16 +212,16 @@ def handle_learning_record(direction):
             result = func(*args, **kwargs)
             idx = st.session_state[WORD_IDX_MAPS[item]]
             # 获取当前单词的学习记录
-            current_record = st.session_state["learning-records"][item][idx]
+            current_record = st.session_state["learning-time"][item][idx]
             # 开始记录
             current_record.start()
 
             # 根据 direction 参数来计算上一个单词的索引
             prev_idx = idx - 1 if direction == "next" else idx + 1
             # 如果下一个单词有效
-            if 0 <= prev_idx < len(st.session_state["learning-records"][item]):
+            if 0 <= prev_idx < len(st.session_state["learning-time"][item]):
                 # 获取下一个单词的学习记录
-                prev_record = st.session_state["learning-records"][item][prev_idx]
+                prev_record = st.session_state["learning-time"][item][prev_idx]
                 # 结束此前单词的学习记录
                 prev_record.end()
 
@@ -500,12 +487,14 @@ def display_puzzle_definition():
     st.markdown(msg)
 
 
+@handle_learning_record("prev")
 def on_prev_puzzle_btn_click():
     st.session_state["puzzle-idx"] -= 1
     # st.session_state.puzzle_answer_value = ""
     st.session_state.puzzle_answer = ""
 
 
+@handle_learning_record("next")
 def on_next_puzzle_btn_click():
     st.session_state["puzzle-idx"] += 1
     # st.session_state.puzzle_answer_value = ""
@@ -755,10 +744,12 @@ def reset_test_words():
     st.session_state["user-answer"] = []
 
 
+@handle_learning_record("prev")
 def on_prev_test_btn_click():
     st.session_state["word-test-idx"] -= 1
 
 
+@handle_learning_record("next")
 def on_next_test_btn_click():
     st.session_state["word-test-idx"] += 1
 
@@ -1013,13 +1004,13 @@ if menu and menu.endswith("闪卡记忆"):
         item = st.session_state["current-page"]
         save_and_clear_learning_records(item)
         # 新记录
-        create_learning_records()
+        create_learning_records(item)
         st.rerun()
 
     if play_btn:
         item = st.session_state["current-page"]
         idx = st.session_state["flashcard-idx"]
-        record = st.session_state["learning-records"][item][idx]
+        record = st.session_state["learning-time"][item][idx]
         record.start()
         word = st.session_state["flashcard-words"][idx]
         # 使用会话缓存，避免重复请求
@@ -1129,6 +1120,10 @@ elif menu and menu.endswith("拼图游戏"):
 
     if refresh_btn:
         reset_puzzle_word()
+        item = st.session_state["current-page"]
+        save_and_clear_learning_records(item)
+        # 新记录
+        create_learning_records(item)
         st.rerun()
 
     if prev_btn:
@@ -1392,6 +1387,11 @@ elif menu and menu.endswith("词意测试"):
         st.session_state["user-answer"] = [None] * test_num
         st.session_state["word-tests"] = [None] * test_num
         generate_page_words(word_lib, test_num, "test-words", True)
+        # 学习记录
+        item = st.session_state["current-page"]
+        save_and_clear_learning_records(item)
+        # 新记录
+        create_learning_records(item)
         st.rerun()
 
     if (
