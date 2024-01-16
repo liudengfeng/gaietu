@@ -314,3 +314,21 @@ def select_word_image_urls(word: str):
 
 
 # endregion
+
+
+# region 学习记录
+
+
+def save_and_clear_learning_records(item):
+    # 如果有学习记录
+    if len(st.session_state["learning-records"][item]):
+        # 结束所有学习记录
+        for r in st.session_state["learning-records"][item]:
+            r.end()
+        # 保存学习记录到数据库
+        st.session_state.dbi.save_records(st.session_state["learning-records"][item])
+        # 清空学习记录
+        st.session_state["learning-records"][item] = []
+
+
+# endregion

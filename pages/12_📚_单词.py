@@ -23,6 +23,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     get_mini_dict_doc,
+    save_and_clear_learning_records,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -90,19 +91,6 @@ if "learning-records" not in st.session_state:
     st.session_state["learning-records"] = d
 
 
-def save_and_clear_learning_records():
-    item = st.session_state["current-page"]
-    # 如果有学习记录
-    if len(st.session_state["learning-records"][item]):
-        # 结束所有学习记录
-        for r in st.session_state["learning-records"][item]:
-            r.end()
-        # 保存学习记录到数据库
-        st.session_state.dbi.save_records(st.session_state["learning-records"][item])
-        # 清空学习记录
-        st.session_state["learning-records"][item] = []
-
-
 def create_learning_records():
     item = st.session_state["current-page"]
     num_word = len(st.session_state[WORD_MAPS[item]])
@@ -118,7 +106,7 @@ def create_learning_records():
 
 def on_menu_change():
     item = st.session_state["current-page"]
-    save_and_clear_learning_records()
+    save_and_clear_learning_records(item)
     st.toast(f"存储`{item}`学习记录")
     # 更新当前页面
     st.session_state["current-page"] = st.session_state.word_dict_menu.split(" ", 1)[1]
@@ -1036,7 +1024,8 @@ if menu and menu.endswith("闪卡记忆"):
 
     if refresh_btn:
         reset_flashcard_word(False)
-        save_and_clear_learning_records()
+        item = st.session_state["current-page"]
+        save_and_clear_learning_records(item)
         # 新记录
         create_learning_records()
         st.rerun()
