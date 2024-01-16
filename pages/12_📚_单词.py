@@ -1499,7 +1499,13 @@ elif menu and menu.endswith("词库管理"):
     average_time_per_line = elapsed_time / base_lib_df.shape[0]
     logger.info(f"生成基础词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
 
+    start = time.time()
+
     lib_df = get_my_word_lib()
+
+    elapsed_time = time.time() - start
+    average_time_per_line = elapsed_time / lib_df.shape[0]
+    logger.info(f"生成个人词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
 
     mylib_placeholder.text(
         f"可删列表（{0 if lib_df.empty else lib_df.shape[0]}） 个单词",
