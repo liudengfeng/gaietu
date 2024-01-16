@@ -754,7 +754,7 @@ def on_next_test_btn_click():
     st.session_state["word-test-idx"] += 1
 
 
-def check_word_test_answer(container):
+def check_word_test_answer(container, level):
     if count_non_none(st.session_state["user-answer"]) == 0:
         container.warning("您尚未答题。")
         container.stop()
@@ -795,6 +795,13 @@ def check_word_test_answer(container):
         container.balloons()
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
+    test_dict = {
+        "phone_number": st.session_state.dbi.cache["phone_number"],
+        "level": level,
+        "score": percentage,
+        "record_time": datetime.now(timezone.utc),
+    }
+    st.session_state.dbi.save_daily_quiz_results(test_dict)
     # container.divider()
 
 
@@ -1407,7 +1414,7 @@ elif menu and menu.endswith("词意测试"):
             st.session_state["word-tests"]
         ):
             container.warning("您尚未完成测试。")
-        check_word_test_answer(container)
+        check_word_test_answer(container, level)
 
     if add_btn:
         word = st.session_state["test-words"][st.session_state["word-test-idx"]]
