@@ -962,7 +962,7 @@ if menu and menu.endswith("闪卡记忆"):
         if len(st.session_state["flashcard-words"]) != 0
         else 1,
         st.empty(),
-        f"\t 当前单词：{st.session_state["flashcard-words"][st.session_state["flashcard-idx"]] if st.session_state["flashcard-idx"] != -1 else ''}",
+        f'\t 当前单词：{st.session_state["flashcard-words"][st.session_state["flashcard-idx"]] if st.session_state["flashcard-idx"] != -1 else ""}',
     )
 
     btn_cols = st.columns(8)
