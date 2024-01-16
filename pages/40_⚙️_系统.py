@@ -1209,12 +1209,21 @@ elif menu == "词典管理":
 
             db = st.session_state.dbi.db
             n = len(new_data)
+            # 创建一个批处理
+            batch = db.batch()
             # 遍历 new_data，更新文档
             for i, (w, categories) in enumerate(new_data.items()):
                 update_and_display_progress(i + 1, n, progress_bar, w)
                 doc_ref = db.collection("mini_dict").document(w)
-                doc_ref.set({"categories": categories}, merge=True)
-
+                batch.set(doc_ref, {"categories": categories}, merge=True)
+                # 如果已经添加了 500 个操作，提交这个批处理
+                if (i + 1) % 500 == 0:
+                    batch.commit()
+                    # 创建一个新的批处理
+                    batch = db.batch()
+            # 提交剩余的操作
+            batch.commit()
+    
     # endregion
 
 # endregion
