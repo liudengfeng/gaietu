@@ -62,7 +62,7 @@ menu_emoji = [
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 if "current-page" not in st.session_state:
-    st.session_state["current-page"] = menu_opts[0]
+    st.session_state["current-page"] = menu_opts[0].split(" ", 1)[1]
 
 # 学习记录
 IDX_MAPS = {
