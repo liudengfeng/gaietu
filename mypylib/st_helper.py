@@ -317,6 +317,24 @@ def select_word_image_urls(word: str):
 
 
 # region 学习记录
+# 学习记录
+WORD_IDX_MAPS = {
+    "闪卡记忆": "flashcard-idx",
+    "拼图游戏": "puzzle-idx",
+    "词意测试": "word-test-idx",
+}
+
+WORD_NUM_MAPS = {
+    "闪卡记忆": "flashcard-words-num",
+    "拼图游戏": "puzzle-words-num",
+    "词意测试": "test-word-num",
+}
+
+WORD_MAPS = {
+    "闪卡记忆": "flashcard-words",
+    "拼图游戏": "puzzle-words",
+    "词意测试": "test-words",
+}
 
 
 def save_and_clear_learning_records(item):

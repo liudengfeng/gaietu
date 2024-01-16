@@ -18,6 +18,8 @@ from mypylib.db_model import LearningRecord
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
+    WORD_IDX_MAPS,
+    WORD_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
@@ -65,24 +67,6 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 if "current-page" not in st.session_state:
     st.session_state["current-page"] = menu_opts[0].split(" ", 1)[1]
 
-# 学习记录
-IDX_MAPS = {
-    "闪卡记忆": "flashcard-idx",
-    "拼图游戏": "puzzle-idx",
-    "词意测试": "word-test-idx",
-}
-
-NUM_MAPS = {
-    "闪卡记忆": "flashcard-words-num",
-    "拼图游戏": "puzzle-words-num",
-    "词意测试": "test-word-num",
-}
-
-WORD_MAPS = {
-    "闪卡记忆": "flashcard-words",
-    "拼图游戏": "puzzle-words",
-    "词意测试": "test-words",
-}
 
 if "learning-records" not in st.session_state:
     d = {}
@@ -95,7 +79,7 @@ def create_learning_records():
     item = st.session_state["current-page"]
     num_word = len(st.session_state[WORD_MAPS[item]])
     for i in range(num_word):
-        # idx = st.session_state[IDX_MAPS[item]]
+        # idx = st.session_state[WORD_IDX_MAPS[item]]
         record = LearningRecord(
             phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
             project=f"词汇-{item}",
@@ -119,7 +103,8 @@ menu = st.sidebar.selectbox(
     on_change=on_menu_change,
     help="在这里选择你想要进行的操作。",
 )
-
+logger.info(f"当前页面：{st.session_state['word_dict_menu']}")
+logger.info(f"当前页面：{menu = }")
 st.sidebar.divider()
 
 # endregion
@@ -237,7 +222,7 @@ def handle_learning_record(direction):
         def wrapper(*args, **kwargs):
             # 执行原函数
             result = func(*args, **kwargs)
-            idx = st.session_state[IDX_MAPS[item]]
+            idx = st.session_state[WORD_IDX_MAPS[item]]
             # 获取当前单词的学习记录
             current_record = st.session_state["learning-records"][item][idx]
             # 开始记录
