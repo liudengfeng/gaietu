@@ -729,6 +729,14 @@ def check_pic_answer(container):
         st.balloons()
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
+    d = {
+        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        "item": st.session_state["current-page"],
+        "level": st.session_state["pic-category"],
+        "score": percentage,
+        "record_time": datetime.now(timezone.utc),
+    }
+    st.session_state.dbi.save_daily_quiz_results(d)
 
 
 # endregion
