@@ -72,10 +72,7 @@ class LearningRecord(BaseModel):
         end_time = datetime.now(timezone.utc)
         if self.start_time:
             elapsed_time = (end_time - self.start_time).total_seconds()
-            if self.duration is not None:
-                self.duration += elapsed_time
-            else:
-                self.duration = elapsed_time
+            self.duration += elapsed_time
             self.start_time = None  # 将开始时间设置为空
 
     def update(self, **kwargs):
