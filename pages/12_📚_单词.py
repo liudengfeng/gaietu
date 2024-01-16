@@ -647,10 +647,10 @@ def pic_word_test_reset(category, num):
     st.session_state["pic_tests"] = data
 
 
-def on_pic_radio_change(idx):
+def on_pic_radio_change(options, idx):
     # 保存用户答案
     current = st.session_state["pic_options"]
-    st.session_state.user_pic_answer[idx] = current
+    st.session_state.user_pic_answer[idx] = options.index(current)
 
 
 def view_pic_question(container):
@@ -665,8 +665,9 @@ def view_pic_question(container):
 
     image = Image.open(tests[idx]["image_fp"])  # type: ignore
 
-    user_prev_answer = st.session_state.user_pic_answer.get(idx, options[0])
-    user_prev_answer_idx = options.index(user_prev_answer)
+    # user_prev_answer = st.session_state.user_pic_answer.get(idx, options[0])
+    user_prev_answer_idx = st.session_state.user_pic_answer[idx]
+    # user_prev_answer_idx = options.index(user_prev_answer)
 
     st.divider()
     container.markdown(question)
@@ -679,13 +680,14 @@ def view_pic_question(container):
         label_visibility="collapsed",
         key="pic_options",
         on_change=on_pic_radio_change,
-        args=(idx,),
+        args=(options, idx),
     )
-    # 🎀
-    # 兼顾 改变选项和默认二者的影响
-    # on_change 选项变化时赋值
-    # 没有赋值时使用 user_prev_answer
-    st.session_state.user_pic_answer[idx] = user_prev_answer
+    # # 🎀
+    # # 兼顾 改变选项和默认二者的影响
+    # # on_change 选项变化时赋值
+    # # 没有赋值时使用 user_prev_answer
+    # # st.session_state.user_pic_answer[idx] = user_prev_answer
+    # st.session_state.user_pic_answer[idx] = options.index(answer)
 
 
 def check_pic_answer(container):
@@ -1246,12 +1248,19 @@ elif menu and menu.endswith("看图猜词"):
     # )
 
     container = st.container()
+
+    if refresh_btn:
+        n = len(st.session_state.pic_tests)
+        st.session_state.user_pic_answer = [None] * n
+
     if sumbit_pic_btn:
-        if len(st.session_state.user_pic_answer) == 0:
+        if count_non_none(st.session_state.user_pic_answer) == 0:
             st.warning("您尚未答题。")
             st.stop()
         container.empty()
-        if len(st.session_state.user_pic_answer) != len(st.session_state.pic_tests):
+        if count_non_none(st.session_state.user_pic_answer) != count_non_none(
+            st.session_state.pic_tests
+        ):
             container.warning("您尚未完成全部测试题目。")
         check_pic_answer(container)
     elif st.session_state.pic_idx != -1:
