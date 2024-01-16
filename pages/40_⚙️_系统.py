@@ -1033,7 +1033,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片"]
+    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片", "简版类别"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
@@ -1150,7 +1150,7 @@ elif menu == "词典管理":
 
     # endregion
 
-    # region 单词图片
+    # region 挑选照片
 
     with dict_tabs[dict_items.index("挑选照片")]:
         st.subheader("挑选单词关联照片", divider="rainbow", anchor=False)
@@ -1177,6 +1177,43 @@ elif menu == "词典管理":
                 select_word_image_indices(q)
                 logger.info(f"🎆 单词：{word}")
                 # logger.info(f"{st.session_state.rate_limiter.records}")
+
+    # endregion
+
+    # region 简版类别
+
+    with dict_tabs[dict_items.index("简版类别")]:
+        st.subheader("简版类别", divider="rainbow", anchor=False)
+        st.text("为简版词典添加类别列表")
+        progress_bar = st.progress(0)
+        fp = (
+            CURRENT_CWD / "resource" / "dictionary" / "word_lists_by_edition_grade.json"
+        )
+        if st.button(
+            "执行", key="pick-image-btn", help="✨ 使用 gemini 多模态检验图片是否能形象解释单词的含义"
+        ):
+            with open(fp, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            # 假设 data 是原始的字典，键为类别，值为单词列表
+            new_data = {}
+            for category, words in data.items():
+                standard_category = (
+                    category.split("-", 1)[1] if "-" in category else category
+                )
+                logger.info(f"🎆 类别：{standard_category}")
+                for word in words:
+                    w = word.replace("/", " or ")
+                    if w not in new_data:
+                        new_data[w] = []
+                    new_data[w].append(standard_category)
+
+            # db = st.session_state.dbi.db
+            # n = len(new_data)
+            # # 遍历 new_data，更新文档
+            # for i, (w, categories) in enumerate(new_data.items()):
+            #     update_and_display_progress(i + 1, n, progress_bar, w)
+            #     doc_ref = db.collection("mini_dict").document(w)
+            #     doc_ref.set({"categories": categories}, merge=True)
 
     # endregion
 
