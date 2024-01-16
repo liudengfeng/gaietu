@@ -1010,7 +1010,8 @@ if menu and menu.endswith("闪卡记忆"):
                 project="词汇-闪卡记忆",
                 content=st.session_state.flashcard_words[i],
             )
-            st.session_state.learning_records[item][i] = record
+            st.session_state.learning_records[item].append(record)
+        
         st.rerun()
 
     if play_btn:
