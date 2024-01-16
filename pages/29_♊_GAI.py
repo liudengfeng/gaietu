@@ -18,6 +18,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
+    save_and_clear_all_learning_records,
     setup_logger,
 )
 
@@ -35,6 +36,8 @@ st.set_page_config(
     layout="wide",
 )
 check_access(False)
+st.session_state["current-page"] = "AI"
+save_and_clear_all_learning_records()
 configure_google_apis()
 
 # endregion

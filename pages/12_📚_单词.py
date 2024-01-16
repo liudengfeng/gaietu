@@ -25,6 +25,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     get_mini_dict_doc,
+    save_and_clear_all_learning_records,
     save_and_clear_learning_records,
     select_word_image_urls,
     setup_logger,
@@ -49,6 +50,8 @@ st.set_page_config(
 )
 
 check_access(False)
+st.session_state["current-page"] = "单词"
+save_and_clear_all_learning_records()
 configure_google_apis()
 sidebar_status = st.sidebar.empty()
 # 在页面加载时检查是否有需要强制退出的登录会话

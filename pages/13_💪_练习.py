@@ -4,6 +4,7 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    save_and_clear_all_learning_records,
 )
 
 # region 配置
@@ -15,6 +16,8 @@ st.set_page_config(
 )
 
 check_access(False)
+st.session_state["current-page"] = "练习"
+save_and_clear_all_learning_records()
 configure_google_apis()
 
 # endregion

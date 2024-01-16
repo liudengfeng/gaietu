@@ -357,6 +357,9 @@ def save_and_clear_learning_records(item):
 
 
 def save_and_clear_all_learning_records():
+    """
+    保存并清除所有学习记录。
+    """
     for k in WORD_IDX_MAPS.keys():
         save_and_clear_learning_records(k)
 
