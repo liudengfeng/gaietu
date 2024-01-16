@@ -1043,7 +1043,7 @@ if menu and menu.endswith("闪卡记忆"):
     if play_btn:
         item = st.session_state["current-page"]
         idx = st.session_state["flashcard-idx"]
-        record = st.session_state[item][idx]
+        record = st.session_state["learning-records"][item][idx]
         record.start()
         word = st.session_state["flashcard-words"][idx]
         # 使用会话缓存，避免重复请求
