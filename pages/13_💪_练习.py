@@ -7,7 +7,7 @@ import streamlit as st
 
 from mypylib.azure_speech import (
     synthesize_speech_to_file,
-    synthesize_speech_to_audio_data,
+    synthesize_speech,
 )
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.google_ai import (
@@ -69,9 +69,9 @@ if "text_model" not in st.session_state:
 # region 函数
 
 
-@st.cache(show_spinner="使用 Azure 将文本合成语音...")
+@st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_speech(text, voice):
-    return synthesize_speech_to_audio_data(
+    return synthesize_speech(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
@@ -225,4 +225,4 @@ if menu.endswith("听说练习"):
             result = get_synthesis_speech(text, m_voice_style[0])
             # audio_duration 合成音频的持续时间。
             # st.audio(result.audio_data, format="audio/wav")
-            st.audio(result, format="audio/wav")
+            st.audio(result.audio_data, format="audio/wav")
