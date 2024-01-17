@@ -381,8 +381,9 @@ def on_page_changed():
             logger.info(f"保存上一页的学习时长到数据库：{st.session_state['previous_page']}")
         # 更新上一页为当前页
         st.session_state["previous-page"] = st.session_state["current-page"]
+    
     logger.info(
-        f"上一页：{st.session_state['previous_page']} 当前页：{st.session_state['current_page']}"
+        f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
     )
 
 
