@@ -159,7 +159,7 @@ if menu.endswith("听说练习"):
                 markdown_text += f"- {level}：{count}\n"
             st.markdown(markdown_text)
             st.divider()
-            
+
             for d in dialogue:
                 st.markdown(d)
 
