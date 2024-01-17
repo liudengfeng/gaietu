@@ -46,7 +46,7 @@ st.set_page_config(
 )
 
 check_access(False)
-st.session_state["current-page"] = "练习"
+st.session_state["current-page"] = ""
 save_and_clear_all_learning_records()
 configure_google_apis()
 
@@ -61,7 +61,7 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
 def on_menu_changed():
-    st.session_state["current-page"] = menu_names[menu_opts.index(menu)]
+    st.session_state["current-page"] = menu_names[menu_opts.index(menu)]  # type: ignore
 
 
 menu = st.sidebar.selectbox(
@@ -89,17 +89,18 @@ else:
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_speech(text, voice):
-    return synthesize_speech(
+    result = synthesize_speech(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
-    ).audio_data
+    )
+    return result.audio_data  # type: ignore
 
 
 # endregion
 
-if menu.endswith("听说练习"):
+if menu is not None and menu.endswith("听说练习"):
     with open(VOICES_FP, "r", encoding="utf-8") as f:
         voices = json.load(f)["en-US"]
 
@@ -184,7 +185,7 @@ if menu.endswith("听说练习"):
             if st.session_state.stage == 1 or scenario_category is not None:
                 selected_scenario = st.selectbox(
                     "选择场景",
-                    generate_scenarios_for(scenario_category),
+                    generate_scenarios_for(scenario_category),  # type: ignore
                     key="selected_scenario",
                     index=None,
                     on_change=set_state,
@@ -297,7 +298,7 @@ if menu.endswith("听说练习"):
         if play_btn:
             idx = st.session_state["ls-idx"]
             sentence = dialogue[idx]
-            voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+            voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
             content_cols[0].audio(
                 get_synthesis_speech(sentence, voice_style[0]), format="audio/wav"
             )
