@@ -74,8 +74,10 @@ def get_synthesize_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # 创建一个字节缓冲区
-    audio_buffer = bytearray(1024)
+    # 创建一个 bytes 对象
+    audio_bytes = bytes(1024)
+    # 将 bytes 对象转换为 bytearray 对象
+    audio_buffer = bytearray(audio_bytes)
     # 从音频数据流中读取数据
     num_bytes_read = audio_data.read_data(audio_buffer)
     # 返回音频数据
