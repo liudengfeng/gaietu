@@ -81,7 +81,7 @@ def get_synthesize_speech(text, voice):
     # 从音频数据流中读取数据
     num_bytes_read = audio_data.read_data(bytes(audio_buffer))
     # 返回音频数据
-    return audio_buffer[:num_bytes_read]
+    return bytes(audio_buffer[:num_bytes_read])
 
 
 # endregion
@@ -225,7 +225,7 @@ if menu.endswith("听说练习"):
 
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
-        text = "Beyond accessing model attributes directly, you can also use the model as a context manager to automatically download and cache the model weights for you. This is the recommended way to use the model, as it will ensure you always have the most recent version of the model weights, even if the model is updated by the HuggingFace team."
+        text = "accessing model attributes directly, you can also use the model as a context manager to automatically download and cache the model weights for you. This is the recommended way to use the model, as it will ensure you always have the most recent version of the model weights, even if the model is updated by the HuggingFace team."
         if st.button("合成语音"):
             audio_stream = get_synthesize_speech(text, m_voice_style[0])
             # 使用 Streamlit 的 st.audio 方法来播放音频
