@@ -69,7 +69,7 @@ class ModelRateLimiter:
 def display_generated_content_and_update_token(
     item_name: str,
     model_name: str,
-    model: GenerativeModel,
+    model_method: Callable,
     contents: List[Part],
     generation_config: GenerationConfig,
     stream: bool,
@@ -77,7 +77,7 @@ def display_generated_content_and_update_token(
 ):
     responses = st.session_state.rate_limiter.call_func(
         model_name,
-        model.generate_content,
+        model_method,
         contents,
         generation_config=generation_config,
         safety_settings=DEFAULT_SAFETY_SETTINGS,
@@ -115,7 +115,7 @@ def display_generated_content_and_update_token(
 def parse_generated_content_and_update_token(
     item_name: str,
     model_name: str,
-    model: GenerativeModel,
+    model_method: Callable,
     contents: List[Part],
     generation_config: GenerationConfig,
     stream: bool,
@@ -123,7 +123,7 @@ def parse_generated_content_and_update_token(
 ):
     responses = st.session_state.rate_limiter.call_func(
         model_name,
-        model.generate_content,
+        model_method,
         contents,
         generation_config=generation_config,
         safety_settings=DEFAULT_SAFETY_SETTINGS,
@@ -199,7 +199,7 @@ def select_best_images_for_word(model_name, model, word, images: List[Part]):
     return parse_generated_content_and_update_token(
         "挑选图片",
         model_name,
-        model,
+        model.generate_content,
         contents,
         generation_config,
         stream=False,
@@ -237,7 +237,7 @@ def generate_word_test(model_name, model, word, level):
     return parse_generated_content_and_update_token(
         "单词理解考题",
         model_name,
-        model,
+        model.generate_content,
         contents,
         generation_config,
         stream=False,

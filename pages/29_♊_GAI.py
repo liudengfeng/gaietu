@@ -72,15 +72,26 @@ if "multimodal_examples" not in st.session_state:
 # region 聊天机器人辅助函数
 
 
-def initialize_chat_session():
+# def initialize_chat_session():
+#     model_name = "gemini-pro"
+#     model = load_vertex_model(model_name)
+#     history = []
+#     for user, ai in st.session_state["examples_pair"]:
+#         history.append({"role": "user", "parts": [user]})
+#         history.append({"role": "model", "parts": [ai]})
+#     st.session_state["chat_session"] = model.start_chat(history=history)
+#     st.session_state["chat_model"] = model
+
+
+def initialize_chat():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
     history = []
     for user, ai in st.session_state["examples_pair"]:
         history.append({"role": "user", "parts": [user]})
         history.append({"role": "model", "parts": [ai]})
-    st.session_state["chat_session"] = model.start_chat(history=history)
-    st.session_state["chat_model"] = model
+    st.session_state["chat"] = model.start_chat(history=history)
+
 
 
 def add_chat_pairs():
@@ -94,7 +105,7 @@ def add_chat_pairs():
                 st.stop()
         st.session_state["examples_pair"].append((user, ai))
         # st.write(st.session_state["examples_pair"])
-        initialize_chat_session()
+        initialize_chat()
     else:
         st.toast("示例对不能为空。")
 
@@ -103,7 +114,7 @@ def delete_last_pair():
     if st.session_state["examples_pair"]:
         st.session_state["examples_pair"].pop()
         # st.write(st.session_state["examples_pair"])
-        initialize_chat_session()
+        initialize_chat()
 
 
 # endregion
@@ -151,7 +162,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
     display_generated_content_and_update_token(
         "多模态AI",
         model_name,
-        model,
+        model.generate_content,
         [p["part"] for p in contents],
         generation_config,
         stream=True,
@@ -275,13 +286,13 @@ if menu == "聊天机器人":
         ":arrows_counterclockwise:", key="reset_btn", help="✨ 重新设置上下文、示例，开始新的对话"
     ):
         st.session_state["examples_pair"] = []
-        initialize_chat_session()
+        initialize_chat()
 
     with st.sidebar.expander("查看当前样例..."):
-        if "chat_session" not in st.session_state:
-            initialize_chat_session()
+        if "chat" not in st.session_state:
+            initialize_chat()
         num = len(st.session_state.examples_pair) * 2
-        for his in st.session_state.chat_session.history[:num]:
+        for his in st.session_state.chat.history[:num]:
             st.write(f"**{his.role}**：{his.parts[0].text}")
 
     sidebar_status = st.sidebar.empty()
@@ -296,15 +307,15 @@ if menu == "聊天机器人":
     check_and_force_logout(sidebar_status)
 
     # endregion
-    # TODO: 使用 chat = model.start_chat() chat.history
+    
     # region 主页面
     st.subheader(":robot_face: Gemini 聊天机器人")
-    if "chat_session" not in st.session_state:
-        initialize_chat_session()
+    if "chat" not in st.session_state:
+        initialize_chat()
 
     # 显示会话历史记录
     start_idx = len(st.session_state.examples_pair) * 2
-    for message in st.session_state.chat_session.history[start_idx:]:
+    for message in st.session_state.chat.history[start_idx:]:
         role = message.role
         with st.chat_message(role, avatar=AVATAR_MAPS[role]):
             st.markdown(message.parts[0].text)
@@ -325,12 +336,13 @@ if menu == "聊天机器人":
             display_generated_content_and_update_token(
                 "聊天机器人",
                 "gemini-pro",
-                st.session_state.chat_model,
+                st.session_state.chat.send_message,
                 [Part.from_text(prompt)],
                 config,
                 stream=True,
                 placeholder=message_placeholder,
             )
+    
     # endregion
 
 # endregion
@@ -676,7 +688,7 @@ elif menu == "示例教程":
                     display_generated_content_and_update_token(
                         "演示：生成故事",
                         "gemini-pro",
-                        text_model,
+                        text_model.generate_content,
                         [Part.from_text(prompt)],
                         GenerationConfig(**config),
                         stream=True,
@@ -784,7 +796,7 @@ elif menu == "示例教程":
                     display_generated_content_and_update_token(
                         "演示：营销活动",
                         "gemini-pro",
-                        text_model,
+                        text_model.generate_content,
                         [Part.from_text(prompt)],
                         GenerationConfig(**config),
                         stream=True,
@@ -885,7 +897,7 @@ elif menu == "示例教程":
                         display_generated_content_and_update_token(
                             "演示：家具推荐",
                             "gemini-pro-vision",
-                            vision_model,
+                            vision_model.generate_content,
                             new_contents,
                             GenerationConfig(
                                 **gemini_pro_vision_generation_config,
@@ -928,7 +940,7 @@ elif menu == "示例教程":
                         display_generated_content_and_update_token(
                             "烤箱使用说明演示",
                             "gemini-pro-vision",
-                            vision_model,
+                            vision_model.generate_content,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
@@ -966,7 +978,7 @@ elif menu == "示例教程":
                         display_generated_content_and_update_token(
                             "演示：ER 图",
                             "gemini-pro-vision",
-                            vision_model,
+                            vision_model.generate_content,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
@@ -1040,7 +1052,7 @@ elif menu == "示例教程":
                         display_generated_content_and_update_token(
                             "演示：眼镜推荐",
                             "gemini-pro-vision",
-                            vision_model,
+                            vision_model.generate_content,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
@@ -1089,7 +1101,7 @@ elif menu == "示例教程":
                         display_generated_content_and_update_token(
                             "演示：数学推理",
                             "gemini-pro-vision",
-                            vision_model,
+                            vision_model.generate_content,
                             new_contents,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
@@ -1134,7 +1146,7 @@ elif menu == "示例教程":
                             display_generated_content_and_update_token(
                                 "演示：视频描述",
                                 "gemini-pro-vision",
-                                vision_model,
+                                vision_model.generate_content,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
@@ -1174,7 +1186,7 @@ elif menu == "示例教程":
                             display_generated_content_and_update_token(
                                 "演示：为视频生成标签",
                                 "gemini-pro-vision",
-                                vision_model,
+                                vision_model.generate_content,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
@@ -1220,7 +1232,7 @@ elif menu == "示例教程":
                             display_generated_content_and_update_token(
                                 "演示：视频集锦",
                                 "gemini-pro-vision",
-                                vision_model,
+                                vision_model.generate_content,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
@@ -1277,7 +1289,7 @@ elif menu == "示例教程":
                             display_generated_content_and_update_token(
                                 "演示：视频位置标签",
                                 "gemini-pro-vision",
-                                vision_model,
+                                vision_model.generate_content,
                                 new_contents,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
