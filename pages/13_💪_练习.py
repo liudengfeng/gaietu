@@ -296,7 +296,7 @@ if menu.endswith("听说练习"):
 
         if play_btn:
             idx = st.session_state["ls-idx"]
-            sentence = dialogue[st.session_state[idx]]
+            sentence = dialogue[idx]
             voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
             content_cols[0].audio(
                 get_synthesis_speech(sentence, voice_style[0]), format="audio/wav"
