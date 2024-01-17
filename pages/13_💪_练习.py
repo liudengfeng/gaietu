@@ -81,20 +81,21 @@ if "text_model" not in st.session_state:
 #     return audio_buffer
 
 
-# @st.cache(show_spinner="使用 Azure 将文本合成语音...")
-def get_synthesize_speech(text, voice):
-    audio_data_stream = synthesize_speech_to_stream(
+@st.cache(show_spinner="使用 Azure 将文本合成语音...")
+def get_synthesis_result(text, voice):
+    synthesis_result = synthesize_speech_to_stream(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    audio_buffer = bytearray(16000)
-    filled_size = audio_data_stream.read_data(bytes(audio_buffer))
-    while filled_size > 0:
-        audio_buffer.extend(audio_buffer[:filled_size])
-        filled_size = audio_data_stream.read_data(bytes(audio_buffer))
-    return bytes(audio_buffer)
+    return synthesis_result
+    # audio_buffer = bytearray(16000)
+    # filled_size = audio_data_stream.read_data(bytes(audio_buffer))
+    # while filled_size > 0:
+    #     audio_buffer.extend(audio_buffer[:filled_size])
+    #     filled_size = audio_data_stream.read_data(bytes(audio_buffer))
+    # return bytes(audio_buffer)
 
 
 # endregion
@@ -240,6 +241,6 @@ if menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
         if st.button("合成语音"):
-            audio_stream = get_synthesize_speech(text, m_voice_style[0])
-            # 使用 Streamlit 的 st.audio 方法来播放音频
-            st.audio(audio_stream, format="audio/wav")
+            result = get_synthesis_result(text, m_voice_style[0])
+            # audio_duration 合成音频的持续时间。
+            st.audio(result.audio_data, format="audio/wav")
