@@ -183,14 +183,14 @@ if menu.endswith("听说练习"):
                     selected_scenario, interesting_plot, difficulty
                 )
                 summarize = summarize_in_one_sentence_for(dialogue)
-                st.title("对话概要")
-                st.markdown(f"**{summarize}**")
-                st.title("字数统计")
+                st.markdown("**对话概要**")
+                st.markdown(f"{summarize}")
+                st.markdown("**字数统计**")
                 dialogue_text = " ".join(dialogue)
                 total_words, level_dict = count_words_and_get_levels(dialogue_text)
                 level_dict.update({"总字数": total_words})
                 view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
-                st.title("对话内容")
+                st.markdown("**对话内容**")
                 st.divider()
 
                 for d in dialogue:
