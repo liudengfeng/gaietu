@@ -66,7 +66,7 @@ if "text_model" not in st.session_state:
 # region 函数
 
 
-# @st.cache(show_spinner="使用 Azure 将文本合成语音...")
+@st.cache(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_result(text, voice):
     result = synthesize_speech_to_result(
         text,
@@ -74,7 +74,7 @@ def get_synthesis_result(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    st.toast(f"时长:{result.audio_duration} 秒")
+    # st.toast(f"时长:{result.audio_duration} 秒")
     return result.audio_data
 
 
