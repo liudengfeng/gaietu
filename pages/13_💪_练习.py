@@ -93,6 +93,7 @@ if menu.endswith("听说练习"):
             "场景类别",
             ["日常生活", "职场沟通", "学术研究"],
             key="scenario_category",
+            index=None,
             on_change=on_scenario_category_changed,
         )
         selected_scenario = st.selectbox(
