@@ -138,6 +138,9 @@ if menu.endswith("听说练习"):
     def set_state(i):
         st.session_state.stage = i
 
+    # 对话变量
+    dialogue = []
+
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
@@ -222,9 +225,41 @@ if menu.endswith("听说练习"):
 
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
-        text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
-        if st.button("合成语音"):
-            result = get_synthesis_speech(text, m_voice_style[0])
-            # audio_duration 合成音频的持续时间。
-            # st.audio(result.audio_data, format="audio/wav")
-            st.audio(result, format="audio/wav")
+        if len(dialogue) == 0:
+            st.warning("请先配置场景")
+            st.stop()
+        if "ls-idx" not in st.session_state:
+            st.session_state["ls-idx"] = -1
+        ls_btn_cols = st.columns(8)
+        display_status_button = ls_btn_cols[0].button(
+            "切换[:recycle:]",
+            key="ls-mask",
+            help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
+        )
+        prev_btn = ls_btn_cols[1].button(
+            "上一[:leftwards_arrow_with_hook:]",
+            key="ls-prev",
+            help="✨ 点击按钮，切换到上一单词拼图。",
+            # on_click=on_prev_puzzle_btn_click,
+            disabled=st.session_state["ls-idx"] < 0,
+        )
+        next_btn = ls_btn_cols[2].button(
+            "下一[:arrow_right_hook:]",
+            key="ls-next",
+            help="✨ 点击按钮，切换到下一单词拼图。",
+            # on_click=on_next_puzzle_btn_click,
+            disabled=len(dialogue) == 0
+            or st.session_state["ls-idx"] == len(dialogue) - 1,  # type: ignore
+        )
+        play_btn = ls_btn_cols[3].button(
+            "播放[:sound:]",
+            key="ls-play",
+            help="✨ 聆听发音",
+            disabled=st.session_state["ls-idx"] == -1,
+        )
+        # text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
+        # if st.button("合成语音"):
+        #     result = get_synthesis_speech(text, m_voice_style[0])
+        #     # audio_duration 合成音频的持续时间。
+        #     # st.audio(result.audio_data, format="audio/wav")
+        #     st.audio(result, format="audio/wav")
