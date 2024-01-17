@@ -14,12 +14,14 @@ from mypylib.google_ai import (
 )
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
+    WORD_COUNT_BADGE_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
     save_and_clear_all_learning_records,
     setup_logger,
+    view_md_badges,
 )
 from mypylib.word_utils import count_words_and_get_levels
 
@@ -183,12 +185,10 @@ if menu.endswith("听说练习"):
                 summarize = summarize_in_one_sentence_for(dialogue)
                 st.markdown(f"**{summarize}**")
                 st.divider()
-                dialogue_text = ' '.join(dialogue)
+                dialogue_text = " ".join(dialogue)
                 total_words, level_dict = count_words_and_get_levels(dialogue_text)
-                markdown_text = f"总字数：{total_words}\n\n"
-                for level, count in level_dict.items():
-                    markdown_text += f"- {level}：{count}\n"
-                st.markdown(markdown_text)
+                level_dict.update({"总字数": total_words})
+                view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
                 st.divider()
 
                 for d in dialogue:

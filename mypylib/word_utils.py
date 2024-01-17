@@ -182,7 +182,7 @@ def count_words_and_get_levels(text):
 
         # 如果单词没有 CEFR 等级，将等级设置为 "未定义"
         if level is None:
-            level = "未定义"
+            level = "未分级"
 
         # 将等级添加到字典中
         levels[level] += 1

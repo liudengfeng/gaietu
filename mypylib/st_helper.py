@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import logging
 import time
 from datetime import datetime, timedelta
@@ -181,6 +182,9 @@ def google_translate(text: str, target_language_code: str = "zh-CN"):
     return res[0]
 
 
+# region 显示
+
+
 def format_token_count(count):
     return f"{count / 1000:.1f}k" if count >= 1000 else str(count)
 
@@ -231,7 +235,32 @@ def view_stream_response(responses, placeholder):
     placeholder.markdown(full_response)
 
 
+def view_md_badges(d: dict, badge_maps: OrderedDict):
+    cols = st.columns(len(badge_maps.keys()))
+    for i, t in enumerate(badge_maps.keys()):
+        num = f"{d.get(t,0):3d}"
+        body = f"""{badge_maps[t][1]}({num})"""
+        cols[i].markdown(
+            f""":{badge_maps[t][0]}[{body}]""",
+            help=f"✨ {badge_maps[t][2]}",
+        )
+
+
+# endregion
+
 # region 单词
+WORD_COUNT_BADGE_MAPS = OrderedDict(
+    {
+        "总字数": ("green", "总字数", "文本中不重复的单词数量", "success"),
+        "A1": ("orange", "CEFR A1", "CEFR A1 单词数量", "warning"),
+        "A2": ("grey", "CEFR A2", "CEFR A1 单词数量", "secondary"),
+        "B1": ("red", "CEFR B1", "CEFR B1 单词数量", "danger"),
+        "B2": ("violet", "CEFR B2", "CEFR B2 单词数量", "info"),
+        "C1": ("blue", "CEFR C1", "CEFR C1 单词数量", "light"),
+        "C2": ("rainbow", "CEFR C2", "CEFR C2 单词数量", "dark"),
+        "未分级": ("green", "未分级", "未分级单词数量", "dark"),
+    }
+)
 
 
 @st.cache_resource(show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
@@ -316,7 +345,6 @@ def select_word_image_urls(word: str):
 
 
 # endregion
-
 
 # region 学习记录
 # 学习记录
