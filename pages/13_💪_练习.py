@@ -2,7 +2,7 @@ import json
 import logging
 import random
 from pathlib import Path
-
+import io
 import streamlit as st
 
 from mypylib.azure_speech import synthesize_speech_to_file, synthesize_speech_to_stream
@@ -74,8 +74,14 @@ def get_synthesize_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # 将音频数据保存到一个 WAV 文件中
-    audio_data.save_to_wav_file("output.wav")
+    # 创建一个内存中的字节流
+    audio_stream = io.BytesIO()
+    # 将音频数据保存到字节流中
+    audio_data.save_to_stream(audio_stream)
+    # 将字节流的位置重置到开始
+    audio_stream.seek(0)
+    # 返回字节流
+    return audio_stream
 
 
 # endregion
@@ -221,6 +227,6 @@ if menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
         if st.button("合成语音"):
-            get_synthesize_speech(text, m_voice_style[0])
+            audio_stream = get_synthesize_speech(text, m_voice_style[0])
             # 使用 Streamlit 的 st.audio 方法来播放音频
-            st.audio("output.wav", format="audio/wav")
+            st.audio(audio_stream.read(), format="audio/wav")
