@@ -148,6 +148,7 @@ if menu.endswith("听说练习"):
         interesting_plot = None
         difficulty = None
         with sub_tabs[0]:
+            st.info("请注意，首次选择特定的场景类别时，AI需要生成场景列表，这可能需要2-3秒的时间。", icon="🚨")
             scenario_category = st.selectbox(
                 "场景类别",
                 ["日常生活", "职场沟通", "学术研究"],
