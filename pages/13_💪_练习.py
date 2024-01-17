@@ -5,6 +5,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from mypylib.azure_speech import synthesize_speech_to_file, synthesize_speech_to_stream
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.google_ai import (
     generate_dialogue,
@@ -60,6 +61,22 @@ check_and_force_logout(sidebar_status)
 
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
+
+
+# region 函数
+
+
+@st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
+def get_synthesize_speech(text, voice):
+    return synthesize_speech_to_stream(
+        text,
+        st.secrets["Microsoft"]["SPEECH_KEY"],
+        st.secrets["Microsoft"]["SPEECH_REGION"],
+        voice,
+    )
+
+
+# endregion
 
 if menu.endswith("听说练习"):
     with open(VOICES_FP, "r", encoding="utf-8") as f:
@@ -120,6 +137,7 @@ if menu.endswith("听说练习"):
 
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
+        st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
         steps = ["1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
         sub_tabs = st.tabs(steps)
         scenario_category = None
@@ -198,5 +216,9 @@ if menu.endswith("听说练习"):
                     st.markdown(d)
 
     with tabs[1]:
-        st.subheader("选择难度", divider="rainbow", anchor="选择难度")
-        st.write("🚧 敬请期待")
+        st.subheader("听说练习", divider="rainbow", anchor="听说练习")
+        text = "Beyond accessing model attributes directly via their field names"
+        if st.button("合成语音"):
+            stream = get_synthesize_speech(text, m_voice_style[0])
+            # 使用 Streamlit 的 st.audio 方法来播放音频
+            st.audio(stream.read(), format="audio/wav")

@@ -7,10 +7,12 @@ Speech recognition samples for the Microsoft Cognitive Services Speech SDK
 import difflib
 import json
 import os
+import io
 import string
 import threading
 import time
-import wave
+
+# import wave
 from collections import defaultdict
 from typing import Callable, Dict, List, Optional
 import logging
@@ -55,6 +57,21 @@ def synthesize_speech_to_file(
     # result = speech_synthesizer.speak_text(text)
     # stream = speechsdk.AudioDataStream(result)
     # stream.save_to_wav_file(fp)
+
+
+def synthesize_speech_to_stream(
+    text, speech_key, service_region, voice_name="en-US-JennyMultilingualNeural"
+):
+    speech_config = speechsdk.SpeechConfig(
+        subscription=speech_key, region=service_region
+    )
+    speech_config.speech_synthesis_voice_name = voice_name
+    speech_synthesizer = speechsdk.SpeechSynthesizer(
+        speech_config=speech_config, audio_config=None
+    )
+    result = speech_synthesizer.speak_text_async(text).get()
+    stream = speechsdk.audio.AudioDataStream(result)
+    return stream
 
 
 def speech_recognize_once_from_mic(
@@ -527,7 +544,9 @@ def pronunciation_assessment_with_content_assessment(
     speech_recognizer.session_stopped.connect(
         lambda evt: logger.debug("SESSION STOPPED {}".format(evt))
     )
-    speech_recognizer.canceled.connect(lambda evt: logger.debug("CANCELED {}".format(evt)))
+    speech_recognizer.canceled.connect(
+        lambda evt: logger.debug("CANCELED {}".format(evt))
+    )
     # Stop continuous recognition on either session stopped or canceled events
     speech_recognizer.session_stopped.connect(stop_cb)
     speech_recognizer.canceled.connect(stop_cb)
