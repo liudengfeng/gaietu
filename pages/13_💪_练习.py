@@ -76,7 +76,7 @@ def get_synthesis_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
-    )
+    ).audio_data
 
 
 # endregion
@@ -225,4 +225,4 @@ if menu.endswith("听说练习"):
             result = get_synthesis_speech(text, m_voice_style[0])
             # audio_duration 合成音频的持续时间。
             # st.audio(result.audio_data, format="audio/wav")
-            st.audio(result.audio_data, format="audio/wav")
+            st.audio(result, format="audio/wav")

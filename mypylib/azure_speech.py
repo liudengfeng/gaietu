@@ -71,6 +71,7 @@ def synthesize_speech(
     )
     # SpeechSynthesisResult
     result = speech_synthesizer.speak_text_async(text).get()
+    # audio_duration 合成音频的持续时间。
     return result
 
 
