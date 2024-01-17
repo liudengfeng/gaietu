@@ -91,10 +91,7 @@ if menu.endswith("听说练习"):
     def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
         boy_name = random.choice(NAMES["en-US"]["male"])
         girl_name = random.choice(NAMES["en-US"]["female"])
-        if "." in selected_scenario:
-            scenario = selected_scenario.split(".")[1]
-        else:
-            scenario = selected_scenario
+        scenario = selected_scenario.split(".")[1]
         return generate_dialogue(
             st.session_state["text_model"],
             boy_name,
@@ -182,6 +179,9 @@ if menu.endswith("听说练习"):
                 )
         with sub_tabs[4]:
             if st.session_state.stage == 4 or difficulty is not None:
+                if selected_scenario is None:
+                    st.warning("请先选择场景")
+                    st.stop()
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
