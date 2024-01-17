@@ -75,6 +75,7 @@ if "multimodal_examples" not in st.session_state:
 def initialize_chat_session():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
+    logger.info(f"model loaded:{model._model_name}")
     history = []
     for user, ai in st.session_state["examples_pair"]:
         history.append({"role": "user", "parts": [user]})
