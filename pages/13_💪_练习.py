@@ -68,12 +68,14 @@ if "text_model" not in st.session_state:
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesize_speech(text, voice):
-    return synthesize_speech_to_stream(
+    audio_data = synthesize_speech_to_stream(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
+    # 将音频数据转换为字节字符串
+    return audio_data.read()
 
 
 # endregion
@@ -217,8 +219,8 @@ if menu.endswith("听说练习"):
 
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
-        text = "Beyond accessing model attributes directly via their field names"
+        text = "Beyond accessing model attributes directly"
         if st.button("合成语音"):
-            stream = get_synthesize_speech(text, m_voice_style[0])
+            audio_stream = get_synthesize_speech(text, m_voice_style[0])
             # 使用 Streamlit 的 st.audio 方法来播放音频
-            st.audio(stream.read(), format="audio/wav")
+            st.audio(audio_stream, format="audio/wav")
