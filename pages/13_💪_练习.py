@@ -171,7 +171,7 @@ if menu.endswith("听说练习"):
                     placeholder="请选择您感兴趣的场景",
                 )
         with sub_tabs[2]:
-            ignore = st.toggle("跳过添加情节", key="add_interesting_plot")
+            ignore = st.toggle("跳过添加情节", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 3
             st.divider()
