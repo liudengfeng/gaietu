@@ -18,7 +18,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
-    save_and_clear_all_learning_records,
+    on_page_changed,
     setup_logger,
 )
 
@@ -37,7 +37,7 @@ st.set_page_config(
 )
 check_access(False)
 st.session_state["current-page"] = "AI"
-save_and_clear_all_learning_records()
+on_page_changed()
 configure_google_apis()
 
 # endregion

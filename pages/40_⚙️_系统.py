@@ -29,6 +29,7 @@ from mypylib.st_helper import (
     get_blob_container_client,
     get_blob_service_client,
     google_translate,
+    on_page_changed,
     select_word_image_indices,
     select_word_image_urls,
     setup_logger,
@@ -54,6 +55,9 @@ st.set_page_config(
     page_icon=":gear:",
     layout="wide",
 )
+
+st.session_state["current-page"] = "系统管理"
+on_page_changed()
 
 check_access(True)
 configure_google_apis()
