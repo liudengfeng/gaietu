@@ -74,20 +74,8 @@ def get_synthesize_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # 创建一个 bytearray 对象来存储音频数据
-    audio_buffer = bytearray()
-    # 创建一个临时的 bytes 对象
-    temp_buffer = bytes(1024)
-    while True:
-        # 从音频数据流中读取数据
-        num_bytes_read = audio_data.read_data(temp_buffer)
-        if num_bytes_read == 0:
-            # 如果没有更多的数据可以读取，就跳出循环
-            break
-        # 将读取的数据添加到 audio_buffer 中
-        audio_buffer.extend(temp_buffer[:num_bytes_read])
-    # 返回音频数据
-    return bytes(audio_buffer)
+    # 将音频数据保存到一个 WAV 文件中
+    audio_data.save_to_wav_file("output.wav")
 
 
 # endregion
@@ -233,6 +221,6 @@ if menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
         if st.button("合成语音"):
-            audio_stream = get_synthesize_speech(text, m_voice_style[0])
+            get_synthesize_speech(text, m_voice_style[0])
             # 使用 Streamlit 的 st.audio 方法来播放音频
-            st.audio(audio_stream, format="audio/wav")
+            st.audio("output.wav", format="audio/wav")
