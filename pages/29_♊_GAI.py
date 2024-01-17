@@ -295,7 +295,7 @@ if menu == "聊天机器人":
         for his in st.session_state.chat.history[:num]:
             st.write(f"**{his.role}**：{his.parts[0].text}")
 
-    sidebar_status = st.sidebar.empty()
+    # sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
