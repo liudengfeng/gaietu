@@ -68,20 +68,25 @@ if "text_model" not in st.session_state:
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesize_speech(text, voice):
-    audio_data = synthesize_speech_to_stream(
+    audio_data_stream = synthesize_speech_to_stream(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # 创建一个内存中的字节流
-    audio_stream = io.BytesIO()
-    # 将音频数据保存到字节流中
-    audio_data.save_to_stream(audio_stream)
-    # 将字节流的位置重置到开始
-    audio_stream.seek(0)
-    # 返回字节流
-    return audio_stream
+    # # 创建一个内存中的字节流
+    # audio_stream = io.BytesIO()
+    # # 将音频数据保存到字节流中
+    # audio_data.save_to_stream(audio_stream)
+    # # 将字节流的位置重置到开始
+    # audio_stream.seek(0)
+    # # 返回字节流
+    # return audio_stream
+    audio_buffer = bytearray(16000)
+    filled_size = audio_data_stream.read_data(audio_buffer)
+    while filled_size > 0:
+        filled_size = audio_data_stream.read_data(audio_buffer)
+    return bytes(audio_buffer)
 
 
 # endregion
