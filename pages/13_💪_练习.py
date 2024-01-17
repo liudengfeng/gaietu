@@ -5,7 +5,10 @@ from pathlib import Path
 import io
 import streamlit as st
 
-from mypylib.azure_speech import synthesize_speech_to_file, synthesize_speech_to_result
+from mypylib.azure_speech import (
+    synthesize_speech_to_file,
+    synthesize_speech_to_audio_data,
+)
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.google_ai import (
     generate_dialogue,
@@ -68,14 +71,12 @@ if "text_model" not in st.session_state:
 
 @st.cache(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_result(text, voice):
-    result = synthesize_speech_to_result(
+    return synthesize_speech_to_audio_data(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # st.toast(f"时长:{result.audio_duration} 秒")
-    return result.audio_data
 
 
 # endregion
