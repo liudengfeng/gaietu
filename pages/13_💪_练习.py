@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     save_and_clear_all_learning_records,
+    setup_logger,
 )
 from mypylib.word_utils import count_words_and_get_levels
 
@@ -25,6 +27,10 @@ from mypylib.word_utils import count_words_and_get_levels
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VOICES_FP = CURRENT_CWD / "resource" / "voices.json"
+
+# 创建或获取logger对象
+logger = logging.getLogger("streamlit")
+setup_logger(logger)
 
 st.set_page_config(
     page_title="练习",
@@ -118,50 +124,66 @@ if menu.endswith("听说练习"):
             scenario_category = st.selectbox(
                 "场景类别",
                 ["日常生活", "职场沟通", "学术研究"],
+                index=None,
+                on_change=set_state,
+                args=(1,),
                 key="scenario_category",
                 placeholder="请选择场景类别",
             )
+            logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
-            selected_scenario = st.selectbox(
-                "选择场景",
-                generate_scenarios_for(scenario_category),
-                key="selected_scenario",
-                placeholder="请选择您感兴趣的场景",
-            )
+            if st.session_state.stage == 1:
+                selected_scenario = st.selectbox(
+                    "选择场景",
+                    generate_scenarios_for(scenario_category),
+                    key="selected_scenario",
+                    index=None,
+                    on_change=set_state,
+                    args=(2,),
+                    placeholder="请选择您感兴趣的场景",
+                )
         with sub_tabs[2]:
-            interesting_plot = st.text_area(
-                "添加一些有趣的情节",
-                height=200,
-                key="interesting_plot",
-                placeholder="""您可以在这里添加一些有趣的情节。比如：
+            if st.session_state.stage == 2:
+                interesting_plot = st.text_area(
+                    "添加一些有趣的情节",
+                    height=200,
+                    key="interesting_plot",
+                    on_change=set_state,
+                    args=(3,),
+                    placeholder="""您可以在这里添加一些有趣的情节。比如：
 - 同事问了一个非常奇怪的问题，让你忍俊不禁。
 - 同事在工作中犯了一个错误，但他能够及时发现并改正。
 - 同事在工作中遇到
-            """,
-            )
+                """,
+                )
         with sub_tabs[3]:
-            difficulty = st.selectbox(
-                "难度",
-                ["初级", "中级", "高级"],
-                key="difficulty",
-                placeholder="请选择您感兴趣的场景",
-            )
+            if st.session_state.stage == 3:
+                difficulty = st.selectbox(
+                    "难度",
+                    ["初级", "中级", "高级"],
+                    key="difficulty",
+                    index=None,
+                    on_change=set_state,
+                    args=(4,),
+                    placeholder="请选择您感兴趣的场景",
+                )
         with sub_tabs[4]:
-            dialogue = generate_dialogue_for(
-                selected_scenario, interesting_plot, difficulty
-            )
-            summarize = summarize_in_one_sentence_for(dialogue)
-            st.markdown(f"**{summarize}**")
-            st.divider()
-            total_words, level_dict = count_words_and_get_levels(dialogue)
-            markdown_text = f"总字数：{total_words}\n\n"
-            for level, count in level_dict.items():
-                markdown_text += f"- {level}：{count}\n"
-            st.markdown(markdown_text)
-            st.divider()
+            if st.session_state.stage == 4:
+                dialogue = generate_dialogue_for(
+                    selected_scenario, interesting_plot, difficulty
+                )
+                summarize = summarize_in_one_sentence_for(dialogue)
+                st.markdown(f"**{summarize}**")
+                st.divider()
+                total_words, level_dict = count_words_and_get_levels(dialogue)
+                markdown_text = f"总字数：{total_words}\n\n"
+                for level, count in level_dict.items():
+                    markdown_text += f"- {level}：{count}\n"
+                st.markdown(markdown_text)
+                st.divider()
 
-            for d in dialogue:
-                st.markdown(d)
+                for d in dialogue:
+                    st.markdown(d)
 
     with tabs[1]:
         st.subheader("选择难度", divider="rainbow", anchor="选择难度")
