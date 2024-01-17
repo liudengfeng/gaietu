@@ -234,4 +234,4 @@ if menu.endswith("听说练习"):
         if st.button("合成语音"):
             audio_stream = get_synthesize_speech(text, m_voice_style[0])
             # 使用 Streamlit 的 st.audio 方法来播放音频
-            st.audio(audio_stream.read(), format="audio/wav")
+            st.audio(audio_stream, format="audio/wav")
