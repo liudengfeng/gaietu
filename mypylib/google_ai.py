@@ -318,7 +318,7 @@ ONE_SUMMARY_TEMPLATE = """使用中文简体一句话概要以下文本
 
 def summarize_in_one_sentence(model, text):
     # 使用模型的 summarize 方法来生成文本的一句话中文概要
-    prompt = ONE_SUMMARY_TEMPLATE.format(text)
+    prompt = ONE_SUMMARY_TEMPLATE.format(text=text)
     # 返回概要
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
