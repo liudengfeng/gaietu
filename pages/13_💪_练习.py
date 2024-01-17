@@ -132,8 +132,9 @@ if menu.endswith("听说练习"):
             )
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
+            scenario_placeholder = st.empty()
             if st.session_state.stage == 1:
-                selected_scenario = st.selectbox(
+                selected_scenario = scenario_placeholder.selectbox(
                     "选择场景",
                     generate_scenarios_for(scenario_category),
                     key="selected_scenario",
