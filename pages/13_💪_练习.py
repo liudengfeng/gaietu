@@ -88,13 +88,11 @@ if menu.endswith("听说练习"):
             "场景类别",
             ["日常生活", "职场沟通", "学术研究"],
             key="scenario_category",
-            index=0,
             placeholder="请选择场景类别",
         )
         selected_scenario = st.selectbox(
             "选择场景",
             generate_scenarios_for(scenario_category),
-            index=None,
             key="selected_scenario",
             placeholder="请选择您感兴趣的场景",
         )
