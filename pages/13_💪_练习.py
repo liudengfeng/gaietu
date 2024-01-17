@@ -130,7 +130,7 @@ if menu.endswith("听说练习"):
                 key="scenario_category",
                 placeholder="请选择场景类别",
             )
-            logger.info(f"{st.session_state.stage=}")
+            # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
             if st.session_state.stage == 1:
                 selected_scenario = st.selectbox(
@@ -144,8 +144,11 @@ if menu.endswith("听说练习"):
                 )
         with sub_tabs[2]:
             if st.session_state.stage == 2:
+                ignore = st.checkbox("添加情节", key="add_interesting_plot")
+                if ignore:
+                    st.session_state.stage = 3
                 interesting_plot = st.text_area(
-                    "添加一些有趣的情节",
+                    "添加一些有趣的情节【可选】",
                     height=200,
                     key="interesting_plot",
                     on_change=set_state,
