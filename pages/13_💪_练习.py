@@ -66,7 +66,7 @@ if "text_model" not in st.session_state:
 # region 函数
 
 
-@st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
+# @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesize_speech(text, voice):
     audio_data_stream = synthesize_speech_to_stream(
         text,
