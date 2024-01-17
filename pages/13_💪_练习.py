@@ -120,6 +120,10 @@ if menu.endswith("听说练习"):
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         steps = ["1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
         sub_tabs = st.tabs(steps)
+        scenario_category = None
+        selected_scenario = None
+        interesting_plot = None
+        difficulty = None
         with sub_tabs[0]:
             scenario_category = st.selectbox(
                 "场景类别",
@@ -132,9 +136,8 @@ if menu.endswith("听说练习"):
             )
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
-            scenario_placeholder = st.empty()
-            if st.session_state.stage == 1:
-                selected_scenario = scenario_placeholder.selectbox(
+            if st.session_state.stage == 1 or scenario_category is not None:
+                selected_scenario = st.selectbox(
                     "选择场景",
                     generate_scenarios_for(scenario_category),
                     key="selected_scenario",
@@ -144,11 +147,11 @@ if menu.endswith("听说练习"):
                     placeholder="请选择您感兴趣的场景",
                 )
         with sub_tabs[2]:
-            if st.session_state.stage == 2:
-                ignore = st.toggle("跳过添加情节", key="add_interesting_plot")
-                if ignore:
-                    st.session_state.stage = 3
-                st.divider()
+            ignore = st.toggle("跳过添加情节", key="add_interesting_plot")
+            if ignore:
+                st.session_state.stage = 3
+            st.divider()
+            if st.session_state.stage == 2 or selected_scenario is not None:
                 interesting_plot = st.text_area(
                     "添加一些有趣的情节【可选】",
                     height=200,
@@ -162,7 +165,7 @@ if menu.endswith("听说练习"):
                 """,
                 )
         with sub_tabs[3]:
-            if st.session_state.stage == 3:
+            if st.session_state.stage == 3 or interesting_plot is not None or ignore:
                 difficulty = st.selectbox(
                     "难度",
                     ["初级", "中级", "高级"],
@@ -173,7 +176,7 @@ if menu.endswith("听说练习"):
                     placeholder="请选择您感兴趣的场景",
                 )
         with sub_tabs[4]:
-            if st.session_state.stage == 4:
+            if st.session_state.stage == 4 or difficulty is not None:
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
