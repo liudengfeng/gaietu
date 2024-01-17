@@ -77,7 +77,7 @@ def get_synthesize_speech(text, voice):
     # # 创建一个内存中的字节流
     # audio_stream = io.BytesIO()
     # # 将音频数据保存到字节流中
-    # audio_data.save_to_stream(audio_stream)
+    # audio_data_stream.save_to_stream(audio_stream)
     # # 将字节流的位置重置到开始
     # audio_stream.seek(0)
     # # 返回字节流
