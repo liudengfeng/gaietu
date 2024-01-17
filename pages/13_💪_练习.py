@@ -242,7 +242,6 @@ if menu.endswith("听说练习"):
                     st.markdown(d)
 
     with tabs[1]:
-
         # @handle_learning_record("prev")
         def on_prev_btn_click():
             st.session_state["ls-idx"] -= 1
@@ -296,8 +295,10 @@ if menu.endswith("听说练习"):
             content_cols[0].markdown(sentence)
 
         if play_btn:
-            sentence = dialogue[st.session_state["ls-idx"]]
+            idx = st.session_state["ls-idx"]
+            sentence = dialogue[st.session_state[idx]]
+            voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
             content_cols[0].audio(
-                get_synthesis_speech(sentence, m_voice_style[0]), format="audio/wav"
+                get_synthesis_speech(sentence, voice_style[0]), format="audio/wav"
             )
             content_cols[0].markdown(sentence)
