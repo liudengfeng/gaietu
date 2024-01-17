@@ -72,9 +72,10 @@ if menu.endswith("听说练习"):
 
     def on_scenario_category_changed():
         cate = st.session_state["scenario_category"]
-        st.session_state["scenario-options"] = generate_scenarios(
-            st.session_state["text_model"], cate
-        )
+        with st.spinner("正在加载场景，请稍候..."):
+            st.session_state["scenario-options"] = generate_scenarios(
+                st.session_state["text_model"], cate
+            )
 
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
