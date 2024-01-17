@@ -362,6 +362,18 @@ PAGE_CONTENT_MAPS = {
 }
 
 
+def initialize_learning_time(menu_names):
+    if "learning-time" not in st.session_state:
+        d = {}
+        for item in menu_names:
+            d[item] = []
+        st.session_state["learning-time"] = d
+    else:
+        for item in menu_names:
+            if item not in st.session_state["learning-time"]:
+                st.session_state["learning-time"][item] = []
+
+
 # def create_learning_records(item):
 #     num_word = len(st.session_state[PAGE_CONTENT_MAPS[item]])
 #     for i in range(num_word):
