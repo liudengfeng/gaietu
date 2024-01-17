@@ -95,11 +95,16 @@ if menu.endswith("听说练习"):
             key="scenario_category",
             index=None,
             on_change=on_scenario_category_changed,
+            placeholder="请选择场景类别",
         )
         selected_scenario = st.selectbox(
-            "选择场景", st.session_state["scenario-options"], key="selected_scenario"
+            "选择场景",
+            st.session_state["scenario-options"],
+            index=None,
+            key="selected_scenario",
+            placeholder="请选择您感兴趣的场景",
         )
-        st.write("🚧 敬请期待")
+        # st.write("🚧 敬请期待")
 
     with tabs[1]:
         st.subheader("选择难度", divider="rainbow", anchor="选择难度")
