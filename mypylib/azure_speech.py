@@ -69,7 +69,8 @@ def synthesize_speech_to_stream(
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=None
     )
-    result = speech_synthesizer.speak_text_async(text).get()
+    # result = speech_synthesizer.speak_text_async(text).get()
+    result = speech_synthesizer.start_speaking_text_async(text).get()
     stream = speechsdk.AudioDataStream(result)
     return stream
 
