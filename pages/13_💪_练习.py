@@ -70,14 +70,9 @@ if menu.endswith("听说练习"):
 
     steps = ["生成场景", "选择难度", "选择语音风格", "开始练习"]
 
-    @st.cache_data(ttl=60 * 60 * 24)
+    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景，请稍候...")
     def generate_scenarios_for(category: str):
-        # with st.spinner("正在加载场景，请稍候..."):
         return generate_scenarios(st.session_state["text_model"], category)
-
-    def on_scenario_category_changed():
-        cate = st.session_state["scenario_category"]
-        st.session_state["scenario-options"] = generate_scenarios_for(cate)
 
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
@@ -86,9 +81,6 @@ if menu.endswith("听说练习"):
 
     tabs = st.tabs(steps)
 
-    if "scenario-options" not in st.session_state:
-        st.session_state["scenario-options"] = []
-
     with tabs[0]:
         st.subheader("生成场景", divider="rainbow", anchor="生成场景")
         difficulty = st.selectbox("难度", ["初级", "中级", "高级"], key="difficulty")
@@ -96,13 +88,12 @@ if menu.endswith("听说练习"):
             "场景类别",
             ["日常生活", "职场沟通", "学术研究"],
             key="scenario_category",
-            index=None,
-            on_change=on_scenario_category_changed,
+            index=0,
             placeholder="请选择场景类别",
         )
         selected_scenario = st.selectbox(
             "选择场景",
-            st.session_state["scenario-options"],
+            generate_scenarios_for(scenario_category),
             index=None,
             key="selected_scenario",
             placeholder="请选择您感兴趣的场景",
