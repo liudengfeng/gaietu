@@ -82,11 +82,11 @@ def get_synthesize_speech(text, voice):
     # audio_stream.seek(0)
     # # 返回字节流
     # return audio_stream
-    audio_buffer = bytearray(16000)
+    audio_buffer = bytes(16000)
     filled_size = audio_data_stream.read_data(audio_buffer)
     while filled_size > 0:
         filled_size = audio_data_stream.read_data(audio_buffer)
-    return bytes(audio_buffer)
+    return audio_buffer
 
 
 # endregion
