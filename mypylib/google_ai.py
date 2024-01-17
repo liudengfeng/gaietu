@@ -248,3 +248,25 @@ def generate_word_test(model_name, model, word, level):
         stream=False,
         parser=lambda x: json.loads(x.replace("```python", "").replace("```", "")),
     )
+
+
+SCENARIO_TEMPLATE = """
+为{}模拟20个场景列表
+"""
+
+
+def generate_scenarios(model, subject):
+    prompt = SCENARIO_TEMPLATE.format(subject)
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.75, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "生成场景",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: x.splitlines(),
+    )

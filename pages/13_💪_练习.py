@@ -2,11 +2,14 @@ import json
 from pathlib import Path
 
 import streamlit as st
+from mypylib.google_ai import generate_scenarios, load_vertex_model
 
 from mypylib.st_helper import (
+    TOEKN_HELP_INFO,
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    format_token_count,
     save_and_clear_all_learning_records,
 )
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
@@ -40,15 +43,15 @@ st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
 
+if "text_model" not in st.session_state:
+    st.session_state["text_model"] = load_vertex_model("gemini-pro")
+
 if menu.endswith("听说练习"):
     with open(VOICES_FP, "r", encoding="utf-8") as f:
         voices = json.load(f)["en-US"]
 
     m_voices = [v for v in voices if v[1] == "Male"]
     fm_voices = [v for v in voices if v[1] == "Female"]
-
-    st.sidebar.selectbox("模拟场景", ["日常生活", "职场沟通", "学术研究"])
-    st.sidebar.selectbox("难度", ["初级", "中级", "高级"])
 
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
@@ -64,3 +67,39 @@ if menu.endswith("听说练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
+
+    steps = ["生成场景", "选择难度", "选择语音风格", "开始练习"]
+
+    def on_scenario_category_changed():
+        cate = st.session_state["scenario_category"]
+        st.session_state["scenario-options"] = generate_scenarios(
+            st.session_state["text_model"], cate
+        )
+
+    sidebar_status.markdown(
+        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
+        help=TOEKN_HELP_INFO,
+    )
+
+    tabs = st.tabs(steps)
+
+    if "scenario-options" not in st.session_state:
+        st.session_state["scenario-options"] = []
+
+    with tabs[0]:
+        st.subheader("生成场景", divider="rainbow", anchor="生成场景")
+        difficulty = st.selectbox("难度", ["初级", "中级", "高级"], key="difficulty")
+        scenario_category = st.selectbox(
+            "场景类别",
+            ["日常生活", "职场沟通", "学术研究"],
+            key="scenario_category",
+            on_change=on_scenario_category_changed,
+        )
+        selected_scenario = st.selectbox(
+            "选择场景", st.session_state["scenario-options"], key="selected_scenario"
+        )
+        st.write("🚧 敬请期待")
+
+    with tabs[1]:
+        st.subheader("选择难度", divider="rainbow", anchor="选择难度")
+        st.write("🚧 敬请期待")
