@@ -58,7 +58,15 @@ menu_emoji = [
 ]
 menu_names = ["听说练习", "阅读练习", "写作练习"]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
-menu = st.sidebar.selectbox("菜单", menu_opts, help="请选择您要进行的练习项目")
+
+
+def on_menu_changed():
+    st.session_state["current-page"] = menu_names[menu_opts.index(menu)]
+
+
+menu = st.sidebar.selectbox(
+    "菜单", menu_opts, help="请选择您要进行的练习项目", on_change=on_menu_changed
+)
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
@@ -66,6 +74,15 @@ check_and_force_logout(sidebar_status)
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
 
+if "learning-time" not in st.session_state:
+    d = {}
+    for item in menu_names:
+        d[item] = []
+    st.session_state["learning-time"] = d
+else:
+    for item in menu_names:
+        if item not in st.session_state["learning-time"]:
+            st.session_state["learning-time"][item] = []
 
 # region 函数
 

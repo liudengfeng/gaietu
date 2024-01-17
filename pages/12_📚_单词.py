@@ -77,7 +77,10 @@ if "learning-time" not in st.session_state:
     for item in menu_names:
         d[item] = []
     st.session_state["learning-time"] = d
-
+else:
+    for item in menu_names:
+        if item not in st.session_state["learning-time"]:
+            st.session_state["learning-time"][item] = []
 
 def on_menu_change():
     item = st.session_state["current-page"]
