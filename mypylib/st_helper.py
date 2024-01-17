@@ -252,12 +252,12 @@ def view_md_badges(d: dict, badge_maps: OrderedDict):
 WORD_COUNT_BADGE_MAPS = OrderedDict(
     {
         "总字数": ("green", "总字数", "文本中不重复的单词数量", "success"),
-        "A1": ("orange", "CEFR A1", "CEFR A1 单词数量", "warning"),
-        "A2": ("grey", "CEFR A2", "CEFR A1 单词数量", "secondary"),
-        "B1": ("red", "CEFR B1", "CEFR B1 单词数量", "danger"),
-        "B2": ("violet", "CEFR B2", "CEFR B2 单词数量", "info"),
-        "C1": ("blue", "CEFR C1", "CEFR C1 单词数量", "light"),
-        "C2": ("rainbow", "CEFR C2", "CEFR C2 单词数量", "dark"),
+        "A1": ("orange", "A1", "CEFR A1 单词数量", "warning"),
+        "A2": ("grey", "A2", "CEFR A1 单词数量", "secondary"),
+        "B1": ("red", "B1", "CEFR B1 单词数量", "danger"),
+        "B2": ("violet", "B2", "CEFR B2 单词数量", "info"),
+        "C1": ("blue", "C1", "CEFR C1 单词数量", "light"),
+        "C2": ("rainbow", "C2", "CEFR C2 单词数量", "dark"),
         "未分级": ("green", "未分级", "未分级单词数量", "dark"),
     }
 )
