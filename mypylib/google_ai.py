@@ -251,7 +251,7 @@ def generate_word_test(model_name, model, word, level):
 
 
 SCENARIO_TEMPLATE = """
-为{}模拟20个场景列表
+为{}模拟30个场景列表
 """
 
 
