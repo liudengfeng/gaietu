@@ -74,14 +74,20 @@ def get_synthesize_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # 创建一个足够大的 bytes 对象
-    audio_bytes = bytes(1024)
-    # 将 bytes 对象转换为 bytearray 对象
-    audio_buffer = bytearray(audio_bytes)
-    # 从音频数据流中读取数据
-    num_bytes_read = audio_data.read_data(bytes(audio_buffer))
+    # 创建一个 bytearray 对象来存储音频数据
+    audio_buffer = bytearray()
+    # 创建一个临时的 bytes 对象
+    temp_buffer = bytes(1024)
+    while True:
+        # 从音频数据流中读取数据
+        num_bytes_read = audio_data.read_data(temp_buffer)
+        if num_bytes_read == 0:
+            # 如果没有更多的数据可以读取，就跳出循环
+            break
+        # 将读取的数据添加到 audio_buffer 中
+        audio_buffer.extend(temp_buffer[:num_bytes_read])
     # 返回音频数据
-    return bytes(audio_buffer[:num_bytes_read])
+    return bytes(audio_buffer)
 
 
 # endregion
