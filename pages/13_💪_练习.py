@@ -191,8 +191,6 @@ if menu.endswith("听说练习"):
                 level_dict.update({"总字数": total_words})
                 view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
                 st.markdown("**对话内容**")
-                st.divider()
-
                 for d in dialogue:
                     st.markdown(d)
 
