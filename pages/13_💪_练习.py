@@ -70,7 +70,7 @@ if "text_model" not in st.session_state:
 
 
 @st.cache(show_spinner="使用 Azure 将文本合成语音...")
-def get_synthesis_result(text, voice):
+def get_synthesis_speech(text, voice):
     return synthesize_speech_to_audio_data(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
@@ -222,7 +222,7 @@ if menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
         if st.button("合成语音"):
-            result = get_synthesis_result(text, m_voice_style[0])
+            result = get_synthesis_speech(text, m_voice_style[0])
             # audio_duration 合成音频的持续时间。
             # st.audio(result.audio_data, format="audio/wav")
             st.audio(result, format="audio/wav")
