@@ -144,9 +144,10 @@ if menu.endswith("听说练习"):
                 )
         with sub_tabs[2]:
             if st.session_state.stage == 2:
-                ignore = st.checkbox("添加情节", key="add_interesting_plot")
+                ignore = st.toggle("跳过添加情节", key="add_interesting_plot")
                 if ignore:
                     st.session_state.stage = 3
+                st.divider()
                 interesting_plot = st.text_area(
                     "添加一些有趣的情节【可选】",
                     height=200,
