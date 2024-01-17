@@ -6,7 +6,12 @@ from typing import Callable, List
 from datetime import datetime
 import streamlit as st
 from faker import Faker
-from vertexai.preview.generative_models import GenerationConfig, GenerativeModel, Part
+from vertexai.preview.generative_models import (
+    GenerationConfig,
+    GenerativeModel,
+    Part,
+    ResponseBlockedError,
+)
 import pytz
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
@@ -92,7 +97,7 @@ def display_generated_content_and_update_token(
                 full_response += chunk.text
                 total_tokens += chunk._raw_response.usage_metadata.total_token_count
                 # st.write(f"流式块 令牌数：{chunk._raw_response.usage_metadata}")
-            except (IndexError, ValueError) as e:
+            except (IndexError, ValueError, ResponseBlockedError) as e:
                 st.write(chunk)
                 st.error(e)
             time.sleep(0.05)
