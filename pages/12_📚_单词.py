@@ -25,6 +25,7 @@ from mypylib.st_helper import (
     create_learning_records,
     format_token_count,
     get_mini_dict_doc,
+    handle_learning_record,
     save_and_clear_all_learning_records,
     save_and_clear_learning_records,
     select_word_image_urls,
@@ -201,35 +202,7 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-def handle_learning_record(direction):
-    item = st.session_state["current-page"]
-    if len(st.session_state["learning-time"][item]) == 0:
-        create_learning_records(item)
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            # 执行原函数
-            result = func(*args, **kwargs)
-            idx = st.session_state[WORD_IDX_MAPS[item]]
-            # 获取当前单词的学习记录
-            current_record = st.session_state["learning-time"][item][idx]
-            # 开始记录
-            current_record.start()
-
-            # 根据 direction 参数来计算上一个单词的索引
-            prev_idx = idx - 1 if direction == "next" else idx + 1
-            # 如果下一个单词有效
-            if 0 <= prev_idx < len(st.session_state["learning-time"][item]):
-                # 获取下一个单词的学习记录
-                prev_record = st.session_state["learning-time"][item][prev_idx]
-                # 结束此前单词的学习记录
-                prev_record.end()
-
-            return result
-
-        return wrapper
-
-    return decorator
 
 
 # endregion

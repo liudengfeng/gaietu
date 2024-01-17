@@ -23,6 +23,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
+    handle_learning_record,
     save_and_clear_all_learning_records,
     setup_logger,
     view_md_badges,
@@ -224,6 +225,15 @@ if menu.endswith("听说练习"):
                     st.markdown(d)
 
     with tabs[1]:
+
+        @handle_learning_record("prev")
+        def on_prev_btn_click():
+            st.session_state["ls-idx"] -= 1
+
+        @handle_learning_record("next")
+        def on_next_btn_click():
+            st.session_state["ls-idx"] += 1
+
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         if len(dialogue) == 0:
             st.warning("请先配置场景")
@@ -240,14 +250,14 @@ if menu.endswith("听说练习"):
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-prev",
             help="✨ 点击按钮，切换到上一单词拼图。",
-            # on_click=on_prev_puzzle_btn_click,
+            on_click=on_prev_btn_click,
             disabled=st.session_state["ls-idx"] < 0,
         )
         next_btn = ls_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
             key="ls-next",
             help="✨ 点击按钮，切换到下一单词拼图。",
-            # on_click=on_next_puzzle_btn_click,
+            on_click=on_next_btn_click,
             disabled=len(dialogue) == 0
             or st.session_state["ls-idx"] == len(dialogue) - 1,  # type: ignore
         )
@@ -257,9 +267,20 @@ if menu.endswith("听说练习"):
             help="✨ 聆听发音",
             disabled=st.session_state["ls-idx"] == -1,
         )
-        # text = st.text_input("输入文本", "", help="✨ 输入您想要合成语音的文本。")
-        # if st.button("合成语音"):
-        #     result = get_synthesis_speech(text, m_voice_style[0])
-        #     # audio_duration 合成音频的持续时间。
-        #     # st.audio(result.audio_data, format="audio/wav")
-        #     st.audio(result, format="audio/wav")
+
+        content_cols = st.columns(2)
+
+        if prev_btn:
+            sentence = dialogue[st.session_state["ls-idx"]]
+            content_cols[0].markdown(sentence)
+
+        if next_btn:
+            sentence = dialogue[st.session_state["ls-idx"]]
+            content_cols[0].markdown(sentence)
+
+        if play_btn:
+            sentence = dialogue[st.session_state["ls-idx"]]
+            content_cols[0].audio(
+                get_synthesis_speech(sentence, m_voice_style[0]), format="audio/wav"
+            )
+            content_cols[0].markdown(sentence)
