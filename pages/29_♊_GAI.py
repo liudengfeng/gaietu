@@ -75,7 +75,6 @@ if "multimodal_examples" not in st.session_state:
 def initialize_chat_session():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
-    logger.info(f"model loaded:{model._model_name}")
     history = []
     for user, ai in st.session_state["examples_pair"]:
         history.append({"role": "user", "parts": [user]})
@@ -297,7 +296,7 @@ if menu == "聊天机器人":
     check_and_force_logout(sidebar_status)
 
     # endregion
-
+    # TODO: 使用 chat = model.start_chat() chat.history
     # region 主页面
     st.subheader(":robot_face: Gemini 聊天机器人")
     if "chat_session" not in st.session_state:
