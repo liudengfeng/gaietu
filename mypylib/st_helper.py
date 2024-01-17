@@ -424,6 +424,8 @@ def save_and_clear_learning_records(item):
     ):
         if "learning-time" not in st.session_state:
             return
+        if not st.session_state["learning-time"].get(item):
+            return
         # 如果有学习记录
         if len(st.session_state["learning-time"][item]) >= 1:
             # 结束所有学习记录
