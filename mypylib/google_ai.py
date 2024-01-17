@@ -270,3 +270,41 @@ def generate_scenarios(model, subject):
         stream=False,
         parser=lambda x: [line for line in x.strip().splitlines() if line],
     )
+
+
+DIALOGUE_TEMPLATE = """
+参考以下内容，模拟一段英语对话：
+- 对话双方：男孩：{boy_name} 和女孩：{girl_name} 
+- 场景：{scenario} 
+- 情节： {plot}
+- 难度为：{difficulty}
+- 使用地道英语，不要使用中式英语
+
+对话难度及字数说明：
+初级：对话字数在200-300字左右；
+中级：字数在300-500字左右；
+高级：字数在500-1000字左右。
+"""
+
+
+def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
+    prompt = DIALOGUE_TEMPLATE.format(
+        boy_name=boy_name,
+        girl_name=girl_name,
+        scenario=scenario,
+        plot=plot,
+        difficulty=difficulty,
+    )
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.75, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "生成对话",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: [line for line in x.strip().splitlines() if line],
+    )

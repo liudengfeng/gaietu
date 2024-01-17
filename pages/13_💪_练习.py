@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
-
+import random
 import streamlit as st
-from mypylib.google_ai import generate_scenarios, load_vertex_model
+from mypylib.google_ai import generate_scenarios, load_vertex_model, generate_dialogue
 
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -68,44 +68,77 @@ if menu.endswith("听说练习"):
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
 
-    steps = ["配置场景", "选择难度", "选择语音风格", "开始练习"]
-
-    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景，请稍候...")
+    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
     def generate_scenarios_for(category: str):
         return generate_scenarios(st.session_state["text_model"], category)
+
+    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
+    def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
+        boy_name = random.choice(NAMES["en-US"]["male"])
+        girl_name = random.choice(NAMES["en-US"]["female"])
+        return generate_dialogue(
+            st.session_state["text_model"],
+            boy_name,
+            girl_name,
+            selected_scenario,
+            interesting_plot,
+            difficulty,
+        )
 
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
 
-    tabs = st.tabs(steps)
+    tabs = st.tabs(["配置场景", "开始练习"])
+
+    if "stage" not in st.session_state:
+        st.session_state.stage = 0
+
+    def set_state(i):
+        st.session_state.stage = i
 
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
-        difficulty = st.selectbox("难度", ["初级", "中级", "高级"], key="difficulty")
-        scenario_category = st.selectbox(
-            "场景类别",
-            ["日常生活", "职场沟通", "学术研究"],
-            key="scenario_category",
-            placeholder="请选择场景类别",
-        )
-        selected_scenario = st.selectbox(
-            "选择场景",
-            generate_scenarios_for(scenario_category),
-            key="selected_scenario",
-            placeholder="请选择您感兴趣的场景",
-        )
-        interesting_plot = st.text_area(
-            "添加一些有趣的情节",
-            height=200,
-            key="interesting_plot",
-            placeholder="""您可以在这里添加一些有趣的情节。比如：
+        steps = ["1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
+        sub_tabs = st.tabs(steps)
+        with sub_tabs[0]:
+            scenario_category = st.selectbox(
+                "场景类别",
+                ["日常生活", "职场沟通", "学术研究"],
+                key="scenario_category",
+                placeholder="请选择场景类别",
+            )
+        with sub_tabs[1]:
+            selected_scenario = st.selectbox(
+                "选择场景",
+                generate_scenarios_for(scenario_category),
+                key="selected_scenario",
+                placeholder="请选择您感兴趣的场景",
+            )
+        with sub_tabs[2]:
+            interesting_plot = st.text_area(
+                "添加一些有趣的情节",
+                height=200,
+                key="interesting_plot",
+                placeholder="""您可以在这里添加一些有趣的情节。比如：
 - 同事问了一个非常奇怪的问题，让你忍俊不禁。
 - 同事在工作中犯了一个错误，但他能够及时发现并改正。
 - 同事在工作中遇到
             """,
-        )
+            )
+        with sub_tabs[3]:
+            difficulty = st.selectbox(
+                "难度",
+                ["初级", "中级", "高级"],
+                key="difficulty",
+                placeholder="请选择您感兴趣的场景",
+            )
+        with sub_tabs[4]:
+            dialogue = generate_dialogue_for(
+                selected_scenario, interesting_plot, difficulty
+            )
+            st.markdown(dialogue)
 
     with tabs[1]:
         st.subheader("选择难度", divider="rainbow", anchor="选择难度")
