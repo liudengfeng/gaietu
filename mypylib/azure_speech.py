@@ -62,6 +62,19 @@ def synthesize_speech_to_file(
 def synthesize_speech(
     text, speech_key, service_region, voice_name="en-US-JennyMultilingualNeural"
 ):
+    """
+    Synthesizes speech from the given text using Azure Speech service.
+
+    Args:
+        text (str): The text to be synthesized into speech.
+        speech_key (str): The subscription key for the Speech service.
+        service_region (str): The region where the Speech service is hosted.
+        voice_name (str, optional): The name of the voice to be used for synthesis.
+            Defaults to "en-US-JennyMultilingualNeural".
+
+    Returns:
+        SpeechSynthesisResult: The result of the speech synthesis operation.
+    """
     speech_config = speechsdk.SpeechConfig(
         subscription=speech_key, region=service_region
     )
@@ -69,9 +82,7 @@ def synthesize_speech(
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=None
     )
-    # SpeechSynthesisResult
     result = speech_synthesizer.speak_text_async(text).get()
-    # audio_duration 合成音频的持续时间。
     return result
 
 
