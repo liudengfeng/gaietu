@@ -68,7 +68,7 @@ if menu.endswith("听说练习"):
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
 
-    steps = ["生成场景", "选择难度", "选择语音风格", "开始练习"]
+    steps = ["配置场景", "选择难度", "选择语音风格", "开始练习"]
 
     @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景，请稍候...")
     def generate_scenarios_for(category: str):
@@ -82,7 +82,7 @@ if menu.endswith("听说练习"):
     tabs = st.tabs(steps)
 
     with tabs[0]:
-        st.subheader("生成场景", divider="rainbow", anchor="生成场景")
+        st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         difficulty = st.selectbox("难度", ["初级", "中级", "高级"], key="difficulty")
         scenario_category = st.selectbox(
             "场景类别",
@@ -98,7 +98,6 @@ if menu.endswith("听说练习"):
         )
         interesting_plot = st.text_area(
             "添加一些有趣的情节",
-            selected_scenario,
             height=200,
             key="interesting_plot",
             placeholder="""您可以在这里添加一些有趣的情节。比如：
