@@ -362,6 +362,27 @@ PAGE_CONTENT_MAPS = {
 }
 
 
+def on_page_changed():
+    """
+    检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
+    """
+    # 在会话状态中设置上一页
+    if "previous_page" not in st.session_state:
+        st.session_state["previous_page"] = None
+
+    # 如果当前页和上一页不同，保存上一页的学习时长
+    if st.session_state["current_page"] != st.session_state["previous_page"]:
+        if st.session_state["previous_page"] is not None:
+            # 保存上一页的学习时长到数据库
+            # save_learning_time_to_db(st.session_state["previous_page"])
+            logger.info(f"保存上一页的学习时长到数据库：{st.session_state['previous_page']}")
+        # 更新上一页为当前页
+        st.session_state["previous_page"] = st.session_state["current_page"]
+    logger.info(
+        f"上一页：{st.session_state['previous_page']} 当前页：{st.session_state['current_page']}"
+    )
+
+
 def initialize_learning_time(menu_names):
     if "learning-time" not in st.session_state:
         d = {}

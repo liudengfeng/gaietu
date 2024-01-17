@@ -10,7 +10,7 @@ from mypylib.auth_utils import is_valid_email, is_valid_phone_number
 from mypylib.constants import CEFR_LEVEL_MAPS, FAKE_EMAIL_DOMAIN, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
-from mypylib.st_helper import check_and_force_logout, get_firestore_client
+from mypylib.st_helper import check_and_force_logout, get_firestore_client, on_page_changed
 
 
 # 创建 Fernet 实例【必须将key转换为bytes类型】
@@ -21,6 +21,10 @@ st.set_page_config(
     page_icon=":bust_in_silhouette:",
     layout="wide",
 )
+
+st.session_state["current-page"] = "用户注册"
+
+on_page_changed()
 
 if "dbi" not in st.session_state:
     st.session_state["dbi"] = DbInterface(get_firestore_client())

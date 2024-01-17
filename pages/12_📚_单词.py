@@ -25,6 +25,7 @@ from mypylib.st_helper import (
     # create_learning_records,
     format_token_count,
     get_mini_dict_doc,
+    on_page_changed,
     # handle_learning_record,
     # save_and_clear_all_learning_records,
     # save_and_clear_learning_records,
@@ -52,6 +53,8 @@ st.set_page_config(
 
 check_access(False)
 st.session_state["current-page"] = "单词"
+on_page_changed()
+
 # save_and_clear_all_learning_records()
 configure_google_apis()
 sidebar_status = st.sidebar.empty()

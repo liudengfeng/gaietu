@@ -15,7 +15,12 @@ from mypylib.auth_utils import is_valid_email
 from mypylib.constants import PROVINCES, CEFR_LEVEL_MAPS
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
-from mypylib.st_helper import check_access, check_and_force_logout, save_and_clear_all_learning_records, setup_logger
+from mypylib.st_helper import (
+    check_access,
+    check_and_force_logout,
+    on_page_changed,
+    setup_logger,
+)
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 FEEDBACK_DIR = CURRENT_CWD / "resource" / "feedback"
@@ -35,7 +40,8 @@ st.set_page_config(
 
 check_access(False)
 st.session_state["current-page"] = "用户"
-save_and_clear_all_learning_records()
+
+on_page_changed()
 # region 侧边栏
 
 sidebar_status = st.sidebar.empty()

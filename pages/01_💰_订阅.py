@@ -3,8 +3,14 @@ from pathlib import Path
 import streamlit as st
 from PIL import Image
 
+from mypylib.st_helper import on_page_changed
+
 CURRENT_CWD: Path = Path(__file__).parent.parent
 WXSKM_DIR = CURRENT_CWD / "resource" / "wxskm"
+
+st.session_state["current-page"] = "订阅套餐"
+
+on_page_changed()
 
 # region 订阅付费
 

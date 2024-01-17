@@ -18,6 +18,7 @@ from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
 from mypylib.st_helper import (
     check_and_force_logout,
     get_firestore_client,
+    on_page_changed,
     # save_and_clear_all_learning_records,
     setup_logger,
 )
@@ -39,6 +40,8 @@ st.set_page_config(
 
 st.session_state["current-page"] = "Home"
 # save_and_clear_all_learning_records()
+
+on_page_changed()
 
 if "dbi" not in st.session_state:
     st.session_state["dbi"] = DbInterface(get_firestore_client())
