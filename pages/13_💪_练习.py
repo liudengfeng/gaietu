@@ -197,7 +197,7 @@ if menu.endswith("听说练习"):
                     index=None,
                     on_change=set_state,
                     args=(4,),
-                    placeholder="请选择您感兴趣的场景",
+                    placeholder="请选择难度",
                 )
         with sub_tabs[4]:
             if st.session_state.stage == 4 or difficulty is not None:
