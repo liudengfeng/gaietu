@@ -369,6 +369,9 @@ def on_page_changed():
     # 在会话状态中设置上一页
     if "previous_page" not in st.session_state:
         st.session_state["previous_page"] = None
+    
+    if "current_page" not in st.session_state:
+        st.session_state["current_page"] = ""
 
     # 如果当前页和上一页不同，保存上一页的学习时长
     if st.session_state["current_page"] != st.session_state["previous_page"]:
