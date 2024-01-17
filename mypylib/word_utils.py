@@ -4,7 +4,9 @@ import io
 import json
 import os
 import random
+import re
 import string
+from collections import defaultdict
 from io import BytesIO
 from pathlib import Path
 from typing import Union
@@ -147,6 +149,46 @@ def get_lowest_cefr_level(word):
         if word in cefr[level_flag]:
             return level
     return None
+
+
+def count_words_and_get_levels(text):
+    """
+    统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
+
+    参数：
+    text (str)：要处理的文本。
+
+    返回值：
+    tuple：包含两个元素的元组，第一个元素是文本中的单词数量，第二个元素是一个字典，包含每个等级的单词数量。
+
+    示例：
+    >>> count_words_and_get_levels("Hello world! This is a test.")
+    (5, {'未定义': 5})
+    """
+
+    # 移除所有标点符号并转换为小写
+    text = re.sub(r"[^\w\s]", "", text).lower()
+
+    # 获取所有唯一的单词
+    words = set(text.split())
+
+    # 初始化字典
+    levels = defaultdict(int)
+
+    # 遍历所有的单词
+    for word in words:
+        # 获取单词的最低 CEFR 等级
+        level = get_lowest_cefr_level(word)
+
+        # 如果单词没有 CEFR 等级，将等级设置为 "未定义"
+        if level is None:
+            level = "未定义"
+
+        # 将等级添加到字典中
+        levels[level] += 1
+
+    # 返回总字数和字典
+    return len(words), dict(levels)
 
 
 def sample_words(level, n):

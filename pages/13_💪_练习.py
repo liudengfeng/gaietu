@@ -1,9 +1,16 @@
 import json
-from pathlib import Path
 import random
-import streamlit as st
-from mypylib.google_ai import generate_scenarios, load_vertex_model, generate_dialogue
+from pathlib import Path
 
+import streamlit as st
+
+from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
+from mypylib.google_ai import (
+    generate_dialogue,
+    generate_scenarios,
+    load_vertex_model,
+    summarize_in_one_sentence,
+)
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     check_access,
@@ -12,7 +19,7 @@ from mypylib.st_helper import (
     format_token_count,
     save_and_clear_all_learning_records,
 )
-from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
+from mypylib.word_utils import count_words_and_get_levels
 
 # region 配置
 
@@ -86,6 +93,10 @@ if menu.endswith("听说练习"):
             difficulty,
         )
 
+    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
+    def summarize_in_one_sentence_for(dialogue: str):
+        return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
+
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
@@ -139,6 +150,16 @@ if menu.endswith("听说练习"):
             dialogue = generate_dialogue_for(
                 selected_scenario, interesting_plot, difficulty
             )
+            summarize = summarize_in_one_sentence_for(dialogue)
+            st.markdown(f"**{summarize}**")
+            st.divider()
+            total_words, level_dict = count_words_and_get_levels(dialogue)
+            markdown_text = f"总字数：{total_words}\n\n"
+            for level, count in level_dict.items():
+                markdown_text += f"- {level}：{count}\n"
+            st.markdown(markdown_text)
+            st.divider()
+            
             for d in dialogue:
                 st.markdown(d)
 

@@ -310,3 +310,26 @@ def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
         stream=False,
         parser=lambda x: [line for line in x.strip().splitlines() if line],
     )
+
+
+ONE_SUMMARY_TEMPLATE = """使用中文简体一句话概要以下文本
+文本：{text}。"""
+
+
+def summarize_in_one_sentence(model, text):
+    # 使用模型的 summarize 方法来生成文本的一句话中文概要
+    prompt = ONE_SUMMARY_TEMPLATE.format(text)
+    # 返回概要
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.75, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "一句话概述",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: x,
+    )
