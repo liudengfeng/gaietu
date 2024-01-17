@@ -70,12 +70,14 @@ if menu.endswith("听说练习"):
 
     steps = ["生成场景", "选择难度", "选择语音风格", "开始练习"]
 
+    @st.cache_data(ttl=60 * 60 * 24)
+    def generate_scenarios_for(category: str):
+        # with st.spinner("正在加载场景，请稍候..."):
+        return generate_scenarios(st.session_state["text_model"], category)
+
     def on_scenario_category_changed():
         cate = st.session_state["scenario_category"]
-        with st.spinner("正在加载场景，请稍候..."):
-            st.session_state["scenario-options"] = generate_scenarios(
-                st.session_state["text_model"], cate
-            )
+        st.session_state["scenario-options"] = generate_scenarios_for(cate)
 
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
