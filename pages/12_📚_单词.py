@@ -18,16 +18,16 @@ from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
-    WORD_IDX_MAPS,
+    PAGE_IDX_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    create_learning_records,
+    # create_learning_records,
     format_token_count,
     get_mini_dict_doc,
-    handle_learning_record,
-    save_and_clear_all_learning_records,
-    save_and_clear_learning_records,
+    # handle_learning_record,
+    # save_and_clear_all_learning_records,
+    # save_and_clear_learning_records,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -52,7 +52,7 @@ st.set_page_config(
 
 check_access(False)
 st.session_state["current-page"] = "单词"
-save_and_clear_all_learning_records()
+# save_and_clear_all_learning_records()
 configure_google_apis()
 sidebar_status = st.sidebar.empty()
 # 在页面加载时检查是否有需要强制退出的登录会话
@@ -82,18 +82,20 @@ else:
         if item not in st.session_state["learning-time"]:
             st.session_state["learning-time"][item] = []
 
+
 def on_menu_change():
     item = st.session_state["current-page"]
-    save_and_clear_learning_records(item)
+    # save_and_clear_learning_records(item)
 
 
-menu = st.sidebar.selectbox(
+menu: str = st.sidebar.selectbox(
     "菜单",
     menu_opts,
+    index=0,
     key="word_dict_menu",
     on_change=on_menu_change,
     help="在这里选择你想要进行的操作。",
-)
+)  # type: ignore
 # 更新当前页面
 st.session_state["current-page"] = menu.split(" ", 1)[1]
 
@@ -205,9 +207,6 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-
-
-
 # endregion
 
 # region 闪卡状态
@@ -238,16 +237,13 @@ def reset_flashcard_word(clear=True):
     st.session_state["flashcard-idx"] = -1
 
 
-if menu and menu.endswith("闪卡记忆"):
+def on_prev_btn_click():
+    st.session_state["flashcard-idx"] -= 1
 
-    @handle_learning_record("prev")
-    def on_prev_btn_click():
-        st.session_state["flashcard-idx"] -= 1
 
-    @handle_learning_record("next")
-    def on_next_btn_click():
-        # 记录当前单词的开始时间
-        st.session_state["flashcard-idx"] += 1
+def on_next_btn_click():
+    # 记录当前单词的开始时间
+    st.session_state["flashcard-idx"] += 1
 
 
 template = """
@@ -464,19 +460,16 @@ def display_puzzle_definition():
     st.markdown(msg)
 
 
-if menu and menu.endswith("拼图游戏"):
+def on_prev_puzzle_btn_click():
+    st.session_state["puzzle-idx"] -= 1
+    # st.session_state.puzzle_answer_value = ""
+    st.session_state.puzzle_answer = ""
 
-    @handle_learning_record("prev")
-    def on_prev_puzzle_btn_click():
-        st.session_state["puzzle-idx"] -= 1
-        # st.session_state.puzzle_answer_value = ""
-        st.session_state.puzzle_answer = ""
 
-    @handle_learning_record("next")
-    def on_next_puzzle_btn_click():
-        st.session_state["puzzle-idx"] += 1
-        # st.session_state.puzzle_answer_value = ""
-        st.session_state.puzzle_answer = ""
+def on_next_puzzle_btn_click():
+    st.session_state["puzzle-idx"] += 1
+    # st.session_state.puzzle_answer_value = ""
+    st.session_state.puzzle_answer = ""
 
 
 def handle_puzzle_input(word_lib):
@@ -730,15 +723,12 @@ def reset_test_words():
     st.session_state["user-answer"] = []
 
 
-if menu and menu.endswith("词意测试"):
+def on_prev_test_btn_click():
+    st.session_state["word-test-idx"] -= 1
 
-    @handle_learning_record("prev")
-    def on_prev_test_btn_click():
-        st.session_state["word-test-idx"] -= 1
 
-    @handle_learning_record("next")
-    def on_next_test_btn_click():
-        st.session_state["word-test-idx"] += 1
+def on_next_test_btn_click():
+    st.session_state["word-test-idx"] += 1
 
 
 def check_word_test_answer(container, level):
@@ -998,9 +988,9 @@ if menu and menu.endswith("闪卡记忆"):
     if refresh_btn:
         reset_flashcard_word(False)
         item = st.session_state["current-page"]
-        save_and_clear_learning_records(item)
+        # save_and_clear_learning_records(item)
         # 新记录
-        create_learning_records(item)
+        # create_learning_records(item)
         st.rerun()
 
     if play_btn:
@@ -1117,9 +1107,9 @@ elif menu and menu.endswith("拼图游戏"):
     if refresh_btn:
         reset_puzzle_word()
         item = st.session_state["current-page"]
-        save_and_clear_learning_records(item)
+        # save_and_clear_learning_records(item)
         # 新记录
-        create_learning_records(item)
+        # create_learning_records(item)
         st.rerun()
 
     if prev_btn:
@@ -1387,14 +1377,14 @@ elif menu and menu.endswith("词意测试"):
 
     if refresh_btn:
         reset_test_words()
-        st.session_state["user-answer"] = [None] * test_num
-        st.session_state["word-tests"] = [None] * test_num
+        st.session_state["user-answer"] = [None] * test_num  # type: ignore
+        st.session_state["word-tests"] = [None] * test_num  # type: ignore
         generate_page_words(word_lib, test_num, "test-words", True)
         # 学习记录
         item = st.session_state["current-page"]
-        save_and_clear_learning_records(item)
+        # save_and_clear_learning_records(item)
         # 新记录
-        create_learning_records(item)
+        # create_learning_records(item)
         st.rerun()
 
     if (
@@ -1432,10 +1422,11 @@ elif menu and menu.endswith("词库管理"):
     word_lib = st.sidebar.selectbox(
         "词库",
         sorted(list(st.session_state.word_dict.keys())),
+        index=0,
         key="lib-selected",
         format_func=word_lib_format_func,
         help="✨ 选择一个基准词库，用于生成个人词库。",
-    )
+    )  # type: ignore
 
     st.subheader(":books: 词库管理", divider="rainbow", anchor=False)
     st.markdown(
