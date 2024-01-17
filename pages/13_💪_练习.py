@@ -243,11 +243,11 @@ if menu.endswith("听说练习"):
 
     with tabs[1]:
 
-        @handle_learning_record("prev")
+        # @handle_learning_record("prev")
         def on_prev_btn_click():
             st.session_state["ls-idx"] -= 1
 
-        @handle_learning_record("next")
+        # @handle_learning_record("next")
         def on_next_btn_click():
             st.session_state["ls-idx"] += 1
 
