@@ -268,5 +268,5 @@ def generate_scenarios(model, subject):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: x.splitlines(),
+        parser=lambda x: [line for line in x.strip().splitlines() if line],
     )
