@@ -139,7 +139,8 @@ if menu.endswith("听说练习"):
             dialogue = generate_dialogue_for(
                 selected_scenario, interesting_plot, difficulty
             )
-            st.markdown(dialogue)
+            for d in dialogue:
+                st.markdown(d)
 
     with tabs[1]:
         st.subheader("选择难度", divider="rainbow", anchor="选择难度")
