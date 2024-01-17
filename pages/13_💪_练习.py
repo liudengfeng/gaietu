@@ -190,6 +190,7 @@ if menu.endswith("听说练习"):
                 )
         with sub_tabs[3]:
             if st.session_state.stage == 3 or interesting_plot is not None or ignore:
+                st.info("选择特定的难度后，AI需要生成对话，这可能需要6~10秒的时间。", icon="🚨")
                 difficulty = st.selectbox(
                     "难度",
                     ["初级", "中级", "高级"],
