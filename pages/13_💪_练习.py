@@ -183,7 +183,8 @@ if menu.endswith("听说练习"):
                 summarize = summarize_in_one_sentence_for(dialogue)
                 st.markdown(f"**{summarize}**")
                 st.divider()
-                total_words, level_dict = count_words_and_get_levels(dialogue)
+                dialogue_text = ' '.join(dialogue)
+                total_words, level_dict = count_words_and_get_levels(dialogue_text)
                 markdown_text = f"总字数：{total_words}\n\n"
                 for level, count in level_dict.items():
                     markdown_text += f"- {level}：{count}\n"
