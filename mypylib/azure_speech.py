@@ -59,7 +59,7 @@ def synthesize_speech_to_file(
     # stream.save_to_wav_file(fp)
 
 
-def synthesize_speech_to_stream(
+def synthesize_speech_to_result(
     text, speech_key, service_region, voice_name="en-US-JennyMultilingualNeural"
 ):
     speech_config = speechsdk.SpeechConfig(
@@ -69,11 +69,8 @@ def synthesize_speech_to_stream(
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=None
     )
-    result = speech_synthesizer.speak_text_async(text).get()
-    return result
-    # result = speech_synthesizer.start_speaking_text_async(text).get()
-    # stream = speechsdk.AudioDataStream(result)
-    # return stream
+    # SpeechSynthesisResult
+    return speech_synthesizer.speak_text_async(text).get()
 
 
 def speech_recognize_once_from_mic(

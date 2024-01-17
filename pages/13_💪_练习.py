@@ -5,7 +5,7 @@ from pathlib import Path
 import io
 import streamlit as st
 
-from mypylib.azure_speech import synthesize_speech_to_file, synthesize_speech_to_stream
+from mypylib.azure_speech import synthesize_speech_to_file, synthesize_speech_to_result
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.google_ai import (
     generate_dialogue,
@@ -66,36 +66,16 @@ if "text_model" not in st.session_state:
 # region 函数
 
 
-# @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
-# def get_synthesize_speech(text, voice):
-#     audio_data_stream = synthesize_speech_to_stream(
-#         text,
-#         st.secrets["Microsoft"]["SPEECH_KEY"],
-#         st.secrets["Microsoft"]["SPEECH_REGION"],
-#         voice,
-#     )
-#     audio_buffer = bytes(16000)
-#     filled_size = audio_data_stream.read_data(audio_buffer)
-#     while filled_size > 0:
-#         filled_size = audio_data_stream.read_data(audio_buffer)
-#     return audio_buffer
-
-
 # @st.cache(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_result(text, voice):
-    synthesis_result = synthesize_speech_to_stream(
+    result = synthesize_speech_to_result(
         text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    return synthesis_result.audio_data
-    # audio_buffer = bytearray(16000)
-    # filled_size = audio_data_stream.read_data(bytes(audio_buffer))
-    # while filled_size > 0:
-    #     audio_buffer.extend(audio_buffer[:filled_size])
-    #     filled_size = audio_data_stream.read_data(bytes(audio_buffer))
-    # return bytes(audio_buffer)
+    st.toast(f"时长:{result.audio_duration} 秒")
+    return result.audio_data
 
 
 # endregion
