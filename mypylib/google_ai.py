@@ -275,6 +275,7 @@ def generate_scenarios(model, subject):
 DIALOGUE_TEMPLATE = """
 参考以下内容，模拟一段英语对话：
 - 对话双方：男孩：{boy_name} 和女孩：{girl_name} 
+- 对话只有两人，不要有其他人参与
 - 场景：{scenario} 
 - 情节： {plot}
 - 难度：{difficulty}
