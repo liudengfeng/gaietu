@@ -405,7 +405,7 @@ elif menu == "多模态AI":
         max_chars=64,
         help="✨ 停止序列是一连串字符（包括空格），如果模型中出现停止序列，则会停止生成回复。该序列不包含在回复中。您最多可以添加五个停止序列。",
     )
-    sidebar_status = st.sidebar.empty()
+    # sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
@@ -593,7 +593,7 @@ elif menu == "多模态AI":
 
 elif menu == "示例教程":
     # region 边栏
-    sidebar_status = st.sidebar.empty()
+    # sidebar_status = st.sidebar.empty()
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
