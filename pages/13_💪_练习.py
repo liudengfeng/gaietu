@@ -96,15 +96,15 @@ if menu.endswith("听说练习"):
             key="selected_scenario",
             placeholder="请选择您感兴趣的场景",
         )
-        st.text_area(
+        interesting_plot = st.text_area(
             "添加一些有趣的情节",
             selected_scenario,
             height=200,
-            key="scenario_description",
+            key="interesting_plot",
             placeholder="""您可以在这里添加一些有趣的情节。比如：
-- 同事问了一个非常奇怪的问题，让你忍俊不禁。
-- 同事在工作中犯了一个错误，但他能够及时发现并改正。
-- 同事在工作中遇到了困难，但他能够通过努力克服困难。
+            - 同事问了一个非常奇怪的问题，让你忍俊不禁。
+            - 同事在工作中犯了一个错误，但他能够及时发现并改正。
+            - 同事在工作中遇到
             """,
         )
 
