@@ -70,7 +70,7 @@ def synthesize_speech_to_stream(
         speech_config=speech_config, audio_config=None
     )
     result = speech_synthesizer.speak_text_async(text).get()
-    stream = speechsdk.audio.AudioDataStream(result)
+    stream = speechsdk.AudioDataStream(result)
     return stream
 
 
