@@ -89,7 +89,7 @@ def get_synthesis_result(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    return synthesis_result
+    return synthesis_result.audio_data
     # audio_buffer = bytearray(16000)
     # filled_size = audio_data_stream.read_data(bytes(audio_buffer))
     # while filled_size > 0:
@@ -243,4 +243,5 @@ if menu.endswith("听说练习"):
         if st.button("合成语音"):
             result = get_synthesis_result(text, m_voice_style[0])
             # audio_duration 合成音频的持续时间。
-            st.audio(result.audio_data, format="audio/wav")
+            # st.audio(result.audio_data, format="audio/wav")
+            st.audio(result, format="audio/wav")
