@@ -3,13 +3,8 @@ import logging
 import random
 from pathlib import Path
 import io
-import re
 import streamlit as st
 
-from mypylib.azure_speech import (
-    synthesize_speech_to_file,
-    synthesize_speech,
-)
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
@@ -25,6 +20,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
+    get_synthesis_speech,
     on_page_to,
     setup_logger,
     view_md_badges,
@@ -77,18 +73,6 @@ if "text_model" not in st.session_state:
 
 
 # region 函数
-
-
-@st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
-def get_synthesis_speech(text, voice):
-    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", text)
-    result = synthesize_speech(
-        sentence_without_speaker_name,
-        st.secrets["Microsoft"]["SPEECH_KEY"],
-        st.secrets["Microsoft"]["SPEECH_REGION"],
-        voice,
-    )
-    return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
 def create_learning_record(

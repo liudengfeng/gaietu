@@ -24,6 +24,7 @@ from mypylib.st_helper import (
     end_and_save_learning_records,
     format_token_count,
     get_mini_dict_doc,
+    get_synthesis_speech,
     on_page_to,
     select_word_image_urls,
     setup_logger,
@@ -898,7 +899,8 @@ if menu and menu.endswith("闪卡记忆"):
     st.markdown(
         """✨ 闪卡记忆是一种依赖视觉记忆的学习策略，通过展示与单词或短语含义相关的四幅图片，帮助用户建立和强化单词或短语与其含义之间的关联。这四幅图片的共同特性可以引导用户快速理解和记忆单词或短语的含义，从而提高记忆效率和效果。"""
     )
-
+    status_cols = st.columns(2)
+    play_audio_elem = status_cols[1].empty()
     update_and_display_progress(
         st.session_state["flashcard-idx"] + 1
         if st.session_state["flashcard-idx"] != -1
@@ -906,7 +908,7 @@ if menu and menu.endswith("闪卡记忆"):
         len(st.session_state["flashcard-words"])
         if len(st.session_state["flashcard-words"]) != 0
         else 1,
-        st.empty(),
+        status_cols[0],
         f'\t 当前单词：{st.session_state["flashcard-words"][st.session_state["flashcard-idx"]] if st.session_state["flashcard-idx"] != -1 else ""}',
     )
 
@@ -1000,13 +1002,16 @@ if menu and menu.endswith("闪卡记忆"):
     if play_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        record.start()
+        # record.start()
 
         # 使用会话缓存，避免重复请求
-        audio_html = get_audio_html(word, voice_style)
-        components.html(audio_html)
+        # audio_html = get_audio_html(word, voice_style)
+        # components.html(audio_html)
 
-        record.end()
+        result = get_synthesis_speech(word, voice_style)
+        play_audio_elem.audio(result["audio_data"], format="audio/mp3")
+        record.duration = result["audio_duration"]
+        # record.end()
         st.session_state.dbi.add_record_to_cache(record)
         # logger.info(f"{record.duration:.2f} 秒")
 
@@ -1393,7 +1398,7 @@ elif menu and menu.endswith("词意测试"):
             st.session_state["learning-record"][-1].end()
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
         record.start()
-    
+
     if refresh_btn:
         end_and_save_learning_records()
         reset_test_words()

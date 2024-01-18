@@ -1,5 +1,6 @@
 from collections import OrderedDict
 import logging
+import re
 import time
 from datetime import datetime, timedelta
 
@@ -10,6 +11,7 @@ from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
+from mypylib.azure_speech import synthesize_speech
 
 from mypylib.db_model import LearningTime
 
@@ -261,6 +263,18 @@ WORD_COUNT_BADGE_MAPS = OrderedDict(
         "未分级": ("green", "未分级", "未分级单词数量", "dark"),
     }
 )
+
+
+@st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
+def get_synthesis_speech(text, voice):
+    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", text)
+    result = synthesize_speech(
+        sentence_without_speaker_name,
+        st.secrets["Microsoft"]["SPEECH_KEY"],
+        st.secrets["Microsoft"]["SPEECH_REGION"],
+        voice,
+    )
+    return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
 @st.cache_resource(show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
