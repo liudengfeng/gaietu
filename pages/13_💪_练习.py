@@ -97,9 +97,9 @@ def on_next_btn_click(key):
 
 
 def on_word_test_radio_change(idx, options):
-    current = st.session_state["test_options"]
+    current = st.session_state["listening-test-options"]
     # 转换为索引
-    st.session_state["user-answer"][idx] = options.index(current)
+    st.session_state["listening-test-answer"][idx] = options.index(current)
 
 
 def view_listening_test(container):
