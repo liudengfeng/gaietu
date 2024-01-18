@@ -1110,18 +1110,23 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     if refresh_btn:
+        end_and_save_learning_records()
         reset_puzzle_word()
-        item = st.session_state["current-page"]
-        # save_and_clear_learning_records(item)
-        # 新记录
-        # create_learning_records(item)
         st.rerun()
 
     if prev_btn:
         prepare_puzzle()
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+        record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
+        record.start()
 
     if next_btn:
         prepare_puzzle()
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+        record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
+        record.start()
 
     if add_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
@@ -1371,6 +1376,11 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+        record = create_learning_record("word-test-idx", "test-words", "词意测试")
+        record.start()
+
     if next_test_btn:
         idx = st.session_state["word-test-idx"]
         word = st.session_state["test-words"][idx]
@@ -1379,8 +1389,13 @@ elif menu and menu.endswith("词意测试"):
                 st.session_state["word-tests"][idx] = generate_word_test(
                     "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
-
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+        record = create_learning_record("word-test-idx", "test-words", "词意测试")
+        record.start()
+    
     if refresh_btn:
+        end_and_save_learning_records()
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         st.session_state["word-tests"] = [None] * test_num  # type: ignore
