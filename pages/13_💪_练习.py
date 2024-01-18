@@ -163,7 +163,8 @@ if menu is not None and menu.endswith("听说练习"):
         st.session_state.stage = i
 
     # 对话变量
-    dialogue = []
+    if "conversation_scene" not in st.session_state:
+        st.session_state.conversation_scene = []
 
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
@@ -246,6 +247,7 @@ if menu is not None and menu.endswith("听说练习"):
                 st.markdown("**对话内容**")
                 for d in dialogue:
                     st.markdown(d)
+                st.session_state.conversation_scene = dialogue
 
     with tabs[1]:
 
@@ -256,7 +258,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["ls-idx"] += 1
 
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
-        if len(dialogue) == 0:
+        if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             st.stop()
         if "ls-idx" not in st.session_state:
