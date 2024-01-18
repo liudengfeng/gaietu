@@ -3,6 +3,7 @@ import logging
 import random
 from pathlib import Path
 import io
+import re
 import streamlit as st
 
 from mypylib.azure_speech import (
@@ -80,8 +81,9 @@ if "text_model" not in st.session_state:
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...")
 def get_synthesis_speech(text, voice):
+    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", text)
     result = synthesize_speech(
-        text,
+        sentence_without_speaker_name,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
