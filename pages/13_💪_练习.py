@@ -9,6 +9,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
+    generate_listening_test,
     generate_scenarios,
     load_vertex_model,
     summarize_in_one_sentence,
@@ -110,6 +111,12 @@ if menu is not None and menu.endswith("听说练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
+
+    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
+    def generate_listening_test_for(difficulty: str, conversation: str):
+        return generate_listening_test(
+            st.session_state["text_model"], difficulty, conversation
+        )
 
     @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
     def generate_scenarios_for(category: str):
@@ -234,6 +241,8 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state.conversation_scene = dialogue
 
     with tabs[1]:
+        if "learning-times" not in st.session_state:
+            st.session_state["learning-times"] = 0
 
         def on_prev_btn_click():
             st.session_state["ls-idx"] -= 1
@@ -242,12 +251,16 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["ls-idx"] += 1
 
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
+
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             st.stop()
+
         if "ls-idx" not in st.session_state:
             st.session_state["ls-idx"] = -1
+
         ls_btn_cols = st.columns(8)
+
         display_status_button = ls_btn_cols[0].button(
             "切换[:recycle:]",
             key="ls-mask",
@@ -265,19 +278,14 @@ if menu is not None and menu.endswith("听说练习"):
             key="ls-next",
             help="✨ 点击按钮，切换到下一单词拼图。",
             on_click=on_next_btn_click,
-            disabled=len(dialogue) == 0
-            or st.session_state["ls-idx"] == len(dialogue) - 1,  # type: ignore
+            disabled=len(st.session_state.conversation_scene) == 0
+            or st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1,  # type: ignore
         )
-        # play_btn = ls_btn_cols[3].button(
-        #     "播放[:sound:]",
-        #     key="ls-play",
-        #     help="✨ 聆听发音",
-        #     disabled=st.session_state["ls-idx"] == -1,
-        # )
 
         content_cols = st.columns(2)
 
         if prev_btn:
+            dialogue = st.session_state.conversation_scene
             idx = st.session_state["ls-idx"]
             sentence = dialogue[idx]
             voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
@@ -290,8 +298,11 @@ if menu is not None and menu.endswith("听说练习"):
             word_count = len(sentence.split())
             record = create_learning_record("听说练习", f"单词数量：{word_count}")
             record.start()
+
+            st.session_state["learning-times"] += 1
 
         if next_btn:
+            dialogue = st.session_state.conversation_scene
             idx = st.session_state["ls-idx"]
             sentence = dialogue[idx]
             voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
@@ -304,10 +315,23 @@ if menu is not None and menu.endswith("听说练习"):
             word_count = len(sentence.split())
             record = create_learning_record("听说练习", f"单词数量：{word_count}")
             record.start()
-        # if play_btn:
-        #     idx = st.session_state["ls-idx"]
-        #     sentence = dialogue[idx]
-        #     voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
-        #     result = get_synthesis_speech(sentence, voice_style[0])
-        #     content_cols[0].audio(result["audio_data"], format="audio/wav")
-        #     content_cols[0].markdown(sentence)
+
+            st.session_state["learning-times"] += 1
+
+    with tabs[2]:
+        st.subheader("听力测验", divider="rainbow", anchor="听力测验")
+
+        if len(st.session_state.conversation_scene) == 0:
+            st.warning("请先配置场景")
+            st.stop()
+
+        if st.session_state["learning-times"] == 0:
+            st.warning("请先完成听说练习")
+            st.stop()
+
+        if "listening-test" not in st.session_state:
+            st.session_state["listening-test"] = generate_listening_test_for(
+                difficulty, st.session_state.conversation_scene
+            )
+
+        st.write(st.session_state["listening-test"])
