@@ -23,7 +23,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     format_token_count,
-    on_page_changed,
+    on_page_to,
     # handle_learning_record,
     # save_and_clear_all_learning_records,
     setup_logger,
@@ -47,8 +47,7 @@ st.set_page_config(
 )
 
 check_access(False)
-on_page_changed()
-st.session_state["current-page"] = "练习"
+on_page_to("能力练习")
 # save_and_clear_all_learning_records()
 configure_google_apis()
 

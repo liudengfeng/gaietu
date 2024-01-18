@@ -2,7 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from mypylib.st_helper import on_page_changed
+from mypylib.st_helper import on_page_to
 
 st.set_page_config(
     page_title="帮助中心",
@@ -10,8 +10,7 @@ st.set_page_config(
     layout="centered",
 )
 
-on_page_changed()
-st.session_state["current-page"] = "帮助中心"
+on_page_to("帮助中心")
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VIDEO_DIR = CURRENT_CWD / "resource/video_tip"

@@ -4,7 +4,7 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    on_page_changed,
+    on_page_to,
 )
 
 # region 配置
@@ -16,8 +16,7 @@ st.set_page_config(
 )
 
 check_access(False)
-on_page_changed()
-st.session_state["current-page"] = "能力评估"
+on_page_to("能力评估")
 configure_google_apis()
 # endregion
 

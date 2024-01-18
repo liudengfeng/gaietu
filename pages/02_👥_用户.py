@@ -18,7 +18,7 @@ from mypylib.db_model import User
 from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
-    on_page_changed,
+    on_page_to,
     setup_logger,
 )
 
@@ -39,8 +39,7 @@ st.set_page_config(
 )
 
 check_access(False)
-on_page_changed()
-st.session_state["current-page"] = "用户"
+on_page_to("用户中心")
 
 # region 侧边栏
 
