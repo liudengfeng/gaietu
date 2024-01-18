@@ -87,8 +87,7 @@ def get_synthesis_speech(text, voice):
         st.secrets["Microsoft"]["SPEECH_REGION"],
         voice,
     )
-    # return result.audio_data  # type: ignore
-    return result
+    return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
 # endregion
@@ -293,5 +292,5 @@ if menu is not None and menu.endswith("听说练习"):
             sentence = dialogue[idx]
             voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
             result = get_synthesis_speech(sentence, voice_style[0])
-            content_cols[0].audio(result.audio_data, format="audio/wav")
+            content_cols[0].audio(result["audio_data"], format="audio/wav")
             content_cols[0].markdown(sentence)
