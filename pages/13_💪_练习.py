@@ -395,7 +395,7 @@ if menu is not None and menu.endswith("听说练习"):
         sumbit_test_btn = ls_text_btn_cols[2].button(
             "检查[:mag:]",
             key="submit-listening-test",
-            disabled=st.session_state["word-test-idx"] == -1
+            disabled=st.session_state["listening-test-idx"] == -1
             or len(st.session_state["listening-test-answer"]) == 0,
             help="✨ 至少完成一道测试题后，才可点击按钮，检查听力测验得分。",
         )
