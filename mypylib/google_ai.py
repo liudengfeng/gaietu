@@ -320,7 +320,6 @@ ONE_SUMMARY_TEMPLATE = """使用中文简体一句话概要以下文本
 def summarize_in_one_sentence(model, text):
     # 使用模型的 summarize 方法来生成文本的一句话中文概要
     prompt = ONE_SUMMARY_TEMPLATE.format(text=text)
-    # 返回概要
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.75, top_p=1.0
@@ -333,4 +332,38 @@ def summarize_in_one_sentence(model, text):
         generation_config,
         stream=False,
         parser=lambda x: x,
+    )
+
+
+LISTENING_TEST_TEMPLATE = """为了考察学生听力水平，根据学生语言水平，结合以下对话材料，出{number}道英语单选测试题：
+语言水平：{level}
+要求：
+- 测试题必须结合学生当前的语言水平
+- 与对话相关
+- 题干与选项要相关，逻辑清晰
+- 每道题四个选项，只有唯一正确答案
+- 四个选项前依次使用A、B、C、D标识，用"."与选项文本分隔
+- 随机分布正确答案，不要集中某一个标识
+- 输出题干、选项列表、答案[只需要标识字符]、解释、相关句子
+
+每一道题以字典形式表达，结果为列表，输出JSON格式。
+
+对话：{dialogue}"""
+
+
+def generate_listening_test(model, level, dialogue):
+    # 使用模型的 summarize 方法来生成文本的一句话中文概要
+    prompt = LISTENING_TEST_TEMPLATE.format(level=level, dialogue=dialogue)
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.2, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "听力测试",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
     )

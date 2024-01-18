@@ -138,7 +138,7 @@ if menu is not None and menu.endswith("听说练习"):
         help=TOEKN_HELP_INFO,
     )
 
-    tabs = st.tabs(["配置场景", "开始练习"])
+    tabs = st.tabs(["配置场景", "开始练习", "听力测验"])
 
     if "stage" not in st.session_state:
         st.session_state.stage = 0
