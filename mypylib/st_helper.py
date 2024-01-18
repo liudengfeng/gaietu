@@ -368,7 +368,7 @@ def end_and_save_learning_records():
 
     关闭未关闭的学习记录，并将其添加到缓存中。
     """
-    for r in st.session_state["learning-record"]:
+    for r in st.session_state.get("learning-record", []):
         logger.info(f"关闭：{r.project} {r.content}")
         r.end()
         st.session_state.dbi.add_record_to_cache(r)
