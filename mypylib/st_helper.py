@@ -386,8 +386,8 @@ def on_page_to(this_page: str = ""):
     if "current-page" not in st.session_state:
         st.session_state["current-page"] = None
 
-    if "learning-time" not in st.session_state:
-        st.session_state["learning-time"] = []
+    if "learning-record" not in st.session_state:
+        st.session_state["learning-record"] = []
 
     # 如果当前页和上一页不同，保存上一页的学习时长
     if st.session_state["current-page"] != this_page:
