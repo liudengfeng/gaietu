@@ -10,6 +10,7 @@ from mypylib.azure_speech import (
     synthesize_speech,
 )
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
+from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
     generate_scenarios,
@@ -86,6 +87,18 @@ def get_synthesis_speech(text, voice):
         voice,
     )
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
+
+
+def create_learning_record(
+    project,
+    words,
+):
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project=project,
+        content=words,
+    )
+    return record
 
 
 # endregion
@@ -284,6 +297,12 @@ if menu is not None and menu.endswith("听说练习"):
             content_cols[0].audio(result["audio_data"], format="audio/wav")
             content_cols[0].markdown(sentence)
 
+            if len(st.session_state["learning-record"]) > 0:
+                st.session_state["learning-record"][-1].end()
+            word_count = len(sentence.split())
+            record = create_learning_record("听说练习", f"单词数量：{word_count}")
+            record.start()
+
         if next_btn:
             idx = st.session_state["ls-idx"]
             sentence = dialogue[idx]
@@ -292,6 +311,11 @@ if menu is not None and menu.endswith("听说练习"):
             content_cols[0].audio(result["audio_data"], format="audio/wav")
             content_cols[0].markdown(sentence)
 
+            if len(st.session_state["learning-record"]) > 0:
+                st.session_state["learning-record"][-1].end()
+            word_count = len(sentence.split())
+            record = create_learning_record("听说练习", f"单词数量：{word_count}")
+            record.start()
         # if play_btn:
         #     idx = st.session_state["ls-idx"]
         #     sentence = dialogue[idx]
