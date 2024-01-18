@@ -24,8 +24,6 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     on_page_to,
-    # handle_learning_record,
-    # save_and_clear_all_learning_records,
     setup_logger,
     view_md_badges,
 )
@@ -47,7 +45,6 @@ st.set_page_config(
 )
 
 check_access(False)
-on_page_to("能力练习")
 # save_and_clear_all_learning_records()
 configure_google_apis()
 
@@ -62,7 +59,8 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
 def on_menu_changed():
-    st.session_state["current-page"] = menu_names[menu_opts.index(menu)]  # type: ignore
+    item = menu_names[menu_opts.index(menu)]  # type: ignore
+    on_page_to(item)
 
 
 menu = st.sidebar.selectbox(
@@ -235,11 +233,10 @@ if menu is not None and menu.endswith("听说练习"):
                     st.markdown(d)
 
     with tabs[1]:
-        # @handle_learning_record("prev")
+
         def on_prev_btn_click():
             st.session_state["ls-idx"] -= 1
 
-        # @handle_learning_record("next")
         def on_next_btn_click():
             st.session_state["ls-idx"] += 1
 
@@ -270,27 +267,35 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(dialogue) == 0
             or st.session_state["ls-idx"] == len(dialogue) - 1,  # type: ignore
         )
-        play_btn = ls_btn_cols[3].button(
-            "播放[:sound:]",
-            key="ls-play",
-            help="✨ 聆听发音",
-            disabled=st.session_state["ls-idx"] == -1,
-        )
+        # play_btn = ls_btn_cols[3].button(
+        #     "播放[:sound:]",
+        #     key="ls-play",
+        #     help="✨ 聆听发音",
+        #     disabled=st.session_state["ls-idx"] == -1,
+        # )
 
         content_cols = st.columns(2)
 
         if prev_btn:
-            sentence = dialogue[st.session_state["ls-idx"]]
-            content_cols[0].markdown(sentence)
-
-        if next_btn:
-            sentence = dialogue[st.session_state["ls-idx"]]
-            content_cols[0].markdown(sentence)
-
-        if play_btn:
             idx = st.session_state["ls-idx"]
             sentence = dialogue[idx]
             voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
             result = get_synthesis_speech(sentence, voice_style[0])
             content_cols[0].audio(result["audio_data"], format="audio/wav")
             content_cols[0].markdown(sentence)
+
+        if next_btn:
+            idx = st.session_state["ls-idx"]
+            sentence = dialogue[idx]
+            voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
+            result = get_synthesis_speech(sentence, voice_style[0])
+            content_cols[0].audio(result["audio_data"], format="audio/wav")
+            content_cols[0].markdown(sentence)
+
+        # if play_btn:
+        #     idx = st.session_state["ls-idx"]
+        #     sentence = dialogue[idx]
+        #     voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
+        #     result = get_synthesis_speech(sentence, voice_style[0])
+        #     content_cols[0].audio(result["audio_data"], format="audio/wav")
+        #     content_cols[0].markdown(sentence)
