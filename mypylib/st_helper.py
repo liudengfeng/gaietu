@@ -373,16 +373,16 @@ def on_page_to(this_page: str = ""):
     if "current-page" not in st.session_state:
         st.session_state["current-page"] = ""
 
-    st.session_state["current-page"] = this_page
-    
     # 如果当前页和上一页不同，保存上一页的学习时长
-    if st.session_state["current-page"] != st.session_state["previous-page"]:
+    if st.session_state["current-page"] != this_page:
         if st.session_state["previous-page"] is not None:
             # 保存上一页的学习时长到数据库
             # save_learning_time_to_db(st.session_state["previous-page"])
             logger.info(f"保存上一页的学习时长到数据库：{st.session_state['previous_page']}")
         # 更新上一页为当前页
         st.session_state["previous-page"] = st.session_state["current-page"]
+
+    st.session_state["current-page"] = this_page
 
     logger.info(
         f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
