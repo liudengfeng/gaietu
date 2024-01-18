@@ -348,18 +348,18 @@ def select_word_image_urls(word: str):
 
 # region 学习记录
 
-PAGE_IDX_MAPS = {
-    "闪卡记忆": "flashcard-idx",
-    "拼图游戏": "puzzle-idx",
-    "词意测试": "word-test-idx",
-}
+# PAGE_IDX_MAPS = {
+#     "闪卡记忆": "flashcard-idx",
+#     "拼图游戏": "puzzle-idx",
+#     "词意测试": "word-test-idx",
+# }
 
 
-PAGE_CONTENT_MAPS = {
-    "闪卡记忆": "flashcard-words",
-    "拼图游戏": "puzzle-words",
-    "词意测试": "test-words",
-}
+# PAGE_CONTENT_MAPS = {
+#     "闪卡记忆": "flashcard-words",
+#     "拼图游戏": "puzzle-words",
+#     "词意测试": "test-words",
+# }
 
 
 def end_and_save_learning_records():
@@ -403,92 +403,6 @@ def on_page_to(this_page: str = ""):
     logger.info(
         f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
     )
-
-
-def create_learning_records(item):
-    num_word = len(st.session_state[PAGE_CONTENT_MAPS[item]])
-    for i in range(num_word):
-        # idx = st.session_state[PAGE_IDX_MAPS[item]]
-        record = LearningTime(
-            phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-            project=f"词汇-{item}",
-            content=st.session_state[PAGE_CONTENT_MAPS[item]][i],
-        )
-        st.session_state["learning-time"][item].append(record)
-
-
-# def handle_learning_record(direction):
-#     item = st.session_state["current-page"]
-#     if len(st.session_state["learning-time"][item]) == 0:
-#         create_learning_records(item)
-
-#     def decorator(func):
-#         def wrapper(*args, **kwargs):
-#             # 执行原函数
-#             result = func(*args, **kwargs)
-#             idx = st.session_state[PAGE_IDX_MAPS[item]]
-#             # 获取当前单词的学习记录
-#             current_record = st.session_state["learning-time"][item][idx]
-#             # 开始记录
-#             current_record.start()
-
-#             # 根据 direction 参数来计算上一个单词的索引
-#             prev_idx = idx - 1 if direction == "next" else idx + 1
-#             # 如果下一个单词有效
-#             if 0 <= prev_idx < len(st.session_state["learning-time"][item]):
-#                 # 获取下一个单词的学习记录
-#                 prev_record = st.session_state["learning-time"][item][prev_idx]
-#                 # 结束此前单词的学习记录
-#                 prev_record.end()
-
-#             return result
-
-#         return wrapper
-
-#     return decorator
-
-
-# def save_and_clear_learning_records(item):
-#     current_time = time.time()
-
-#     # 如果 "last_save_time" 字典不存在，创建它
-#     if "last_save_time" not in st.session_state:
-#         st.session_state["last_save_time"] = {}
-
-#     # 如果这个项目的最后保存时间不存在，或者当前时间与最后保存时间的间隔超过 10 分钟
-#     if (
-#         item not in st.session_state["last_save_time"]
-#         or current_time - st.session_state["last_save_time"][item] > 10 * 60
-#     ):
-#         if "learning-time" not in st.session_state:
-#             return
-#         if not st.session_state["learning-time"].get(item):
-#             return
-#         # 如果有学习记录
-#         if len(st.session_state["learning-time"][item]) >= 1:
-#             # 结束所有学习记录
-#             for r in st.session_state["learning-time"][item]:
-#                 r.end()
-#             records = st.session_state["learning-time"][item]
-#             # 统计时长大于0的记录
-#             n = len([r for r in records if r.duration > 0])
-#             # 保存学习记录到数据库
-#             st.session_state.dbi.save_learning_time(records)
-#             # 清空学习记录
-#             st.session_state["learning-time"][item] = []
-
-#             st.toast(f"自动存储`{item}` {n:04}条学习记录")
-
-#         # 更新这个项目的最后保存时间
-#         st.session_state["last_save_time"][item] = current_time
-
-
-# def save_and_clear_all_learning_records():
-#     """
-#     保存并清除所有学习记录。
-#     """
-#     for k in PAGE_IDX_MAPS.keys():
-#         save_and_clear_learning_records(k)
 
 
 # endregion
