@@ -18,17 +18,13 @@ from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
-    PAGE_IDX_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    # create_learning_records,
+    end_and_save_learning_records,
     format_token_count,
     get_mini_dict_doc,
     on_page_to,
-    # handle_learning_record,
-    # save_and_clear_all_learning_records,
-    # save_and_clear_learning_records,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -70,24 +66,10 @@ menu_emoji = [
 ]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
-if "current-page" not in st.session_state:
-    st.session_state["current-page"] = menu_opts[0].split(" ", 1)[1]
-
-
-if "learning-time" not in st.session_state:
-    d = {}
-    for item in menu_names:
-        d[item] = []
-    st.session_state["learning-time"] = d
-else:
-    for item in menu_names:
-        if item not in st.session_state["learning-time"]:
-            st.session_state["learning-time"][item] = []
-
 
 def on_menu_change():
-    item = st.session_state["current-page"]
-    # save_and_clear_learning_records(item)
+    item = st.session_state["word_dict_menu"].split(" ", 1)[1]
+    on_page_to(item)
 
 
 menu: str = st.sidebar.selectbox(
@@ -865,7 +847,20 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 
 # endregion
 
+
 # region 闪卡记忆
+
+
+def create_learning_record(idx_key, words_key, project):
+    idx = st.session_state[idx_key]
+    word = st.session_state[words_key][idx]
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project=project,
+        content=word,
+    )
+    return record
+
 
 if menu and menu.endswith("闪卡记忆"):
     # region 侧边栏
@@ -982,29 +977,41 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+
+        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+        record.start()
+        st.session_state["learning-record"].append(record)
+
     if next_btn:
         if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
+        if len(st.session_state["learning-record"]) > 0:
+            st.session_state["learning-record"][-1].end()
+
+        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+        record.start()
+        st.session_state["learning-record"].append(record)
+
     if refresh_btn:
+        end_and_save_learning_records()
         reset_flashcard_word(False)
-        item = st.session_state["current-page"]
-        # save_and_clear_learning_records(item)
-        # 新记录
-        # create_learning_records(item)
         st.rerun()
 
     if play_btn:
-        item = st.session_state["current-page"]
-        idx = st.session_state["flashcard-idx"]
-        record = st.session_state["learning-time"][item][idx]
+        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
+        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         record.start()
-        word = st.session_state["flashcard-words"][idx]
+
         # 使用会话缓存，避免重复请求
         audio_html = get_audio_html(word, voice_style)
         components.html(audio_html)
+
         record.end()
+        st.session_state.dbi.add_record_to_cache(record)
         # logger.info(f"{record.duration:.2f} 秒")
 
     if add_btn:

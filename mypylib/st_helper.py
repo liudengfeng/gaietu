@@ -362,6 +362,19 @@ PAGE_CONTENT_MAPS = {
 }
 
 
+def end_and_save_learning_records():
+    """
+    结束并保存学习记录。
+
+    关闭未关闭的学习记录，并将其添加到缓存中。
+    """
+    for r in st.session_state["learning-record"]:
+        logger.info(f"关闭：{r.project} {r.content}")
+        r.end()
+        st.session_state.dbi.add_record_to_cache(r)
+    st.session_state["learning-record"] = []
+
+
 def on_page_to(this_page: str = ""):
     """
     检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
@@ -379,9 +392,9 @@ def on_page_to(this_page: str = ""):
     # 如果当前页和上一页不同，保存上一页的学习时长
     if st.session_state["current-page"] != this_page:
         if st.session_state["previous-page"] is not None:
-            # 保存上一页的学习时长到数据库
-            # save_learning_time_to_db(st.session_state["previous-page"])
-            logger.info(f"保存上一页的学习时长到数据库：{st.session_state['previous_page']}")
+            # 当转移页面时，关闭未关闭的学习记录
+            end_and_save_learning_records()
+
         # 更新上一页为当前页
         st.session_state["previous-page"] = st.session_state["current-page"]
 
