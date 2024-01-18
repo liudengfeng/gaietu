@@ -745,6 +745,28 @@ class DbInterface:
     # endregion
 
     # region 学习记录
+    
+    def add_record_to_cache(self, learning_time):
+        # 定义缓存
+        if "learning_time_cache" not in self.cache:
+            self.cache["learning_time_cache"] = []
+            self.cache["learning_time_last_save_time"] = time.time()
+
+        # 将 LearningTime 对象添加到缓存
+        self.cache["learning_time_cache"].append(learning_time)
+
+        # 如果缓存数量超过限制或者时间超过限制，将缓存中的 LearningTime 对象保存到数据库
+        if (
+            len(self.cache["learning_time_cache"]) > CACHE_TRIGGER_SIZE
+            or time.time() - self.cache["learning_time_last_save_time"] > MAX_TIME_INTERVAL
+        ):
+            self.save_learning_time(self.cache["learning_time_cache"])
+
+            # 清空缓存
+            self.cache["learning_time_cache"] = []
+
+            # 更新上一次保存的时间
+            self.cache["learning_time_last_save_time"] = time.time()
 
     def save_learning_time(self, records: List[LearningTime]):
         # 获取 "learning_records" 集合

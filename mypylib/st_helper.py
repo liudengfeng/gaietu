@@ -373,6 +373,9 @@ def on_page_to(this_page: str = ""):
     if "current-page" not in st.session_state:
         st.session_state["current-page"] = ""
 
+    if "learning-time" not in st.session_state:
+        st.session_state["learning-time"] = []
+
     # 如果当前页和上一页不同，保存上一页的学习时长
     if st.session_state["current-page"] != this_page:
         if st.session_state["previous-page"] is not None:
@@ -389,28 +392,16 @@ def on_page_to(this_page: str = ""):
     )
 
 
-def initialize_learning_time(menu_names):
-    if "learning-time" not in st.session_state:
-        d = {}
-        for item in menu_names:
-            d[item] = []
-        st.session_state["learning-time"] = d
-    else:
-        for item in menu_names:
-            if item not in st.session_state["learning-time"]:
-                st.session_state["learning-time"][item] = []
-
-
-# def create_learning_records(item):
-#     num_word = len(st.session_state[PAGE_CONTENT_MAPS[item]])
-#     for i in range(num_word):
-#         # idx = st.session_state[PAGE_IDX_MAPS[item]]
-#         record = LearningTime(
-#             phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-#             project=f"词汇-{item}",
-#             content=st.session_state[PAGE_CONTENT_MAPS[item]][i],
-#         )
-#         st.session_state["learning-time"][item].append(record)
+def create_learning_records(item):
+    num_word = len(st.session_state[PAGE_CONTENT_MAPS[item]])
+    for i in range(num_word):
+        # idx = st.session_state[PAGE_IDX_MAPS[item]]
+        record = LearningTime(
+            phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+            project=f"词汇-{item}",
+            content=st.session_state[PAGE_CONTENT_MAPS[item]][i],
+        )
+        st.session_state["learning-time"][item].append(record)
 
 
 # def handle_learning_record(direction):
