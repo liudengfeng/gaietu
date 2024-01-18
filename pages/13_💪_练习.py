@@ -75,15 +75,6 @@ check_and_force_logout(sidebar_status)
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
 
-if "learning-time" not in st.session_state:
-    d = {}
-    for item in menu_names:
-        d[item] = []
-    st.session_state["learning-time"] = d
-else:
-    for item in menu_names:
-        if item not in st.session_state["learning-time"]:
-            st.session_state["learning-time"][item] = []
 
 # region 函数
 
