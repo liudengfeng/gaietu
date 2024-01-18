@@ -348,19 +348,6 @@ def select_word_image_urls(word: str):
 
 # region 学习记录
 
-# PAGE_IDX_MAPS = {
-#     "闪卡记忆": "flashcard-idx",
-#     "拼图游戏": "puzzle-idx",
-#     "词意测试": "word-test-idx",
-# }
-
-
-# PAGE_CONTENT_MAPS = {
-#     "闪卡记忆": "flashcard-words",
-#     "拼图游戏": "puzzle-words",
-#     "词意测试": "test-words",
-# }
-
 
 def end_and_save_learning_records():
     """
@@ -369,7 +356,7 @@ def end_and_save_learning_records():
     关闭未关闭的学习记录，并将其添加到缓存中。
     """
     for r in st.session_state.get("learning-record", []):
-        logger.info(f"关闭：{r.project} {r.content}")
+        # logger.info(f"关闭：{r.project} {r.content}")
         r.end()
         st.session_state.dbi.add_record_to_cache(r)
     st.session_state["learning-record"] = []
@@ -400,9 +387,9 @@ def on_page_to(this_page: str = ""):
 
     st.session_state["current-page"] = this_page
 
-    logger.info(
-        f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
-    )
+    # logger.info(
+    #     f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
+    # )
 
 
 # endregion
