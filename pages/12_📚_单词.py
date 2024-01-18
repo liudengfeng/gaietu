@@ -48,7 +48,6 @@ st.set_page_config(
 )
 
 check_access(False)
-on_page_to("单词练习")
 
 # save_and_clear_all_learning_records()
 configure_google_apis()
@@ -80,8 +79,6 @@ menu: str = st.sidebar.selectbox(
     on_change=on_menu_change,
     help="在这里选择你想要进行的操作。",
 )  # type: ignore
-# 更新当前页面
-st.session_state["current-page"] = menu.split(" ", 1)[1]
 
 st.sidebar.divider()
 
@@ -846,7 +843,6 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
     voice_style_options = json.load(f)
 
 # endregion
-
 
 # region 闪卡记忆
 
