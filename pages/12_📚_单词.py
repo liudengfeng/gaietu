@@ -21,10 +21,12 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    count_non_none,
     end_and_save_learning_records,
     format_token_count,
     get_mini_dict_doc,
     get_synthesis_speech,
+    is_answer_correct,
     on_page_to,
     select_word_image_urls,
     setup_logger,
@@ -102,26 +104,7 @@ OP_THRESHOLD = 10000  # 操作阈值
 # region 通用函数
 
 
-def count_non_none(lst):
-    return len(list(filter(lambda x: x is not None, lst)))
 
-
-def is_answer_correct(user_answer, standard_answer):
-    # 如果用户没有选择答案，直接返回 False
-    if user_answer is None:
-        return False
-
-    # 创建一个字典，将选项序号映射到字母
-    answer_dict = {0: "A", 1: "B", 2: "C", 3: "D"}
-
-    # 获取用户的答案对应的字母
-    user_answer_letter = answer_dict.get(user_answer, "")
-
-    # 移除标准答案中的非字母字符
-    standard_answer = "".join(filter(str.isalpha, standard_answer))
-
-    # 比较用户的答案和标准答案
-    return user_answer_letter == standard_answer
 
 
 @st.cache_data(show_spinner="提取词典...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
@@ -1007,7 +990,7 @@ if menu and menu.endswith("闪卡记忆"):
         # 使用会话缓存，避免重复请求
         # audio_html = get_audio_html(word, voice_style)
         # components.html(audio_html)
-        
+
         result = get_synthesis_speech(word, voice_style[0])
         play_audio_elem.audio(result["audio_data"], format="audio/mp3")
         record.duration = result["audio_duration"]

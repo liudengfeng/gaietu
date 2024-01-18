@@ -50,6 +50,28 @@ def setup_logger(logger, level="INFO"):
 setup_logger(logger)
 
 
+def count_non_none(lst):
+    return len(list(filter(lambda x: x is not None, lst)))
+
+
+def is_answer_correct(user_answer, standard_answer):
+    # 如果用户没有选择答案，直接返回 False
+    if user_answer is None:
+        return False
+
+    # 创建一个字典，将选项序号映射到字母
+    answer_dict = {0: "A", 1: "B", 2: "C", 3: "D"}
+
+    # 获取用户的答案对应的字母
+    user_answer_letter = answer_dict.get(user_answer, "")
+
+    # 移除标准答案中的非字母字符
+    standard_answer = "".join(filter(str.isalpha, standard_answer))
+
+    # 比较用户的答案和标准答案
+    return user_answer_letter == standard_answer
+
+
 def check_and_force_logout(status):
     """
     检查并强制退出用户重复登录。

@@ -1,8 +1,10 @@
+import io
 import json
 import logging
 import random
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import io
+
 import streamlit as st
 
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
@@ -20,8 +22,10 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    count_non_none,
     format_token_count,
     get_synthesis_speech,
+    is_answer_correct,
     on_page_to,
     setup_logger,
     view_md_badges,
@@ -121,6 +125,54 @@ def view_listening_test(container):
     )
     # 保存用户答案
     # st.session_state["listening-test-answer"][idx] = user_answer_idx
+
+
+def check_listening_test_answer(container, level):
+    score = 0
+    n = count_non_none(st.session_state["listening-test"])
+    for idx, test in enumerate(st.session_state["listening-test"]):
+        question = test["question"]
+        options = test["options"]
+        answer = test["answer"]
+        explanation = test["explanation"]
+        related_sentence = test["related_sentence"]
+
+        # 存储的是 None 或者 0、1、2、3
+        user_answer_idx = st.session_state["listening-test-answer"][idx]
+        container.divider()
+        container.markdown(question)
+        container.radio(
+            "选项",
+            options,
+            # horizontal=True,
+            index=user_answer_idx,
+            disabled=True,
+            label_visibility="collapsed",
+            key=f"test-options-{idx}",
+        )
+        msg = ""
+        # 用户答案是选项序号，而提供的标准答案是A、B、C、D
+        if is_answer_correct(user_answer_idx, answer):
+            score += 1
+            msg = f"正确答案：{answer} :white_check_mark:"
+        else:
+            msg = f"正确答案：{answer} :x:"
+        container.markdown(msg)
+        container.markdown(f"解释：{explanation}")
+        container.markdown(f"相关对话：{related_sentence}")
+    percentage = score / n * 100
+    if percentage >= 75:
+        container.balloons()
+    container.divider()
+    container.markdown(f":red[得分：{percentage:.0f}%]")
+    test_dict = {
+        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        "item": "听力测验",
+        "level": level,
+        "score": percentage,
+        "record_time": datetime.now(timezone.utc),
+    }
+    st.session_state.dbi.save_daily_quiz_results(test_dict)
 
 
 # endregion
@@ -350,7 +402,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["learning-times"] += 1
 
     with tabs[2]:
-        st.subheader("听力测验", divider="rainbow", anchor="听力测验")
+        st.subheader("听力测验(四道题)", divider="rainbow", anchor="听力测验")
 
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
@@ -402,9 +454,21 @@ if menu is not None and menu.endswith("听说练习"):
             help="✨ 至少完成一道测试题后，才可点击按钮，检查听力测验得分。",
         )
 
-        # st.write(st.session_state["listening-test"])
-
         container = st.container()
 
         if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
             view_listening_test(container)
+
+        if sumbit_test_btn:
+            container.empty()
+
+            if count_non_none(st.session_state["listening-test-answer"]) == 0:
+                container.warning("您尚未答题。")
+                container.stop()
+
+            if count_non_none(
+                st.session_state["listening-test-answer"]
+            ) != count_non_none(st.session_state["listening-test"]):
+                container.warning("您尚未完成测试。")
+
+            check_listening_test_answer(container, difficulty)
