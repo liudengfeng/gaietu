@@ -1,7 +1,7 @@
-from collections import OrderedDict
 import logging
 import re
 import time
+from collections import OrderedDict
 from datetime import datetime, timedelta
 
 import pytz
@@ -11,9 +11,8 @@ from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
-from mypylib.azure_speech import synthesize_speech
 
-from mypylib.db_model import LearningTime
+from mypylib.azure_speech import synthesize_speech
 
 from .db_interface import DbInterface
 from .google_ai import (
