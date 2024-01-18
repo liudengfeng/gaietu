@@ -384,7 +384,7 @@ def on_page_to(this_page: str = ""):
         st.session_state["previous-page"] = None
 
     if "current-page" not in st.session_state:
-        st.session_state["current-page"] = ""
+        st.session_state["current-page"] = None
 
     if "learning-time" not in st.session_state:
         st.session_state["learning-time"] = []
