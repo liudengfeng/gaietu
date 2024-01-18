@@ -288,7 +288,8 @@ WORD_COUNT_BADGE_MAPS = OrderedDict(
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...", max_entries=10000, ttl=60 * 60 * 24)
 def get_synthesis_speech(text, voice):
-    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", text)
+    sentence = text.replace("**", "")
+    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence)
     result = synthesize_speech(
         sentence_without_speaker_name,
         st.secrets["Microsoft"]["SPEECH_KEY"],

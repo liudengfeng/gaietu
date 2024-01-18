@@ -92,6 +92,38 @@ def create_learning_record(
     return record
 
 
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
+def generate_listening_test_for(difficulty: str, conversation: str):
+    return generate_listening_test(
+        st.session_state["text_model"], difficulty, conversation
+    )
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
+def generate_scenarios_for(category: str):
+    return generate_scenarios(st.session_state["text_model"], category)
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
+def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
+    boy_name = random.choice(NAMES["en-US"]["male"])
+    girl_name = random.choice(NAMES["en-US"]["female"])
+    scenario = selected_scenario.split(".")[1]
+    return generate_dialogue(
+        st.session_state["text_model"],
+        boy_name,
+        girl_name,
+        scenario,
+        interesting_plot if interesting_plot else "",
+        difficulty,
+    )
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
+def summarize_in_one_sentence_for(dialogue: str):
+    return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
+
+
 def on_prev_btn_click(key):
     st.session_state[key] -= 1
 
@@ -198,34 +230,6 @@ if menu is not None and menu.endswith("听说练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
-
-    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
-    def generate_listening_test_for(difficulty: str, conversation: str):
-        return generate_listening_test(
-            st.session_state["text_model"], difficulty, conversation
-        )
-
-    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
-    def generate_scenarios_for(category: str):
-        return generate_scenarios(st.session_state["text_model"], category)
-
-    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
-    def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
-        boy_name = random.choice(NAMES["en-US"]["male"])
-        girl_name = random.choice(NAMES["en-US"]["female"])
-        scenario = selected_scenario.split(".")[1]
-        return generate_dialogue(
-            st.session_state["text_model"],
-            boy_name,
-            girl_name,
-            scenario,
-            interesting_plot if interesting_plot else "",
-            difficulty,
-        )
-
-    @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
-    def summarize_in_one_sentence_for(dialogue: str):
-        return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
 
     sidebar_status.markdown(
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
