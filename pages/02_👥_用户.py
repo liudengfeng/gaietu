@@ -39,9 +39,9 @@ st.set_page_config(
 )
 
 check_access(False)
+on_page_changed()
 st.session_state["current-page"] = "用户"
 
-on_page_changed()
 # region 侧边栏
 
 sidebar_status = st.sidebar.empty()

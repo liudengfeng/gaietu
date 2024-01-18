@@ -36,8 +36,8 @@ st.set_page_config(
     layout="wide",
 )
 check_access(False)
-st.session_state["current-page"] = "AI"
 on_page_changed()
+st.session_state["current-page"] = "AI"
 configure_google_apis()
 
 # endregion

@@ -10,8 +10,8 @@ st.set_page_config(
     layout="centered",
 )
 
-st.session_state["current-page"] = "帮助中心"
 on_page_changed()
+st.session_state["current-page"] = "帮助中心"
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VIDEO_DIR = CURRENT_CWD / "resource/video_tip"

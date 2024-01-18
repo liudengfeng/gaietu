@@ -52,8 +52,8 @@ st.set_page_config(
 )
 
 check_access(False)
-st.session_state["current-page"] = "单词"
 on_page_changed()
+st.session_state["current-page"] = "单词"
 
 # save_and_clear_all_learning_records()
 configure_google_apis()

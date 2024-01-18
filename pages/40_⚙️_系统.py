@@ -56,8 +56,8 @@ st.set_page_config(
     layout="wide",
 )
 
-st.session_state["current-page"] = "系统管理"
 on_page_changed()
+st.session_state["current-page"] = "系统管理"
 
 check_access(True)
 configure_google_apis()

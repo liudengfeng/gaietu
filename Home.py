@@ -38,10 +38,11 @@ st.set_page_config(
     layout="wide",
 )
 
+on_page_changed()
 st.session_state["current-page"] = "Home"
 # save_and_clear_all_learning_records()
 
-on_page_changed()
+
 
 if "dbi" not in st.session_state:
     st.session_state["dbi"] = DbInterface(get_firestore_client())

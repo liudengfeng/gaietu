@@ -368,7 +368,7 @@ def on_page_changed():
     """
     # 在会话状态中设置上一页
     if "previous-page" not in st.session_state:
-        st.session_state["previous-page"] = None
+        st.session_state["previous-page"] = ""
     
     if "current-page" not in st.session_state:
         st.session_state["current-page"] = ""

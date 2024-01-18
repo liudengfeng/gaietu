@@ -16,8 +16,8 @@ st.set_page_config(
 )
 
 check_access(False)
-st.session_state["current-page"] = "评估"
 on_page_changed()
+st.session_state["current-page"] = "能力评估"
 configure_google_apis()
 # endregion
 

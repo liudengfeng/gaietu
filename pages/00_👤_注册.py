@@ -22,9 +22,9 @@ st.set_page_config(
     layout="wide",
 )
 
+on_page_changed()
 st.session_state["current-page"] = "用户注册"
 
-on_page_changed()
 
 if "dbi" not in st.session_state:
     st.session_state["dbi"] = DbInterface(get_firestore_client())
