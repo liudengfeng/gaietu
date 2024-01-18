@@ -1007,7 +1007,7 @@ if menu and menu.endswith("闪卡记忆"):
         # 使用会话缓存，避免重复请求
         # audio_html = get_audio_html(word, voice_style)
         # components.html(audio_html)
-
+        logger.info(f"发音风格：{voice_style} 单词：{word}")
         result = get_synthesis_speech(word, voice_style)
         play_audio_elem.audio(result["audio_data"], format="audio/mp3")
         record.duration = result["audio_duration"]
