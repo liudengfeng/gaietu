@@ -375,6 +375,8 @@ if menu is not None and menu.endswith("听说练习"):
 
         ls_text_btn_cols = st.columns(8)
 
+        st.divider()
+
         prev_btn = ls_text_btn_cols[0].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-test-prev",
