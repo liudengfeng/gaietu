@@ -370,7 +370,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         if "listening-test-answer" not in st.session_state:
             st.session_state["listening-test-answer"] = [None] * len(
-                st.session_state["learning-times"]
+                st.session_state.conversation_scene
             )
 
         ls_text_btn_cols = st.columns(8)
