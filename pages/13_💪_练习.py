@@ -88,6 +88,41 @@ def create_learning_record(
     return record
 
 
+def on_prev_btn_click(key):
+    st.session_state[key] -= 1
+
+
+def on_next_btn_click(key):
+    st.session_state[key] += 1
+
+
+def on_word_test_radio_change(idx, options):
+    current = st.session_state["test_options"]
+    # 转换为索引
+    st.session_state["user-answer"][idx] = options.index(current)
+
+
+def view_listening_test(container):
+    idx = st.session_state["listening-test-idx"]
+    test = st.session_state["listening-test"][idx]
+    question = test["question"]
+    options = test["options"]
+    user_answer_idx = st.session_state["listening-test-answer"][idx]
+
+    container.markdown(question)
+    container.radio(
+        "选项",
+        options,
+        index=user_answer_idx,
+        label_visibility="collapsed",
+        on_change=on_word_test_radio_change,
+        args=(idx, options),
+        key="listening-test-options",
+    )
+    # 保存用户答案
+    # st.session_state["listening-test-answer"][idx] = user_answer_idx
+
+
 # endregion
 
 if menu is not None and menu.endswith("听说练习"):
@@ -244,12 +279,6 @@ if menu is not None and menu.endswith("听说练习"):
         if "learning-times" not in st.session_state:
             st.session_state["learning-times"] = 0
 
-        def on_prev_btn_click():
-            st.session_state["ls-idx"] -= 1
-
-        def on_next_btn_click():
-            st.session_state["ls-idx"] += 1
-
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
 
         if len(st.session_state.conversation_scene) == 0:
@@ -269,15 +298,17 @@ if menu is not None and menu.endswith("听说练习"):
         prev_btn = ls_btn_cols[1].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-prev",
-            help="✨ 点击按钮，切换到上一单词拼图。",
+            help="✨ 点击按钮，切换到上一轮对话。",
             on_click=on_prev_btn_click,
+            args=("ls-idx",),
             disabled=st.session_state["ls-idx"] < 0,
         )
         next_btn = ls_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
             key="ls-next",
-            help="✨ 点击按钮，切换到下一单词拼图。",
+            help="✨ 点击按钮，切换到下一轮对话。",
             on_click=on_next_btn_click,
+            args=("ls-idx",),
             disabled=len(st.session_state.conversation_scene) == 0
             or st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1,  # type: ignore
         )
@@ -334,4 +365,44 @@ if menu is not None and menu.endswith("听说练习"):
                 difficulty, st.session_state.conversation_scene
             )
 
-        st.write(st.session_state["listening-test"])
+        if "listening-test-idx" not in st.session_state:
+            st.session_state["listening-test-idx"] = -1
+
+        if "listening-test-answer" not in st.session_state:
+            st.session_state["listening-test-answer"] = [None] * len(
+                st.session_state["learning-times"]
+            )
+
+        ls_text_btn_cols = st.columns(8)
+
+        prev_btn = ls_text_btn_cols[0].button(
+            "上一[:leftwards_arrow_with_hook:]",
+            key="ls-test-prev",
+            help="✨ 点击按钮，切换到上一道听力测试题。",
+            on_click=on_prev_btn_click,
+            args=("listening-test-idx",),
+            disabled=st.session_state["listening-test-idx"] < 0,
+        )
+        next_btn = ls_text_btn_cols[1].button(
+            "下一[:arrow_right_hook:]",
+            key="ls-test-next",
+            help="✨ 点击按钮，切换到下一道听力测试题。",
+            on_click=on_next_btn_click,
+            args=("listening-test-idx",),
+            disabled=len(st.session_state["listening-test"]) == 0
+            or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
+        )
+        sumbit_test_btn = ls_text_btn_cols[2].button(
+            "检查[:mag:]",
+            key="submit-listening-test",
+            disabled=st.session_state["word-test-idx"] == -1
+            or len(st.session_state["listening-test-answer"]) == 0,
+            help="✨ 至少完成一道测试题后，才可点击按钮，检查听力测验得分。",
+        )
+
+        # st.write(st.session_state["listening-test"])
+
+        container = st.container()
+
+        if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
+            view_listening_test(container)
