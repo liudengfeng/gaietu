@@ -278,7 +278,7 @@ if menu is not None and menu.endswith("听说练习"):
                     scenario_list = generate_scenarios_for(scenario_category)
                 else:
                     scenario_list = SCENARIO_MAPS[scenario_category]
-                st.write(scenario_list)
+                # st.write(scenario_list)
                 selected_scenario = st.selectbox(
                     "选择场景",
                     scenario_list,  # type: ignore
@@ -289,8 +289,8 @@ if menu is not None and menu.endswith("听说练习"):
                     placeholder="请选择您感兴趣的场景",
                 )
         with sub_tabs[2]:
-            st.info("可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过添加情节'。", icon="🚨")
-            ignore = st.toggle("跳过添加情节", key="add_interesting_plot", value=True)
+            st.info("可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
+            ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 3
             st.divider()
