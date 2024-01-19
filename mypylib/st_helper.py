@@ -280,7 +280,7 @@ def view_md_badges(d: dict, badge_maps: OrderedDict):
 # region 单词
 WORD_COUNT_BADGE_MAPS = OrderedDict(
     {
-        "总字数": ("green", "总字数", "文本中不重复的单词数量", "success"),
+        "单词总量": ("green", "单词总量", "文本中不重复的单词数量", "success"),
         "A1": ("orange", "A1", "CEFR A1 单词数量", "warning"),
         "A2": ("grey", "A2", "CEFR A1 单词数量", "secondary"),
         "B1": ("red", "B1", "CEFR B1 单词数量", "danger"),

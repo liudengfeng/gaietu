@@ -339,7 +339,7 @@ if menu is not None and menu.endswith("听说练习"):
                     dialogue_text, True
                 )
                 st.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
-                level_dict.update({"单词数量": total_words})
+                level_dict.update({"单词总量": total_words})
                 view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
                 st.markdown("**对话内容**")
                 for d in dialogue:
