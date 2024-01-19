@@ -2,13 +2,14 @@ import io
 import json
 import logging
 import random
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import time
 
 import streamlit as st
+import streamlit.components.v1 as components
 
-from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS, SCENARIO_MAPS
+from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, SCENARIO_MAPS, TOPICS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
@@ -158,7 +159,9 @@ def autoplay_audio_and_display_dialogue(content_cols):
         slot_1.markdown(dialogue[i])
         slot_2.markdown(cns[i])
         # 播放音频
-        audio_autoplay_elem(audio_list[i], "wav")
+        audio_html = audio_autoplay_elem(audio_list[i], "wav")
+        # st.markdown(audio_html, unsafe_allow_html=True)
+        components.html(audio_html)
         # 等待音频播放完毕
         # time.sleep(duration.total_seconds())
 
