@@ -256,7 +256,14 @@ def view_listening_test(container):
     options = test["options"]
     user_answer_idx = st.session_state["listening-test-answer"][idx]
 
-    container.markdown(question)
+    if st.session_state["ls-test-display-state"] == "语音":
+        question_audio = get_synthesis_speech(question, m_voice_style[0])
+        audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
+        components.html(audio_html)
+        time.sleep(question_audio["audio_duration"].total_seconds())
+    else:
+        container.markdown(question)
+
     container.radio(
         "选项",
         options,
@@ -266,8 +273,7 @@ def view_listening_test(container):
         args=(idx, options),
         key="listening-test-options",
     )
-    # 保存用户答案
-    # st.session_state["listening-test-answer"][idx] = user_answer_idx
+
 
 
 def check_listening_test_answer(container, level):
@@ -345,6 +351,9 @@ if "listening-test-idx" not in st.session_state:
 
 if "listening-test-answer" not in st.session_state:
     st.session_state["listening-test-answer"] = []
+
+if "ls-test-display-state" not in st.session_state:
+    st.session_state["ls-test-display-state"] = "文本"
 
 # endregion
 
@@ -606,8 +615,6 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先完成听说练习")
             st.stop()
 
-
-
         ls_text_btn_cols = st.columns(8)
 
         st.divider()
@@ -617,8 +624,12 @@ if menu is not None and menu.endswith("听说练习"):
             key="ls-test-refresh",
             help="✨ 点击按钮，生成听力测试题。",
         )
-
-        prev_test_btn = ls_text_btn_cols[1].button(
+        display_test_btn = ls_btn_cols[1].button(
+            "切换[:recycle:]",
+            key="ls-test-mask",
+            help="✨ 此状态切换按钮允许您选择测试题目的展示方式：以文本形式展示或以语音形式播放。初始状态为以文本形式展示测试题目。",
+        )
+        prev_test_btn = ls_text_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-test-prev",
             help="✨ 点击按钮，切换到上一道听力测试题。",
@@ -626,7 +637,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("listening-test-idx",),
             disabled=st.session_state["listening-test-idx"] <= 0,
         )
-        next_test_btn = ls_text_btn_cols[2].button(
+        next_test_btn = ls_text_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
             key="ls-test-next",
             help="✨ 点击按钮，切换到下一道听力测试题。",
@@ -635,7 +646,7 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state["listening-test"]) == 0
             or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
         )
-        sumbit_test_btn = ls_text_btn_cols[3].button(
+        sumbit_test_btn = ls_text_btn_cols[4].button(
             "检查[:mag:]",
             key="submit-listening-test",
             disabled=st.session_state["listening-test-idx"] == -1
@@ -656,6 +667,12 @@ if menu is not None and menu.endswith("听说练习"):
             )
             # 更新
             st.rerun()
+
+        if display_test_btn:
+            if st.session_state["ls-test-display-state"] == "文本":
+                st.session_state["ls-test-display-state"] = "语音"
+            else:
+                st.session_state["ls-test-display-state"] = "文本"
 
         if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
             view_listening_test(container)
