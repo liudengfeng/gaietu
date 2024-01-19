@@ -133,7 +133,6 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(sentence, voice_style[0])
 
-
     if st.session_state["ls-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -445,14 +444,13 @@ if menu is not None and menu.endswith("听说练习"):
             on_click=on_next_btn_click,
             args=("ls-idx",),
             disabled=len(st.session_state.conversation_scene) == 0
-            or st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1,  # type: ignore
+            or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
 
         content_cols = st.columns(2)
 
         if refresh_btn:
-            # 刷新要变为0
-            st.session_state["ls-idx"] = 0
+            st.session_state["ls-idx"] = -1
             st.session_state["learning-times"] = 0
             end_and_save_learning_records()
 
