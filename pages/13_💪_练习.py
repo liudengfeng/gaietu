@@ -447,6 +447,12 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state.conversation_scene) == 0
             or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
+        lsi_btn = ls_btn_cols[4].button(
+            "全文[:arrow_right_hook:]",
+            key="ls-lsi",
+            help="✨ 点击按钮，收听整个对话。",
+            disabled=len(st.session_state.conversation_scene) == 0,
+        )
 
         content_cols = st.columns(2)
 
@@ -472,6 +478,13 @@ if menu is not None and menu.endswith("听说练习"):
             process_and_play_dialogue(
                 content_cols, m_voice_style, fm_voice_style, difficulty
             )
+
+        if lsi_btn:
+            dialogue = st.session_state.conversation_scene
+            txt = " ".join(dialogue)
+            voice_style = m_voice_style
+            result = get_synthesis_speech(txt, voice_style[0])
+            st.audio(result["audio_data"], format="audio/wav")
 
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
