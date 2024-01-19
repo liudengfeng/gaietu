@@ -155,6 +155,7 @@ def autoplay_audio_and_display_dialogue(content_cols):
     # 如果需要显示中文，那么翻译文本
     if st.session_state.get("ls-display-state", "英文") != "英文":
         cns = translate_text(dialogue, "zh-CN", True)
+    total = 0
     # 播放音频并同步显示文本
     for i, duration in enumerate(duration_list):
         # 检查 session state 的值
@@ -172,7 +173,10 @@ def autoplay_audio_and_display_dialogue(content_cols):
         audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
         components.html(audio_html)
         # 等待音频播放完毕
-        time.sleep(duration.total_seconds())
+        t = duration.total_seconds()
+        total += t
+        time.sleep(t)
+    return total
 
 
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
@@ -198,6 +202,7 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         content_cols[1].markdown(cns[idx])
 
     content_cols[0].audio(result["audio_data"], format="audio/wav")
+
     # 记录学习时长
     if len(st.session_state["learning-record"]) > 0:
         st.session_state["learning-record"][-1].end()
@@ -525,7 +530,17 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if lsi_btn:
-            autoplay_audio_and_display_dialogue(content_cols)
+            total = autoplay_audio_and_display_dialogue(content_cols)
+            st.session_state["learning-times"] = len(
+                st.session_state.conversation_scene
+            )
+            record = LearningTime(
+                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+                project="听说练习",
+                content=difficulty,
+                duration=total,
+            )
+            st.session_state.dbi.add_record_to_cache(record)
 
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
