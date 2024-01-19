@@ -335,9 +335,9 @@ def view_flash_word(container):
 def auto_play_flash_word(voice_style):
     current_idx = st.session_state["flashcard-idx"]
     n = len(st.session_state["flashcard-words"])
+    container = st.container()
     for idx in range(n):
         start = time.time()
-        container = st.container()
         st.session_state["flashcard-idx"] = idx
 
         view_flash_word(container)
@@ -352,8 +352,11 @@ def auto_play_flash_word(voice_style):
         components.html(audio_html)
         time.sleep(result["audio_duration"].total_seconds())
 
+        time.sleep(0.2)
         record.duration = time.time() - start
         st.session_state.dbi.add_record_to_cache(record)
+        container.empty()
+    
     # 恢复闪卡记忆的索引
     st.session_state["flashcard-idx"] = current_idx
 
