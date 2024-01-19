@@ -420,7 +420,7 @@ def select_word_image_urls(word: str):
     word_info = get_mini_dict_doc(word)
     image_indices = word_info.get("image_indices", [])
     if image_indices:
-        return [word_info["image_urls"][i] for i in image_indices]
+        return [word_info["image_urls"][i] for i in image_indices][:4]
     else:
         return random.sample(word_info["image_urls"], 4)
     # TODO：恢复
