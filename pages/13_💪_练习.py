@@ -429,6 +429,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先配置场景")
             st.stop()
 
+        st.write(st.session_state["learning-times"])
         if st.session_state["learning-times"] == 0:
             st.warning("请先完成听说练习")
             st.stop()
