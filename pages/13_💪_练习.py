@@ -444,7 +444,7 @@ if menu is not None and menu.endswith("听说练习"):
             or st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1,  # type: ignore
         )
 
-        content_cols = st.columns([4, 1, 4])
+        content_cols = st.columns([5, 2, 5])
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
