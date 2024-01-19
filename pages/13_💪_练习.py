@@ -95,7 +95,7 @@ def create_learning_record(
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
 def generate_listening_test_for(difficulty: str, conversation: str):
     return generate_listening_test(
-        st.session_state["text_model"], difficulty, conversation
+        st.session_state["text_model"], difficulty, conversation, 5
     )
 
 
@@ -415,7 +415,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["learning-times"] += 1
 
     with tabs[2]:
-        st.subheader("听力测验(四道题)", divider="rainbow", anchor="听力测验")
+        st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
 
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")

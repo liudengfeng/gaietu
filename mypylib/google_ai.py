@@ -351,7 +351,7 @@ LISTENING_TEST_TEMPLATE = """为了考察学生听力水平，根据学生语言
 对话：{dialogue}"""
 
 
-def generate_listening_test(model, level, dialogue, number=4):
+def generate_listening_test(model, level, dialogue, number=5):
     # 使用模型的 summarize 方法来生成文本的一句话中文概要
     prompt = LISTENING_TEST_TEMPLATE.format(
         level=level, dialogue=dialogue, number=number
