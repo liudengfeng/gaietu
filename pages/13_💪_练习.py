@@ -364,7 +364,7 @@ if menu is not None and menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown("""
 你可以反复播放收听对话样例，并尝试跟读以提高你的听力、口语技能。
-- 点击"刷新"按钮，重置练习，重新开始听说练习。
+- 点击"刷新"按钮，重置练习，重新开始听、说练习。
 - 点击"切换"按钮，可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。
 - 点击"上一"按钮，切换到上一轮对话。                    
 - 点击"下一"按钮，切换到下一轮对话。                    
@@ -378,6 +378,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["ls-idx"] = -1
 
         ls_btn_cols = st.columns(8)
+        st.divider()
 
         refresh_btn = ls_btn_cols[0].button(
             "刷新[:arrows_counterclockwise:]",
