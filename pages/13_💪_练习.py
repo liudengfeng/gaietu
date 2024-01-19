@@ -473,7 +473,7 @@ if menu is not None and menu.endswith("听说练习"):
                 )
 
         with sub_tabs[4]:
-            st.info("在完成所有步骤后，您可以在此处生成并查看详细的对话场景。生成对话场景后，您可以切换到最上方的 `开始练习` 标签页，开始进行听力和口语练习。", icon="🚨")
+            st.info("""在完成所有步骤后，您可以在此处生成并查看详细的对话场景。生成对话场景后，您可以切换到最上方的 "开始练习" 标签页，开始进行听力和口语练习。""", icon="🚨")
             if selected_scenario is None or difficulty is None:
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
