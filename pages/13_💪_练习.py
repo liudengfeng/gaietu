@@ -272,7 +272,10 @@ if menu is not None and menu.endswith("听说练习"):
             )
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
-            st.info("第二步：点击下拉框，选择您感兴趣的场景。如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。", icon="🚨")
+            st.info(
+                "第二步：点击下拉框，选择您感兴趣的场景。如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。",
+                icon="🚨",
+            )
             if st.session_state.stage == 1 or scenario_category is not None:
                 if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
                     scenario_list = generate_scenarios_for(scenario_category)
@@ -320,7 +323,7 @@ if menu is not None and menu.endswith("听说练习"):
                     placeholder="请选择难度",
                 )
         with sub_tabs[4]:
-            st.info("在完成所有步骤后，你可以在这里查看详细的对话场景。",icon="🚨")
+            st.info("在完成所有步骤后，你可以在这里查看详细的对话场景。", icon="🚨")
             if selected_scenario is None:
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
@@ -333,7 +336,9 @@ if menu is not None and menu.endswith("听说练习"):
                 st.markdown(f"{summarize}")
                 st.markdown("**字数统计**")
                 dialogue_text = " ".join(dialogue)
-                total_words, level_dict = count_words_and_get_levels(dialogue_text)
+                total_words, level_dict = count_words_and_get_levels(
+                    dialogue_text, True
+                )
                 level_dict.update({"总字数": total_words})
                 view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
                 st.markdown("**对话内容**")

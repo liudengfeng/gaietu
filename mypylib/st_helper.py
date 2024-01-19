@@ -262,7 +262,7 @@ def view_md_badges(d: dict, badge_maps: OrderedDict):
     cols = st.columns(len(badge_maps.keys()))
     for i, t in enumerate(badge_maps.keys()):
         num = f"{d.get(t,0):3d}"
-        body = f"""{badge_maps[t][1]}({num})"""
+        body = f"""{badge_maps[t][1]}[{num}]"""
         cols[i].markdown(
             f""":{badge_maps[t][0]}[{body}]""",
             help=f"✨ {badge_maps[t][2]}",

@@ -151,12 +151,13 @@ def get_lowest_cefr_level(word):
     return None
 
 
-def count_words_and_get_levels(text):
+def count_words_and_get_levels(text, percentage=False):
     """
     统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
 
     参数：
     text (str)：要处理的文本。
+    percentage (bool)：是否将结果转换为百分比形式。
 
     返回值：
     tuple：包含两个元素的元组，第一个元素是文本中的单词数量，第二个元素是一个字典，包含每个等级的单词数量。
@@ -187,8 +188,15 @@ def count_words_and_get_levels(text):
         # 将等级添加到字典中
         levels[level] += 1
 
+    total_words = len(words)
+    if percentage:
+        for level in levels:
+            levels[
+                level
+            ] = f"{levels[level]} ({levels[level] / total_words * 100:.2f}%)"
+
     # 返回总字数和字典
-    return len(words), dict(levels)
+    return total_words, dict(levels)
 
 
 def sample_words(level, n):
