@@ -28,11 +28,11 @@ from mypylib.st_helper import (
     get_and_save_word_image_urls,
     get_blob_container_client,
     get_blob_service_client,
-    google_translate,
     on_page_to,
     select_word_image_indices,
     select_word_image_urls,
     setup_logger,
+    translate_text,
     update_and_display_progress,
 )
 from mypylib.word_utils import (
@@ -291,11 +291,6 @@ def get_feedbacks():
 # endregion
 
 # region 词典管理辅助函数
-
-
-@st.cache_data(ttl=60 * 60 * 2)  # 缓存有效期为2小时
-def translate_text(text: str, target_language_code):
-    return google_translate(text, target_language_code)
 
 
 def translate_dict(d, target_language_code):
@@ -1192,9 +1187,7 @@ elif menu == "词典管理":
         fp = (
             CURRENT_CWD / "resource" / "dictionary" / "word_lists_by_edition_grade.json"
         )
-        if st.button(
-            "执行", key="add-category-btn", help="✨ 为简版词典添加类别列表"
-        ):
+        if st.button("执行", key="add-category-btn", help="✨ 为简版词典添加类别列表"):
             with open(fp, "r", encoding="utf-8") as f:
                 data = json.load(f)
             # 假设 data 是原始的字典，键为类别，值为单词列表
@@ -1226,7 +1219,7 @@ elif menu == "词典管理":
                     batch = db.batch()
             # 提交剩余的操作
             batch.commit()
-    
+
     # endregion
 
 # endregion

@@ -205,6 +205,11 @@ def google_translate(text: str, target_language_code: str = "zh-CN"):
     return res[0]
 
 
+@st.cache_data(ttl=60 * 60 * 24)  # 缓存有效期为24小时
+def translate_text(text: str, target_language_code):
+    return google_translate(text, target_language_code)
+
+
 # region 显示
 
 

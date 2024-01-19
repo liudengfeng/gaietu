@@ -29,6 +29,7 @@ from mypylib.st_helper import (
     is_answer_correct,
     on_page_to,
     setup_logger,
+    translate_text,
     view_md_badges,
 )
 from mypylib.word_utils import count_words_and_get_levels
@@ -123,6 +124,36 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
 def summarize_in_one_sentence_for(dialogue: str):
     return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
+
+
+def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
+    dialogue = st.session_state.conversation_scene
+    idx = st.session_state["ls-idx"]
+    sentence = dialogue[idx]
+    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+    result = get_synthesis_speech(sentence, voice_style[0])
+
+    if st.session_state["ls-display-state"] == "英文":
+        content_cols[0].markdown(sentence)
+    elif st.session_state["ls-display-state"] == "中文":
+        cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown(cn)
+    else:
+        content_cols[0].markdown(sentence)
+        cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown(cn)
+
+    content_cols[0].audio(result["audio_data"], format="audio/wav")
+
+    # 记录学习时长
+    if len(st.session_state["learning-record"]) > 0:
+        st.session_state["learning-record"][-1].end()
+
+    word_count = len(sentence.split())
+    record = create_learning_record("听说练习", f"{difficulty}-字数：{word_count}")
+    record.start()
+
+    st.session_state["learning-times"] += 1
 
 
 def on_prev_btn_click(key):
@@ -362,13 +393,18 @@ if menu is not None and menu.endswith("听说练习"):
 
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
-        st.markdown("""
+        st.markdown(
+            """
 你可以反复播放收听对话样例，并尝试跟读以提高你的听力、口语技能。
 - 点击"刷新"按钮，重置练习，重新开始听、说练习。
 - 点击"切换"按钮，可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。
 - 点击"上一"按钮，切换到上一轮对话。                    
 - 点击"下一"按钮，切换到下一轮对话。                    
-""")
+"""
+        )
+
+        if "ls-display-state" not in st.session_state:
+            st.session_state["ls-display-state"] = "全部"
 
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
@@ -415,40 +451,23 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["learning-times"] = 0
             end_and_save_learning_records()
 
+        if display_status_button:
+            if st.session_state["ls-display-state"] == "全部":
+                st.session_state["ls-display-state"] = "英文"
+            elif st.session_state["ls-display-state"] == "英文":
+                st.session_state["ls-display-state"] = "中文"
+            else:
+                st.session_state["ls-display-state"] = "全部"
+
         if prev_btn:
-            dialogue = st.session_state.conversation_scene
-            idx = st.session_state["ls-idx"]
-            sentence = dialogue[idx]
-            voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
-            result = get_synthesis_speech(sentence, voice_style[0])
-            content_cols[0].audio(result["audio_data"], format="audio/wav")
-            content_cols[0].markdown(sentence)
-
-            if len(st.session_state["learning-record"]) > 0:
-                st.session_state["learning-record"][-1].end()
-
-            word_count = len(sentence.split())
-            record = create_learning_record("听说练习", f"单词数量：{word_count}")
-            record.start()
-
-            st.session_state["learning-times"] += 1
+            process_and_play_dialogue(
+                content_cols, m_voice_style, fm_voice_style, difficulty
+            )
 
         if next_btn:
-            dialogue = st.session_state.conversation_scene
-            idx = st.session_state["ls-idx"]
-            sentence = dialogue[idx]
-            voice_style: voices = m_voice_style if idx % 2 == 0 else fm_voice_style
-            result = get_synthesis_speech(sentence, voice_style[0])
-            content_cols[0].audio(result["audio_data"], format="audio/wav")
-            content_cols[0].markdown(sentence)
-
-            if len(st.session_state["learning-record"]) > 0:
-                st.session_state["learning-record"][-1].end()
-            word_count = len(sentence.split())
-            record = create_learning_record("听说练习", f"单词数量：{word_count}")
-            record.start()
-
-            st.session_state["learning-times"] += 1
+            process_and_play_dialogue(
+                content_cols, m_voice_style, fm_voice_style, difficulty
+            )
 
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
