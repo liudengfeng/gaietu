@@ -485,7 +485,7 @@ if menu is not None and menu.endswith("听说练习"):
             or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
         lsi_btn = ls_btn_cols[4].button(
-            "全文[:arrow_right_hook:]",
+            "全文[:headphones:]",
             key="ls-lsi",
             help="✨ 点击按钮，收听整个对话。",
             disabled=len(st.session_state.conversation_scene) == 0,
