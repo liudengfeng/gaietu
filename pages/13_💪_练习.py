@@ -332,9 +332,9 @@ if menu is not None and menu.endswith("听说练习"):
                 st.stop()
 
             session_cols = st.columns(8)
-            
+
             gen_btn = session_cols[0].button("生成场景[:rocket:]", key="generate-dialogue")
-            
+
             if gen_btn:
                 # 学习次数重置为0
                 st.session_state["learning-times"] = 0
@@ -368,12 +368,17 @@ if menu is not None and menu.endswith("听说练习"):
 
         ls_btn_cols = st.columns(8)
 
-        display_status_button = ls_btn_cols[0].button(
+        refresh_btn = ls_btn_cols[0].button(
+            "刷新[:arrows_counterclockwise:]",
+            key="ls-refresh",
+            help="✨ 点击按钮，生成听力测试题。",
+        )
+        display_status_button = ls_btn_cols[1].button(
             "切换[:recycle:]",
             key="ls-mask",
             help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
         )
-        prev_btn = ls_btn_cols[1].button(
+        prev_btn = ls_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-prev",
             help="✨ 点击按钮，切换到上一轮对话。",
@@ -381,7 +386,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("ls-idx",),
             disabled=st.session_state["ls-idx"] < 0,
         )
-        next_btn = ls_btn_cols[2].button(
+        next_btn = ls_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
             key="ls-next",
             help="✨ 点击按钮，切换到下一轮对话。",
@@ -439,9 +444,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.stop()
 
         if "listening-test" not in st.session_state:
-            st.session_state["listening-test"] = generate_listening_test_for(
-                difficulty, st.session_state.conversation_scene
-            )
+            st.session_state["listening-test"] = []
 
         if "listening-test-idx" not in st.session_state:
             st.session_state["listening-test-idx"] = -1
@@ -481,6 +484,15 @@ if menu is not None and menu.endswith("听说练习"):
         )
 
         container = st.container()
+
+        if refresh_btn:
+            st.session_state["listening-test"] = generate_listening_test_for(
+                difficulty, st.session_state.conversation_scene
+            )
+            st.session_state["listening-test-idx"] = -1
+            st.session_state["listening-test-answer"] = [None] * len(
+                st.session_state.conversation_scene
+            )
 
         if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
             view_listening_test(container)
