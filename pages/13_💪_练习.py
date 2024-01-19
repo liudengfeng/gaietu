@@ -710,6 +710,7 @@ if menu is not None and menu.endswith("听说练习"):
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
                 project="听力测验",
                 content=difficulty,
+                word_count=len(question.split()),
                 duration=question_audio["audio_duration"].total_seconds(),
             )
             st.session_state.dbi.add_record_to_cache(record)
