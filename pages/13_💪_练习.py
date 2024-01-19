@@ -102,14 +102,18 @@ def display_dialogue_summary(container, dialogue, summarize):
 
 
 # endregion
+
+
 def create_learning_record(
     project,
+    difficulty,
     words,
 ):
     record = LearningTime(
         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
         project=project,
-        content=words,
+        content=difficulty,
+        word_count=words,
     )
     return record
 
@@ -231,7 +235,7 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         st.session_state["learning-record"][-1].end()
 
     word_count = len(sentence.split())
-    record = create_learning_record("听说练习", f"{difficulty}-字数：{word_count}")
+    record = create_learning_record("听说练习", difficulty, word_count)
     record.start()
 
     st.session_state["learning-times"] += 1
@@ -594,11 +598,14 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["learning-times"] = len(
                 st.session_state.conversation_scene
             )
+            dialogue_text = " ".join(st.session_state.conversation_scene)
+            word_count = len(dialogue_text.split())
             record = LearningTime(
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
                 project="听说练习",
                 content=difficulty,
                 duration=total,
+                word_count=word_count,
             )
             st.session_state.dbi.add_record_to_cache(record)
 

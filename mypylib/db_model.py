@@ -55,6 +55,7 @@ class LearningTime(BaseModel):
     project: str = Field(default="")
     content: str = Field(default="")
     duration: Optional[float] = Field(default=0)
+    word_count: Optional[int] = Field(default=1)
     start_time: Optional[datetime] = Field(default=None)
     record_time: Optional[datetime] = Field(
         default_factory=lambda: datetime.now(timezone.utc)
@@ -71,7 +72,7 @@ class LearningTime(BaseModel):
         end_time = datetime.now(timezone.utc)
         if self.start_time:
             elapsed_time = (end_time - self.start_time).total_seconds()
-            self.duration += elapsed_time # type: ignore
+            self.duration += elapsed_time  # type: ignore
             self.start_time = None  # 将开始时间设置为空
 
     def update(self, **kwargs):
