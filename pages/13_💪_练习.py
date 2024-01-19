@@ -333,6 +333,15 @@ if "summarize_in_one" not in st.session_state:
 if "learning-times" not in st.session_state:
     st.session_state["learning-times"] = 0
 
+if "listening-test" not in st.session_state:
+    st.session_state["listening-test"] = []
+
+if "listening-test-idx" not in st.session_state:
+    st.session_state["listening-test-idx"] = -1
+
+if "listening-test-answer" not in st.session_state:
+    st.session_state["listening-test-answer"] = []
+
 # endregion
 
 if menu is not None and menu.endswith("听说练习"):
@@ -593,16 +602,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先完成听说练习")
             st.stop()
 
-        if "listening-test" not in st.session_state:
-            st.session_state["listening-test"] = []
 
-        if "listening-test-idx" not in st.session_state:
-            st.session_state["listening-test-idx"] = -1
-
-        if "listening-test-answer" not in st.session_state:
-            st.session_state["listening-test-answer"] = [None] * len(
-                st.session_state.conversation_scene
-            )
 
         ls_text_btn_cols = st.columns(8)
 
@@ -620,7 +620,7 @@ if menu is not None and menu.endswith("听说练习"):
             help="✨ 点击按钮，切换到上一道听力测试题。",
             on_click=on_prev_btn_click,
             args=("listening-test-idx",),
-            disabled=st.session_state["listening-test-idx"] < 0,
+            disabled=st.session_state["listening-test-idx"] <= 0,
         )
         next_test_btn = ls_text_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
