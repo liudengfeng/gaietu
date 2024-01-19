@@ -649,7 +649,7 @@ if menu is not None and menu.endswith("听说练习"):
             or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
         )
         rpl_test_btn = ls_text_btn_cols[4].button(
-            "重放[:arrow_right_hook:]",
+            "重放[:headphones:]",
             key="ls-test-replay",
             help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
             disabled=len(st.session_state["listening-test"]) == 0
