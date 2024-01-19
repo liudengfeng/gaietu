@@ -361,6 +361,8 @@ if "listening-test-answer" not in st.session_state:
 if "ls-test-display-state" not in st.session_state:
     st.session_state["ls-test-display-state"] = "文本"
 
+if "ls-display-state" not in st.session_state:
+    st.session_state["ls-display-state"] = "英文"
 # endregion
 
 if menu is not None and menu.endswith("听说练习"):
@@ -403,6 +405,7 @@ if menu is not None and menu.endswith("听说练习"):
         selected_scenario = None
         interesting_plot = None
         difficulty = None
+
         with sub_tabs[0]:
             # st.info("这是第一步：首次选定场景类别，AI会花6-12秒生成对应的场景列表。请耐心等待...", icon="🚨")
             st.info("第一步：点击下拉框选定场景类别", icon="🚨")
@@ -525,9 +528,6 @@ if menu is not None and menu.endswith("听说练习"):
 """
         )
 
-        if "ls-display-state" not in st.session_state:
-            st.session_state["ls-display-state"] = "全部"
-
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             st.stop()
@@ -580,12 +580,12 @@ if menu is not None and menu.endswith("听说练习"):
             end_and_save_learning_records()
 
         if display_status_button:
-            if st.session_state["ls-display-state"] == "全部":
-                st.session_state["ls-display-state"] = "英文"
-            elif st.session_state["ls-display-state"] == "英文":
+            if st.session_state["ls-display-state"] == "英文":
+                st.session_state["ls-display-state"] = "全部"
+            elif st.session_state["ls-display-state"] == "全部":
                 st.session_state["ls-display-state"] = "中文"
             else:
-                st.session_state["ls-display-state"] = "全部"
+                st.session_state["ls-display-state"] = "英文"
 
         if prev_btn:
             process_and_play_dialogue(
