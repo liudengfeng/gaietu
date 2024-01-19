@@ -261,7 +261,8 @@ def view_stream_response(responses, placeholder):
 def view_md_badges(d: dict, badge_maps: OrderedDict):
     cols = st.columns(len(badge_maps.keys()))
     for i, t in enumerate(badge_maps.keys()):
-        num = f"{d.get(t,0):3d}"
+        n = d.get(t, 0)
+        num = f"{n:3d}" if isinstance(n, int) else f"{n:3.2f}"
         body = f"""{badge_maps[t][1]}[{num}]"""
         cols[i].markdown(
             f""":{badge_maps[t][0]}[{body}]""",
