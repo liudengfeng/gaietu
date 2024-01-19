@@ -137,13 +137,13 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         content_cols[0].markdown(sentence)
     elif st.session_state["ls-display-state"] == "中文":
         cn = translate_text(sentence, "zh-CN")
-        content_cols[1].markdown(cn)
+        content_cols[2].markdown(cn)
     else:
         content_cols[0].markdown(sentence)
         cn = translate_text(sentence, "zh-CN")
-        content_cols[1].markdown(cn)
+        content_cols[2].markdown(cn)
 
-    content_cols[0].audio(result["audio_data"], format="audio/wav")
+    content_cols[1].audio(result["audio_data"], format="audio/wav")
 
     # 记录学习时长
     if len(st.session_state["learning-record"]) > 0:
@@ -444,7 +444,7 @@ if menu is not None and menu.endswith("听说练习"):
             or st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1,  # type: ignore
         )
 
-        content_cols = st.columns(2)
+        content_cols = st.columns([4, 1, 4])
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
