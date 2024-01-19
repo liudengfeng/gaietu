@@ -332,6 +332,32 @@ def view_flash_word(container):
     view_pos(container, word_info, word)
 
 
+def auto_play_flash_word(voice_style):
+    container = st.container()
+    current_idx = st.session_state["flashcard-idx"]
+    for idx in range(st.session_state["flashcard-words"]):
+        start = time.time()
+        container.empty()
+        st.session_state["flashcard-idx"] = idx
+        
+        view_flash_word(container)
+
+        word = st.session_state["flashcard-words"][idx]
+
+        result = get_synthesis_speech(word, voice_style[0])
+
+        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+
+        audio_html = audio_autoplay_elem(result["audio_data"], fmt="mav")
+        components.html(audio_html)
+        time.sleep(result["audio_duration"].total_seconds())
+
+        record.duration = time.time() - start
+        st.session_state.dbi.add_record_to_cache(record)
+    # 恢复闪卡记忆的索引
+    st.session_state["flashcard-idx"] = current_idx
+
+
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
@@ -933,7 +959,7 @@ if menu and menu.endswith("闪卡记忆"):
     auto_play_btn = btn_cols[5].button(
         "轮播[:arrow_forward:]",
         key="flashcard-auto-play",
-        help="✨ 自动单词轮播",
+        help="✨ 单词自动轮播",
         disabled=len(st.session_state["flashcard-words"]) == 0,
     )
     add_btn = btn_cols[6].button(
@@ -1014,7 +1040,10 @@ if menu and menu.endswith("闪卡记忆"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if st.session_state["flashcard-idx"] != -1:
-        view_flash_word(st.container())
+        if auto_play_btn:
+            auto_play_flash_word(voice_style)
+        else:
+            view_flash_word(st.container())
 
 # endregion
 
