@@ -334,12 +334,12 @@ if menu is not None and menu.endswith("听说练习"):
                 summarize = summarize_in_one_sentence_for(dialogue)
                 st.markdown("**对话概要**")
                 st.markdown(f"{summarize}")
-                st.markdown("**字数统计**")
                 dialogue_text = " ".join(dialogue)
                 total_words, level_dict = count_words_and_get_levels(
                     dialogue_text, True
                 )
-                level_dict.update({"总字数": total_words})
+                st.markdown(f"**字数统计（{len(dialogue_text.split())}）**")
+                level_dict.update({"单词数量": total_words})
                 view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
                 st.markdown("**对话内容**")
                 for d in dialogue:
