@@ -453,7 +453,11 @@ if menu is not None and menu.endswith("听说练习"):
 
             container = st.container()
 
-            gen_btn = session_cols[0].button("生成场景[:rocket:]", key="generate-dialogue")
+            gen_btn = session_cols[0].button(
+                "刷新[:arrows_counterclockwise:]",
+                key="generate-dialogue",
+                help="✨ 点击按钮，生成对话场景。",
+            )
 
             if gen_btn:
                 container.empty()
@@ -464,14 +468,13 @@ if menu is not None and menu.endswith("听说练习"):
                     selected_scenario, interesting_plot, difficulty
                 )
                 summarize = summarize_in_one_sentence_for(dialogue)
-                
+
                 display_dialogue_summary(container, dialogue, summarize)
 
                 st.session_state.conversation_scene = dialogue
                 st.session_state.summarize_in_one = summarize
-            
+
             elif len(st.session_state.conversation_scene) > 0:
-                
                 display_dialogue_summary(
                     container,
                     st.session_state.conversation_scene,
