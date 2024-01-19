@@ -409,6 +409,7 @@ if menu is not None and menu.endswith("听说练习"):
 
             if len(st.session_state["learning-record"]) > 0:
                 st.session_state["learning-record"][-1].end()
+            
             word_count = len(sentence.split())
             record = create_learning_record("听说练习", f"单词数量：{word_count}")
             record.start()
@@ -458,7 +459,13 @@ if menu is not None and menu.endswith("听说练习"):
 
         st.divider()
 
-        prev_btn = ls_text_btn_cols[0].button(
+        refresh_test_btn = ls_btn_cols[0].button(
+            "刷新[:arrows_counterclockwise:]",
+            key="ls-test-refresh",
+            help="✨ 点击按钮，生成听力测试题。",
+        )
+        
+        prev_test_btn = ls_text_btn_cols[1].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-test-prev",
             help="✨ 点击按钮，切换到上一道听力测试题。",
@@ -466,7 +473,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("listening-test-idx",),
             disabled=st.session_state["listening-test-idx"] < 0,
         )
-        next_btn = ls_text_btn_cols[1].button(
+        next_test_btn = ls_text_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
             key="ls-test-next",
             help="✨ 点击按钮，切换到下一道听力测试题。",
@@ -475,7 +482,7 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state["listening-test"]) == 0
             or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
         )
-        sumbit_test_btn = ls_text_btn_cols[2].button(
+        sumbit_test_btn = ls_text_btn_cols[3].button(
             "检查[:mag:]",
             key="submit-listening-test",
             disabled=st.session_state["listening-test-idx"] == -1
@@ -485,7 +492,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         container = st.container()
 
-        if refresh_btn:
+        if refresh_test_btn:
             st.session_state["listening-test"] = generate_listening_test_for(
                 difficulty, st.session_state.conversation_scene
             )
