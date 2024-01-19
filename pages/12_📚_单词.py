@@ -332,6 +332,19 @@ def view_flash_word(container):
     view_pos(container, word_info, word)
 
 
+def create_learning_record(idx_key, words_key, project):
+    idx = st.session_state[idx_key]
+    word = st.session_state[words_key][idx]
+    word_count = len(word.split())
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project=project,
+        content=word,
+        word_count=word_count,
+    )
+    return record
+
+
 # endregion
 
 # region 单词拼图状态
@@ -828,19 +841,6 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 # region 闪卡记忆
 
 
-def create_learning_record(idx_key, words_key, project):
-    idx = st.session_state[idx_key]
-    word = st.session_state[words_key][idx]
-    word_count = len(word.split())
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project=project,
-        content=word,
-        word_count=word_count,
-    )
-    return record
-
-
 if menu and menu.endswith("闪卡记忆"):
     # region 侧边栏
     # 让用户选择语音风格
@@ -930,13 +930,19 @@ if menu and menu.endswith("闪卡记忆"):
         help="✨ 聆听单词发音",
         disabled=st.session_state["flashcard-idx"] == -1,
     )
-    add_btn = btn_cols[5].button(
+    auto_play_btn = btn_cols[5].button(
+        "轮播[:arrow_forward:]",
+        key="flashcard-play",
+        help="✨ 自动单词轮播",
+        disabled=len(st.session_state["flashcard-words"]) == 0,
+    )
+    add_btn = btn_cols[6].button(
         "添加[:heavy_plus_sign:]",
         key="flashcard-add",
         help="✨ 将当前单词添加到个人词库",
         disabled=st.session_state["flashcard-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
     )
-    del_btn = btn_cols[6].button(
+    del_btn = btn_cols[7].button(
         "删除[:heavy_minus_sign:]",
         key="flashcard-del",
         help="✨ 将当前单词从个人词库中删除",
