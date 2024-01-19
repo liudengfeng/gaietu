@@ -451,7 +451,8 @@ if menu is not None and menu.endswith("听说练习"):
         content_cols = st.columns(2)
 
         if refresh_btn:
-            st.session_state["ls-idx"] = -1
+            # 刷新要变为0
+            st.session_state["ls-idx"] = 0
             st.session_state["learning-times"] = 0
             end_and_save_learning_records()
 
