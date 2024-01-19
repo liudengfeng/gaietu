@@ -998,7 +998,7 @@ if menu and menu.endswith("闪卡记忆"):
 
         result = get_synthesis_speech(word, voice_style[0])
         play_audio_elem.audio(result["audio_data"], format="audio/mp3")
-        record.duration = result["audio_duration"]
+        record.duration = result["audio_duration"].total_seconds()
         # record.end()
         st.session_state.dbi.add_record_to_cache(record)
         # logger.info(f"{record.duration:.2f} 秒")
