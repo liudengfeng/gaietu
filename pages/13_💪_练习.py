@@ -448,11 +448,7 @@ if menu is not None and menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown(
             """
-你可以反复播放收听对话样例，并尝试跟读以提高你的听力、口语技能。你还可以通过点击左侧的按钮来调整合成语音的风格，以适应你的收听习惯。
-- 点击"刷新"按钮，重置练习，重新开始听、说练习。
-- 点击"切换"按钮，可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。
-- 点击"上一"按钮，切换到上一轮对话。                    
-- 点击"下一"按钮，切换到下一轮对话。                    
+你可以反复播放收听对话样例，并尝试跟读以提高你的听力、口语技能。你还可以通过点击左侧的按钮来调整合成语音的风格，以适应你的收听习惯。                 
 """
         )
 
@@ -529,14 +525,6 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if lsi_btn:
-            # dialogue = st.session_state.conversation_scene
-            # txt = " ".join(dialogue)
-            # voice_style = m_voice_style
-            # result = get_synthesis_speech(txt, voice_style[0])
-            # st.audio(result["audio_data"], format="audio/wav")
-            # audio_data = get_and_combine_audio_data()
-            # st.audio(audio_data, format="audio/wav")
-
             autoplay_audio_and_display_dialogue(content_cols)
 
     with tabs[2]:
