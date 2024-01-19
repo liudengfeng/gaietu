@@ -128,6 +128,8 @@ def summarize_in_one_sentence_for(dialogue: str):
 
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
     dialogue = st.session_state.conversation_scene
+    cns = translate_text(dialogue, "zh-CN", True)
+    st.write(cns)
     idx = st.session_state["ls-idx"]
     sentence = dialogue[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
@@ -137,15 +139,15 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
     elif st.session_state["ls-display-state"] == "中文":
-        cn = translate_text(sentence, "zh-CN")
+        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
-        content_cols[1].markdown(cn)
+        content_cols[1].markdown(cns[idx])
     else:
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
-        cn = translate_text(sentence, "zh-CN")
+        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
-        content_cols[1].markdown(cn)
+        content_cols[1].markdown(cns[idx])
 
     content_cols[0].audio(result["audio_data"], format="audio/wav")
     # 记录学习时长

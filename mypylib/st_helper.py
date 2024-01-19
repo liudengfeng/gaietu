@@ -3,6 +3,7 @@ import re
 import time
 from collections import OrderedDict
 from datetime import datetime, timedelta
+from typing import List
 
 import pytz
 import streamlit as st
@@ -176,9 +177,47 @@ def configure_google_apis():
         st.warning("非云端环境，无法使用 Google AI", icon="⚠️")
 
 
-def google_translate(text: str, target_language_code: str = "zh-CN"):
+# def google_translate(text: str, target_language_code: str = "zh-CN"):
+#     """Translating Text."""
+#     if text is None or text == "":
+#         return text  # type: ignore
+
+#     # Location must be 'us-central1' or 'global'.
+#     parent = f"projects/{PROJECT_ID}/locations/global"
+
+#     client = st.session_state.google_translate_client
+#     # Detail on supported types can be found here:
+#     # https://cloud.google.com/translate/docs/supported-formats
+#     response = client.translate_text(
+#         request={
+#             "parent": parent,
+#             "contents": [text],
+#             "mime_type": "text/plain",  # mime types: text/plain, text/html
+#             "source_language_code": "en-US",
+#             "target_language_code": target_language_code,
+#         }
+#     )
+
+#     res = []
+#     # Display the translation for each input text provided
+#     for translation in response.translations:
+#         res.append(translation.translated_text.encode("utf8").decode("utf8"))
+#     # google translate api 返回一个结果
+#     return res[0]
+
+
+def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = False):
     """Translating Text."""
-    if text is None or text == "":
+    if is_list:
+        if not isinstance(text, list):
+            raise ValueError("Expected a list of strings, but got a single string.")
+        if not all(isinstance(i, str) for i in text):
+            raise ValueError("All elements in the list should be strings.")
+    else:
+        if not isinstance(text, str):
+            raise ValueError("Expected a string, but got a different type.")
+
+    if not text or text == "":
         return text  # type: ignore
 
     # Location must be 'us-central1' or 'global'.
@@ -190,7 +229,7 @@ def google_translate(text: str, target_language_code: str = "zh-CN"):
     response = client.translate_text(
         request={
             "parent": parent,
-            "contents": [text],
+            "contents": text if is_list else [text],
             "mime_type": "text/plain",  # mime types: text/plain, text/html
             "source_language_code": "en-US",
             "target_language_code": target_language_code,
@@ -202,7 +241,7 @@ def google_translate(text: str, target_language_code: str = "zh-CN"):
     for translation in response.translations:
         res.append(translation.translated_text.encode("utf8").decode("utf8"))
     # google translate api 返回一个结果
-    return res[0]
+    return res if is_list else res[0]
 
 
 @st.cache_data(ttl=60 * 60 * 24)  # 缓存有效期为24小时
