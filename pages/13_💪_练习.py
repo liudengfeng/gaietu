@@ -610,6 +610,8 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-test-answer"] = [None] * len(
                 st.session_state.conversation_scene
             )
+            # 更新
+            st.rerun()
 
         if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
             view_listening_test(container)
