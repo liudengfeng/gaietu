@@ -335,11 +335,12 @@ def view_flash_word(container):
 def auto_play_flash_word(voice_style):
     container = st.container()
     current_idx = st.session_state["flashcard-idx"]
-    for idx in range(st.session_state["flashcard-words"]):
+    n = len(st.session_state["flashcard-words"])
+    for idx in range(n):
         start = time.time()
         container.empty()
         st.session_state["flashcard-idx"] = idx
-        
+
         view_flash_word(container)
 
         word = st.session_state["flashcard-words"][idx]
