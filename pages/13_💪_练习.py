@@ -692,6 +692,7 @@ if menu is not None and menu.endswith("听说练习"):
             question_audio = get_synthesis_speech(question, m_voice_style[0])
             audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
             components.html(audio_html)
+            time.sleep(question_audio["audio_duration"].total_seconds())
             
             # 添加一个学习时间记录
             record = LearningTime(
