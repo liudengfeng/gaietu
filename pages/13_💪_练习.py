@@ -624,7 +624,7 @@ if menu is not None and menu.endswith("听说练习"):
             key="ls-test-refresh",
             help="✨ 点击按钮，生成听力测试题。",
         )
-        display_test_btn = ls_btn_cols[1].button(
+        display_test_btn = ls_text_btn_cols[1].button(
             "切换[:recycle:]",
             key="ls-test-mask",
             help="✨ 此状态切换按钮允许您选择测试题目的展示方式：以文本形式展示或以语音形式播放。初始状态为以文本形式展示测试题目。",
