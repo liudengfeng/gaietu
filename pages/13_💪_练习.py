@@ -258,7 +258,7 @@ if menu is not None and menu.endswith("听说练习"):
         interesting_plot = None
         difficulty = None
         with sub_tabs[0]:
-            st.info("请注意，首次选择特定的场景类别时，AI需要生成场景列表，这可能需要6~10秒的时间。", icon="🚨")
+            st.info("这是第一步：首次选定场景类别，AI会花6-12秒生成对应的场景列表。请耐心等待...", icon="🚨")
             scenario_category = st.selectbox(
                 "场景类别",
                 ["日常生活", "职场沟通", "学术研究"],
@@ -268,8 +268,10 @@ if menu is not None and menu.endswith("听说练习"):
                 key="scenario_category",
                 placeholder="请选择场景类别",
             )
+            st.write(scenario_category)
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
+            st.info("在开始第二步之前，请确保你已经完成了第一步的场景类别选择，否则无法显示场景列表。", icon="🚨")
             if st.session_state.stage == 1 or scenario_category is not None:
                 selected_scenario = st.selectbox(
                     "选择场景",
@@ -281,6 +283,7 @@ if menu is not None and menu.endswith("听说练习"):
                     placeholder="请选择您感兴趣的场景",
                 )
         with sub_tabs[2]:
+            st.info("可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过添加情节'。", icon="🚨")
             ignore = st.toggle("跳过添加情节", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 3
@@ -299,8 +302,8 @@ if menu is not None and menu.endswith("听说练习"):
                 """,
                 )
         with sub_tabs[3]:
+            st.info("选择难度可以帮助AI生成适合您的对话练习，这个过程可能需要6-12秒。感谢您的耐心等待...", icon="🚨")
             if st.session_state.stage == 3 or interesting_plot is not None or ignore:
-                st.info("选择特定的难度后，AI需要生成对话，这可能需要6~10秒的时间。", icon="🚨")
                 difficulty = st.selectbox(
                     "难度",
                     ["初级", "中级", "高级"],
@@ -313,7 +316,7 @@ if menu is not None and menu.endswith("听说练习"):
         with sub_tabs[4]:
             if st.session_state.stage == 4 or difficulty is not None:
                 if selected_scenario is None:
-                    st.warning("请先选择场景")
+                    st.warning("您需要先完成之前的所有步骤")
                     st.stop()
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
