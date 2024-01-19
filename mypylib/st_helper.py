@@ -1,4 +1,5 @@
 import logging
+import random
 import re
 import time
 from collections import OrderedDict
@@ -420,6 +421,9 @@ def select_word_image_urls(word: str):
     image_indices = word_info.get("image_indices", [])
     if image_indices:
         return [word_info["image_urls"][i] for i in image_indices]
+    else:
+        return random.sample(word_info["image_urls"], 4)
+    # TODO：恢复
     image_indices = select_word_image_indices(word)
     db = st.session_state.dbi.db
     collection = db.collection("mini_dict")
