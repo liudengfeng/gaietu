@@ -104,9 +104,6 @@ OP_THRESHOLD = 10000  # 操作阈值
 # region 通用函数
 
 
-
-
-
 @st.cache_data(show_spinner="提取词典...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
 def load_word_dict():
     with open(
@@ -834,10 +831,12 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
+    word_count = len(word.split())
     record = LearningTime(
         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
         project=project,
         content=word,
+        word_count=word_count,
     )
     return record
 
