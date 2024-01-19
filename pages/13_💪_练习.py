@@ -218,7 +218,11 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
 
-    content_cols[0].audio(result["audio_data"], format="audio/wav")
+    # content_cols[0].audio(result["audio_data"], format="audio/wav")
+
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
+    time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
     if len(st.session_state["learning-record"]) > 0:
