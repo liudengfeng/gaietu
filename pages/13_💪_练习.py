@@ -522,8 +522,8 @@ if menu is not None and menu.endswith("听说练习"):
             # voice_style = m_voice_style
             # result = get_synthesis_speech(txt, voice_style[0])
             # st.audio(result["audio_data"], format="audio/wav")
-            audio_data = get_and_combine_audio_data()
-            st.audio(audio_data, format="audio/wav")
+            # audio_data = get_and_combine_audio_data()
+            # st.audio(audio_data, format="audio/wav")
 
             autoplay_audio_and_display_dialogue(content_cols)
 
