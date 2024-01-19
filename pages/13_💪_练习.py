@@ -107,12 +107,13 @@ def display_dialogue_summary(container, dialogue, summarize):
 def create_learning_record(
     project,
     difficulty,
+    selected_scenario,
     words,
 ):
     record = LearningTime(
         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
         project=project,
-        content=difficulty,
+        content=f"{difficulty}-{selected_scenario}",
         word_count=words,
     )
     return record
@@ -201,7 +202,9 @@ def autoplay_audio_and_display_dialogue(content_cols):
     return total
 
 
-def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
+def process_and_play_dialogue(
+    content_cols, m_voice_style, fm_voice_style, difficulty, selected_scenario
+):
     dialogue = st.session_state.conversation_scene
     cns = translate_text(dialogue, "zh-CN", True)
     idx = st.session_state["ls-idx"]
@@ -235,7 +238,7 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         st.session_state["learning-record"][-1].end()
 
     word_count = len(sentence.split())
-    record = create_learning_record("听说练习", difficulty, word_count)
+    record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
     record.start()
 
     st.session_state["learning-times"] += 1
@@ -282,7 +285,7 @@ def view_listening_test(container):
     )
 
 
-def check_listening_test_answer(container, level):
+def check_listening_test_answer(container, level, selected_scenario):
     score = 0
     n = count_non_none(st.session_state["listening-test"])
     for idx, test in enumerate(st.session_state["listening-test"]):
@@ -323,6 +326,7 @@ def check_listening_test_answer(container, level):
     test_dict = {
         "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "听力测验",
+        "topic": selected_scenario,
         "level": level,
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
@@ -589,12 +593,20 @@ if menu is not None and menu.endswith("听说练习"):
 
         if prev_btn:
             process_and_play_dialogue(
-                content_cols, m_voice_style, fm_voice_style, difficulty
+                content_cols,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                selected_scenario,
             )
 
         if next_btn:
             process_and_play_dialogue(
-                content_cols, m_voice_style, fm_voice_style, difficulty
+                content_cols,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                selected_scenario,
             )
 
         if lsi_btn:
@@ -607,7 +619,7 @@ if menu is not None and menu.endswith("听说练习"):
             record = LearningTime(
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
                 project="听说练习",
-                content=difficulty,
+                content=f"{difficulty}-{selected_scenario}",
                 duration=total,
                 word_count=word_count,
             )
@@ -713,7 +725,7 @@ if menu is not None and menu.endswith("听说练习"):
             record = LearningTime(
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
                 project="听力测验",
-                content=difficulty,
+                content=f"{difficulty}-{selected_scenario}",
                 word_count=len(question.split()),
                 duration=question_audio["audio_duration"].total_seconds(),
             )
@@ -734,6 +746,6 @@ if menu is not None and menu.endswith("听说练习"):
             ) != count_non_none(st.session_state["listening-test"]):
                 container.warning("您尚未完成测试。")
 
-            check_listening_test_answer(container, difficulty)
+            check_listening_test_answer(container, difficulty, selected_scenario)
 
     # endregion

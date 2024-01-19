@@ -931,8 +931,7 @@ if menu and menu.endswith("闪卡记忆"):
         disabled=st.session_state["flashcard-idx"] == -1,
     )
     auto_play_btn = btn_cols[5].button(
-        # "轮播[:arrow_forward:]",
-        "轮播[▶️]",
+        "轮播[:arrow_forward:]",
         key="flashcard-auto-play",
         help="✨ 自动单词轮播",
         disabled=len(st.session_state["flashcard-words"]) == 0,
