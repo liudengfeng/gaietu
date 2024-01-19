@@ -136,17 +136,17 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
     content_cols[1].audio(result["audio_data"], format="audio/wav")
     
     if st.session_state["ls-display-state"] == "英文":
-        content_cols[0].markdown("")
+        content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
     elif st.session_state["ls-display-state"] == "中文":
         cn = translate_text(sentence, "zh-CN")
-        content_cols[2].markdown("")
+        content_cols[2].markdown("中文")
         content_cols[2].markdown(cn)
     else:
-        content_cols[0].markdown("")
+        content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
         cn = translate_text(sentence, "zh-CN")
-        content_cols[2].markdown("")
+        content_cols[2].markdown("中文")
         content_cols[2].markdown(cn)
 
 
