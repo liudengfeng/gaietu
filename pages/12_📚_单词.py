@@ -332,8 +332,7 @@ def view_flash_word(container):
     view_pos(container, word_info, word)
 
 
-def auto_play_flash_word(voice_style):
-    container = st.container()
+def auto_play_flash_word(container, voice_style):
     current_idx = st.session_state["flashcard-idx"]
     n = len(st.session_state["flashcard-words"])
     for idx in range(n):
@@ -341,9 +340,8 @@ def auto_play_flash_word(voice_style):
         container.empty()
         st.session_state["flashcard-idx"] = idx
 
-        view_flash_word(container)
-
         word = st.session_state["flashcard-words"][idx]
+        container.write(f"单词：{word}")
 
         result = get_synthesis_speech(word, voice_style[0])
 
@@ -1040,11 +1038,12 @@ if menu and menu.endswith("闪卡记忆"):
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
+    container = st.container()
     if st.session_state["flashcard-idx"] != -1:
         if auto_play_btn:
-            auto_play_flash_word(voice_style)
+            auto_play_flash_word(container, voice_style)
         else:
-            view_flash_word(st.container())
+            view_flash_word(container)
 
 # endregion
 
