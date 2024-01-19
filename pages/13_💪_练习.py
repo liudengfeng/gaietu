@@ -326,11 +326,16 @@ if menu is not None and menu.endswith("听说练习"):
                     placeholder="请选择难度",
                 )
         with sub_tabs[4]:
-            st.info("在完成所有步骤后，你可以在这里查看详细的对话场景。", icon="🚨")
-            if selected_scenario is None:
+            st.info("在完成所有步骤后，你可以在这里可以生成和查看详细的对话场景。", icon="🚨")
+            if selected_scenario is None or difficulty is None:
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
-            if st.session_state.stage == 4 or difficulty is not None:
+
+            session_cols = st.columns(8)
+            
+            gen_btn = session_cols[0].button("生成场景[:rocket:]", key="generate-dialogue")
+            
+            if gen_btn:
                 # 学习次数重置为0
                 st.session_state["learning-times"] = 0
                 dialogue = generate_dialogue_for(
@@ -429,7 +434,6 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先配置场景")
             st.stop()
 
-        st.write(st.session_state["learning-times"])
         if st.session_state["learning-times"] == 0:
             st.warning("请先完成听说练习")
             st.stop()
