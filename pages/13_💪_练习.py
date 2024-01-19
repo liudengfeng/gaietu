@@ -275,7 +275,6 @@ def view_listening_test(container):
     )
 
 
-
 def check_listening_test_answer(container, level):
     score = 0
     n = count_non_none(st.session_state["listening-test"])
@@ -646,7 +645,15 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state["listening-test"]) == 0
             or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
         )
-        sumbit_test_btn = ls_text_btn_cols[4].button(
+        rpl_test_btn = ls_text_btn_cols[4].button(
+            "重放[:arrow_right_hook:]",
+            key="ls-test-replay",
+            help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
+            disabled=len(st.session_state["listening-test"]) == 0
+            or st.session_state["listening-test-idx"] == -1
+            or st.session_state["ls-test-display-state"] == "文本",  # type: ignore
+        )
+        sumbit_test_btn = ls_text_btn_cols[5].button(
             "检查[:mag:]",
             key="submit-listening-test",
             disabled=st.session_state["listening-test-idx"] == -1
@@ -673,6 +680,27 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["ls-test-display-state"] = "语音"
             else:
                 st.session_state["ls-test-display-state"] = "文本"
+
+        if rpl_test_btn:
+            if st.session_state["ls-test-display-state"] == "文本":
+                st.warning("请先切换到语音模式")
+                st.stop()
+            
+            idx = st.session_state["listening-test-idx"]
+            test = st.session_state["listening-test"][idx]
+            question = test["question"]
+            question_audio = get_synthesis_speech(question, m_voice_style[0])
+            audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
+            components.html(audio_html)
+            
+            # 添加一个学习时间记录
+            record = LearningTime(
+                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+                project="听力测验",
+                content=difficulty,
+                duration=question_audio["audio_duration"].total_seconds(),
+            )
+            st.session_state.dbi.add_record_to_cache(record)
 
         if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
             view_listening_test(container)
