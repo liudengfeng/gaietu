@@ -248,6 +248,9 @@ if menu is not None and menu.endswith("听说练习"):
     if "conversation_scene" not in st.session_state:
         st.session_state.conversation_scene = []
 
+    if "learning-times" not in st.session_state:
+        st.session_state["learning-times"] = 0
+
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
@@ -328,6 +331,8 @@ if menu is not None and menu.endswith("听说练习"):
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
             if st.session_state.stage == 4 or difficulty is not None:
+                # 学习次数重置为0
+                st.session_state["learning-times"] = 0
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
@@ -347,9 +352,6 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state.conversation_scene = dialogue
 
     with tabs[1]:
-        if "learning-times" not in st.session_state:
-            st.session_state["learning-times"] = 0
-
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
 
         if len(st.session_state.conversation_scene) == 0:
