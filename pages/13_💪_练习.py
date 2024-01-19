@@ -391,7 +391,7 @@ if menu is not None and menu.endswith("听说练习"):
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
             st.info(
-                "第二步：点击下拉框，选择您感兴趣的场景。如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。",
+                "第二步：点击下拉框，选择您感兴趣的场景。如果您希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。",
                 icon="🚨",
             )
             if st.session_state.stage == 1 or scenario_category is not None:
@@ -424,7 +424,7 @@ if menu is not None and menu.endswith("听说练习"):
                     on_change=set_state,
                     args=(3,),
                     placeholder="""您可以在这里添加一些有趣的情节。比如：
-- 同事问了一个非常奇怪的问题，让你忍俊不禁。
+- 同事问了一个非常奇怪的问题，让您忍俊不禁。
 - 同事在工作中犯了一个错误，但他能够及时发现并改正。
 - 同事在工作中遇到
                 """,
@@ -444,7 +444,7 @@ if menu is not None and menu.endswith("听说练习"):
                 )
 
         with sub_tabs[4]:
-            st.info("在完成所有步骤后，你可以在这里可以生成和查看详细的对话场景。", icon="🚨")
+            st.info("在完成所有步骤后，您可以在这里可以生成和查看详细的对话场景。", icon="🚨")
             if selected_scenario is None or difficulty is None:
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
@@ -489,7 +489,7 @@ if menu is not None and menu.endswith("听说练习"):
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown(
             """
-你可以反复播放收听对话样例，并尝试跟读以提高你的听力、口语技能。你还可以通过点击左侧的按钮来调整合成语音的风格，以适应你的收听习惯。                 
+您可以通过反复播放和跟读每条对话样例来提升您的听力和口语技能。点击`全文`可以一次性收听整个对话。另外，您可以通过点击左侧的按钮调整合成语音的风格，以更好地适应您的听力习惯。      
 """
         )
 
