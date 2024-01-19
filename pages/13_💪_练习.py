@@ -182,13 +182,13 @@ def autoplay_audio_and_display_dialogue(content_cols):
         # 检查 session state 的值
         if st.session_state.get("ls-display-state", "英文") == "英文":
             # 显示英文
-            slot_1.markdown(dialogue[i])
+            slot_1.markdown(f"**{dialogue[i]}**")
         elif st.session_state.get("ls-display-state", "中文") == "中文":
             # 显示中文
             slot_2.markdown(cns[i])
         else:
             # 同时显示英文和中文
-            slot_1.markdown(dialogue[i])
+            slot_1.markdown(f"**{dialogue[i]}**")
             slot_2.markdown(cns[i])
         # 播放音频
         audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
