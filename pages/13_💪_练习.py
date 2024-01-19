@@ -459,7 +459,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         st.divider()
 
-        refresh_test_btn = ls_btn_cols[0].button(
+        refresh_test_btn = ls_text_btn_cols[0].button(
             "刷新[:arrows_counterclockwise:]",
             key="ls-test-refresh",
             help="✨ 点击按钮，生成听力测试题。",
