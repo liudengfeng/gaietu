@@ -56,7 +56,7 @@ check_access(False)
 # save_and_clear_all_learning_records()
 configure_google_apis()
 
-# endregion
+
 menu_emoji = [
     "🗣️",
     "📖",
@@ -81,6 +81,7 @@ check_and_force_logout(sidebar_status)
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
 
+# endregion
 
 # region 函数
 
@@ -299,23 +300,27 @@ def check_listening_test_answer(container, level):
 
 # endregion
 
-if menu is not None and menu.endswith("听说练习"):
+# region 会话状态
+
+if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     with open(VOICES_FP, "r", encoding="utf-8") as f:
         voices = json.load(f)["en-US"]
+    st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
+    st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
-    m_voices = [v for v in voices if v[1] == "Male"]
-    fm_voices = [v for v in voices if v[1] == "Female"]
+# endregion
 
+if menu is not None and menu.endswith("听说练习"):
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
-        m_voices,
+        st.session_state["m_voices"],
         # on_change=on_voice_changed,
         help="✨ 选择您喜欢的合成男声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
     fm_voice_style = st.sidebar.selectbox(
         "合成女声风格",
-        fm_voices,
+        st.session_state["fm_voices"],
         # on_change=on_voice_changed,
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
@@ -341,6 +346,8 @@ if menu is not None and menu.endswith("听说练习"):
     if "learning-times" not in st.session_state:
         st.session_state["learning-times"] = 0
 
+    # region "配置场景"
+    
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
@@ -379,7 +386,7 @@ if menu is not None and menu.endswith("听说练习"):
                     "选择场景",
                     scenario_list,  # type: ignore
                     key="selected_scenario",
-                    index=None,
+                    index=0,
                     on_change=set_state,
                     args=(2,),
                     placeholder="请选择您感兴趣的场景",
@@ -412,7 +419,7 @@ if menu is not None and menu.endswith("听说练习"):
                     "难度",
                     ["初级", "中级", "高级"],
                     key="difficulty",
-                    index=None,
+                    index=0,
                     on_change=set_state,
                     args=(4,),
                     placeholder="请选择难度",
@@ -431,10 +438,12 @@ if menu is not None and menu.endswith("听说练习"):
             if gen_btn:
                 # 学习次数重置为0
                 st.session_state["learning-times"] = 0
+                
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
                 summarize = summarize_in_one_sentence_for(dialogue)
+                
                 st.markdown("**对话概要**")
                 st.markdown(f"{summarize}")
                 dialogue_text = " ".join(dialogue)
@@ -447,8 +456,13 @@ if menu is not None and menu.endswith("听说练习"):
                 st.markdown("**对话内容**")
                 for d in dialogue:
                     st.markdown(d)
+                
                 st.session_state.conversation_scene = dialogue
 
+    # endregion
+
+    # region "听说练习"        
+    
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown(
@@ -542,6 +556,10 @@ if menu is not None and menu.endswith("听说练习"):
             )
             st.session_state.dbi.add_record_to_cache(record)
 
+    # endregion
+            
+    # region "听力测验"
+    
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
 
@@ -629,3 +647,5 @@ if menu is not None and menu.endswith("听说练习"):
                 container.warning("您尚未完成测试。")
 
             check_listening_test_answer(container, difficulty)
+    
+    # endregion
