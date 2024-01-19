@@ -85,7 +85,23 @@ if "text_model" not in st.session_state:
 
 # region 函数
 
+# region 听力练习
 
+
+def display_dialogue_summary(container, dialogue, summarize):
+    container.markdown("**对话概要**")
+    container.markdown(f"{summarize}")
+    dialogue_text = " ".join(dialogue)
+    total_words, level_dict = count_words_and_get_levels(dialogue_text, True)
+    container.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
+    level_dict.update({"单词总量": total_words})
+    view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
+    container.markdown("**对话内容**")
+    for d in dialogue:
+        container.markdown(d)
+
+
+# endregion
 def create_learning_record(
     project,
     words,
@@ -308,6 +324,15 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
     st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
+if "conversation_scene" not in st.session_state:
+    st.session_state["conversation_scene"] = []
+
+if "summarize_in_one" not in st.session_state:
+    st.session_state["summarize_in_one"] = ""
+
+if "learning-times" not in st.session_state:
+    st.session_state["learning-times"] = 0
+
 # endregion
 
 if menu is not None and menu.endswith("听说练习"):
@@ -339,15 +364,8 @@ if menu is not None and menu.endswith("听说练习"):
     def set_state(i):
         st.session_state.stage = i
 
-    # 对话变量
-    if "conversation_scene" not in st.session_state:
-        st.session_state.conversation_scene = []
-
-    if "learning-times" not in st.session_state:
-        st.session_state["learning-times"] = 0
-
     # region "配置场景"
-    
+
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
@@ -433,36 +451,37 @@ if menu is not None and menu.endswith("听说练习"):
 
             session_cols = st.columns(8)
 
+            container = st.container()
+
             gen_btn = session_cols[0].button("生成场景[:rocket:]", key="generate-dialogue")
 
             if gen_btn:
+                container.empty()
                 # 学习次数重置为0
                 st.session_state["learning-times"] = 0
-                
+
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
                 summarize = summarize_in_one_sentence_for(dialogue)
                 
-                st.markdown("**对话概要**")
-                st.markdown(f"{summarize}")
-                dialogue_text = " ".join(dialogue)
-                total_words, level_dict = count_words_and_get_levels(
-                    dialogue_text, True
-                )
-                st.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
-                level_dict.update({"单词总量": total_words})
-                view_md_badges(level_dict, WORD_COUNT_BADGE_MAPS)
-                st.markdown("**对话内容**")
-                for d in dialogue:
-                    st.markdown(d)
-                
+                display_dialogue_summary(container, dialogue, summarize)
+
                 st.session_state.conversation_scene = dialogue
+                st.session_state.summarize_in_one = summarize
+            
+            elif len(st.session_state.conversation_scene) > 0:
+                
+                display_dialogue_summary(
+                    container,
+                    st.session_state.conversation_scene,
+                    st.session_state.summarize_in_one,
+                )
 
     # endregion
 
-    # region "听说练习"        
-    
+    # region "听说练习"
+
     with tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown(
@@ -557,9 +576,9 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state.dbi.add_record_to_cache(record)
 
     # endregion
-            
+
     # region "听力测验"
-    
+
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
 
@@ -647,5 +666,5 @@ if menu is not None and menu.endswith("听说练习"):
                 container.warning("您尚未完成测试。")
 
             check_listening_test_answer(container, difficulty)
-    
+
     # endregion

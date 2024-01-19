@@ -302,8 +302,8 @@ def view_stream_response(responses, placeholder):
     placeholder.markdown(full_response)
 
 
-def view_md_badges(d: dict, badge_maps: OrderedDict):
-    cols = st.columns(len(badge_maps.keys()))
+def view_md_badges(container, d: dict, badge_maps: OrderedDict):
+    cols = container.columns(len(badge_maps.keys()))
     for i, t in enumerate(badge_maps.keys()):
         n = d.get(t, None)
         if n is None:
