@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import streamlit as st
-import streamlit.components.v1 as components
+# import streamlit.components.v1 as components
 
 from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, SCENARIO_MAPS, TOPICS
 from mypylib.db_model import LearningTime
@@ -188,7 +188,8 @@ def autoplay_audio_and_display_dialogue(content_cols):
             slot_2.markdown(cns[i])
         # 播放音频
         audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
-        components.html(audio_html)
+        # components.html(audio_html)
+        st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
         t = duration.total_seconds()
         total += t
@@ -221,7 +222,8 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
     # content_cols[0].audio(result["audio_data"], format="audio/wav")
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
-    components.html(audio_html)
+    # components.html(audio_html)
+    st.markdown(audio_html, unsafe_allow_html=True)
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
@@ -259,7 +261,8 @@ def view_listening_test(container):
     if st.session_state["ls-test-display-state"] == "语音":
         question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
-        components.html(audio_html)
+        # components.html(audio_html)
+        container.markdown(audio_html, unsafe_allow_html=True)
         time.sleep(question_audio["audio_duration"].total_seconds())
     else:
         container.markdown(question)
