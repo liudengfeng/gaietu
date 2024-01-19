@@ -339,9 +339,9 @@ def auto_play_flash_word(container, voice_style):
         start = time.time()
         container.empty()
         st.session_state["flashcard-idx"] = idx
+        view_flash_word(container)
 
         word = st.session_state["flashcard-words"][idx]
-        container.write(f"单词：{word}")
 
         result = get_synthesis_speech(word, voice_style[0])
 
