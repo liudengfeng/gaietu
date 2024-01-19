@@ -4,6 +4,7 @@ import logging
 import random
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import time
 
 import streamlit as st
 
@@ -32,7 +33,8 @@ from mypylib.st_helper import (
     translate_text,
     view_md_badges,
 )
-from mypylib.word_utils import count_words_and_get_levels
+from mypylib.utils import combine_audio_data
+from mypylib.word_utils import audio_autoplay_elem, count_words_and_get_levels
 
 # region 配置
 
@@ -124,6 +126,41 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
 def summarize_in_one_sentence_for(dialogue: str):
     return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
+
+
+def get_and_combine_audio_data():
+    dialogue = st.session_state.conversation_scene
+    audio_list = []
+    for i, sentence in enumerate(dialogue):
+        voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
+        result = get_synthesis_speech(sentence, voice_style[0])
+        audio_list.append(result["audio_data"])
+    return combine_audio_data(audio_list)
+
+
+def autoplay_audio_and_display_dialogue(content_cols):
+    dialogue = st.session_state.conversation_scene
+    cns = translate_text(dialogue, "zh-CN", True)
+    audio_list = []
+    duration_list = []
+    for i, sentence in enumerate(dialogue):
+        voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
+        result = get_synthesis_speech(sentence, voice_style[0])
+        audio_list.append(result["audio_data"])
+        duration_list.append(result["audio_duration"])
+
+    # 创建一个空的插槽
+    slot_1 = content_cols[0].empty()
+    slot_2 = content_cols[1].empty()
+    # 播放音频并同步显示文本
+    for i, duration in enumerate(duration_list):
+        # 更新插槽的内容
+        slot_1.text(dialogue[i])
+        slot_2.text(cns[i])
+        # 播放音频
+        audio_autoplay_elem(audio_list[i], "wav")
+        # 等待音频播放完毕
+        time.sleep(duration)
 
 
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
@@ -480,11 +517,15 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if lsi_btn:
-            dialogue = st.session_state.conversation_scene
-            txt = " ".join(dialogue)
-            voice_style = m_voice_style
-            result = get_synthesis_speech(txt, voice_style[0])
-            st.audio(result["audio_data"], format="audio/wav")
+            # dialogue = st.session_state.conversation_scene
+            # txt = " ".join(dialogue)
+            # voice_style = m_voice_style
+            # result = get_synthesis_speech(txt, voice_style[0])
+            # st.audio(result["audio_data"], format="audio/wav")
+            audio_data = get_and_combine_audio_data()
+            st.audio(audio_data, format="audio/wav")
+
+            autoplay_audio_and_display_dialogue(content_cols)
 
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
