@@ -129,7 +129,6 @@ def summarize_in_one_sentence_for(dialogue: str):
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
     dialogue = st.session_state.conversation_scene
     cns = translate_text(dialogue, "zh-CN", True)
-    st.write(cns)
     idx = st.session_state["ls-idx"]
     sentence = dialogue[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
