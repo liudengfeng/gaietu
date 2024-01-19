@@ -23,6 +23,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
+    end_and_save_learning_records,
     format_token_count,
     get_synthesis_speech,
     is_answer_correct,
@@ -368,17 +369,12 @@ if menu is not None and menu.endswith("听说练习"):
 
         ls_btn_cols = st.columns(8)
 
-        refresh_btn = ls_btn_cols[0].button(
-            "刷新[:arrows_counterclockwise:]",
-            key="ls-refresh",
-            help="✨ 点击按钮，生成听力测试题。",
-        )
-        display_status_button = ls_btn_cols[1].button(
+        display_status_button = ls_btn_cols[0].button(
             "切换[:recycle:]",
             key="ls-mask",
             help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
         )
-        prev_btn = ls_btn_cols[2].button(
+        prev_btn = ls_btn_cols[1].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-prev",
             help="✨ 点击按钮，切换到上一轮对话。",
@@ -386,7 +382,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("ls-idx",),
             disabled=st.session_state["ls-idx"] < 0,
         )
-        next_btn = ls_btn_cols[3].button(
+        next_btn = ls_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
             key="ls-next",
             help="✨ 点击按钮，切换到下一轮对话。",
@@ -409,7 +405,7 @@ if menu is not None and menu.endswith("听说练习"):
 
             if len(st.session_state["learning-record"]) > 0:
                 st.session_state["learning-record"][-1].end()
-            
+
             word_count = len(sentence.split())
             record = create_learning_record("听说练习", f"单词数量：{word_count}")
             record.start()
@@ -464,7 +460,7 @@ if menu is not None and menu.endswith("听说练习"):
             key="ls-test-refresh",
             help="✨ 点击按钮，生成听力测试题。",
         )
-        
+
         prev_test_btn = ls_text_btn_cols[1].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-test-prev",
@@ -493,6 +489,7 @@ if menu is not None and menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_test_btn:
+            end_and_save_learning_records()
             st.session_state["listening-test"] = generate_listening_test_for(
                 difficulty, st.session_state.conversation_scene
             )
