@@ -159,11 +159,11 @@ def autoplay_audio_and_display_dialogue(content_cols):
         slot_1.markdown(dialogue[i])
         slot_2.markdown(cns[i])
         # 播放音频
-        audio_html = audio_autoplay_elem(audio_list[i], "wav")
+        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
         # st.markdown(audio_html, unsafe_allow_html=True)
         components.html(audio_html)
         # 等待音频播放完毕
-        # time.sleep(duration.total_seconds())
+        time.sleep(duration.total_seconds())
 
 
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
