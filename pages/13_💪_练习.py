@@ -134,7 +134,7 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
     result = get_synthesis_speech(sentence, voice_style[0])
 
     content_cols[1].audio(result["audio_data"], format="audio/wav")
-    
+
     if st.session_state["ls-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -148,7 +148,6 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         cn = translate_text(sentence, "zh-CN")
         content_cols[2].markdown("中文")
         content_cols[2].markdown(cn)
-
 
     # 记录学习时长
     if len(st.session_state["learning-record"]) > 0:
