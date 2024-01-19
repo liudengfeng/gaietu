@@ -143,6 +143,7 @@ def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, diffi
         cn = translate_text(sentence, "zh-CN")
         content_cols[2].markdown(cn)
 
+    content_cols[1].markdown("")
     content_cols[1].audio(result["audio_data"], format="audio/wav")
 
     # 记录学习时长
