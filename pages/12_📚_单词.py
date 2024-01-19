@@ -351,7 +351,7 @@ def auto_play_flash_word(voice_style):
 
         audio_html = audio_autoplay_elem(result["audio_data"], fmt="mav")
         components.html(audio_html)
-        # time.sleep(result["audio_duration"].total_seconds())
+        time.sleep(result["audio_duration"].total_seconds())
 
         record.duration = time.time() - start
         st.session_state.dbi.add_record_to_cache(record)
