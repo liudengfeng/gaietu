@@ -332,13 +332,14 @@ def view_flash_word(container):
     view_pos(container, word_info, word)
 
 
-def auto_play_flash_word(container, voice_style):
+def auto_play_flash_word(voice_style):
     current_idx = st.session_state["flashcard-idx"]
     n = len(st.session_state["flashcard-words"])
     for idx in range(n):
         start = time.time()
-        container.empty()
+        container = st.container()
         st.session_state["flashcard-idx"] = idx
+
         view_flash_word(container)
 
         word = st.session_state["flashcard-words"][idx]
@@ -1041,7 +1042,8 @@ if menu and menu.endswith("闪卡记忆"):
     container = st.container()
     if st.session_state["flashcard-idx"] != -1:
         if auto_play_btn:
-            auto_play_flash_word(container, voice_style)
+            container.empty()
+            auto_play_flash_word(voice_style)
         else:
             view_flash_word(container)
 
