@@ -29,13 +29,15 @@ def combine_audio_data(audio_data_list):
 
     # 创建一个新的 wave 对象用于输出
     with wave.open(output, "wb") as output_wave:
+        # 打开第一个音频数据并获取其参数
+        with wave.open(io.BytesIO(audio_data_list[0]), "rb") as first_audio:
+            params = first_audio.getparams()
+            output_wave.setparams(params)
+
         # 遍历每个音频数据
         for data in audio_data_list:
-            # 打开音频数据并获取其参数
+            # 打开音频数据
             with wave.open(io.BytesIO(data), "rb") as audio:
-                params = audio.getparams()
-                output_wave.setparams(params)
-
                 # 将音频的帧写入输出文件
                 output_wave.writeframes(audio.readframes(audio.getnframes()))
 

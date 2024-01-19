@@ -155,12 +155,12 @@ def autoplay_audio_and_display_dialogue(content_cols):
     # 播放音频并同步显示文本
     for i, duration in enumerate(duration_list):
         # 更新插槽的内容
-        slot_1.text(dialogue[i])
-        slot_2.text(cns[i])
+        slot_1.markdown(dialogue[i])
+        slot_2.markdown(cns[i])
         # 播放音频
         audio_autoplay_elem(audio_list[i], "wav")
         # 等待音频播放完毕
-        time.sleep(duration.total_seconds())
+        # time.sleep(duration.total_seconds())
 
 
 def process_and_play_dialogue(content_cols, m_voice_style, fm_voice_style, difficulty):
