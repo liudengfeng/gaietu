@@ -291,3 +291,15 @@ def rearrange_theme_scene():
             else:
                 level_to_theme[level].append(theme)
     return level_to_theme
+
+
+SCENARIO_MAPS = {
+    "日常生活": [],
+    "职场沟通": [],
+    "学术研究": [],
+    "旅行交通": [],
+    "餐饮美食": [],
+    "健康医疗": [],
+    "购物消费": [],
+    "娱乐休闲": [],
+}

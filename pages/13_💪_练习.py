@@ -7,7 +7,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS
+from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, TOPICS, SCENARIO_MAPS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
@@ -258,24 +258,30 @@ if menu is not None and menu.endswith("听说练习"):
         interesting_plot = None
         difficulty = None
         with sub_tabs[0]:
-            st.info("这是第一步：首次选定场景类别，AI会花6-12秒生成对应的场景列表。请耐心等待...", icon="🚨")
+            # st.info("这是第一步：首次选定场景类别，AI会花6-12秒生成对应的场景列表。请耐心等待...", icon="🚨")
+            st.info("第一步：选定场景类别", icon="🚨")
             scenario_category = st.selectbox(
                 "场景类别",
-                ["日常生活", "职场沟通", "学术研究"],
-                index=None,
+                ["日常生活", "职场沟通", "学术研究", "旅行交通", "餐饮美食", "健康医疗", "购物消费", "娱乐休闲"],
+                # index=None,
+                index=0,
                 on_change=set_state,
                 args=(1,),
                 key="scenario_category",
                 placeholder="请选择场景类别",
             )
-            st.write(scenario_category)
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
-            st.info("在开始第二步之前，请确保你已经完成了第一步的场景类别选择，否则无法显示场景列表。", icon="🚨")
+            st.info("如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。", icon="🚨")
             if st.session_state.stage == 1 or scenario_category is not None:
+                if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
+                    scenario_list = generate_scenarios_for(scenario_category)
+                else:
+                    scenario_list = SCENARIO_MAPS[scenario_category]
+                st.write(scenario_list)
                 selected_scenario = st.selectbox(
                     "选择场景",
-                    generate_scenarios_for(scenario_category),  # type: ignore
+                    scenario_list,  # type: ignore
                     key="selected_scenario",
                     index=None,
                     on_change=set_state,
