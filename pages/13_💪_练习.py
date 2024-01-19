@@ -295,6 +295,7 @@ if menu is not None and menu.endswith("听说练习"):
                     args=(2,),
                     placeholder="请选择您感兴趣的场景",
                 )
+
         with sub_tabs[2]:
             st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
             ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
@@ -314,6 +315,7 @@ if menu is not None and menu.endswith("听说练习"):
 - 同事在工作中遇到
                 """,
                 )
+
         with sub_tabs[3]:
             st.info("第四步：点击下拉框选择难度，帮助AI生成相应的对话练习。这个过程可能需要6-12秒。感谢您的耐心等待...", icon="🚨")
             if st.session_state.stage == 3 or interesting_plot is not None or ignore:
@@ -326,6 +328,7 @@ if menu is not None and menu.endswith("听说练习"):
                     args=(4,),
                     placeholder="请选择难度",
                 )
+
         with sub_tabs[4]:
             st.info("在完成所有步骤后，你可以在这里可以生成和查看详细的对话场景。", icon="🚨")
             if selected_scenario is None or difficulty is None:
@@ -369,12 +372,17 @@ if menu is not None and menu.endswith("听说练习"):
 
         ls_btn_cols = st.columns(8)
 
-        display_status_button = ls_btn_cols[0].button(
+        refresh_btn = ls_btn_cols[0].button(
+            "刷新[:arrows_counterclockwise:]",
+            key="ls-refresh",
+            help="✨ 点击按钮，从头开始练习。",
+        )
+        display_status_button = ls_btn_cols[1].button(
             "切换[:recycle:]",
             key="ls-mask",
             help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
         )
-        prev_btn = ls_btn_cols[1].button(
+        prev_btn = ls_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ls-prev",
             help="✨ 点击按钮，切换到上一轮对话。",
@@ -382,7 +390,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("ls-idx",),
             disabled=st.session_state["ls-idx"] < 0,
         )
-        next_btn = ls_btn_cols[2].button(
+        next_btn = ls_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
             key="ls-next",
             help="✨ 点击按钮，切换到下一轮对话。",
@@ -393,6 +401,11 @@ if menu is not None and menu.endswith("听说练习"):
         )
 
         content_cols = st.columns(2)
+
+        if refresh_btn:
+            st.session_state["ls-idx"] = -1
+            st.session_state["learning-times"] = 0
+            end_and_save_learning_records()
 
         if prev_btn:
             dialogue = st.session_state.conversation_scene
