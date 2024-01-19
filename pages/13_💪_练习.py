@@ -272,7 +272,7 @@ if menu is not None and menu.endswith("听说练习"):
             )
             # logger.info(f"{st.session_state.stage=}")
         with sub_tabs[1]:
-            st.info("如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。", icon="🚨")
+            st.info("点击下拉框，选择您感兴趣的场景。如果你希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。", icon="🚨")
             if st.session_state.stage == 1 or scenario_category is not None:
                 if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
                     scenario_list = generate_scenarios_for(scenario_category)
@@ -308,7 +308,7 @@ if menu is not None and menu.endswith("听说练习"):
                 """,
                 )
         with sub_tabs[3]:
-            st.info("选择难度可以帮助AI生成适合您的对话练习，这个过程可能需要6-12秒。感谢您的耐心等待...", icon="🚨")
+            st.info("点击下来框选择难度，帮助AI生成相应的对话练习。这个过程可能需要6-12秒。感谢您的耐心等待...", icon="🚨")
             if st.session_state.stage == 3 or interesting_plot is not None or ignore:
                 difficulty = st.selectbox(
                     "难度",
@@ -320,10 +320,11 @@ if menu is not None and menu.endswith("听说练习"):
                     placeholder="请选择难度",
                 )
         with sub_tabs[4]:
+            st.info("在完成所有步骤后，你可以在这里查看详细的对话记录。",icon="🚨")
+            if selected_scenario is None:
+                st.warning("您需要先完成之前的所有步骤")
+                st.stop()
             if st.session_state.stage == 4 or difficulty is not None:
-                if selected_scenario is None:
-                    st.warning("您需要先完成之前的所有步骤")
-                    st.stop()
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
