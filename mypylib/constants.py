@@ -14,7 +14,7 @@ CEFR_LEVEL_MAPS = {
     "B1": "中级",
     "B2": "中高级",
     "C1": "高级",
-    "C2": "母语级",
+    "C2": "精通级",
 }
 
 CEFR_LEVEL_DETAIL = {
