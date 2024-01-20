@@ -92,6 +92,18 @@ if "text_model" not in st.session_state:
 
 # region 函数
 
+# region 通用
+
+# endregion
+
+
+def display_text_word_count_summary(container, text):
+    total_words, level_dict = count_words_and_get_levels(text, True)
+    container.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
+    level_dict.update({"单词总量": total_words})
+    view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
+
+
 # region 听力练习
 
 
@@ -99,10 +111,11 @@ def display_dialogue_summary(container, dialogue, summarize):
     container.markdown("**对话概要**")
     container.markdown(f"{summarize}")
     dialogue_text = " ".join(dialogue)
-    total_words, level_dict = count_words_and_get_levels(dialogue_text, True)
-    container.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
-    level_dict.update({"单词总量": total_words})
-    view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
+    display_text_word_count_summary(container, dialogue_text)
+    # total_words, level_dict = count_words_and_get_levels(dialogue_text, True)
+    # container.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
+    # level_dict.update({"单词总量": total_words})
+    # view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
     container.markdown("**对话内容**")
     for d in dialogue:
         container.markdown(d)
@@ -908,9 +921,11 @@ if menu is not None and menu.endswith("阅读练习"):
                     genre, contents, plot if plot else "", difficulty
                 )
                 st.session_state["reading-article"] = article
+                display_text_word_count_summary(container, article)
                 st.markdown(article)
 
             elif st.session_state["reading-article"]:
+                display_text_word_count_summary(container, article)
                 st.markdown(article)
 
     # endregion
