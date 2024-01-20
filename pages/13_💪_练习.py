@@ -973,12 +973,12 @@ if menu is not None and menu.endswith("阅读练习"):
                 ]
                 st.session_state["reading-article"] = paragraphs
                 display_text_word_count_summary(container, " ".join(paragraphs))
-                st.markdown("\n".join(paragraphs))
+                st.markdown("\n\n".join(paragraphs))
 
             elif len(st.session_state["reading-article"]):
                 paragraphs = st.session_state["reading-article"]
                 display_text_word_count_summary(container, " ".join(paragraphs))
-                st.markdown("\n".join(paragraphs))
+                st.markdown("\n\n".join(paragraphs))
 
     # endregion
 
