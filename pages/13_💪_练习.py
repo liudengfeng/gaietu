@@ -5,6 +5,7 @@ import random
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import List
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -21,6 +22,7 @@ from mypylib.google_ai import (
     generate_dialogue,
     generate_listening_test,
     generate_reading_comprehension_article,
+    generate_reading_comprehension_test,
     generate_scenarios,
     load_vertex_model,
     summarize_in_one_sentence,
@@ -144,6 +146,13 @@ def create_learning_record(
 def generate_listening_test_for(difficulty: str, conversation: str):
     return generate_listening_test(
         st.session_state["text_model"], difficulty, conversation, 5
+    )
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
+def generate_reading_test_for(difficulty: str, article: List[str]):
+    return generate_reading_comprehension_test(
+        st.session_state["text_model"], exercise_type, 5, difficulty, "\n".join(article)
     )
 
 
@@ -375,7 +384,7 @@ def on_word_test_radio_change(idx, options):
     st.session_state["listening-test-answer"][idx] = options.index(current)
 
 
-def view_listening_test(container):
+def view_listening_test(container, difficulty, selected_scenario):
     idx = st.session_state["listening-test-idx"]
     test = st.session_state["listening-test"][idx]
     question = test["question"]
@@ -399,6 +408,43 @@ def view_listening_test(container):
         on_change=on_word_test_radio_change,
         args=(idx, options),
         key="listening-test-options",
+    )
+
+    # 添加一个学习时间记录
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project="听力测验",
+        content=f"{difficulty}-{selected_scenario}",
+        word_count=len(question.split()),
+        duration=t,
+    )
+    st.session_state.dbi.add_record_to_cache(record)
+
+
+def view_reading_test(container):
+    idx = st.session_state["reading-test-idx"]
+    test = st.session_state["reading-test"][idx]
+    question = test["question"]
+    options = test["options"]
+    user_answer_idx = st.session_state["reading-test-answer"][idx]
+    t = 0
+    if st.session_state["ra-test-display-state"] == "语音":
+        question_audio = get_synthesis_speech(question, m_voice_style[0])
+        audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
+        components.html(audio_html)
+        t = question_audio["audio_duration"].total_seconds()
+        time.sleep(t)
+    else:
+        container.markdown(question)
+
+    container.radio(
+        "选项",
+        options,
+        index=user_answer_idx,
+        label_visibility="collapsed",
+        on_change=on_word_test_radio_change,
+        args=(idx, options),
+        key="reading-test-options",
     )
     return len(question.split()), t
 
@@ -497,6 +543,9 @@ if "ls-display-state" not in st.session_state:
 
 if "ra-display-state" not in st.session_state:
     st.session_state["ra-display-state"] = "英文"
+
+if "ra-test-display-state" not in st.session_state:
+    st.session_state["ra-test-display-state"] = "英文"
 
 if "scenario-list" not in st.session_state:
     st.session_state["scenario-list"] = []
@@ -858,26 +907,13 @@ if menu is not None and menu.endswith("听说练习"):
                 st.warning("请先切换到语音模式")
                 st.stop()
 
-            word_count, duration = view_listening_test(container)
-
-            # 添加一个学习时间记录
-            record = LearningTime(
-                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-                project="听力测验",
-                content=f"{difficulty}-{selected_scenario}",
-                word_count=word_count,
-                duration=duration,
-            )
-            st.session_state.dbi.add_record_to_cache(record)
+            view_listening_test(container, difficulty, selected_scenario)
 
         if prev_test_btn:
-            view_listening_test(container)
+            view_listening_test(container, difficulty, selected_scenario)
 
         if next_test_btn:
-            view_listening_test(container)
-
-        # if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
-        #     view_listening_test(container)
+            view_listening_test(container, difficulty, selected_scenario)
 
         if sumbit_test_btn:
             container.empty()
@@ -914,10 +950,10 @@ if menu is not None and menu.endswith("阅读练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
-    st.sidebar.selectbox(
+    exercise_type = st.sidebar.selectbox(
         "考题类型", ["单项选择", "多选选择", "填空题", "逻辑题"], help="✨ 选择您喜欢的考题类型"
     )
-    
+
     tabs = st.tabs(["配置场景", "开始练习", "测验"])
 
     # region "配置场景"
@@ -1140,7 +1176,6 @@ if menu is not None and menu.endswith("阅读练习"):
     # region 阅读测验
 
     with tabs[2]:
-
         st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
 
         if len(st.session_state["reading-article"]) == 0:
@@ -1202,8 +1237,8 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if refresh_test_btn:
             end_and_save_learning_records()
-            st.session_state["reading-test"] = generate_listening_test_for(
-                difficulty, st.session_state["reading-article"]
+            st.session_state["reading-test"] = generate_reading_test_for(
+                difficulty, exercise_type, st.session_state["reading-article"]
             )
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(
@@ -1211,6 +1246,12 @@ if menu is not None and menu.endswith("阅读练习"):
             )
             # 更新
             st.rerun()
+
+        if prev_test_btn:
+            view_reading_test(container)
+
+        if next_test_btn:
+            view_reading_test(container)
 
     # endregion
 
