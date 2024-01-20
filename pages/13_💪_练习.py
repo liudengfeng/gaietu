@@ -234,6 +234,50 @@ def autoplay_audio_and_display_dialogue(content_cols):
     return total
 
 
+def process_and_play_article(
+    content_cols, m_voice_style, fm_voice_style, difficulty, genre
+):
+    article = st.session_state["reading-article"]
+    paragraphs = article.split("\n")
+    cns = translate_text(paragraphs, "zh-CN", True)
+
+    idx = st.session_state["ra-idx"]
+    paragraph = paragraphs[idx]
+    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+    result = get_synthesis_speech(paragraph, voice_style[0])
+
+    if st.session_state["ls-display-state"] == "英文":
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(paragraph)
+    elif st.session_state["ls-display-state"] == "中文":
+        # cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
+    else:
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(paragraph)
+        # cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
+
+    # content_cols[0].audio(result["audio_data"], format="audio/wav")
+
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
+    # st.markdown(audio_html, unsafe_allow_html=True)
+    time.sleep(result["audio_duration"].total_seconds())
+
+    # 记录学习时长
+    if len(st.session_state["learning-record"]) > 0:
+        st.session_state["learning-record"][-1].end()
+
+    word_count = len(paragraph.split())
+    record = create_learning_record("阅读理解", difficulty, genre, word_count)
+    record.start()
+
+    st.session_state["learning-times"] += 1
+
+
 def process_and_play_dialogue(
     content_cols, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
@@ -400,6 +444,9 @@ if "ls-test-display-state" not in st.session_state:
 
 if "ls-display-state" not in st.session_state:
     st.session_state["ls-display-state"] = "英文"
+
+if "ra-display-state" not in st.session_state:
+    st.session_state["ra-display-state"] = "英文"
 
 if "scenario-list" not in st.session_state:
     st.session_state["scenario-list"] = []
@@ -871,7 +918,9 @@ if menu is not None and menu.endswith("阅读练习"):
                     key="scenario-genre",
                     placeholder="请选择文章体裁",
                 )
-                contents = st.multiselect("内容", CONTENTS, key="scenario-contents")
+                contents = st.multiselect(
+                    "内容", CONTENTS, key="scenario-contents", help="✨ 选择文章内容（可多选）。"
+                )
 
         with sub_tabs[2]:
             st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
@@ -986,6 +1035,37 @@ if menu is not None and menu.endswith("阅读练习"):
         )
 
         content_cols = st.columns(2)
+
+        if refresh_btn:
+            st.session_state["ra-idx"] = -1
+            st.session_state["learning-times"] = 0
+            end_and_save_learning_records()
+
+        if display_status_button:
+            if st.session_state["ra-display-state"] == "英文":
+                st.session_state["ra-display-state"] = "全部"
+            elif st.session_state["ra-display-state"] == "全部":
+                st.session_state["ra-display-state"] = "中文"
+            else:
+                st.session_state["ra-display-state"] = "英文"
+
+        if prev_btn:
+            process_and_play_article(
+                content_cols,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                genre,
+            )
+        
+        if next_btn:
+            process_and_play_article(
+                content_cols,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                genre,
+            )
 
     # endregion
 
