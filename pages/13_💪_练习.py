@@ -238,7 +238,7 @@ def process_and_play_article(
     content_cols, m_voice_style, fm_voice_style, difficulty, genre
 ):
     article = st.session_state["reading-article"]
-    paragraphs = article.split("\n")
+    paragraphs = [paragraph for paragraph in article.split("\n") if paragraph.strip()]
     cns = translate_text(paragraphs, "zh-CN", True)
 
     idx = st.session_state["ra-idx"]
@@ -1059,17 +1059,13 @@ if menu is not None and menu.endswith("阅读练习"):
             )
 
         if next_btn:
-            article = st.session_state["reading-article"]
-            paragraphs = article.split("\n")
-            st.write(type(paragraphs))
-            st.write(paragraphs)
-            # process_and_play_article(
-            #     content_cols,
-            #     m_voice_style,
-            #     fm_voice_style,
-            #     difficulty,
-            #     genre,
-            # )
+            process_and_play_article(
+                content_cols,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                genre,
+            )
 
     # endregion
 
