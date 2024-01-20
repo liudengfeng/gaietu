@@ -742,8 +742,14 @@ if menu is not None and menu.endswith("听说练习"):
             )
             st.session_state.dbi.add_record_to_cache(record)
 
-        if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
+        if prev_test_btn:
             view_listening_test(container)
+
+        if next_test_btn:
+            view_listening_test(container)
+
+        # if st.session_state["listening-test-idx"] != -1 and not sumbit_test_btn:
+        #     view_listening_test(container)
 
         if sumbit_test_btn:
             container.empty()
