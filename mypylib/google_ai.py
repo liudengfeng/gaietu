@@ -425,3 +425,44 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
         stream=False,
         parser=lambda x: x,
     )
+
+
+READING_COMPREHENSION_TEST_TEMPLATE = """
+您是专业的英语老师，全面掌握CEFR分级词汇表。参考以下中文简体提示，为文章生成相关阅读理解测试题：
+- 题目类型：{question_type}
+- 题目数量：{number}
+- CEFR 分级：{level}
+- 使用英语输出，不要使用中文
+- 题目与选项用词需要在CEFR {level} 以下（包括）单词列表范围内
+- 题干要与文章和选项要相关，逻辑清晰
+- 选择题要输出题干、选项列表、答案[只需要标识字符]、解释
+- 单项选择题，每道题四个选项，只有唯一正确答案
+- 多选题，每道题四个选项，至少有两个选项是正确答案
+- 四个选项前依次使用A、B、C、D标识，用"."与选项文本分隔
+- 随机分布正确答案，不要集中某一个标识
+- 填空题要输出题干、答案、解释
+- 判断题要输出题干、答案、解释
+
+每一道题以字典形式表达，结果为列表，输出JSON格式。
+
+文章：{article}
+"""
+
+
+def generate_reading_comprehension_test(model, question_type, number, level, article):
+    prompt = READING_ARTICLE_TEMPLATE.format(
+        question_type=question_type, number=number, level=level, article=article
+    )
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.5, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "阅读测试",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+    )

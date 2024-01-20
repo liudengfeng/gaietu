@@ -94,14 +94,15 @@ if "text_model" not in st.session_state:
 
 # region 通用
 
-# endregion
-
 
 def display_text_word_count_summary(container, text):
     total_words, level_dict = count_words_and_get_levels(text, True)
     container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
+
+
+# endregion
 
 
 # region 听力练习
@@ -479,6 +480,12 @@ if "listening-test-idx" not in st.session_state:
 if "listening-test-answer" not in st.session_state:
     st.session_state["listening-test-answer"] = []
 
+if "reading-test-idx" not in st.session_state:
+    st.session_state["reading-test-idx"] = -1
+
+if "reading-test-answer" not in st.session_state:
+    st.session_state["reading-test-answer"] = []
+
 if "ls-test-display-state" not in st.session_state:
     st.session_state["ls-test-display-state"] = "文本"
 
@@ -832,7 +839,7 @@ if menu is not None and menu.endswith("听说练习"):
             )
             st.session_state["listening-test-idx"] = -1
             st.session_state["listening-test-answer"] = [None] * len(
-                st.session_state.conversation_scene
+                st.session_state["listening-test"]
             )
             # 更新
             st.rerun()
@@ -847,15 +854,6 @@ if menu is not None and menu.endswith("听说练习"):
             if st.session_state["ls-test-display-state"] == "文本":
                 st.warning("请先切换到语音模式")
                 st.stop()
-
-            # idx = st.session_state["listening-test-idx"]
-            # test = st.session_state["listening-test"][idx]
-            # question = test["question"]
-            # question_audio = get_synthesis_speech(question, m_voice_style[0])
-            # audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
-            # # st.markdown(audio_html, unsafe_allow_html=True)
-            # components.html(audio_html)
-            # time.sleep(question_audio["audio_duration"].total_seconds())
 
             word_count, duration = view_listening_test(container)
 
@@ -1126,9 +1124,87 @@ if menu is not None and menu.endswith("阅读练习"):
                 word_count=word_count,
             )
             st.session_state.dbi.add_record_to_cache(record)
-    
+
     # endregion
 
+    # region 阅读测验
+
+    with tabs[2]:
+        st.sidebar.selectbox(
+            "考题类型", ["单项选择", "多选选择", "填空题", "逻辑题"], help="✨ 选择您喜欢的考题类型"
+        )
+        st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
+
+        if len(st.session_state["reading-article"]) == 0:
+            st.warning("请先配置阅读理解练习材料")
+            st.stop()
+
+        if st.session_state["learning-times"] == 0:
+            st.warning("请先完成练习")
+            st.stop()
+
+        ra_test_btn_cols = st.columns(8)
+
+        st.divider()
+
+        refresh_test_btn = ra_test_btn_cols[0].button(
+            "刷新[:arrows_counterclockwise:]",
+            key="ra-test-refresh",
+            help="✨ 点击按钮，生成阅读理解测试题。",
+        )
+        display_test_btn = ra_test_btn_cols[1].button(
+            "切换[:recycle:]",
+            key="ra-test-mask",
+            help="✨ 此按钮可切换题目展示方式：文本或语音。默认为文本形式。",
+        )
+        prev_test_btn = ra_test_btn_cols[2].button(
+            "上一[:leftwards_arrow_with_hook:]",
+            key="ra-test-prev",
+            help="✨ 点击按钮，切换到上一道测试题。",
+            on_click=on_prev_btn_click,
+            args=("reading-test-idx",),
+            disabled=st.session_state["reading-test-idx"] <= 0,
+        )
+        next_test_btn = ra_test_btn_cols[3].button(
+            "下一[:arrow_right_hook:]",
+            key="ra-test-next",
+            help="✨ 点击按钮，切换到下一道测试题。",
+            on_click=on_next_btn_click,
+            args=("reading-test-idx",),
+            disabled=len(st.session_state["reading-test"]) == 0
+            or st.session_state["reading-test-idx"] == len(st.session_state["reading-test"]) - 1,  # type: ignore
+        )
+        rpl_test_btn = ra_test_btn_cols[4].button(
+            "重放[:headphones:]",
+            key="ra-test-replay",
+            help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
+            disabled=len(st.session_state["reading-test"]) == 0
+            or st.session_state["reading-test-idx"] == -1
+            or st.session_state["ra-test-display-state"] == "文本",  # type: ignore
+        )
+        sumbit_test_btn = ra_test_btn_cols[5].button(
+            "检查[:mag:]",
+            key="submit-reading-test",
+            disabled=st.session_state["reading-test-idx"] == -1
+            or len(st.session_state["reading-test-answer"]) == 0,
+            help="✨ 至少完成一道测试题后，才可点击按钮，检查测验得分。",
+        )
+
+        container = st.container()
+
+        if refresh_test_btn:
+            end_and_save_learning_records()
+            st.session_state["reading-test"] = generate_listening_test_for(
+                difficulty, st.session_state["reading-article"]
+            )
+            st.session_state["reading-test-idx"] = -1
+            st.session_state["reading-test-answer"] = [None] * len(
+                st.session_state["reading-test"]
+            )
+            # 更新
+            st.rerun()
+
+    # endregion
 # endregion
 
 # region 写作练习
