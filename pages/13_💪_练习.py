@@ -90,6 +90,14 @@ check_and_force_logout(sidebar_status)
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
 
+
+EXERCISE_TYPE_MAPPING = {
+    "单项选择": "single_choice",
+    "多选选择": "multiple_choice",
+    "填空题": "reading_comprehension_fill_in_the_blank",
+    "逻辑题": "reading_comprehension_logic",
+}
+
 # endregion
 
 # region 函数
@@ -959,9 +967,13 @@ if menu is not None and menu.endswith("阅读练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
+
     exercise_type = st.sidebar.selectbox(
-        "考题类型", ["单项选择", "多选选择", "填空题", "逻辑题"], help="✨ 选择您喜欢的考题类型"
+        "考题类型", list(EXERCISE_TYPE_MAPPING.keys()), help="✨ 选择您喜欢的考题类型"
     )
+
+    # 获取英文的考题类型
+    english_exercise_type = EXERCISE_TYPE_MAPPING[exercise_type]
 
     tabs = st.tabs(["配置场景", "开始练习", "测验"])
 
@@ -1247,7 +1259,7 @@ if menu is not None and menu.endswith("阅读练习"):
         if refresh_test_btn:
             end_and_save_learning_records()
             st.session_state["reading-test"] = generate_reading_test_for(
-                difficulty, exercise_type, st.session_state["reading-article"]
+                difficulty, english_exercise_type, st.session_state["reading-article"]
             )
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(

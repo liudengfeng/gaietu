@@ -13,12 +13,26 @@ from vertexai.preview.generative_models import (
     ResponseBlockedError,
 )
 import pytz
+from mypylib.google_ai_prompts import (
+    MULTIPLE_CHOICE_QUESTION,
+    READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
+    READING_COMPREHENSION_LOGIC_QUESTION,
+    SINGLE_CHOICE_QUESTION,
+)
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
 
 MAX_CALLS = 10
 PER_SECONDS = 60
 shanghai_tz = pytz.timezone("Asia/Shanghai")
+
+
+QUESTION_TYPE_GUIDELINES = {
+    "single_choice": SINGLE_CHOICE_QUESTION,
+    "multiple_choice": MULTIPLE_CHOICE_QUESTION,
+    "reading_comprehension_logic": READING_COMPREHENSION_LOGIC_QUESTION,
+    "reading_comprehension_fill_in_the_blank": READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
+}
 
 
 @st.cache_resource
@@ -429,29 +443,29 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
 
 
 READING_COMPREHENSION_TEST_TEMPLATE = """
-您是专业的英语老师，全面掌握CEFR分级词汇表。参考以下中文简体提示，为文章生成相关阅读理解测试题：
-- 题目类型：{question_type}
-- 题目数量：{number}
-- CEFR 分级：{level}
-- 使用英语输出，不要使用中文
-- 题目与选项用词需要在CEFR {level} 以下（包括）单词列表范围内
-- 题干要与文章和选项要相关，逻辑清晰
-- 选择题要输出题干、选项列表、答案[只需要标识字符]、解释
-- 单项选择题，每道题四个选项，只有唯一正确答案
-- 多选题，每道题四个选项，至少有两个选项是正确答案
-- 四个选项前依次使用A、B、C、D标识，用"."与选项文本分隔
-- 随机分布正确答案，不要集中某一个标识
-- 填空题、判断题输出题干、答案、解释
+You are a professional English teacher with a comprehensive grasp of the CEFR vocabulary list. Refer to the following prompts to generate relevant reading comprehension test questions for the article:
+- Question type: {question_type}
+- Number of questions: {number}
+- CEFR Level: {level}
+- Output in English, do not use Chinese
+- The vocabulary used in the questions and options should be within (including) the word list of CEFR {level}
 
-每一道题以字典形式表达，结果为列表，输出JSON格式。
+{guidelines}
 
-文章：{article}
+Each question is expressed in the form of a dictionary, and the result is a list, output in JSON format.
+
+Article: {article}
 """
 
 
 def generate_reading_comprehension_test(model, question_type, number, level, article):
+    guidelines = QUESTION_TYPE_GUIDELINES.get(question_type, "")
     prompt = READING_COMPREHENSION_TEST_TEMPLATE.format(
-        question_type=question_type, number=number, level=level, article=article
+        question_type=question_type,
+        number=number,
+        level=level,
+        article=article,
+        guidelines=guidelines,
     )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
