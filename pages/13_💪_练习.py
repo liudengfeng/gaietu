@@ -246,10 +246,10 @@ def process_and_play_article(
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(paragraph, voice_style[0])
 
-    if st.session_state["ls-display-state"] == "英文":
+    if st.session_state["ra-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(paragraph)
-    elif st.session_state["ls-display-state"] == "中文":
+    elif st.session_state["ra-display-state"] == "中文":
         # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
