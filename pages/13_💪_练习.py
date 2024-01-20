@@ -732,6 +732,8 @@ if menu is not None and menu.endswith("听说练习"):
             components.html(audio_html)
             time.sleep(question_audio["audio_duration"].total_seconds())
 
+            view_listening_test(container)
+            
             # 添加一个学习时间记录
             record = LearningTime(
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
