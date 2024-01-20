@@ -99,7 +99,7 @@ if "text_model" not in st.session_state:
 
 def display_text_word_count_summary(container, text):
     total_words, level_dict = count_words_and_get_levels(text, True)
-    container.markdown(f"**字数统计：{len(dialogue_text.split())}字**")
+    container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
 
