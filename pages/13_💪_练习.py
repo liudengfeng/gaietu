@@ -270,13 +270,13 @@ def view_listening_test(container):
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["listening-test-answer"][idx]
-
+    t = 0
     if st.session_state["ls-test-display-state"] == "语音":
         question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
-        # container.markdown(audio_html, unsafe_allow_html=True)
-        time.sleep(question_audio["audio_duration"].total_seconds())
+        t = question_audio["audio_duration"].total_seconds()
+        time.sleep(t)
     else:
         container.markdown(question)
 
@@ -289,6 +289,7 @@ def view_listening_test(container):
         args=(idx, options),
         key="listening-test-options",
     )
+    return len(question.split()), t
 
 
 def check_listening_test_answer(container, level, selected_scenario):
@@ -723,24 +724,24 @@ if menu is not None and menu.endswith("听说练习"):
                 st.warning("请先切换到语音模式")
                 st.stop()
 
-            idx = st.session_state["listening-test-idx"]
-            test = st.session_state["listening-test"][idx]
-            question = test["question"]
-            question_audio = get_synthesis_speech(question, m_voice_style[0])
-            audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
-            # st.markdown(audio_html, unsafe_allow_html=True)
-            components.html(audio_html)
-            time.sleep(question_audio["audio_duration"].total_seconds())
+            # idx = st.session_state["listening-test-idx"]
+            # test = st.session_state["listening-test"][idx]
+            # question = test["question"]
+            # question_audio = get_synthesis_speech(question, m_voice_style[0])
+            # audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
+            # # st.markdown(audio_html, unsafe_allow_html=True)
+            # components.html(audio_html)
+            # time.sleep(question_audio["audio_duration"].total_seconds())
 
-            view_listening_test(container)
-            
+            word_count, duration = view_listening_test(container)
+
             # 添加一个学习时间记录
             record = LearningTime(
                 phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
                 project="听力测验",
                 content=f"{difficulty}-{selected_scenario}",
-                word_count=len(question.split()),
-                duration=question_audio["audio_duration"].total_seconds(),
+                word_count=word_count,
+                duration=duration,
             )
             st.session_state.dbi.add_record_to_cache(record)
 
