@@ -427,7 +427,7 @@ if menu is not None and menu.endswith("听说练习"):
                 list(CEFR_LEVEL_MAPS.keys()),
                 key="difficulty",
                 index=0,
-                format_func=lambda x: CEFR_LEVEL_MAPS[x],
+                format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
                 on_change=set_state,
                 args=(1,),
                 placeholder="请选择CEFR等级",
@@ -455,7 +455,9 @@ if menu is not None and menu.endswith("听说练习"):
             )
             if st.session_state.stage == 2 or scenario_category is not None:
                 if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
-                    st.session_state["scenario-list"] = generate_scenarios_for(scenario_category)
+                    st.session_state["scenario-list"] = generate_scenarios_for(
+                        scenario_category
+                    )
 
                 # st.write(scenario_list)
                 selected_scenario = st.selectbox(
