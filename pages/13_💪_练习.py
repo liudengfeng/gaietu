@@ -234,6 +234,47 @@ def autoplay_audio_and_display_dialogue(content_cols):
     return total
 
 
+def autoplay_audio_and_display_article(content_cols):
+    article = st.session_state["reading-article"]
+    audio_list = []
+    paragraphs = []
+    for i, paragraph in enumerate(article):
+        voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
+        result = get_synthesis_speech(paragraph, voice_style[0])
+        audio_list.append(result["audio_data"])
+        paragraphs.append(result["audio_duration"])
+
+    # 创建一个空的插槽
+    slot_1 = content_cols[0].empty()
+    slot_2 = content_cols[1].empty()
+    # 如果需要显示中文，那么翻译文本
+    if st.session_state.get("ra-display-state", "英文") != "英文":
+        cns = translate_text(dialogue, "zh-CN", True)
+    total = 0
+    # 播放音频并同步显示文本
+    for i, duration in enumerate(paragraphs):
+        # 检查 session state 的值
+        if st.session_state.get("ra-display-state", "英文") == "英文":
+            # 显示英文
+            slot_1.markdown(f"**{dialogue[i]}**")
+        elif st.session_state.get("ra-display-state", "中文") == "中文":
+            # 显示中文
+            slot_2.markdown(cns[i])
+        else:
+            # 同时显示英文和中文
+            slot_1.markdown(f"**{dialogue[i]}**")
+            slot_2.markdown(cns[i])
+        # 播放音频
+        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
+        components.html(audio_html)
+        # st.markdown(audio_html, unsafe_allow_html=True)
+        # 等待音频播放完毕
+        t = duration.total_seconds() + 0.2
+        total += t
+        time.sleep(t)
+    return total
+
+
 def process_and_play_article(
     content_cols, m_voice_style, fm_voice_style, difficulty, genre
 ):
@@ -1030,7 +1071,7 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=st.session_state["ra-idx"]
             == len(st.session_state["reading-article"]) - 1,
         )
-        lsi_btn = ra_btn_cols[4].button(
+        ra_btn = ra_btn_cols[4].button(
             "全文[:headphones:]",
             key="ra-lsi",
             help="✨ 点击按钮，收听整个对话。",
@@ -1070,6 +1111,22 @@ if menu is not None and menu.endswith("阅读练习"):
                 genre,
             )
 
+        if ra_btn:
+            total = autoplay_audio_and_display_article(content_cols)
+            st.session_state["learning-times"] = len(
+                st.session_state["reading-article"]
+            )
+            text = " ".join(st.session_state["reading-article"])
+            word_count = len(text.split())
+            record = LearningTime(
+                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+                project="阅读理解",
+                content=f"{difficulty}-{genre}",
+                duration=total,
+                word_count=word_count,
+            )
+            st.session_state.dbi.add_record_to_cache(record)
+    
     # endregion
 
 # endregion
