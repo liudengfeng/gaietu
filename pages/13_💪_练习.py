@@ -480,6 +480,9 @@ if "listening-test-idx" not in st.session_state:
 if "listening-test-answer" not in st.session_state:
     st.session_state["listening-test-answer"] = []
 
+if "reading-test" not in st.session_state:
+    st.session_state["reading-test"] = []
+
 if "reading-test-idx" not in st.session_state:
     st.session_state["reading-test-idx"] = -1
 
