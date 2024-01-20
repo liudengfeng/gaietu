@@ -237,8 +237,7 @@ def autoplay_audio_and_display_dialogue(content_cols):
 def process_and_play_article(
     content_cols, m_voice_style, fm_voice_style, difficulty, genre
 ):
-    article = st.session_state["reading-article"]
-    paragraphs = [paragraph for paragraph in article.split("\n") if paragraph.strip()]
+    paragraphs = st.session_state["reading-article"]
     cns = translate_text(paragraphs, "zh-CN", True)
 
     idx = st.session_state["ra-idx"]
@@ -452,7 +451,7 @@ if "scenario-list" not in st.session_state:
     st.session_state["scenario-list"] = []
 
 if "reading-article" not in st.session_state:
-    st.session_state["reading-article"] = None
+    st.session_state["reading-article"] = []
 
 # endregion
 
@@ -969,14 +968,17 @@ if menu is not None and menu.endswith("阅读练习"):
                 article = generate_reading_comprehension_article_for(
                     genre, contents, plot if plot else "", difficulty
                 )
-                st.session_state["reading-article"] = article
-                display_text_word_count_summary(container, article)
-                st.markdown(article)
+                paragraphs = [
+                    paragraph for paragraph in article.split("\n") if paragraph.strip()
+                ]
+                st.session_state["reading-article"] = paragraphs
+                display_text_word_count_summary(container, " ".join(paragraphs))
+                st.markdown("\n".join(paragraphs))
 
-            elif st.session_state["reading-article"]:
-                article = st.session_state["reading-article"]
-                display_text_word_count_summary(container, article)
-                st.markdown(article)
+            elif len(st.session_state["reading-article"]):
+                paragraphs = st.session_state["reading-article"]
+                display_text_word_count_summary(container, " ".join(paragraphs))
+                st.markdown("\n".join(paragraphs))
 
     # endregion
 
@@ -990,7 +992,7 @@ if menu is not None and menu.endswith("阅读练习"):
 """
         )
         st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
-        if st.session_state["reading-article"] is None:
+        if len(st.session_state["reading-article"]) == 0:
             st.warning("请先配置阅读材料")
             st.stop()
 
@@ -1017,7 +1019,7 @@ if menu is not None and menu.endswith("阅读练习"):
             help="✨ 点击按钮，切换到文章上一段落。",
             on_click=on_prev_btn_click,
             args=("ra-idx",),
-            disabled=st.session_state["ra-idx"] < 0,
+            disabled=st.session_state["ra-idx"] <= 0,
         )
         next_btn = ra_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
@@ -1025,13 +1027,14 @@ if menu is not None and menu.endswith("阅读练习"):
             help="✨ 点击按钮，切换到下一段落。",
             on_click=on_next_btn_click,
             args=("ra-idx",),
-            disabled=st.session_state["reading-article"] is None,
+            disabled=st.session_state["ra-idx"]
+            == len(st.session_state["reading-article"]) - 1,
         )
         lsi_btn = ra_btn_cols[4].button(
             "全文[:headphones:]",
             key="ra-lsi",
             help="✨ 点击按钮，收听整个对话。",
-            disabled=st.session_state["reading-article"] is None,
+            disabled=len(st.session_state["reading-article"]) == 0,
         )
 
         content_cols = st.columns(2)
