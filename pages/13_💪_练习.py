@@ -925,7 +925,9 @@ if menu is not None and menu.endswith("阅读练习"):
                 st.markdown(article)
 
             elif st.session_state["reading-article"]:
-                display_text_word_count_summary(container, article)
+                display_text_word_count_summary(
+                    container, st.session_state["reading-article"]
+                )
                 st.markdown(article)
 
     # endregion
