@@ -229,7 +229,7 @@ def autoplay_audio_and_display_dialogue(content_cols):
         components.html(audio_html)
         # st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
-        t = duration.total_seconds() + 0.2
+        t = duration.total_seconds()
         total += t
         time.sleep(t)
     return total
@@ -270,7 +270,7 @@ def autoplay_audio_and_display_article(content_cols):
         components.html(audio_html)
         # st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
-        t = duration.total_seconds() + 0.2
+        t = duration.total_seconds()
         total += t
         time.sleep(t)
     return total
@@ -1208,6 +1208,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.rerun()
 
     # endregion
+
 # endregion
 
 # region 写作练习
