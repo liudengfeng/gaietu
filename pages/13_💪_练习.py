@@ -429,6 +429,12 @@ def view_listening_test(container, difficulty, selected_scenario):
     st.session_state.dbi.add_record_to_cache(record)
 
 
+def on_reading_test_radio_change(idx, options):
+    current = st.session_state["reading-test-options"]
+    # 转换为索引
+    st.session_state["reading-test-answer"][idx] = options.index(current)
+
+
 def view_reading_test(container, difficulty, exercise_type, genre):
     idx = st.session_state["reading-test-idx"]
     test = st.session_state["reading-test"][idx]
@@ -450,7 +456,7 @@ def view_reading_test(container, difficulty, exercise_type, genre):
         options,
         index=user_answer_idx,
         label_visibility="collapsed",
-        on_change=on_word_test_radio_change,
+        on_change=on_reading_test_radio_change,
         args=(idx, options),
         key="reading-test-options",
     )
