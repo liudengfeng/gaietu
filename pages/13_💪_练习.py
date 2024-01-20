@@ -9,7 +9,13 @@ from pathlib import Path
 import streamlit as st
 import streamlit.components.v1 as components
 
-from mypylib.constants import CEFR_LEVEL_MAPS, NAMES, SCENARIO_MAPS, TOPICS
+from mypylib.constants import (
+    CEFR_LEVEL_MAPS,
+    CEFR_LEVEL_TOPIC,
+    NAMES,
+    SCENARIO_MAPS,
+    TOPICS,
+)
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
@@ -403,7 +409,7 @@ if menu is not None and menu.endswith("听说练习"):
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
-        steps = ["1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
+        steps = ["1. CEFR等级", "1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
         sub_tabs = st.tabs(steps)
         scenario_category = None
         selected_scenario = None
@@ -411,30 +417,43 @@ if menu is not None and menu.endswith("听说练习"):
         difficulty = None
 
         with sub_tabs[0]:
-            # st.info("这是第一步：首次选定场景类别，AI会花6-12秒生成对应的场景列表。请耐心等待...", icon="🚨")
-            st.info("第一步：点击下拉框选定场景类别", icon="🚨")
-            scenario_category = st.selectbox(
-                "场景类别",
-                ["日常生活", "职场沟通", "学术研究", "旅行交通", "餐饮美食", "健康医疗", "购物消费", "娱乐休闲"],
-                # index=None,
+            st.info("第一步：点击下拉框选择CEFR等级", icon="🚨")
+            difficulty = st.selectbox(
+                "CEFR等级",
+                list(CEFR_LEVEL_MAPS.keys()),
+                key="difficulty",
                 index=0,
+                format_func=lambda x: CEFR_LEVEL_MAPS[x],
                 on_change=set_state,
                 args=(1,),
-                key="scenario_category",
-                placeholder="请选择场景类别",
+                placeholder="请选择CEFR等级",
             )
-            # logger.info(f"{st.session_state.stage=}")
 
         with sub_tabs[1]:
+            st.info("第二步：点击下拉框选定场景类别", icon="🚨")
+            if st.session_state.stage == 1 or difficulty is not None:
+                scenario_category = st.selectbox(
+                    "场景类别",
+                    CEFR_LEVEL_TOPIC[difficulty],
+                    # index=None,
+                    index=0,
+                    on_change=set_state,
+                    args=(2,),
+                    key="scenario_category",
+                    placeholder="请选择场景类别",
+                )
+            # logger.info(f"{st.session_state.stage=}")
+
+        with sub_tabs[2]:
             st.info(
-                "第二步：点击下拉框，选择您感兴趣的场景。如果您希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。",
+                "第三步：点击下拉框，选择您感兴趣的场景。如果您希望AI重新生成场景，只需点击'刷新'按钮。请注意，这个过程可能需要6-12秒。",
                 icon="🚨",
             )
-            if st.session_state.stage == 1 or scenario_category is not None:
+            if st.session_state.stage == 2 or scenario_category is not None:
+                scenario_list = []
                 if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
                     scenario_list = generate_scenarios_for(scenario_category)
-                else:
-                    scenario_list = SCENARIO_MAPS[scenario_category]
+
                 # st.write(scenario_list)
                 selected_scenario = st.selectbox(
                     "选择场景",
@@ -442,41 +461,28 @@ if menu is not None and menu.endswith("听说练习"):
                     key="selected_scenario",
                     index=0,
                     on_change=set_state,
-                    args=(2,),
+                    args=(3,),
                     placeholder="请选择您感兴趣的场景",
                 )
 
-        with sub_tabs[2]:
+        with sub_tabs[3]:
             st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
             ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
             if ignore:
-                st.session_state.stage = 3
+                st.session_state.stage = 4
             st.divider()
-            if st.session_state.stage == 2 or selected_scenario is not None:
+            if st.session_state.stage == 3 or selected_scenario is not None:
                 interesting_plot = st.text_area(
                     "添加一些有趣的情节【可选】",
                     height=200,
                     key="interesting_plot",
                     on_change=set_state,
-                    args=(3,),
+                    args=(4,),
                     placeholder="""您可以在这里添加一些有趣的情节。比如：
 - 同事问了一个非常奇怪的问题，让您忍俊不禁。
 - 同事在工作中犯了一个错误，但他能够及时发现并改正。
 - 同事在工作中遇到
                 """,
-                )
-
-        with sub_tabs[3]:
-            st.info("第四步：点击下拉框选择难度，帮助AI生成相应的对话练习。这个过程可能需要6-12秒。感谢您的耐心等待...", icon="🚨")
-            if st.session_state.stage == 3 or interesting_plot is not None or ignore:
-                difficulty = st.selectbox(
-                    "难度",
-                    ["初级", "中级", "高级"],
-                    key="difficulty",
-                    index=0,
-                    on_change=set_state,
-                    args=(4,),
-                    placeholder="请选择难度",
                 )
 
         with sub_tabs[4]:
