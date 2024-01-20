@@ -413,7 +413,7 @@ if menu is not None and menu.endswith("听说练习"):
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
-        steps = ["1. CEFR等级", "1. 场景类别", "2. 选择场景", "3. 添加情节", "4. 设置难度", "5. 预览场景"]
+        steps = ["1. CEFR等级", "2. 场景类别", "3. 选择场景", "4. 添加情节", "5. 预览场景"]
         sub_tabs = st.tabs(steps)
         scenario_category = None
         selected_scenario = None
