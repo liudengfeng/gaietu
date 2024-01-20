@@ -988,6 +988,10 @@ if menu is not None and menu.endswith("阅读练习"):
                 """在完成所有步骤后，您可以在此处生成并查看场景。生成场景后，您可以切换到最上方的 "开始练习" 标签页，开始进行阅读理解练习。""",
                 icon="🚨",
             )
+            st.warning(
+                "请注意，我们使用的生成式AI的主要目标是丰富阅读理解的文本材料。然而，由于其生成的内容具有虚幻特性，可能并非真实或准确，因此请不要完全依赖其生成的内容或将其视为事实。",
+                icon="🚨",
+            )
             if genre is None or difficulty is None or contents is None:
                 st.warning("您需要先完成之前的所有步骤")
                 st.stop()
