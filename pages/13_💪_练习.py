@@ -421,7 +421,7 @@ def view_listening_test(container, difficulty, selected_scenario):
     st.session_state.dbi.add_record_to_cache(record)
 
 
-def view_reading_test(container):
+def view_reading_test(container, difficulty, exercise_type, genre):
     idx = st.session_state["reading-test-idx"]
     test = st.session_state["reading-test"][idx]
     question = test["question"]
@@ -446,7 +446,16 @@ def view_reading_test(container):
         args=(idx, options),
         key="reading-test-options",
     )
-    return len(question.split()), t
+
+    # 添加一个学习时间记录
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project="阅读理解测验",
+        content=f"{difficulty}-{genre}-{exercise_type}",
+        word_count=len(question.split()),
+        duration=t,
+    )
+    st.session_state.dbi.add_record_to_cache(record)
 
 
 def check_listening_test_answer(container, level, selected_scenario):
@@ -1240,6 +1249,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, exercise_type, st.session_state["reading-article"]
             )
+            st.write(st.session_state["reading-test"])
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(
                 st.session_state["reading-test"]
@@ -1248,10 +1258,10 @@ if menu is not None and menu.endswith("阅读练习"):
             st.rerun()
 
         if prev_test_btn:
-            view_reading_test(container)
+            view_reading_test(container, difficulty, exercise_type, genre)
 
         if next_test_btn:
-            view_reading_test(container)
+            view_reading_test(container, difficulty, exercise_type, genre)
 
     # endregion
 
