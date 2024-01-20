@@ -239,45 +239,43 @@ def process_and_play_article(
 ):
     article = st.session_state["reading-article"]
     paragraphs = article.split("\n")
-    st.write(type(paragraphs))
-    st.write(paragraphs)
-    # cns = translate_text(paragraphs, "zh-CN", True)
+    cns = translate_text(paragraphs, "zh-CN", True)
 
-    # idx = st.session_state["ra-idx"]
-    # paragraph = paragraphs[idx]
-    # voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
-    # result = get_synthesis_speech(paragraph, voice_style[0])
+    idx = st.session_state["ra-idx"]
+    paragraph = paragraphs[idx]
+    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+    result = get_synthesis_speech(paragraph, voice_style[0])
 
-    # if st.session_state["ls-display-state"] == "英文":
-    #     content_cols[0].markdown("英文")
-    #     content_cols[0].markdown(paragraph)
-    # elif st.session_state["ls-display-state"] == "中文":
-    #     # cn = translate_text(sentence, "zh-CN")
-    #     content_cols[1].markdown("中文")
-    #     content_cols[1].markdown(cns[idx])
-    # else:
-    #     content_cols[0].markdown("英文")
-    #     content_cols[0].markdown(paragraph)
-    #     # cn = translate_text(sentence, "zh-CN")
-    #     content_cols[1].markdown("中文")
-    #     content_cols[1].markdown(cns[idx])
+    if st.session_state["ls-display-state"] == "英文":
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(paragraph)
+    elif st.session_state["ls-display-state"] == "中文":
+        # cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
+    else:
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(paragraph)
+        # cn = translate_text(sentence, "zh-CN")
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
 
-    # # content_cols[0].audio(result["audio_data"], format="audio/wav")
+    # content_cols[0].audio(result["audio_data"], format="audio/wav")
 
-    # audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
-    # components.html(audio_html)
-    # # st.markdown(audio_html, unsafe_allow_html=True)
-    # time.sleep(result["audio_duration"].total_seconds())
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
+    # st.markdown(audio_html, unsafe_allow_html=True)
+    time.sleep(result["audio_duration"].total_seconds())
 
-    # # 记录学习时长
-    # if len(st.session_state["learning-record"]) > 0:
-    #     st.session_state["learning-record"][-1].end()
+    # 记录学习时长
+    if len(st.session_state["learning-record"]) > 0:
+        st.session_state["learning-record"][-1].end()
 
-    # word_count = len(paragraph.split())
-    # record = create_learning_record("阅读理解", difficulty, genre, word_count)
-    # record.start()
+    word_count = len(paragraph.split())
+    record = create_learning_record("阅读理解", difficulty, genre, word_count)
+    record.start()
 
-    # st.session_state["learning-times"] += 1
+    st.session_state["learning-times"] += 1
 
 
 def process_and_play_dialogue(
@@ -1061,13 +1059,17 @@ if menu is not None and menu.endswith("阅读练习"):
             )
 
         if next_btn:
-            process_and_play_article(
-                content_cols,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                genre,
-            )
+            article = st.session_state["reading-article"]
+            paragraphs = article.split("\n")
+            st.write(type(paragraphs))
+            st.write(paragraphs)
+            # process_and_play_article(
+            #     content_cols,
+            #     m_voice_style,
+            #     fm_voice_style,
+            #     difficulty,
+            #     genre,
+            # )
 
     # endregion
 
