@@ -20,6 +20,7 @@ from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
     generate_listening_test,
+    generate_reading_comprehension_article,
     generate_scenarios,
     load_vertex_model,
     summarize_in_one_sentence,
@@ -148,6 +149,18 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
         girl_name,
         scenario,
         interesting_plot if interesting_plot else "",
+        difficulty,
+    )
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解练习文章，请稍候...")
+def generate_reading_comprehension_article_for(genre, contents, plot, difficulty):
+    content = ",".join(contents)
+    return generate_reading_comprehension_article(
+        st.session_state["text_model"],
+        genre,
+        content,
+        plot,
         difficulty,
     )
 
@@ -378,7 +391,29 @@ if "ls-display-state" not in st.session_state:
 if "scenario-list" not in st.session_state:
     st.session_state["scenario-list"] = []
 
+if "reading-article" not in st.session_state:
+    st.session_state["reading-article"] = None
+
 # endregion
+
+# region 通用
+
+sidebar_status.markdown(
+    f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
+    help=TOEKN_HELP_INFO,
+)
+
+if "stage" not in st.session_state:
+    st.session_state["stage"] = 0
+
+
+def set_state(i):
+    st.session_state.stage = i
+
+
+# endregion
+
+# region 听说练习
 
 if menu is not None and menu.endswith("听说练习"):
     m_voice_style = st.sidebar.selectbox(
@@ -396,18 +431,7 @@ if menu is not None and menu.endswith("听说练习"):
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
 
-    sidebar_status.markdown(
-        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-        help=TOEKN_HELP_INFO,
-    )
-
-    tabs = st.tabs(["配置场景", "开始练习", "听力测验"])
-
-    if "stage" not in st.session_state:
-        st.session_state.stage = 0
-
-    def set_state(i):
-        st.session_state.stage = i
+    tabs = st.tabs(["配置场景", "开始练习", "测验"])
 
     # region "配置场景"
 
@@ -472,7 +496,7 @@ if menu is not None and menu.endswith("听说练习"):
                 )
 
         with sub_tabs[3]:
-            st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
+            st.info("第四步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
             ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 4
@@ -769,3 +793,133 @@ if menu is not None and menu.endswith("听说练习"):
             check_listening_test_answer(container, difficulty, selected_scenario)
 
     # endregion
+
+# endregion
+
+# region 阅读练习
+
+if menu is not None and menu.endswith("阅读练习"):
+    m_voice_style = st.sidebar.selectbox(
+        "合成男声风格",
+        st.session_state["m_voices"],
+        # on_change=on_voice_changed,
+        help="✨ 选择您喜欢的合成男声语音风格",
+        format_func=lambda x: f"{x[2]}",  # type: ignore
+    )
+    fm_voice_style = st.sidebar.selectbox(
+        "合成女声风格",
+        st.session_state["fm_voices"],
+        # on_change=on_voice_changed,
+        help="✨ 选择您喜欢的合成女声语音风格",
+        format_func=lambda x: f"{x[2]}",  # type: ignore
+    )
+
+    tabs = st.tabs(["配置场景", "开始练习", "测验"])
+
+    # region "配置场景"
+
+    GENRES = ["记叙文", "说明文", "议论文", "应用文", "新闻报道", "人物传记", "艺术评论", "科研报告"]
+    CONTENTS = ["社会", "文化", "科技", "经济", "历史", "政治", "艺术", "自然", "体育", "教育"]
+
+    with tabs[0]:
+        st.subheader("配置场景", divider="rainbow", anchor="配置场景")
+        st.markdown("依次执行以下步骤，生成模拟场景。")
+        steps = ["1. CEFR等级", "2. 体裁内容", "3. 添加情节", "4. 预览场景"]
+        sub_tabs = st.tabs(steps)
+
+        difficulty = None
+        genre = None
+        contents = None
+        plot = None
+
+        with sub_tabs[0]:
+            st.info("第一步：点击下拉框选择CEFR等级", icon="🚨")
+            difficulty = st.selectbox(
+                "CEFR等级",
+                list(CEFR_LEVEL_MAPS.keys()),
+                key="difficulty",
+                index=0,
+                format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
+                on_change=set_state,
+                args=(1,),
+                placeholder="请选择CEFR等级",
+            )
+
+        with sub_tabs[1]:
+            st.info("第二步：设置文章体裁和内容", icon="🚨")
+            if st.session_state.stage == 1 or difficulty is not None:
+                genre = st.selectbox(
+                    "体裁",
+                    GENRES,
+                    # index=None,
+                    index=0,
+                    on_change=set_state,
+                    args=(2,),
+                    key="scenario-genre",
+                    placeholder="请选择文章体裁",
+                )
+                contents = st.multiselect("内容", CONTENTS, key="scenario-contents")
+
+        with sub_tabs[2]:
+            st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
+            ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
+            if ignore:
+                st.session_state.stage = 3
+            st.divider()
+            if st.session_state.stage == 2 or genre is not None:
+                plot = st.text_area(
+                    "添加一些有趣的情节【可选】",
+                    height=200,
+                    key="interesting_plot",
+                    on_change=set_state,
+                    args=(3,),
+                    placeholder="""您可以在这里添加一些有趣的情节。比如：
+- 同事问了一个非常奇怪的问题，让您忍俊不禁。
+- 同事在工作中犯了一个错误，但他能够及时发现并改正。
+- 同事在工作中遇到
+                """,
+                )
+
+        with sub_tabs[3]:
+            st.info(
+                """在完成所有步骤后，您可以在此处生成并查看场景。生成场景后，您可以切换到最上方的 "开始练习" 标签页，开始进行阅读理解练习。""",
+                icon="🚨",
+            )
+            if genre is None or difficulty is None or contents is None:
+                st.warning("您需要先完成之前的所有步骤")
+                st.stop()
+
+            session_cols = st.columns(8)
+
+            container = st.container()
+
+            gen_btn = session_cols[0].button(
+                "刷新[:arrows_counterclockwise:]",
+                key="generate-readings",
+                help="✨ 点击按钮，生成阅读理解练习材料。",
+            )
+
+            if gen_btn:
+                container.empty()
+                # 学习次数重置为0
+                st.session_state["learning-times"] = 0
+
+                article = generate_reading_comprehension_article_for(
+                    genre, contents, plot if plot else "", difficulty
+                )
+                st.session_state["reading-article"] = article
+                st.markdown(article)
+
+            elif st.session_state["reading-article"]:
+                st.markdown(article)
+
+    # endregion
+
+# endregion
+
+# region 写作练习
+
+if menu is not None and menu.endswith("写作练习"):
+    pass
+
+# endregion

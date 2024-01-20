@@ -374,7 +374,6 @@ LISTENING_TEST_TEMPLATE = """为了考察学生听力水平，根据学生语言
 
 
 def generate_listening_test(model, level, dialogue, number=5):
-    # 使用模型的 summarize 方法来生成文本的一句话中文概要
     prompt = LISTENING_TEST_TEMPLATE.format(
         level=level, dialogue=dialogue, number=number
     )
@@ -390,4 +389,38 @@ def generate_listening_test(model, level, dialogue, number=5):
         generation_config,
         stream=False,
         parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+    )
+
+
+READING_ARTICLE_TEMPLATE = """
+您是专业的英语老师，全面掌握CEFR分级词汇表。您会准备专业的阅读材料来提高学生阅读理解能力。参考以下中文简体提示，生成一篇地道的英文文章：
+- 体裁：{genre}
+- 内容：{content}
+- 情节：{plot}
+- CEFR 分级：{level}
+- 字数：如果难度为A级，字数在200-300字左右；如果难度为B级，字数在300-500字左右；如果难度为C级，字数在500-1000字左右。
+- 文章内容要与提示内容相关
+- 难度反应受众语言能力，文章内容要与受众语言能力相适应，保证练习者能够理解和掌握内容
+- 文章要求语法正确、用词准确、表达流畅
+- 根据CEFR分级词汇表，文章用词需要在CEFR {level} 以下（包括）单词列表范围内
+- 输出文本不要使用非必要的格式标注，如加黑等等
+"""
+
+
+def generate_reading_comprehension_article(model, genre, content, plot, level):
+    prompt = READING_ARTICLE_TEMPLATE.format(
+        genre=genre, content=content, plot=plot, level=level
+    )
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=2048, temperature=0.8, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "阅读文章",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: x,
     )
