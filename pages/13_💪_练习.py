@@ -373,6 +373,10 @@ if "ls-test-display-state" not in st.session_state:
 
 if "ls-display-state" not in st.session_state:
     st.session_state["ls-display-state"] = "英文"
+
+if "scenario-list" not in st.session_state:
+    st.session_state["scenario-list"] = []
+
 # endregion
 
 if menu is not None and menu.endswith("听说练习"):
@@ -450,14 +454,13 @@ if menu is not None and menu.endswith("听说练习"):
                 icon="🚨",
             )
             if st.session_state.stage == 2 or scenario_category is not None:
-                scenario_list = []
                 if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
-                    scenario_list = generate_scenarios_for(scenario_category)
+                    st.session_state["scenario-list"] = generate_scenarios_for(scenario_category)
 
                 # st.write(scenario_list)
                 selected_scenario = st.selectbox(
                     "选择场景",
-                    scenario_list,  # type: ignore
+                    st.session_state["scenario-list"],
                     key="selected_scenario",
                     index=0,
                     on_change=set_state,
