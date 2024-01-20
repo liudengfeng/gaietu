@@ -914,7 +914,10 @@ if menu is not None and menu.endswith("阅读练习"):
         help="✨ 选择您喜欢的合成女声语音风格",
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
-
+    st.sidebar.selectbox(
+        "考题类型", ["单项选择", "多选选择", "填空题", "逻辑题"], help="✨ 选择您喜欢的考题类型"
+    )
+    
     tabs = st.tabs(["配置场景", "开始练习", "测验"])
 
     # region "配置场景"
@@ -989,7 +992,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 icon="🚨",
             )
             st.warning(
-                "请注意，我们使用的生成式AI的主要目标是丰富阅读理解的文本材料。然而，由于其生成的内容具有虚幻特性，可能并非真实或准确，因此请不要完全依赖其生成的内容或将其视为事实。",
+                "我们使用的生成式AI的主要目标是丰富阅读理解的文本材料。然而，由于其生成的内容具有虚幻特性，可能并非真实或准确，因此请不要完全依赖其生成的内容或将其视为事实。",
                 icon="🚨",
             )
             if genre is None or difficulty is None or contents is None:
@@ -1137,9 +1140,7 @@ if menu is not None and menu.endswith("阅读练习"):
     # region 阅读测验
 
     with tabs[2]:
-        st.sidebar.selectbox(
-            "考题类型", ["单项选择", "多选选择", "填空题", "逻辑题"], help="✨ 选择您喜欢的考题类型"
-        )
+
         st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
 
         if len(st.session_state["reading-article"]) == 0:
