@@ -1278,7 +1278,7 @@ if menu is not None and menu.endswith("阅读练习"):
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if next_test_btn:
-            st.write(st.session_state["reading-test"])
+            # st.write(st.session_state["reading-test"])
             view_reading_test(container, difficulty, exercise_type, genre)
 
     # endregion
