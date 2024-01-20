@@ -1249,7 +1249,6 @@ if menu is not None and menu.endswith("阅读练习"):
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, exercise_type, st.session_state["reading-article"]
             )
-            st.write(st.session_state["reading-test"])
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(
                 st.session_state["reading-test"]
@@ -1261,6 +1260,7 @@ if menu is not None and menu.endswith("阅读练习"):
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if next_test_btn:
+            st.write(st.session_state["reading-test"])
             view_reading_test(container, difficulty, exercise_type, genre)
 
     # endregion
