@@ -239,6 +239,8 @@ def process_and_play_article(
 ):
     article = st.session_state["reading-article"]
     paragraphs = article.split("\n")
+    st.write(type(paragraphs), paragraphs)
+    return
     cns = translate_text(paragraphs, "zh-CN", True)
 
     idx = st.session_state["ra-idx"]
@@ -1057,7 +1059,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 difficulty,
                 genre,
             )
-        
+
         if next_btn:
             process_and_play_article(
                 content_cols,
