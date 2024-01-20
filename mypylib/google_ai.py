@@ -450,7 +450,7 @@ READING_COMPREHENSION_TEST_TEMPLATE = """
 
 
 def generate_reading_comprehension_test(model, question_type, number, level, article):
-    prompt = READING_ARTICLE_TEMPLATE.format(
+    prompt = READING_COMPREHENSION_TEST_TEMPLATE.format(
         question_type=question_type, number=number, level=level, article=article
     )
     contents = [Part.from_text(prompt)]
