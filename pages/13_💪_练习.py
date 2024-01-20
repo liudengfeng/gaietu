@@ -249,20 +249,20 @@ def autoplay_audio_and_display_article(content_cols):
     slot_2 = content_cols[1].empty()
     # 如果需要显示中文，那么翻译文本
     if st.session_state.get("ra-display-state", "英文") != "英文":
-        cns = translate_text(dialogue, "zh-CN", True)
+        cns = translate_text(article, "zh-CN", True)
     total = 0
     # 播放音频并同步显示文本
     for i, duration in enumerate(paragraphs):
         # 检查 session state 的值
         if st.session_state.get("ra-display-state", "英文") == "英文":
             # 显示英文
-            slot_1.markdown(f"**{dialogue[i]}**")
+            slot_1.markdown(f"**{article[i]}**")
         elif st.session_state.get("ra-display-state", "中文") == "中文":
             # 显示中文
             slot_2.markdown(cns[i])
         else:
             # 同时显示英文和中文
-            slot_1.markdown(f"**{dialogue[i]}**")
+            slot_1.markdown(f"**{article[i]}**")
             slot_2.markdown(cns[i])
         # 播放音频
         audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
