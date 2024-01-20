@@ -542,7 +542,7 @@ if menu is not None and menu.endswith("听说练习"):
 您可以通过反复播放和跟读每条对话样例来提升您的听力和口语技能。点击`全文`可以一次性收听整个对话。另外，您可以通过点击左侧的按钮调整合成语音的风格，以更好地适应您的听力习惯。      
 """
         )
-
+        st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             st.stop()
