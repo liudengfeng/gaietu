@@ -931,6 +931,64 @@ if menu is not None and menu.endswith("阅读练习"):
 
     # endregion
 
+    # region 阅读练习
+
+    with tabs[1]:
+        st.subheader("阅读练习", divider="rainbow", anchor="阅读练习")
+        st.markdown(
+            """
+您可以通过反复阅读和理解文章来提升您的阅读理解技能。点击`全文`可以一次性阅读整篇文章。另外，您可以通过点击左侧的按钮调整文章的显示方式，以更好地适应您的阅读习惯。
+"""
+        )
+        st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
+        if st.session_state["reading-article"] is None:
+            st.warning("请先配置阅读材料")
+            st.stop()
+
+        if "ra-idx" not in st.session_state:
+            st.session_state["ra-idx"] = -1
+
+        ra_btn_cols = st.columns(8)
+
+        st.divider()
+
+        refresh_btn = ra_btn_cols[0].button(
+            "刷新[:arrows_counterclockwise:]",
+            key="ra-refresh",
+            help="✨ 点击按钮，从头开始练习。",
+        )
+        display_status_button = ra_btn_cols[1].button(
+            "切换[:recycle:]",
+            key="ra-mask",
+            help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
+        )
+        prev_btn = ra_btn_cols[2].button(
+            "上一[:leftwards_arrow_with_hook:]",
+            key="ra-prev",
+            help="✨ 点击按钮，切换到文章上一段落。",
+            on_click=on_prev_btn_click,
+            args=("ra-idx",),
+            disabled=st.session_state["ra-idx"] < 0,
+        )
+        next_btn = ra_btn_cols[3].button(
+            "下一[:arrow_right_hook:]",
+            key="ra-next",
+            help="✨ 点击按钮，切换到下一段落。",
+            on_click=on_next_btn_click,
+            args=("ra-idx",),
+            disabled=st.session_state["reading-article"] is None
+        )
+        lsi_btn = ra_btn_cols[4].button(
+            "全文[:headphones:]",
+            key="ra-lsi",
+            help="✨ 点击按钮，收听整个对话。",
+            disabled=st.session_state["reading-article"] is None,
+        )
+
+        content_cols = st.columns(2)
+    
+    # endregion
+
 # endregion
 
 # region 写作练习
