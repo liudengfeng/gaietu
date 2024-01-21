@@ -409,19 +409,19 @@ def generate_listening_test(model, level, dialogue, number=5):
 
 
 READING_ARTICLE_TEMPLATE = """
-您是专业的英语老师，全面掌握CEFR分级词汇表。您会准备专业的英语阅读材料来提高学生阅读理解能力。参考以下中文简体提示，生成一篇地道的英文文章：
-- 体裁：{genre}
-- 内容：{content}
-- 情节：{plot}
-- CEFR 分级：{level}
-- 字数：如果难度为A级，字数在200-300字左右；如果难度为B级，字数在300-500字左右；如果难度为C级，字数在500-1000字左右。
-- 文章内容要与提示内容相关
-- 使用英语输出，不要使用中文
-- 文章整体要求：内容准确、结构清晰、语言规范、表达生动。如果体裁是议论文，要求观点鲜明和论据充分；对于一篇文学作品，最重要的是情感的表达和艺术性。
-- 难度反应受众语言能力，文章内容要与受众语言能力相适应，保证练习者能够理解和掌握内容
-- 文章要求语法正确、用词准确、表达流畅
-- 根据CEFR分级词汇表，文章用词需要在CEFR {level} 以下（包括）单词列表范围内
-- 输出文本不要使用非必要的格式标注，如加黑等等
+You are a professional English teacher with a comprehensive mastery of the CEFR graded vocabulary list. You will prepare professional English reading materials to enhance students' reading comprehension skills. Refer to the following prompts to generate an authentic English article:
+- Genre: {genre}
+- Content: {content}
+- Plot: {plot}
+- CEFR Level: {level}
+- Word Count: If the difficulty is Level A, the word count should be around 200-300 words; if Level B, around 300-500 words; if Level C, around 500-1000 words.
+- The article content should be relevant to the prompt content
+- Use English for output, do not use Chinese
+- Overall requirements for the article: accurate content, clear structure, standard language, and vivid expression. If the genre is argumentative, the viewpoints should be distinct and the arguments sufficient; for a literary work, the most important thing is the expression of emotion and artistry.
+- The difficulty reflects the audience's language ability, the article content should adapt to the audience's language ability, ensuring that the exerciser can understand and master the content
+- The article should have correct grammar, accurate word usage, and smooth expression
+- The vocabulary used in the article should primarily adhere to the CEFR {level} (inclusive) word list. However, a small proportion of words can exceed this level to maintain the richness of the language.
+- Do not use unnecessary formatting marks in the output text, such as bolding, etc.
 """
 
 
@@ -434,7 +434,7 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
         max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
     return parse_generated_content_and_update_token(
-        "阅读文章",
+        "阅读理解文章",
         "gemini-pro",
         model.generate_content,
         contents,
@@ -474,12 +474,11 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
     return parse_generated_content_and_update_token(
-        "阅读测试",
+        "阅读理解测试",
         "gemini-pro",
         model.generate_content,
         contents,
         generation_config,
         stream=False,
-        # parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
         parser=lambda x: yaml.safe_load(x),
     )
