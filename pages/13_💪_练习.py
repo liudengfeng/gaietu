@@ -76,7 +76,8 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
 def on_menu_changed():
-    item = menu_names[menu_opts.index(menu)]  # type: ignore
+    item = menu_names[menu_opts.index(st.session_state["menu"])]
+    # item = menu_names[menu_opts.index(menu)]  # type: ignore
     on_page_to(item)
     # 观察变量是否正确
     st.warning(item)
