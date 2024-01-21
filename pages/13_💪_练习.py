@@ -76,19 +76,14 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
 def on_menu_changed():
-    item = menu_names[menu_opts.index(st.session_state["menu"])]
-    # item = menu_names[menu_opts.index(menu)]  # type: ignore
+    item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
     on_page_to(item)
-    # 观察变量是否正确
-    st.warning(item)
 
 
-# menu = st.sidebar.selectbox(
-#     "菜单", menu_opts, help="请选择您要进行的练习项目", on_change=on_menu_changed
-# )
 menu = st.sidebar.radio(
-    "菜单", menu_opts, key="menu", help="✨ 请选择您要进行的练习项目", on_change=on_menu_changed
+    "菜单", menu_opts, key="menu-radio", help="✨ 请选择您要进行的练习项目", on_change=on_menu_changed
 )
+
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
