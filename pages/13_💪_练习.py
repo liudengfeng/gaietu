@@ -1058,8 +1058,8 @@ if menu is not None and menu.endswith("阅读练习"):
                 contents = st.multiselect(
                     "请选择文章内容",
                     CONTENTS,
-                    index=0,
                     key="scenario-contents",
+                    max_selections=3,
                     on_change=set_state,
                     args=(2,),
                     placeholder="请选择文章内容（可多选）",
