@@ -1027,7 +1027,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
-        st.markdown("依次执行以下步骤，生成模拟场景。")
+        st.markdown("依次执行以下步骤，生成阅读理解练习模拟场景。")
         steps = ["1. CEFR等级", "2. 体裁内容", "3. 添加情节", "4. 预览场景"]
         sub_tabs = st.tabs(steps)
 
