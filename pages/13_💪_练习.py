@@ -337,7 +337,7 @@ def process_and_play_article(
     paragraphs = st.session_state["reading-article"]
     cns = translate_text(paragraphs, "zh-CN", True)
 
-    idx = st.session_state["ra-idx"]
+    idx = st.session_state["reading-exercise-idx"]
     paragraph = paragraphs[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(paragraph, voice_style[0])
@@ -837,6 +837,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["ls-idx"] = -1
             st.session_state["learning-times"] = 0
             end_and_save_learning_records()
+            st.rerun()
 
         if display_status_button:
             if st.session_state["ls-display-state"] == "英文":
@@ -1025,8 +1026,28 @@ if menu is not None and menu.endswith("阅读练习"):
     GENRES = ["记叙文", "说明文", "议论文", "应用文", "新闻报道", "人物传记", "艺术评论", "科研报告"]
     CONTENTS = ["社会", "文化", "科技", "经济", "历史", "政治", "艺术", "自然", "体育", "教育"]
 
-    GENRES_EN = ["Narrative", "Expository", "Argumentative", "Practical", "News Report", "Biography", "Art Review", "Scientific Report"]
-    CONTENTS_EN = ["Society", "Culture", "Technology", "Economy", "History", "Politics", "Art", "Nature", "Sports", "Education"]
+    GENRES_EN = [
+        "Narrative",
+        "Expository",
+        "Argumentative",
+        "Practical",
+        "News Report",
+        "Biography",
+        "Art Review",
+        "Scientific Report",
+    ]
+    CONTENTS_EN = [
+        "Society",
+        "Culture",
+        "Technology",
+        "Economy",
+        "History",
+        "Politics",
+        "Art",
+        "Nature",
+        "Sports",
+        "Education",
+    ]
 
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
@@ -1160,8 +1181,8 @@ if menu is not None and menu.endswith("阅读练习"):
             st.warning("请先配置阅读材料")
             st.stop()
 
-        if "ra-idx" not in st.session_state:
-            st.session_state["ra-idx"] = -1
+        if "reading-exercise-idx" not in st.session_state:
+            st.session_state["reading-exercise-idx"] = -1
 
         ra_btn_cols = st.columns(8)
 
@@ -1169,12 +1190,12 @@ if menu is not None and menu.endswith("阅读练习"):
 
         refresh_btn = ra_btn_cols[0].button(
             "刷新[:arrows_counterclockwise:]",
-            key="ra-refresh",
+            key="refresh-reading-exercise",
             help="✨ 点击按钮，从头开始练习。",
         )
         display_status_button = ra_btn_cols[1].button(
             "切换[:recycle:]",
-            key="ra-mask",
+            key="toggle-display-status",
             help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
         )
         prev_btn = ra_btn_cols[2].button(
@@ -1182,16 +1203,16 @@ if menu is not None and menu.endswith("阅读练习"):
             key="ra-prev",
             help="✨ 点击按钮，切换到文章上一段落。",
             on_click=on_prev_btn_click,
-            args=("ra-idx",),
-            disabled=st.session_state["ra-idx"] <= 0,
+            args=("reading-exercise-idx",),
+            disabled=st.session_state["reading-exercise-idx"] <= 0,
         )
         next_btn = ra_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
             key="ra-next",
             help="✨ 点击按钮，切换到下一段落。",
             on_click=on_next_btn_click,
-            args=("ra-idx",),
-            disabled=st.session_state["ra-idx"]
+            args=("reading-exercise-idx",),
+            disabled=st.session_state["reading-exercise-idx"]
             == len(st.session_state["reading-article"]) - 1,
         )
         ra_btn = ra_btn_cols[4].button(
@@ -1204,9 +1225,10 @@ if menu is not None and menu.endswith("阅读练习"):
         content_cols = st.columns(2)
 
         if refresh_btn:
-            st.session_state["ra-idx"] = -1
+            st.session_state["reading-exercise-idx"] = -1
             st.session_state["learning-times"] = 0
             end_and_save_learning_records()
+            st.rerun()
 
         if display_status_button:
             if st.session_state["ra-display-state"] == "英文":
