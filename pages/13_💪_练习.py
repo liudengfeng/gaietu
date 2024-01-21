@@ -647,7 +647,7 @@ if menu is not None and menu.endswith("听说练习"):
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
 
-    tabs = st.tabs(["配置场景", "开始练习", "测验"])
+    tabs = st.tabs(["配置场景", "开始练习", "小测验"])
 
     # region "配置场景"
 
@@ -1014,7 +1014,7 @@ if menu is not None and menu.endswith("阅读练习"):
     # 获取英文的考题类型
     english_exercise_type = EXERCISE_TYPE_MAPPING[exercise_type]
 
-    tabs = st.tabs(["配置场景", "开始练习", "测验"])
+    tabs = st.tabs(["配置场景", "开始练习", "小测验"])
 
     # region "配置场景"
 

@@ -23,3 +23,4 @@ google-cloud-translate
 google-cloud-texttospeech
 google-cloud-firestore
 cryptography
+pyyaml
