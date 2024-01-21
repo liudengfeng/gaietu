@@ -1025,6 +1025,9 @@ if menu is not None and menu.endswith("阅读练习"):
     GENRES = ["记叙文", "说明文", "议论文", "应用文", "新闻报道", "人物传记", "艺术评论", "科研报告"]
     CONTENTS = ["社会", "文化", "科技", "经济", "历史", "政治", "艺术", "自然", "体育", "教育"]
 
+    GENRES_EN = ["Narrative", "Expository", "Argumentative", "Practical", "News Report", "Biography", "Art Review", "Scientific Report"]
+    CONTENTS_EN = ["Society", "Culture", "Technology", "Economy", "History", "Politics", "Art", "Nature", "Sports", "Education"]
+
     with tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成阅读理解练习模拟场景。")
@@ -1120,8 +1123,14 @@ if menu is not None and menu.endswith("阅读练习"):
                 # 学习次数重置为0
                 st.session_state["learning-times"] = 0
 
+                genre_index = GENRES.index(genre)
+                genre_en = GENRES_EN[genre_index]
+
+                contents_index = [CONTENTS.index(c) for c in contents]
+                contents_en = [CONTENTS_EN[i] for i in contents_index]
+
                 article = generate_reading_comprehension_article_for(
-                    genre, contents, plot if plot else "", difficulty
+                    genre_en, contents_en, plot if plot else "", difficulty
                 )
                 paragraphs = [
                     paragraph for paragraph in article.split("\n") if paragraph.strip()
