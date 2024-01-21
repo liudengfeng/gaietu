@@ -71,17 +71,22 @@ menu_emoji = [
     "📖",
     "✍️",
 ]
-menu_names = ["听说练习", "阅读练习", "写作练习"]
+menu_names = ["听说练习", "阅读练习"]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
 def on_menu_changed():
     item = menu_names[menu_opts.index(menu)]  # type: ignore
     on_page_to(item)
+    # 观察变量是否正确
+    st.warning(item)
 
 
-menu = st.sidebar.selectbox(
-    "菜单", menu_opts, help="请选择您要进行的练习项目", on_change=on_menu_changed
+# menu = st.sidebar.selectbox(
+#     "菜单", menu_opts, help="请选择您要进行的练习项目", on_change=on_menu_changed
+# )
+menu = st.sidebar.radio(
+    "菜单", menu_opts, key="menu", help="✨ 请选择您要进行的练习项目", on_change=on_menu_changed
 )
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
@@ -1282,12 +1287,5 @@ if menu is not None and menu.endswith("阅读练习"):
             view_reading_test(container, difficulty, exercise_type, genre)
 
     # endregion
-
-# endregion
-
-# region 写作练习
-
-if menu is not None and menu.endswith("写作练习"):
-    pass
 
 # endregion
