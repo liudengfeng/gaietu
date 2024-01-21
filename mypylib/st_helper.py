@@ -254,7 +254,14 @@ def translate_text(text: str, target_language_code, is_list: bool = False):
 
 
 def format_token_count(count):
-    return f"{count / 1000:.1f}k" if count >= 1000 else str(count)
+    if count >= 1000000000:
+        return f"{count / 1000000000:.2f}B"
+    elif count >= 1000000:
+        return f"{count / 1000000:.2f}M"
+    elif count >= 1000:
+        return f"{count / 1000:.2f}K"
+    else:
+        return str(count)
 
 
 def update_and_display_progress(
