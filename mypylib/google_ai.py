@@ -469,7 +469,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
     )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.5, top_p=1.0
+        max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
     return parse_generated_content_and_update_token(
         "阅读测试",
