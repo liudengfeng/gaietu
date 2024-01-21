@@ -190,11 +190,15 @@ def generate_listening_test_for(difficulty: str, conversation: str):
         st.session_state["text_model"], difficulty, conversation, 5
     )
 
-# TODO:取消注释
-# @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
 def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]):
     return generate_reading_comprehension_test(
-        st.session_state["text_model"], exercise_type, 5, difficulty, "\n\n".join(article)
+        st.session_state["text_model"],
+        exercise_type,
+        5,
+        difficulty,
+        "\n\n".join(article),
     )
 
 
@@ -1306,15 +1310,12 @@ if menu is not None and menu.endswith("阅读练习"):
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, english_exercise_type, st.session_state["reading-article"]
             )
-            # TODO:删除
-            st.write(st.session_state["reading-test"])
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(
                 st.session_state["reading-test"]
             )
             # 更新
-            # TODO:取消注释
-            # st.rerun()
+            st.rerun()
 
         if prev_test_btn:
             view_reading_test(container, difficulty, exercise_type, genre)
