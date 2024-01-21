@@ -120,7 +120,6 @@ THEME_SCENE = {
 
 FAKE_EMAIL_DOMAIN = "example.com"
 
-
 TOPICS = {
     "en-US": [
         "Current events",

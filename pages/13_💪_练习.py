@@ -99,6 +99,37 @@ EXERCISE_TYPE_MAPPING = {
     "逻辑题": "reading_comprehension_logic",
 }
 
+AI_TIPS = {
+        "A1": """
+* **A1**是CEFR英语语言能力分级的最低级别，学习者具有基本的英语听说读写能力，能够理解和使用简单的日常用语，能够进行简单的对话，能够阅读和理解简单的文本。
+* **记叙文、说明文、新闻报道和人物传记**是适合A1级别学习者的文章体裁，这些体裁的文章语言简单，内容易懂，适合学习者阅读和理解。
+* **社会、文化、科技、自然和教育**是适合A1级别学习者的文章内容，这些内容与学习者的日常生活息息相关，学习者对这些内容有兴趣，也容易理解。
+""",
+        "A2": """
+**建议选择文章体裁：**
+
+* 记叙文
+* 说明文
+* 新闻报道
+* 人物传记
+
+**建议文章内容：**
+
+* 社会
+* 文化
+* 科技
+* 经济
+* 教育
+
+**建议：**
+
+* 选择简单易懂的体裁和内容，避免使用复杂的句式和生僻的词汇。
+""",
+        "B1": "",
+        "B2": "",
+        "C1": "",
+        "C2": "",
+    }
 # endregion
 
 # region 函数
@@ -1015,6 +1046,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         with sub_tabs[1]:
             st.info("第二步：设置文章体裁和内容", icon="🚨")
+            st.markdown(AI_TIPS[difficulty], unsafe_allow_html=True)
             if st.session_state.stage == 1 or difficulty is not None:
                 genre = st.selectbox(
                     "体裁",
