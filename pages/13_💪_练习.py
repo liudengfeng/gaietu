@@ -1047,9 +1047,8 @@ if menu is not None and menu.endswith("阅读练习"):
             st.markdown(AI_TIPS[difficulty], unsafe_allow_html=True)
             if st.session_state.stage == 1 or difficulty is not None:
                 genre = st.selectbox(
-                    "体裁",
+                    "请选择文章体裁",
                     GENRES,
-                    # index=None,
                     index=0,
                     on_change=set_state,
                     args=(2,),
@@ -1057,7 +1056,14 @@ if menu is not None and menu.endswith("阅读练习"):
                     placeholder="请选择文章体裁",
                 )
                 contents = st.multiselect(
-                    "内容", CONTENTS, key="scenario-contents", help="✨ 选择文章内容（可多选）。"
+                    "请选择文章内容",
+                    CONTENTS,
+                    index=0,
+                    key="scenario-contents",
+                    on_change=set_state,
+                    args=(2,),
+                    placeholder="请选择文章内容（可多选）",
+                    help="✨ 选择文章内容（可多选）。",
                 )
 
         with sub_tabs[2]:
