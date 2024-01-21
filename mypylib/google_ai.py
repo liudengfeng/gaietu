@@ -2,9 +2,12 @@ import json
 import threading
 import time
 from collections import deque
-from typing import Callable, List
 from datetime import datetime
+from typing import Callable, List
+
+import pytz
 import streamlit as st
+import yaml
 from faker import Faker
 from vertexai.preview.generative_models import (
     GenerationConfig,
@@ -12,7 +15,7 @@ from vertexai.preview.generative_models import (
     Part,
     ResponseBlockedError,
 )
-import pytz
+
 from mypylib.google_ai_prompts import (
     MULTIPLE_CHOICE_QUESTION,
     READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
@@ -20,7 +23,6 @@ from mypylib.google_ai_prompts import (
     SINGLE_CHOICE_QUESTION,
 )
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
-
 
 MAX_CALLS = 10
 PER_SECONDS = 60
@@ -452,7 +454,7 @@ You are a professional English teacher with a comprehensive grasp of the CEFR vo
 
 {guidelines}
 
-Each question is expressed in the form of a dictionary, and the result is a list, output in JSON format.
+Each question is expressed in the form of a dictionary, and the result is a list, output in YAML format.
 
 Article: {article}
 """
@@ -478,5 +480,6 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        # parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        parser=lambda x: yaml.safe_load(x),
     )
