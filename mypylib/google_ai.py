@@ -420,7 +420,7 @@ You are a professional English teacher with a comprehensive mastery of the CEFR 
 - Overall requirements for the article: accurate content, clear structure, standard language, and vivid expression. If the genre is argumentative, the viewpoints should be distinct and the arguments sufficient; for a literary work, the most important thing is the expression of emotion and artistry.
 - The difficulty reflects the audience's language ability, the article content should adapt to the audience's language ability, ensuring that the exerciser can understand and master the content
 - The article should have correct grammar, accurate word usage, and smooth expression
-- The vocabulary used in the article should primarily adhere to the CEFR {level} (inclusive) word list. However, a small proportion of words can exceed this level to maintain the richness of the language.
+- The vocabulary used in the article should primarily adhere to the CEFR level specified or below. Any usage of words beyond the specified level should be strictly necessary and should not exceed 5% of the total word count in the article. If there are suitable alternatives within the specified level or below, they should be used instead.
 - Do not use unnecessary formatting marks in the output text, such as bolding, etc.
 """
 
