@@ -7,6 +7,7 @@ Single Choice Question Guidelines:
 - Each question should be output as a dictionary with 'question', 'options', 'answer', and 'explanation' as keys.
 - The 'options' should be a list of strings, each string representing an option.
 - Each option should be prefixed with a capital letter (A, B, C, D) followed by a '. '.
+- Options should not include "All of the above" or similar choices, as this could lead to multiple correct answers.
 """
 
 MULTIPLE_CHOICE_QUESTION = """
