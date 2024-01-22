@@ -1376,12 +1376,12 @@ if menu is not None and menu.endswith("阅读练习"):
             or st.session_state["reading-test-idx"] == len(st.session_state["reading-test"]) - 1,  # type: ignore
         )
         rpl_test_btn = ra_test_btn_cols[3].button(
-            "重放[:headphones:]",
+            "听题[:headphones:]",
             key="ra-test-replay",
-            help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
+            help="✨ 点击此按钮，使用语音播放问题。",
             disabled=len(st.session_state["reading-test"]) == 0
             or st.session_state["reading-test-idx"] == -1
-            or st.session_state["reading-test-display-state"] == "文本",  # type: ignore
+            # or st.session_state["reading-test-display-state"] == "文本",  # type: ignore
         )
         sumbit_test_btn = ra_test_btn_cols[4].button(
             "检查[:mag:]",
