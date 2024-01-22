@@ -722,7 +722,7 @@ if menu is not None and menu.endswith("听说练习"):
             difficulty = st.selectbox(
                 "CEFR等级",
                 list(CEFR_LEVEL_MAPS.keys()),
-                key="difficulty",
+                key="listening-difficulty",
                 index=0,
                 format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
                 on_change=set_state,
@@ -1124,7 +1124,7 @@ if menu is not None and menu.endswith("阅读练习"):
             difficulty = st.selectbox(
                 "CEFR等级",
                 list(CEFR_LEVEL_MAPS.keys()),
-                key="difficulty",
+                key="reading-difficulty",
                 index=0,
                 format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
                 on_change=set_state,
