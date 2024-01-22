@@ -92,26 +92,28 @@ def audio_autoplay_elem(data: Union[bytes, str], controls: bool = False, fmt="mp
     b64 = base64.b64encode(data).decode()
     if controls:
         return f"""\
-<audio controls autoplay>\
-    <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
-    Your browser does not support the audio element.\
-</audio>\
+<div id="audioContainer">\
+    <audio controls autoplay>\
+        <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
+        Your browser does not support the audio element.\
+    </audio>\
+</div>\
 <script>\
-    var audio = document.querySelector('audio');\
-    audio.load();\
-    audio.play();\
+    var audioContainer = document.querySelector('#audioContainer');\
+    audioContainer.innerHTML = audioContainer.innerHTML;\
 </script>\
             """
     else:
         return f"""\
-<audio autoplay>\
-    <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
-    Your browser does not support the audio element.\
-</audio>\
+<div id="audioContainer">\
+    <audio autoplay>\
+        <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
+        Your browser does not support the audio element.\
+    </audio>\
+</div>\
 <script>\
-    var audio = document.querySelector('audio');\
-    audio.load();\
-    audio.play();\
+    var audioContainer = document.querySelector('#audioContainer');\
+    audioContainer.innerHTML = audioContainer.innerHTML;\
 </script>\
             """
 
