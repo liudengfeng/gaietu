@@ -310,7 +310,7 @@ def autoplay_audio_and_display_article(content_cols):
         result = get_synthesis_speech(paragraph, voice_style[0])
         audio_list.append(result["audio_data"])
         duration = result["audio_duration"]
-        total += duration.total_seconds()        
+        total += duration.total_seconds()
         durations.append(duration)
 
     # 创建一个空的插槽
@@ -354,7 +354,7 @@ def process_play_and_record_article(
     paragraph = paragraphs[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(paragraph, voice_style[0])
-    
+
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
 
@@ -395,7 +395,7 @@ def process_play_and_record_dialogue(
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
-    
+
     if st.session_state["ls-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -1358,12 +1358,7 @@ if menu is not None and menu.endswith("阅读练习"):
             key="ra-test-refresh",
             help="✨ 点击按钮，生成阅读理解测试题。",
         )
-        display_test_btn = ra_test_btn_cols[1].button(
-            "切换[:recycle:]",
-            key="ra-test-mask",
-            help="✨ 此按钮可切换题目展示方式：文本或语音。默认为文本形式。",
-        )
-        prev_test_btn = ra_test_btn_cols[2].button(
+        prev_test_btn = ra_test_btn_cols[1].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ra-test-prev",
             help="✨ 点击按钮，切换到上一道测试题。",
@@ -1371,7 +1366,7 @@ if menu is not None and menu.endswith("阅读练习"):
             args=("reading-test-idx",),
             disabled=st.session_state["reading-test-idx"] <= 0,
         )
-        next_test_btn = ra_test_btn_cols[3].button(
+        next_test_btn = ra_test_btn_cols[2].button(
             "下一[:arrow_right_hook:]",
             key="ra-test-next",
             help="✨ 点击按钮，切换到下一道测试题。",
@@ -1380,7 +1375,7 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=len(st.session_state["reading-test"]) == 0
             or st.session_state["reading-test-idx"] == len(st.session_state["reading-test"]) - 1,  # type: ignore
         )
-        rpl_test_btn = ra_test_btn_cols[4].button(
+        rpl_test_btn = ra_test_btn_cols[3].button(
             "重放[:headphones:]",
             key="ra-test-replay",
             help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
@@ -1388,7 +1383,7 @@ if menu is not None and menu.endswith("阅读练习"):
             or st.session_state["reading-test-idx"] == -1
             or st.session_state["reading-test-display-state"] == "文本",  # type: ignore
         )
-        sumbit_test_btn = ra_test_btn_cols[5].button(
+        sumbit_test_btn = ra_test_btn_cols[4].button(
             "检查[:mag:]",
             key="submit-reading-test",
             disabled=st.session_state["reading-test-idx"] == -1
@@ -1411,25 +1406,8 @@ if menu is not None and menu.endswith("阅读练习"):
             # 更新
             st.rerun()
 
-        if display_test_btn:
-            if st.session_state["reading-test-display-state"] == "文本":
-                st.session_state["reading-test-display-state"] = "语音"
-            else:
-                st.session_state["reading-test-display-state"] = "文本"
-
-        if prev_test_btn:
-            view_reading_test(container, difficulty, exercise_type, genre)
-
-        if next_test_btn:
-            # st.write(st.session_state["reading-test"])
-            view_reading_test(container, difficulty, exercise_type, genre)
-
         if rpl_test_btn:
-            if st.session_state["reading-test-display-state"] == "文本":
-                st.warning("请先切换到语音模式")
-                st.stop()
-
-            view_reading_test(container, difficulty, exercise_type, genre)
+            st.session_state["reading-test-display-state"] = "语音"
 
         if sumbit_test_btn:
             container.empty()
@@ -1444,6 +1422,9 @@ if menu is not None and menu.endswith("阅读练习"):
                 container.warning("您尚未完成测试。")
 
             check_reading_test_answer(container, difficulty, exercise_type, genre)
+        else:
+            view_reading_test(container, difficulty, exercise_type, genre)
+            st.session_state["reading-test-display-state"] = "文本"
 
     # endregion
 
