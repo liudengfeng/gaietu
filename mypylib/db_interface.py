@@ -745,27 +745,33 @@ class DbInterface:
     # endregion
 
     # region 学习记录
-    
+
     def add_record_to_cache(self, learning_time):
         # 定义缓存
         if "learning_time_cache" not in self.cache:
             self.cache["learning_time_cache"] = []
             self.cache["learning_time_last_save_time"] = time.time()
 
-        # 将 LearningTime 对象添加到缓存
-        self.cache["learning_time_cache"].append(learning_time)
+        # 检查新添加的 LearningTime 实例是否与缓存中的最后一个实例有相同的项目和内容
+        if (
+            len(self.cache["learning_time_cache"]) > 0
+            and self.cache["learning_time_cache"][-1].project == learning_time.project
+            and self.cache["learning_time_cache"][-1].content == learning_time.content
+        ):
+            # 如果是，将新实例的时长添加到最后一个实例的时长上
+            self.cache["learning_time_cache"][-1].duration += learning_time.duration
+        else:
+            # 如果不是，将新实例添加到缓存中
+            self.cache["learning_time_cache"].append(learning_time)
 
         # 如果缓存数量超过限制或者时间超过限制，将缓存中的 LearningTime 对象保存到数据库
         if (
             len(self.cache["learning_time_cache"]) > CACHE_TRIGGER_SIZE
-            or time.time() - self.cache["learning_time_last_save_time"] > MAX_TIME_INTERVAL
+            or time.time() - self.cache["learning_time_last_save_time"]
+            > MAX_TIME_INTERVAL
         ):
             self.save_learning_time(self.cache["learning_time_cache"])
-
-            # 清空缓存
             self.cache["learning_time_cache"] = []
-
-            # 更新上一次保存的时间
             self.cache["learning_time_last_save_time"] = time.time()
 
     def save_learning_time(self, records: List[LearningTime]):
