@@ -97,7 +97,9 @@ def audio_autoplay_elem(data: Union[bytes, str], controls: bool = False, fmt="mp
     Your browser does not support the audio element.\
 </audio>\
 <script>\
-    var audio = document.querySelector('audio');\
+    var audioContainer = document.querySelector('#audioContainer');\
+    audioContainer.innerHTML = audioContainer.innerHTML;\
+    var audio = audioContainer.querySelector('audio');\
     audio.load();\
     audio.play();\
 </script>\
@@ -109,7 +111,9 @@ def audio_autoplay_elem(data: Union[bytes, str], controls: bool = False, fmt="mp
     Your browser does not support the audio element.\
 </audio>\
 <script>\
-    var audio = document.querySelector('audio');\
+    var audioContainer = document.querySelector('#audioContainer');\
+    audioContainer.innerHTML = audioContainer.innerHTML;\
+    var audio = audioContainer.querySelector('audio');\
     audio.load();\
     audio.play();\
 </script>\
