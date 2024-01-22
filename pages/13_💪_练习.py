@@ -411,6 +411,7 @@ def process_play_and_record_dialogue(
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
+    word_count = len(sentence.split())
     record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
     process_learning_record(record, "listening-learning-times")
 
@@ -1219,6 +1220,12 @@ if menu is not None and menu.endswith("阅读练习"):
             == len(st.session_state["reading-article"]) - 1,
         )
         ra_btn = ra_btn_cols[4].button(
+            "全文[:headphones:]",
+            key="ra-lsi",
+            help="✨ 点击按钮，收听整个文章。",
+            disabled=len(st.session_state["reading-article"]) == 0,
+        )
+        ra_btn = ra_btn_cols[5].button(
             "全文[:headphones:]",
             key="ra-lsi",
             help="✨ 点击按钮，收听整个文章。",
