@@ -335,7 +335,7 @@ def autoplay_audio_and_display_article(content_cols):
         components.html(audio_html)
         # st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
-        t = duration.total_seconds()
+        t = duration.total_seconds() + 0.3
         total += t
         time.sleep(t)
     return total
