@@ -560,6 +560,54 @@ def check_listening_test_answer(container, level, selected_scenario):
     st.session_state.dbi.save_daily_quiz_results(test_dict)
 
 
+def check_reading_test_answer(container, difficulty, exercise_type, genre):
+    score = 0
+    n = count_non_none(st.session_state["reading-test"])
+    for idx, test in enumerate(st.session_state["reading-test"]):
+        question = test["question"]
+        options = test["options"]
+        answer = test["answer"]
+        explanation = test["explanation"]
+
+        # 存储的是 None 或者 0、1、2、3
+        user_answer_idx = st.session_state["reading-test-answer"][idx]
+        container.divider()
+        container.markdown(question)
+        container.radio(
+            "选项",
+            options,
+            # horizontal=True,
+            index=user_answer_idx,
+            disabled=True,
+            label_visibility="collapsed",
+            key=f"test-options-{idx}",
+        )
+        msg = ""
+        # 用户答案是选项序号，而提供的标准答案是A、B、C、D
+        if is_answer_correct(user_answer_idx, answer):
+            score += 1
+            msg = f"正确答案：{answer} :white_check_mark:"
+        else:
+            msg = f"正确答案：{answer} :x:"
+        container.markdown(msg)
+        container.markdown(f"解释：{explanation}")
+
+    percentage = score / n * 100
+    if percentage >= 75:
+        container.balloons()
+    container.divider()
+    container.markdown(f":red[得分：{percentage:.0f}%]")
+    test_dict = {
+        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        "item": "阅读理解测验",
+        "topic": genre,
+        "level": F"{difficulty}-{exercise_type}",
+        "score": percentage,
+        "record_time": datetime.now(timezone.utc),
+    }
+    st.session_state.dbi.save_daily_quiz_results(test_dict)
+
+
 # endregion
 
 # region 会话状态
@@ -1363,7 +1411,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 st.session_state["reading-test-display-state"] = "语音"
             else:
                 st.session_state["reading-test-display-state"] = "文本"
-        
+
         if prev_test_btn:
             view_reading_test(container, difficulty, exercise_type, genre)
 
@@ -1377,6 +1425,20 @@ if menu is not None and menu.endswith("阅读练习"):
                 st.stop()
 
             view_reading_test(container, difficulty, exercise_type, genre)
+
+        if sumbit_test_btn:
+            container.empty()
+
+            if count_non_none(st.session_state["reading-test-answer"]) == 0:
+                container.warning("您尚未答题。")
+                container.stop()
+
+            if count_non_none(
+                st.session_state["reading-test-answer"]
+            ) != count_non_none(st.session_state["reading-test"]):
+                container.warning("您尚未完成测试。")
+
+            check_reading_test_answer(container, difficulty, exercise_type, genre)
 
     # endregion
 
