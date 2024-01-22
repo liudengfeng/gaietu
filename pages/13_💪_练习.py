@@ -574,7 +574,6 @@ if "conversation_scene" not in st.session_state:
 if "summarize_in_one" not in st.session_state:
     st.session_state["summarize_in_one"] = ""
 
-
 if "listening-learning-times" not in st.session_state:
     st.session_state["listening-learning-times"] = 0
 
