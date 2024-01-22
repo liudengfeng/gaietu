@@ -374,6 +374,7 @@ def process_play_and_record_article(
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
+    word_count = len(paragraph.split())
     record = create_learning_record("阅读理解", difficulty, genre, word_count)
     process_learning_record(record, "reading-leaning-times")
 
