@@ -601,7 +601,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "阅读理解测验",
         "topic": genre,
-        "level": F"{difficulty}-{exercise_type}",
+        "level": f"{difficulty}-{exercise_type}",
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
     }
