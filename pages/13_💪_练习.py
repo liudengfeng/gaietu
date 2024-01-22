@@ -475,7 +475,7 @@ def on_reading_test_radio_change(idx, options):
 def view_reading_test(container, difficulty, exercise_type, genre):
     idx = st.session_state["reading-test-idx"]
     test = st.session_state["reading-test"][idx]
-    logger.info(test)
+    # logger.info(test)
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["reading-test-answer"][idx]

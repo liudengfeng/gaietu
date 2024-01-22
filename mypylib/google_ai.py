@@ -454,7 +454,7 @@ You are a professional English teacher with a comprehensive grasp of the CEFR vo
 
 {guidelines}
 
-Each question is expressed in the form of a dictionary, and the result is a list, output in YAML format.
+Each question, originally represented as a dictionary, is compiled into a list. The final result is output in YAML format.
 
 Article: {article}
 """
