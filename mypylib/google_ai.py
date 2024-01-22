@@ -277,8 +277,6 @@ SCENARIO_TEMPLATE = """
 - 使用中文简体；
 - 每个场景以数字序号开头，并用". "分隔。编号从1开始；
 - 不使用markdown格式标注，如加黑等；
-
-结果以python list呈现，YAML格式输出。
 """
 
 
@@ -295,7 +293,7 @@ def generate_scenarios(model, subject):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: yaml.safe_load(x),
+        parser=lambda x: [line for line in x.strip().splitlines() if line],
     )
 
 
