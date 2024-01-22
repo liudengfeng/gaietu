@@ -908,16 +908,7 @@ if menu is not None and menu.endswith("听说练习"):
             else:
                 st.session_state["ls-display-state"] = "英文"
 
-        if prev_btn:
-            process_play_and_record_dialogue(
-                content_cols,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                selected_scenario,
-            )
-
-        if next_btn:
+        if prev_btn or next_btn or replay_btn:
             process_play_and_record_dialogue(
                 content_cols,
                 m_voice_style,
