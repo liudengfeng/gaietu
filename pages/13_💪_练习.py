@@ -475,6 +475,7 @@ def on_reading_test_radio_change(idx, options):
 def view_reading_test(container, difficulty, exercise_type, genre):
     idx = st.session_state["reading-test-idx"]
     test = st.session_state["reading-test"][idx]
+    logger.info(test)
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["reading-test-answer"][idx]
@@ -1343,7 +1344,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, english_exercise_type, st.session_state["reading-article"]
             )
-            logger.info(st.session_state["reading-test"])
+            # logger.info(st.session_state["reading-test"])
             st.session_state["reading-test-idx"] = -1
             st.session_state["reading-test-answer"] = [None] * len(
                 st.session_state["reading-test"]
