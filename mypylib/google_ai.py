@@ -267,7 +267,14 @@ def generate_word_test(model_name, model, word, level):
 
 
 SCENARIO_TEMPLATE = """
-为"{}"模拟12个场景列表
+为以下场景模拟12个子场景标题，中文简体输出，YAML格式：
+
+场景：
+{}
+
+要求：
+- 每个场景以数字序号开头，并用". "分隔。编号从1开始；
+- 不需要使用非必要的格式标注，如加黑等等；
 """
 
 
@@ -275,7 +282,7 @@ def generate_scenarios(model, subject):
     prompt = SCENARIO_TEMPLATE.format(subject)
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.75, top_p=1.0
+        max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
     return parse_generated_content_and_update_token(
         "生成场景",
@@ -284,28 +291,9 @@ def generate_scenarios(model, subject):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: [line for line in x.strip().splitlines() if line],
+        parser=lambda x: yaml.safe_load(x),
     )
 
-
-# DIALOGUE_TEMPLATE = """
-# 参考以下中文说明，模拟一段地道美国人的英语对话：
-# - 模拟纯正的英语对话，不要使用中式英语和中文思维方式，也不要使用中文
-# - 对话双方：男孩：{boy_name} 和女孩：{girl_name}
-# - 对话只有两人，不要有其他人参与
-# - 场景：{scenario}
-# - 情节： {plot}
-# - 难度：{difficulty}
-# - 字数：如果难度为初级，字数在200-300字左右；如果难度为中级，字数在300-500字左右；如果难度为高级，字数在500-1000字左右。
-# - 难度反应受众语言能力，对话文字材料要与受众语言能力相适应，保证练习者能够理解和掌握内容
-# - 根据难度调整用词、语法结构、表达方式
-# - 对于初级难度，使用简单的词汇和语法结构，避免使用过于复杂的表达方式
-# - 对于中级难度，使用稍微复杂的词汇和语法结构
-# - 对于高级难度，使用更复杂的词汇和语法结构，但要注意保持流畅性和可理解性
-# - 输出结果只允许二人对话材料，或者旁白，但旁白整体需要用括号标注，且单独成行
-# - 每人发言结束时才能使用换行符
-# - 输出结果不要使用非必要的格式标注，如加黑等等
-# """
 
 DIALOGUE_TEMPLATE = """
 您精通CEFR英语能力分级，全面掌握各级词汇列表。参考以下中文说明，模拟一段地道美国人的英语对话：
