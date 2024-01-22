@@ -828,7 +828,14 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state.conversation_scene) == 0
             or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
-        lsi_btn = ls_btn_cols[4].button(
+        replay_btn = ls_btn_cols[4].button(
+            "重放[:headphones:]",
+            key="ls-replay",
+            help="✨ 点击按钮，重新播放当前对话。",
+            disabled=st.session_state["ls-idx"] == -1
+            or len(st.session_state.conversation_scene) == 0,
+        )
+        lsi_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
             key="ls-lsi",
             help="✨ 点击按钮，收听整个对话。",
