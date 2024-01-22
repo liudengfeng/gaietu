@@ -212,7 +212,7 @@ def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]
     )
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
+# @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
 def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
 
