@@ -1365,6 +1365,13 @@ if menu is not None and menu.endswith("阅读练习"):
             # st.write(st.session_state["reading-test"])
             view_reading_test(container, difficulty, exercise_type, genre)
 
+        if rpl_test_btn:
+            if st.session_state["ra-test-display-state"] == "文本":
+                st.warning("请先切换到语音模式")
+                st.stop()
+
+            view_reading_test(container, difficulty, exercise_type, genre)
+
     # endregion
 
 # endregion
