@@ -481,7 +481,7 @@ def view_reading_test(container, difficulty, exercise_type, genre):
     options = test["options"]
     user_answer_idx = st.session_state["reading-test-answer"][idx]
     t = 0
-    if st.session_state["ra-test-display-state"] == "语音":
+    if st.session_state["reading-test-display-state"] == "语音":
         question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
@@ -609,8 +609,8 @@ if "ls-display-state" not in st.session_state:
 if "ra-display-state" not in st.session_state:
     st.session_state["ra-display-state"] = "英文"
 
-if "ra-test-display-state" not in st.session_state:
-    st.session_state["ra-test-display-state"] = "英文"
+if "reading-test-display-state" not in st.session_state:
+    st.session_state["reading-test-display-state"] = "英文"
 
 if "scenario-list" not in st.session_state:
     st.session_state["scenario-list"] = []
@@ -1333,7 +1333,7 @@ if menu is not None and menu.endswith("阅读练习"):
             help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
             disabled=len(st.session_state["reading-test"]) == 0
             or st.session_state["reading-test-idx"] == -1
-            or st.session_state["ra-test-display-state"] == "文本",  # type: ignore
+            or st.session_state["reading-test-display-state"] == "文本",  # type: ignore
         )
         sumbit_test_btn = ra_test_btn_cols[5].button(
             "检查[:mag:]",
@@ -1358,6 +1358,12 @@ if menu is not None and menu.endswith("阅读练习"):
             # 更新
             st.rerun()
 
+        if display_test_btn:
+            if st.session_state["reading-test-display-state"] == "文本":
+                st.session_state["reading-test-display-state"] = "语音"
+            else:
+                st.session_state["reading-test-display-state"] = "文本"
+        
         if prev_test_btn:
             view_reading_test(container, difficulty, exercise_type, genre)
 
@@ -1366,10 +1372,10 @@ if menu is not None and menu.endswith("阅读练习"):
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if rpl_test_btn:
-            if st.session_state["ra-test-display-state"] == "文本":
+            if st.session_state["reading-test-display-state"] == "文本":
                 st.warning("请先切换到语音模式")
                 st.stop()
-            logger.info(st.session_state["reading-test"])
+
             view_reading_test(container, difficulty, exercise_type, genre)
 
     # endregion
