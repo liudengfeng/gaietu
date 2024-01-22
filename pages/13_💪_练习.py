@@ -376,7 +376,7 @@ def process_play_and_record_article(
     # 记录学习时长
     word_count = len(paragraph.split())
     record = create_learning_record("阅读理解", difficulty, genre, word_count)
-    process_learning_record(record, "reading-leaning-times")
+    process_learning_record(record, "reading-learning-times")
 
 
 def process_play_and_record_dialogue(
@@ -412,7 +412,7 @@ def process_play_and_record_dialogue(
 
     # 记录学习时长
     record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
-    process_learning_record(record, "listening-leaning-times")
+    process_learning_record(record, "listening-learning-times")
 
 
 def on_prev_btn_click(key):
