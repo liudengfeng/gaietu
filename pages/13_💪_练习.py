@@ -303,12 +303,12 @@ def autoplay_audio_and_display_dialogue(content_cols):
 def autoplay_audio_and_display_article(content_cols):
     article = st.session_state["reading-article"]
     audio_list = []
-    paragraphs = []
+    durations = []
     for i, paragraph in enumerate(article):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
         result = get_synthesis_speech(paragraph, voice_style[0])
         audio_list.append(result["audio_data"])
-        paragraphs.append(result["audio_duration"])
+        durations.append(result["audio_duration"])
 
     # 创建一个空的插槽
     slot_1 = content_cols[0].empty()
@@ -317,8 +317,17 @@ def autoplay_audio_and_display_article(content_cols):
     if st.session_state.get("ra-display-state", "英文") != "英文":
         cns = translate_text(article, "zh-CN", True)
     total = 0
+    total_duration = sum(durations)
+    SLEEP_TIME = 0.3
     # 播放音频并同步显示文本
-    for i, duration in enumerate(paragraphs):
+    for i, duration in enumerate(durations):
+        # 计算这一段音频的播放长度与总长度的占比
+        # 播放音频
+        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
+        components.html(audio_html)
+        # ratio = duration / total_duration
+        # # 根据占比调整增量
+        # increment = SLEEP_TIME * ratio
         # 检查 session state 的值
         if st.session_state.get("ra-display-state", "英文") == "英文":
             # 显示英文
@@ -330,12 +339,9 @@ def autoplay_audio_and_display_article(content_cols):
             # 同时显示英文和中文
             slot_1.markdown(f"**{article[i]}**")
             slot_2.markdown(cns[i])
-        # 播放音频
-        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
-        components.html(audio_html)
         # st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
-        t = duration.total_seconds() + 0.3
+        t = duration.total_seconds()
         total += t
         time.sleep(t)
     return total
