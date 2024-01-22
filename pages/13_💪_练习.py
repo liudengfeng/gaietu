@@ -829,7 +829,7 @@ if menu is not None and menu.endswith("听说练习"):
             or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
         lsi_btn = ls_btn_cols[4].button(
-            "全文[:headphones:]",
+            "全文[:film_frames:]",
             key="ls-lsi",
             help="✨ 点击按钮，收听整个对话。",
             disabled=len(st.session_state.conversation_scene) == 0,
@@ -1219,14 +1219,15 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=st.session_state["reading-exercise-idx"]
             == len(st.session_state["reading-article"]) - 1,
         )
-        ra_btn = ra_btn_cols[4].button(
-            "全文[:headphones:]",
-            key="ra-lsi",
-            help="✨ 点击按钮，收听整个文章。",
-            disabled=len(st.session_state["reading-article"]) == 0,
+        replay_btn = ra_btn_cols[4].button(
+            "重放[:headphones:]",
+            key="ra-replay",
+            help="✨ 点击按钮，重新播放当前段落。",
+            disabled=len(st.session_state["reading-article"]) == 0
+            or st.session_state["reading-exercise-idx"] == -1,
         )
         ra_btn = ra_btn_cols[5].button(
-            "全文[:headphones:]",
+            "全文[:film_frames:]",
             key="ra-lsi",
             help="✨ 点击按钮，收听整个文章。",
             disabled=len(st.session_state["reading-article"]) == 0,
@@ -1248,16 +1249,7 @@ if menu is not None and menu.endswith("阅读练习"):
             else:
                 st.session_state["ra-display-state"] = "英文"
 
-        if prev_btn:
-            process_play_and_record_article(
-                content_cols,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                genre,
-            )
-
-        if next_btn:
+        if prev_btn or next_btn or replay_btn:
             process_play_and_record_article(
                 content_cols,
                 m_voice_style,
