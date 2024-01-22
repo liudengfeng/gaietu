@@ -760,6 +760,7 @@ if menu is not None and menu.endswith("听说练习"):
                     st.session_state["scenario-list"] = generate_scenarios_for(
                         scenario_category
                     )
+                    st.write(st.session_state["scenario-list"])
 
                 # st.write(scenario_list)
                 selected_scenario = st.selectbox(
