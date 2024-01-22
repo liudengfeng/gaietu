@@ -317,7 +317,7 @@ def autoplay_audio_and_display_article(content_cols):
     if st.session_state.get("ra-display-state", "英文") != "英文":
         cns = translate_text(article, "zh-CN", True)
     total = 0
-    total_duration = sum(durations)
+    total_duration = sum([d.total_seconds() for d in durations])
     SLEEP_TIME = 0.3
     # 播放音频并同步显示文本
     for i, duration in enumerate(durations):
