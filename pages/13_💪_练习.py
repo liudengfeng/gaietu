@@ -1407,6 +1407,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.rerun()
 
         if rpl_test_btn:
+            container.empty()
             st.session_state["reading-test-display-state"] = "语音"
 
         if sumbit_test_btn:
