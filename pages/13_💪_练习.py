@@ -136,7 +136,17 @@ AI_TIPS = {
 
 # region 函数
 
+
 # region 通用
+
+
+def process_learning_record(record, key):
+    if len(st.session_state["learning-record"]) > 0:
+        st.session_state["learning-record"][-1].end()
+
+    st.session_state["learning-record"].append(record)
+    record.start()
+    st.session_state[key] += 1
 
 
 def display_text_word_count_summary(container, text):
@@ -331,7 +341,7 @@ def autoplay_audio_and_display_article(content_cols):
     return total
 
 
-def process_and_play_article(
+def process_play_and_record_article(
     content_cols, m_voice_style, fm_voice_style, difficulty, genre
 ):
     paragraphs = st.session_state["reading-article"]
@@ -364,17 +374,11 @@ def process_and_play_article(
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
-    if len(st.session_state["learning-record"]) > 0:
-        st.session_state["learning-record"][-1].end()
-
-    word_count = len(paragraph.split())
     record = create_learning_record("阅读理解", difficulty, genre, word_count)
-    record.start()
-
-    st.session_state["learning-times"] += 1
+    process_learning_record(record, "reading-leaning-times")
 
 
-def process_and_play_dialogue(
+def process_play_and_record_dialogue(
     content_cols, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
     dialogue = st.session_state.conversation_scene
@@ -406,14 +410,8 @@ def process_and_play_dialogue(
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
-    if len(st.session_state["learning-record"]) > 0:
-        st.session_state["learning-record"][-1].end()
-
-    word_count = len(sentence.split())
     record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
-    record.start()
-
-    st.session_state["learning-times"] += 1
+    process_learning_record(record, "listening-leaning-times")
 
 
 def on_prev_btn_click(key):
@@ -575,8 +573,12 @@ if "conversation_scene" not in st.session_state:
 if "summarize_in_one" not in st.session_state:
     st.session_state["summarize_in_one"] = ""
 
-if "learning-times" not in st.session_state:
-    st.session_state["learning-times"] = 0
+
+if "listening-learning-times" not in st.session_state:
+    st.session_state["listening-learning-times"] = 0
+
+if "reading-learning-times" not in st.session_state:
+    st.session_state["reading-learning-times"] = 0
 
 if "listening-test" not in st.session_state:
     st.session_state["listening-test"] = []
@@ -756,7 +758,7 @@ if menu is not None and menu.endswith("听说练习"):
             if gen_btn:
                 container.empty()
                 # 学习次数重置为0
-                st.session_state["learning-times"] = 0
+                st.session_state["listening-learning-times"] = 0
 
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
@@ -835,7 +837,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
-            st.session_state["learning-times"] = 0
+            st.session_state["listening-learning-times"] = 0
             end_and_save_learning_records()
             st.rerun()
 
@@ -848,7 +850,7 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["ls-display-state"] = "英文"
 
         if prev_btn:
-            process_and_play_dialogue(
+            process_play_and_record_dialogue(
                 content_cols,
                 m_voice_style,
                 fm_voice_style,
@@ -857,7 +859,7 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if next_btn:
-            process_and_play_dialogue(
+            process_play_and_record_dialogue(
                 content_cols,
                 m_voice_style,
                 fm_voice_style,
@@ -867,7 +869,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         if lsi_btn:
             total = autoplay_audio_and_display_dialogue(content_cols)
-            st.session_state["learning-times"] = len(
+            st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
             )
             dialogue_text = " ".join(st.session_state.conversation_scene)
@@ -892,7 +894,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先配置场景")
             st.stop()
 
-        if st.session_state["learning-times"] == 0:
+        if st.session_state["listening-learning-times"] == 0:
             st.warning("请先完成听说练习")
             st.stop()
 
@@ -1142,7 +1144,7 @@ if menu is not None and menu.endswith("阅读练习"):
             if gen_btn:
                 container.empty()
                 # 学习次数重置为0
-                st.session_state["learning-times"] = 0
+                st.session_state["reading-learning-times"] = 0
 
                 genre_index = GENRES.index(genre)
                 genre_en = GENRES_EN[genre_index]
@@ -1218,7 +1220,7 @@ if menu is not None and menu.endswith("阅读练习"):
         ra_btn = ra_btn_cols[4].button(
             "全文[:headphones:]",
             key="ra-lsi",
-            help="✨ 点击按钮，收听整个对话。",
+            help="✨ 点击按钮，收听整个文章。",
             disabled=len(st.session_state["reading-article"]) == 0,
         )
 
@@ -1226,7 +1228,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if refresh_btn:
             st.session_state["reading-exercise-idx"] = -1
-            st.session_state["learning-times"] = 0
+            st.session_state["reading-learning-times"] = 0
             end_and_save_learning_records()
             st.rerun()
 
@@ -1239,7 +1241,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 st.session_state["ra-display-state"] = "英文"
 
         if prev_btn:
-            process_and_play_article(
+            process_play_and_record_article(
                 content_cols,
                 m_voice_style,
                 fm_voice_style,
@@ -1248,7 +1250,7 @@ if menu is not None and menu.endswith("阅读练习"):
             )
 
         if next_btn:
-            process_and_play_article(
+            process_play_and_record_article(
                 content_cols,
                 m_voice_style,
                 fm_voice_style,
@@ -1258,7 +1260,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if ra_btn:
             total = autoplay_audio_and_display_article(content_cols)
-            st.session_state["learning-times"] = len(
+            st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
             text = " ".join(st.session_state["reading-article"])
@@ -1283,7 +1285,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.warning("请先配置阅读理解练习材料")
             st.stop()
 
-        if st.session_state["learning-times"] == 0:
+        if st.session_state["reading-learning-times"] == 0:
             st.warning("请先完成练习")
             st.stop()
 
