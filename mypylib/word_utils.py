@@ -91,8 +91,8 @@ def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
     b64 = base64.b64encode(data).decode()
 
     # 生成一个随机的 ID
+    # 避免浏览器缓存音频数据
     audio_id = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
     return f"""\
 <audio id="{audio_id}" autoplay>\
     <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
