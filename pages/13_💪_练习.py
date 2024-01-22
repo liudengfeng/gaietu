@@ -1281,9 +1281,9 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=len(st.session_state["reading-article"]) == 0
             or st.session_state["reading-exercise-idx"] == -1,
         )
-        ra_btn = ra_btn_cols[5].button(
+        full_btn = ra_btn_cols[5].button(
             "全文[:film_frames:]",
-            key="ra-lsi",
+            key="reading-exercise-full",
             help="✨ 点击按钮，收听整个文章。",
             disabled=len(st.session_state["reading-article"]) == 0,
         )
@@ -1313,7 +1313,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 genre,
             )
 
-        if ra_btn:
+        if full_btn:
             total = autoplay_audio_and_display_article(content_cols)
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
