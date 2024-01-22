@@ -9,6 +9,7 @@ from typing import List
 
 import streamlit as st
 import streamlit.components.v1 as components
+from streamlit_mic_recorder import mic_recorder
 
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
