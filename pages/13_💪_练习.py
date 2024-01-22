@@ -255,7 +255,8 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_list)
 
 
-def autoplay_audio_and_display_dialogue(content_cols):
+def autoplay_audio_and_display_dialogue(container):
+    container.empty()
     dialogue = st.session_state.conversation_scene
     audio_list = []
     duration_list = []
@@ -265,6 +266,7 @@ def autoplay_audio_and_display_dialogue(content_cols):
         audio_list.append(result["audio_data"])
         duration_list.append(result["audio_duration"])
 
+    content_cols = container.columns(2)
     # 创建一个空的插槽
     slot_1 = content_cols[0].empty()
     slot_2 = content_cols[1].empty()
@@ -380,8 +382,9 @@ def process_play_and_record_article(
 
 
 def process_play_and_record_dialogue(
-    content_cols, m_voice_style, fm_voice_style, difficulty, selected_scenario
+    container, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
+    container.empty()
     dialogue = st.session_state.conversation_scene
     cns = translate_text(dialogue, "zh-CN", True)
     idx = st.session_state["ls-idx"]
@@ -392,6 +395,7 @@ def process_play_and_record_dialogue(
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
 
+    content_cols = container.columns(2)
     if st.session_state["ls-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -892,7 +896,8 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=len(st.session_state.conversation_scene) == 0,
         )
 
-        content_cols = st.columns(2)
+        # content_cols = st.columns(2)
+        container = st.container()
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
@@ -910,7 +915,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         if prev_btn or next_btn or replay_btn:
             process_play_and_record_dialogue(
-                content_cols,
+                container,
                 m_voice_style,
                 fm_voice_style,
                 difficulty,
@@ -918,7 +923,7 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if lsi_btn:
-            total = autoplay_audio_and_display_dialogue(content_cols)
+            total = autoplay_audio_and_display_dialogue(container)
             st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
             )
