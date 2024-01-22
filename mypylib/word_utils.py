@@ -81,39 +81,25 @@ def get_word_cefr_map(name, fp):
         return json.load(f)
 
 
-def audio_autoplay_elem(data: Union[bytes, str], controls: bool = False, fmt="mp3"):
+def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
     audio_type = "audio/mp3" if fmt == "mp3" else "audio/wav"
-
     # 如果 data 是字符串，假定它是一个文件路径，并从文件中读取音频数据
     if isinstance(data, str):
         with open(data, "rb") as f:
             data = f.read()
 
     b64 = base64.b64encode(data).decode()
-    if controls:
-        return f"""\
-<audio controls autoplay>\
+
+    # 生成一个随机的 ID
+    audio_id = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+    return f"""\
+<audio id="{audio_id}" autoplay>\
     <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
     Your browser does not support the audio element.\
 </audio>\
 <script>\
-    var audioContainer = document.querySelector('#audioContainer');\
-    audioContainer.innerHTML = audioContainer.innerHTML;\
-    var audio = audioContainer.querySelector('audio');\
-    audio.load();\
-    audio.play();\
-</script>\
-            """
-    else:
-        return f"""\
-<audio autoplay>\
-    <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
-    Your browser does not support the audio element.\
-</audio>\
-<script>\
-    var audioContainer = document.querySelector('#audioContainer');\
-    audioContainer.innerHTML = audioContainer.innerHTML;\
-    var audio = audioContainer.querySelector('audio');\
+    var audio = document.querySelector('#{audio_id}');\
     audio.load();\
     audio.play();\
 </script>\
