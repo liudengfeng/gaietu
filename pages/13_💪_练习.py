@@ -894,6 +894,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["ls-idx"] = -1
 
         pronunciation_evaluation_container = st.container()
+        st.divider()
         ls_btn_cols = st.columns(8)
         st.divider()
 
