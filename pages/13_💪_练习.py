@@ -981,8 +981,11 @@ if menu is not None and menu.endswith("听说练习"):
             and st.session_state["listening-pronunciation-assessment"]
         ):
             autoplay_audio_and_display_text(
-                pronunciation_evaluation_container, audio_info["bytes"],
-                st.session_state["listening-pronunciation-assessment"]["recognized_words"]
+                pronunciation_evaluation_container,
+                audio_info["bytes"],
+                st.session_state["listening-pronunciation-assessment"][
+                    "recognized_words"
+                ],
             )
 
         if refresh_btn:

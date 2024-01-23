@@ -35,7 +35,7 @@ def read_audio_file(file_path):
 
 
 def get_word_durations(
-    recognized_words: List[speechsdk.PronunciationAssessmentWordResult],
+    recognized_words,
 ) -> List[float]:
     durations = []
     for w in recognized_words:
@@ -50,11 +50,12 @@ def get_word_durations(
 
 
 def get_syllable_durations_and_offsets(
-    recognized_words: List[speechsdk.PronunciationAssessmentWordResult],
+    recognized_words,
 ) -> Iterator[Tuple[str, float, float, float]]:
     accumulated_text = ""
     for w in recognized_words:
         word_text = ""
+        logger.info(f"{w.word=} {w.duration=} {w.offset=} {w.accuracy_score=}")
         for s in w.syllables:
             word_text += " " if s.grapheme is None else s.grapheme + " "
             duration_in_seconds = s.duration / 10000000
