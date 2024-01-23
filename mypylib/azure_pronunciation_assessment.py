@@ -55,7 +55,7 @@ def get_syllable_durations_and_offsets(
     accumulated_text = ""
     for w in recognized_words:
         word_text = ""
-        logger.info(f"{w.word=} {w.duration=} {w.offset=} {w.accuracy_score=}")
+        logger.info(f"{w.word=} {w.duration=} {w.accuracy_score=}")
         for s in w.syllables:
             word_text += " " if s.grapheme is None else s.grapheme + " "
             duration_in_seconds = s.duration / 10000000
