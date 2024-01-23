@@ -172,7 +172,9 @@ def display_pronunciation_result(container, key):
     Returns:
     None
     """
-    result = st.session_state[key]["pronunciation_result"]
+    result = st.session_state[key].get("pronunciation_result", None)
+    if result is None:
+        return
     view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
 
 
@@ -882,7 +884,7 @@ if menu is not None and menu.endswith("听说练习"):
         with st.expander("✨ 跟读录音提示", expanded=False):
             st.markdown(
                 """\
-- 用户将跟读当前显示的对话，以进行发音练习。
+- 跟读当前显示的对话内容，以进行发音练习，不包括发言人的名称。
 - 首次点击 '录音[⏸️]' 按钮，开始录音。
 - 再次点击 '停止[🔴]' 按钮，结束录音。
 - 在跟读练习中，系统将对用户的发音进行评估。评估的标准包括发音的准确性、流畅性、完整性以及韵律感。
@@ -897,7 +899,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         pronunciation_evaluation_container = st.container()
         st.divider()
-        ls_btn_cols = st.columns(8)
+        ls_btn_cols = st.columns(9)
         st.divider()
 
         refresh_btn = ls_btn_cols[0].button(
@@ -953,7 +955,14 @@ if menu is not None and menu.endswith("听说练习"):
             )
             st.write(f"{audio_info=}")
 
-        play_btn = ls_btn_cols[7].button(
+        pro_btn = ls_btn_cols[7].button(
+            "评估[🔖]",
+            disabled=not audio_info,
+            key="pronunciation-evaluation-btn",
+            help="✨ 点击按钮，开始发音评估。",
+        )
+
+        play_btn = ls_btn_cols[8].button(
             "回放[▶️]",
             disabled=not audio_info,
             key="listening-play-btn",
@@ -962,38 +971,38 @@ if menu is not None and menu.endswith("听说练习"):
 
         container = st.container()
 
-        # 语音发生变化时才评估
-        # if audio_info:
-        #     # 去掉发言者的名字
-        #     reference_text = st.session_state.conversation_scene[
-        #         st.session_state["ls-idx"]
-        #     ]
-        #     reference_text = reference_text.replace("**", "")
-        #     reference_text = re.sub(r"^\w+:\s", "", reference_text)
-            
-        #     st.session_state[
-        #         "listening-pronunciation-assessment"
-        #     ] = pronunciation_assessment_for(
-        #         audio_info,
-        #         reference_text,
-        #     )
-        #     display_pronunciation_result(
-        #         pronunciation_evaluation_container,
-        #         "listening-pronunciation-assessment",
-        #     )
+        if pro_btn and audio_info is not None:
+            # 去掉发言者的名字
+            reference_text = st.session_state.conversation_scene[
+                st.session_state["ls-idx"]
+            ]
+            reference_text = reference_text.replace("**", "")
+            reference_text = re.sub(r"^\w+:\s", "", reference_text)
 
-        # if (
-        #     play_btn
-        #     and audio_info
-        #     and st.session_state["listening-pronunciation-assessment"]
-        # ):
-        #     autoplay_audio_and_display_text(
-        #         pronunciation_evaluation_container,
-        #         audio_info["bytes"],
-        #         st.session_state["listening-pronunciation-assessment"][
-        #             "recognized_words"
-        #         ],
-        #     )
+            st.session_state[
+                "listening-pronunciation-assessment"
+            ] = pronunciation_assessment_for(
+                audio_info,
+                reference_text,
+            )
+        
+        display_pronunciation_result(
+            pronunciation_evaluation_container,
+            "listening-pronunciation-assessment",
+        )
+
+        if (
+            play_btn
+            and audio_info
+            and st.session_state["listening-pronunciation-assessment"]
+        ):
+            autoplay_audio_and_display_text(
+                pronunciation_evaluation_container,
+                audio_info["bytes"],
+                st.session_state["listening-pronunciation-assessment"][
+                    "recognized_words"
+                ],
+            )
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
