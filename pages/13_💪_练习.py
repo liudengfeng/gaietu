@@ -32,6 +32,7 @@ from mypylib.google_ai import (
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     WORD_COUNT_BADGE_MAPS,
+    PRONUNCIATION_SCORE_BADGE_MAPS,
     check_access,
     check_and_force_logout,
     configure_google_apis,
@@ -156,6 +157,21 @@ def display_text_word_count_summary(container, text):
     container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
+
+
+def display_pronunciation_result(container, key):
+    """
+    Display the pronunciation result in the specified container.
+
+    Parameters:
+    container (object): The container to display the result.
+    key (str): The key to access the pronunciation result in the session state.
+
+    Returns:
+    None
+    """
+    result = st.session_state[key]["pronunciation_result"]
+    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS)
 
 
 # endregion
@@ -877,7 +893,7 @@ if menu is not None and menu.endswith("听说练习"):
         if "ls-idx" not in st.session_state:
             st.session_state["ls-idx"] = -1
 
-        pronunciation_elem = st.container()
+        pronunciation_evaluation_container = st.container()
         ls_btn_cols = st.columns(8)
         st.divider()
 
@@ -952,10 +968,9 @@ if menu is not None and menu.endswith("听说练习"):
                 audio_info,
                 reference_text,
             )
-            pronunciation_elem.write(
-                st.session_state["listening-pronunciation-assessment"][
-                    "pronunciation_result"
-                ]
+            display_pronunciation_result(
+                pronunciation_evaluation_container,
+                "listening-pronunciation-assessment",
             )
 
         if refresh_btn:

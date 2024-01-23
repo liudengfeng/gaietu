@@ -226,7 +226,7 @@ def translate_text(text: str, target_language_code, is_list: bool = False):
     return google_translate(text, target_language_code, is_list)
 
 
-# region 显示
+# region 播放显示
 
 
 def format_token_count(count):
@@ -353,6 +353,36 @@ WORD_COUNT_BADGE_MAPS = OrderedDict(
         "C1": ("blue", "C1", "CEFR C1 单词数量", "light"),
         "C2": ("rainbow", "C2", "CEFR C2 单词数量", "dark"),
         "未分级": ("green", "未分级", "未分级单词数量", "dark"),
+    }
+)
+
+PRONUNCIATION_SCORE_BADGE_MAPS = OrderedDict(
+    {
+        "pronunciation_score": (
+            "green",
+            "发音分数",
+            "表示给定语音发音质量的总体分数。这是由 AccuracyScore、FluencyScore、CompletenessScore (如果适用)、ProsodyScore (如果适用)加权聚合而成。",
+            "success",
+        ),
+        "accuracy_score": (
+            "orange",
+            "准确性评分",
+            "语音的发音准确性。准确性表示音素与母语说话人的发音的匹配程度。字词和全文的准确性得分是由音素级的准确度得分汇总而来。",
+            "warning",
+        ),
+        "fluency_score": (
+            "grey",
+            "流畅性评分",
+            "给定语音的流畅性。流畅性表示语音与母语说话人在单词间的停顿上有多接近。",
+            "secondary",
+        ),
+        "completeness_score": ("red", "完整性评分", "语音的完整性，按发音单词与输入引用文本的比率计算。", "danger"),
+        "prosody_score": (
+            "rainbow",
+            "韵律评分",
+            "给定语音的韵律。韵律指示给定语音的性质，包括重音、语调、语速和节奏。",
+            "info",
+        ),
     }
 )
 
