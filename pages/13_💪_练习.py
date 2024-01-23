@@ -803,7 +803,6 @@ if menu is not None and menu.endswith("听说练习"):
             )
             if selected_scenario is None or difficulty is None:
                 st.warning("您需要先完成之前的所有步骤")
-                # st.stop()
 
             session_cols = st.columns(8)
 
@@ -816,6 +815,10 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
             if gen_btn:
+                if selected_scenario is None:
+                    st.warning("需要完成第三步，选择您感兴趣的场景")
+                    st.stop()                
+                
                 container.empty()
                 # 学习次数重置为0
                 st.session_state["listening-learning-times"] = 0
@@ -851,7 +854,7 @@ if menu is not None and menu.endswith("听说练习"):
         st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
-            st.stop()
+            # st.stop()
 
         if "ls-idx" not in st.session_state:
             st.session_state["ls-idx"] = -1
@@ -917,6 +920,7 @@ if menu is not None and menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_btn:
+            
             st.session_state["ls-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
@@ -965,11 +969,11 @@ if menu is not None and menu.endswith("听说练习"):
 
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
-            st.stop()
+            # st.stop()
 
         if st.session_state["listening-learning-times"] == 0:
             st.warning("请先完成听说练习")
-            st.stop()
+            # st.stop()
 
         ls_text_btn_cols = st.columns(8)
 
