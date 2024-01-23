@@ -672,6 +672,9 @@ if "scenario-list" not in st.session_state:
 if "reading-article" not in st.session_state:
     st.session_state["reading-article"] = []
 
+if "listening-pronunciation-assessment" not in st.session_state:
+    st.session_state["listening-pronunciation-assessment"] = None
+
 # endregion
 
 # region 通用
@@ -890,7 +893,14 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=st.session_state["ls-idx"] == -1
             or len(st.session_state.conversation_scene) == 0,
         )
-        lsi_btn = ls_btn_cols[5].button(
+        
+        audio_key = "listening-mic-recorder"
+        audio_session_output_key = f"{audio_key}-output"
+        
+        with ls_btn_cols[5]:
+            audio_info = mic_recorder(start_prompt="录音[⏸️]", stop_prompt="停止[🔴]", key=audio_key)
+        
+        lsi_btn = ls_btn_cols[6].button(
             "全文[:film_frames:]",
             key="ls-lsi",
             help="✨ 点击按钮，收听整个对话。",
@@ -903,6 +913,7 @@ if menu is not None and menu.endswith("听说练习"):
         if refresh_btn:
             st.session_state["ls-idx"] = -1
             st.session_state["listening-learning-times"] = 0
+            st.session_state["listening-pronunciation-assessment"] = None
             end_and_save_learning_records()
             st.rerun()
 
