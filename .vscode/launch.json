@@ -3,10 +3,13 @@
     "configurations": [
         {
             "name": "Python: Streamlit",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "streamlit",
-            "args": ["run", "${workspaceFolder}/Home.py"],
+            "args": [
+                "run",
+                "${workspaceFolder}/Home.py"
+            ],
             "env": {
                 "STREAMLIT_SERVER_PORT": "8501"
             },

@@ -471,6 +471,7 @@ def pronunciation_assessment_from_wavfile(
             error_counts["MissingBreak"] += 1
         if word.IsMonotone:
             error_counts["Monotone"] += 1
+        
         phonemes, scores = get_word_phonemes(word)
         word_info = {
             "word": word.word,

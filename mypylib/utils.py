@@ -45,3 +45,11 @@ def combine_audio_data(audio_data_list):
     combined_data = output.getvalue()
 
     return combined_data
+
+
+def calculate_audio_duration(
+    audio_bytes: bytes, sample_rate: int, sample_width: int
+) -> float:
+    total_samples = len(audio_bytes) / sample_width
+    duration = total_samples / sample_rate
+    return duration
