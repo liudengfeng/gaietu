@@ -10,6 +10,7 @@ from typing import List
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
+from mypylib.azure_pronunciation_assessment import pronunciation_assessment_from_stream
 
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
@@ -212,6 +213,13 @@ def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
 def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
+def pronunciation_assessment_for(audio_info: dict):
+    return pronunciation_assessment_from_stream(
+        audio_info, st.secrets, None, reference_text
+    )
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
@@ -868,6 +876,7 @@ if menu is not None and menu.endswith("听说练习"):
         if "ls-idx" not in st.session_state:
             st.session_state["ls-idx"] = -1
 
+        pronunciation_elem = st.container()
         ls_btn_cols = st.columns(8)
         st.divider()
 
@@ -930,8 +939,23 @@ if menu is not None and menu.endswith("听说练习"):
             help="✨ 点击按钮，系统将播放您的跟读录音。",
         )
 
-        # content_cols = st.columns(2)
         container = st.container()
+
+        if audio_info:
+            reference_text = st.session_state.conversation_scene[
+                st.session_state["ls-idx"]
+            ]
+            st.session_state[
+                "listening-pronunciation-assessment"
+            ] = pronunciation_assessment_for(
+                audio_info,
+                reference_text,
+            )
+            pronunciation_elem.write(
+                st.session_state["listening-pronunciation-assessment"][
+                    "pronunciation_result"
+                ]
+            )
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
