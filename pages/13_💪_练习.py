@@ -924,7 +924,10 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         play_btn = ls_btn_cols[7].button(
-            "回放[▶️]", disabled=not audio_info, key="listening-play-btn"
+            "回放[▶️]",
+            disabled=not audio_info,
+            key="listening-play-btn",
+            help="✨ 点击按钮，系统将播放您的跟读录音。",
         )
 
         # content_cols = st.columns(2)
