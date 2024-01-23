@@ -56,7 +56,7 @@ def get_syllable_durations_and_offsets(
     for w in recognized_words:
         word_text = ""
         if not hasattr(w, "syllables"):
-            yield accumulated_text, 0, 0, w.accuracy_score
+            # yield accumulated_text, 0, 0, w.accuracy_score
             continue
         for s in w.syllables:
             word_text += " " if s.grapheme is None else s.grapheme + " "
