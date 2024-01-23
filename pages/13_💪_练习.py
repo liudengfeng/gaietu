@@ -852,6 +852,13 @@ if menu is not None and menu.endswith("听说练习"):
 """
         )
         st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
+        with st.expander("✨ 跟读录音提示", expanded=False):
+            st.markdown(
+                """- 首次点击按钮，开始录音。
+- 再次点击按钮，结束录音。
+- 在跟读练习中，系统将对用户的发音进行评估。评估的标准包括发音的准确性、流畅性、完整性以及韵律感。
+- 通过这种方式，用户可以得到关于其发音水平的反馈，从而有针对性地进行改进和提高。  """
+            )
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             # st.stop()
@@ -912,12 +919,6 @@ if menu is not None and menu.endswith("听说练习"):
                 start_prompt="录音[⏸️]",
                 stop_prompt="停止[🔴]",
                 key=audio_key,
-                help="""✨ 提示：
-- 首次点击按钮，开始录音。
-- 再次点击按钮，结束录音。
-- 在跟读练习中，系统将对用户的发音进行评估。评估的标准包括发音的准确性、流畅性、完整性以及韵律感。
-- 通过这种方式，用户可以得到关于其发音水平的反馈，从而有针对性地进行改进和提高。                
-                """,
             )
 
         play_btn = ls_btn_cols[7].button(
