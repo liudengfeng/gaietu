@@ -302,7 +302,7 @@ def autoplay_audio_and_display_dialogue(container):
     slot_1 = content_cols[0].empty()
     slot_2 = content_cols[1].empty()
     # 如果需要显示中文，那么翻译文本
-    if st.session_state.get("ls-display-state", "英文") != "英文":
+    if st.session_state.get("listening-display-state", "英文") != "英文":
         cns = translate_text(dialogue, "zh-CN", True)
     total = 0
     # 播放音频并同步显示文本
@@ -311,10 +311,10 @@ def autoplay_audio_and_display_dialogue(container):
         audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
         components.html(audio_html)
         # 检查 session state 的值
-        if st.session_state.get("ls-display-state", "英文") == "英文":
+        if st.session_state.get("listening-display-state", "英文") == "英文":
             # 显示英文
             slot_1.markdown(f"**{dialogue[i]}**")
-        elif st.session_state.get("ls-display-state", "中文") == "中文":
+        elif st.session_state.get("listening-display-state", "中文") == "中文":
             # 显示中文
             slot_2.markdown(cns[i])
         else:
@@ -419,7 +419,7 @@ def process_play_and_record_dialogue(
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
-    idx = st.session_state["ls-idx"]
+    idx = st.session_state["listening-idx"]
     if idx == -1:
         return
     cns = translate_text(dialogue, "zh-CN", True)
@@ -431,10 +431,10 @@ def process_play_and_record_dialogue(
     components.html(audio_html)
 
     content_cols = container.columns(2)
-    if st.session_state["ls-display-state"] == "英文":
+    if st.session_state["listening-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
-    elif st.session_state["ls-display-state"] == "中文":
+    elif st.session_state["listening-display-state"] == "中文":
         # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
@@ -476,7 +476,7 @@ def view_listening_test(container, difficulty, selected_scenario):
     options = test["options"]
     user_answer_idx = st.session_state["listening-test-answer"][idx]
     t = 0
-    if st.session_state["ls-test-display-state"] == "语音":
+    if st.session_state["listening-test-display-state"] == "语音":
         question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
@@ -687,11 +687,11 @@ if "reading-test-idx" not in st.session_state:
 if "reading-test-answer" not in st.session_state:
     st.session_state["reading-test-answer"] = []
 
-if "ls-test-display-state" not in st.session_state:
-    st.session_state["ls-test-display-state"] = "文本"
+if "listening-test-display-state" not in st.session_state:
+    st.session_state["listening-test-display-state"] = "文本"
 
-if "ls-display-state" not in st.session_state:
-    st.session_state["ls-display-state"] = "英文"
+if "listening-display-state" not in st.session_state:
+    st.session_state["listening-display-state"] = "英文"
 
 if "ra-display-state" not in st.session_state:
     st.session_state["ra-display-state"] = "英文"
@@ -898,8 +898,8 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先配置场景")
             # st.stop()
 
-        if "ls-idx" not in st.session_state:
-            st.session_state["ls-idx"] = -1
+        if "listening-idx" not in st.session_state:
+            st.session_state["listening-idx"] = -1
 
         pronunciation_evaluation_container = st.container()
         st.divider()
@@ -908,42 +908,42 @@ if menu is not None and menu.endswith("听说练习"):
 
         refresh_btn = ls_btn_cols[0].button(
             "刷新[:arrows_counterclockwise:]",
-            key="ls-refresh",
+            key="listening-refresh",
             help="✨ 点击按钮，从头开始练习。",
         )
         display_status_button = ls_btn_cols[1].button(
             "切换[:recycle:]",
-            key="ls-mask",
+            key="listening-mask",
             help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
         )
         prev_btn = ls_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
-            key="ls-prev",
+            key="listening-prev",
             help="✨ 点击按钮，切换到上一轮对话。",
             on_click=on_prev_btn_click,
-            args=("ls-idx",),
-            disabled=st.session_state["ls-idx"] < 0,
+            args=("listening-idx",),
+            disabled=st.session_state["listening-idx"] < 0,
         )
         next_btn = ls_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
-            key="ls-next",
+            key="listening-next",
             help="✨ 点击按钮，切换到下一轮对话。",
             on_click=on_next_btn_click,
-            args=("ls-idx",),
+            args=("listening-idx",),
             disabled=len(st.session_state.conversation_scene) == 0
-            or (st.session_state["ls-idx"] != -1 and st.session_state["ls-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
+            or (st.session_state["listening-idx"] != -1 and st.session_state["listening-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
         )
         replay_btn = ls_btn_cols[4].button(
             "重放[:headphones:]",
-            key="ls-replay",
+            key="listening-replay",
             help="✨ 点击按钮，重新播放当前对话。",
-            disabled=st.session_state["ls-idx"] == -1
+            disabled=st.session_state["listening-idx"] == -1
             or len(st.session_state.conversation_scene) == 0,
         )
 
         lsi_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
-            key="ls-lsi",
+            key="listening-lsi",
             help="✨ 点击按钮，收听对话全文。",
             disabled=len(st.session_state.conversation_scene) == 0,
         )
@@ -977,7 +977,7 @@ if menu is not None and menu.endswith("听说练习"):
         if pro_btn and audio_info is not None:
             # 去掉发言者的名字
             reference_text = st.session_state.conversation_scene[
-                st.session_state["ls-idx"]
+                st.session_state["listening-idx"]
             ]
             reference_text = reference_text.replace("**", "")
             reference_text = re.sub(r"^\w+:\s", "", reference_text)
@@ -1009,19 +1009,19 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if refresh_btn:
-            st.session_state["ls-idx"] = -1
+            st.session_state["listening-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
             end_and_save_learning_records()
             st.rerun()
 
         if display_status_button:
-            if st.session_state["ls-display-state"] == "英文":
-                st.session_state["ls-display-state"] = "全部"
-            elif st.session_state["ls-display-state"] == "全部":
-                st.session_state["ls-display-state"] = "中文"
+            if st.session_state["listening-display-state"] == "英文":
+                st.session_state["listening-display-state"] = "全部"
+            elif st.session_state["listening-display-state"] == "全部":
+                st.session_state["listening-display-state"] = "中文"
             else:
-                st.session_state["ls-display-state"] = "英文"
+                st.session_state["listening-display-state"] = "英文"
 
         if prev_btn:
             process_play_and_record_dialogue(
@@ -1087,17 +1087,17 @@ if menu is not None and menu.endswith("听说练习"):
 
         refresh_test_btn = ls_text_btn_cols[0].button(
             "刷新[:arrows_counterclockwise:]",
-            key="ls-test-refresh",
+            key="listening-test-refresh",
             help="✨ 点击按钮，生成听力测试题。",
         )
         display_test_btn = ls_text_btn_cols[1].button(
             "切换[:recycle:]",
-            key="ls-test-mask",
+            key="listening-test-mask",
             help="✨ 此按钮可切换题目展示方式：文本或语音。默认为文本形式。",
         )
         prev_test_btn = ls_text_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
-            key="ls-test-prev",
+            key="listening-test-prev",
             help="✨ 点击按钮，切换到上一道听力测试题。",
             on_click=on_prev_btn_click,
             args=("listening-test-idx",),
@@ -1105,7 +1105,7 @@ if menu is not None and menu.endswith("听说练习"):
         )
         next_test_btn = ls_text_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
-            key="ls-test-next",
+            key="listening-test-next",
             help="✨ 点击按钮，切换到下一道听力测试题。",
             on_click=on_next_btn_click,
             args=("listening-test-idx",),
@@ -1114,11 +1114,11 @@ if menu is not None and menu.endswith("听说练习"):
         )
         rpl_test_btn = ls_text_btn_cols[4].button(
             "重放[:headphones:]",
-            key="ls-test-replay",
+            key="listening-test-replay",
             help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
             disabled=len(st.session_state["listening-test"]) == 0
             or st.session_state["listening-test-idx"] == -1
-            or st.session_state["ls-test-display-state"] == "文本",  # type: ignore
+            or st.session_state["listening-test-display-state"] == "文本",  # type: ignore
         )
         sumbit_test_btn = ls_text_btn_cols[5].button(
             "检查[:mag:]",
@@ -1143,13 +1143,13 @@ if menu is not None and menu.endswith("听说练习"):
             st.rerun()
 
         if display_test_btn:
-            if st.session_state["ls-test-display-state"] == "文本":
-                st.session_state["ls-test-display-state"] = "语音"
+            if st.session_state["listening-test-display-state"] == "文本":
+                st.session_state["listening-test-display-state"] = "语音"
             else:
-                st.session_state["ls-test-display-state"] = "文本"
+                st.session_state["listening-test-display-state"] = "文本"
 
         if rpl_test_btn:
-            if st.session_state["ls-test-display-state"] == "文本":
+            if st.session_state["listening-test-display-state"] == "文本":
                 st.warning("请先切换到语音模式")
                 st.stop()
 
