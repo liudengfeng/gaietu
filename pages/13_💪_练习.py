@@ -419,8 +419,10 @@ def process_play_and_record_dialogue(
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
-    cns = translate_text(dialogue, "zh-CN", True)
     idx = st.session_state["ls-idx"]
+    if idx == -1:
+        return
+    cns = translate_text(dialogue, "zh-CN", True)
     sentence = dialogue[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(sentence, voice_style[0])
