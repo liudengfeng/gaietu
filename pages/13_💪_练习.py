@@ -803,7 +803,7 @@ if menu is not None and menu.endswith("听说练习"):
             )
             if selected_scenario is None or difficulty is None:
                 st.warning("您需要先完成之前的所有步骤")
-                st.stop()
+                # st.stop()
 
             session_cols = st.columns(8)
 
