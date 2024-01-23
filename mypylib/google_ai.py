@@ -298,23 +298,24 @@ def generate_scenarios(model, subject):
 
 
 DIALOGUE_TEMPLATE = """
-您精通CEFR英语能力分级，并全面掌握各级词汇列表。参考以下中文说明，模拟一段地道美国人的英语对话：
-- 请模拟纯正的英语对话，避免使用中式英语和中文思维方式，也不要使用中文。
-- 对话的参与者应为：男孩：{boy_name} 和女孩：{girl_name}。
-- 对话应仅限于两位参与者，不应包含其他人。
-- 场景：{scenario} 。
-- 情节：{plot}。
-- 难度：CEFR {difficulty}。
-- 字数：如果难度为A级，字数在200-300字左右；如果难度为B级，字数在300-500字左右；如果难度为C级，字数在500-1000字左右。
-- 难度应反映受众的语言能力，对话文字材料应与受众的语言能力相适应，以确保练习者能够理解和掌握内容。
-- 根据难度调整用词、语法结构、表达方式。
-- 对话用词需要在 CEFR {difficulty} 以下（包括）单词列表范围内。
-- 对于A级难度，使用简单的词汇和语法结构，避免使用过于复杂的表达方式。
-- 对于B级难度，使用稍微复杂的词汇和语法结构。
-- 对于C级难度，使用更复杂的词汇和语法结构，但要注意保持流畅性和可理解性。
-- 输出结果只允许包含二人对话材料或旁白，但旁白需要用括号标注，并且必须单独成行且使用英语。
-- 每人发言结束时才能使用换行符。
-- 输出结果不应使用非必要的格式标注，如加黑等。
+You have mastered the CEFR English proficiency levels and have a comprehensive grasp of the vocabulary list for each level. Please refer to the following instructions to simulate a dialogue in authentic American English:
+- Simulate a dialogue in authentic American English, avoiding Chinglish or Chinese.
+- Do not directly translate Chinese into English in the dialogue, for example: "Hi, John. I'm Evelyn. (你好，John。我是Evelyn.)".
+- The participants in the dialogue should be: Boy: {boy_name} and Girl: {girl_name}.
+- The dialogue should only involve these two participants and should not include others.
+- Scenario: {scenario}.
+- Plot: {plot}.
+- Difficulty: CEFR {difficulty}.
+- Word count: Approximately 200-300 words for level A; 300-500 words for level B; 500-1000 words for level C.
+- The content of the dialogue should reflect the language ability of the audience to ensure that learners can understand and master it.
+- Adjust vocabulary, grammatical structures, and expressions according to the difficulty level.
+- The vocabulary used in the dialogue should be within the CEFR {difficulty} or lower word list.
+- Level A should use simple vocabulary and grammatical structures, avoiding complex expressions.
+- Level B can use slightly more complex vocabulary and grammatical structures.
+- Level C can use more complex vocabulary and grammatical structures, but must maintain fluency and comprehensibility.
+- The output should only include dialogue material or narration. Narration should be marked with parentheses and must be in a separate line and in English.
+- A line break should only be used at the end of each person's speech.
+- The output should not use unnecessary formatting, such as bolding.
 """
 
 
@@ -328,7 +329,7 @@ def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
     )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.75, top_p=1.0
+        max_output_tokens=2048, temperature=0.5, top_p=1.0
     )
     return parse_generated_content_and_update_token(
         "生成对话",

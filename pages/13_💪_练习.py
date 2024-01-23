@@ -416,10 +416,10 @@ def process_play_and_record_dialogue(
     container, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
     container.empty()
-    
-    beijing_tz = timezone('Asia/Shanghai')
-    beijing_time = datetime.now(beijing_tz)
-    st.write(beijing_time)
+
+    # beijing_tz = timezone('Asia/Shanghai')
+    # beijing_time = datetime.now(beijing_tz)
+    # st.write(beijing_time)
     
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
