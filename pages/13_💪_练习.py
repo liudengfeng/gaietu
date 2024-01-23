@@ -893,18 +893,24 @@ if menu is not None and menu.endswith("听说练习"):
             disabled=st.session_state["ls-idx"] == -1
             or len(st.session_state.conversation_scene) == 0,
         )
-        
-        audio_key = "listening-mic-recorder"
-        audio_session_output_key = f"{audio_key}-output"
-        
-        with ls_btn_cols[5]:
-            audio_info = mic_recorder(start_prompt="录音[⏸️]", stop_prompt="停止[🔴]", key=audio_key)
-        
-        lsi_btn = ls_btn_cols[6].button(
+
+        lsi_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
             key="ls-lsi",
-            help="✨ 点击按钮，收听整个对话。",
+            help="✨ 点击按钮，收听对话全文。",
             disabled=len(st.session_state.conversation_scene) == 0,
+        )
+
+        audio_key = "listening-mic-recorder"
+        audio_session_output_key = f"{audio_key}-output"
+
+        with ls_btn_cols[6]:
+            audio_info = mic_recorder(
+                start_prompt="录音[⏸️]", stop_prompt="停止[🔴]", key=audio_key
+            )
+
+        play_btn = ls_btn_cols[7].button(
+            "回放[▶️]", disabled=not audio_info, key="listening-play-btn"
         )
 
         # content_cols = st.columns(2)
