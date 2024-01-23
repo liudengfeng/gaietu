@@ -817,8 +817,8 @@ if menu is not None and menu.endswith("听说练习"):
             if gen_btn:
                 if selected_scenario is None:
                     st.warning("需要完成第三步，选择您感兴趣的场景")
-                    st.stop()                
-                
+                    st.stop()
+
                 container.empty()
                 # 学习次数重置为0
                 st.session_state["listening-learning-times"] = 0
@@ -909,7 +909,15 @@ if menu is not None and menu.endswith("听说练习"):
 
         with ls_btn_cols[6]:
             audio_info = mic_recorder(
-                start_prompt="录音[⏸️]", stop_prompt="停止[🔴]", key=audio_key
+                start_prompt="录音[⏸️]",
+                stop_prompt="停止[🔴]",
+                key=audio_key,
+                help="""✨ 提示：
+- 首次点击按钮，开始录音。
+- 再次点击按钮，结束录音。
+- 在跟读练习中，系统将对用户的发音进行评估。评估的标准包括发音的准确性、流畅性、完整性以及韵律感。
+- 通过这种方式，用户可以得到关于其发音水平的反馈，从而有针对性地进行改进和提高。                
+                """,
             )
 
         play_btn = ls_btn_cols[7].button(
@@ -920,7 +928,6 @@ if menu is not None and menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_btn:
-            
             st.session_state["ls-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
