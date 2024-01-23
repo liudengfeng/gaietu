@@ -756,7 +756,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         with sub_tabs[2]:
             st.info(
-                "第三步：点击下拉框，选择您感兴趣的场景。如果下拉框中没有可选项目，或者您希望 AI 生成新的场景，只需点击 '刷新' 按钮。请注意，AI 生成新场景的过程可能需要 6-12 秒。",
+                "第三步：点击下拉框，选择您感兴趣的场景。如果下拉框中没有可选项目，或者您希望 AI 生成新的场景，只需点击 '刷新[🔄]' 按钮。请注意，AI 生成新场景的过程可能需要 6-12 秒。",
                 icon="🚨",
             )
             if st.session_state.stage == 2 or scenario_category is not None:
