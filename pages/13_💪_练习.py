@@ -172,6 +172,8 @@ def display_pronunciation_result(container, key):
     Returns:
     None
     """
+    if key not in st.session_state or st.session_state[key] is None:
+        return
     result = st.session_state[key].get("pronunciation_result", None)
     if result is None:
         return
@@ -987,7 +989,7 @@ if menu is not None and menu.endswith("听说练习"):
                 audio_info,
                 reference_text,
             )
-        
+
         display_pronunciation_result(
             pronunciation_evaluation_container,
             "listening-pronunciation-assessment",
