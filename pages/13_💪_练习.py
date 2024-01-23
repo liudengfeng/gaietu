@@ -969,7 +969,7 @@ if menu is not None and menu.endswith("听说练习"):
             "回放[▶️]",
             disabled=not audio_info,
             key="listening-play-btn",
-            help="✨ 点击按钮，系统将播放您的跟读录音。",
+            help="✨ 点击按钮，播放您的跟读录音。",
         )
 
         container = st.container()
