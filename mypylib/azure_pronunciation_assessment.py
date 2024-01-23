@@ -55,7 +55,9 @@ def get_syllable_durations_and_offsets(
     accumulated_text = ""
     for w in recognized_words:
         word_text = ""
-        # logger.info(f"{w.word=} {w.duration=} {w.accuracy_score=}")
+        if not hasattr(w, "syllables"):
+            yield accumulated_text, 0, 0, w.accuracy_score
+            continue
         for s in w.syllables:
             word_text += " " if s.grapheme is None else s.grapheme + " "
             duration_in_seconds = s.duration / 10000000
@@ -244,7 +246,6 @@ def adjust_recognized_words_and_scores(
                     final_words.append(word)
             if tag in ["delete", "replace"]:
                 for word_text in reference_words[i1:i2]:
-                    # word = speechsdk.PronunciationAssessmentWordResult(
                     word = _PronunciationAssessmentWordResultV2(
                         {
                             "Word": word_text,
