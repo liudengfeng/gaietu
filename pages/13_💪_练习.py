@@ -1034,15 +1034,15 @@ if menu is not None and menu.endswith("听说练习"):
                 selected_scenario,
                 True,
             )
-        else:
-            process_play_and_record_dialogue(
-                container,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                selected_scenario,
-                False,
-            )
+        # else:
+        #     process_play_and_record_dialogue(
+        #         container,
+        #         m_voice_style,
+        #         fm_voice_style,
+        #         difficulty,
+        #         selected_scenario,
+        #         False,
+        #     )
 
         if lsi_btn:
             total = autoplay_audio_and_display_dialogue(container)
