@@ -216,7 +216,7 @@ def generate_scenarios_for(category: str):
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
-def pronunciation_assessment_for(audio_info: dict):
+def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     return pronunciation_assessment_from_stream(
         audio_info, st.secrets, None, reference_text
     )
