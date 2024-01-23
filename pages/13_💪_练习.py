@@ -957,7 +957,6 @@ if menu is not None and menu.endswith("听说练习"):
                 stop_prompt="停止[🔴]",
                 key=audio_key,
             )
-            st.write(f"{audio_info=}")
 
         pro_btn = ls_btn_cols[7].button(
             "评估[🔖]",
