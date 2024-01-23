@@ -2,6 +2,7 @@ import io
 import json
 import logging
 import random
+import re
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -950,6 +951,7 @@ if menu is not None and menu.endswith("听说练习"):
                 stop_prompt="停止[🔴]",
                 key=audio_key,
             )
+            st.write(f"{audio_info=}")
 
         play_btn = ls_btn_cols[7].button(
             "回放[▶️]",
@@ -960,33 +962,38 @@ if menu is not None and menu.endswith("听说练习"):
 
         container = st.container()
 
-        if audio_info:
-            reference_text = st.session_state.conversation_scene[
-                st.session_state["ls-idx"]
-            ]
-            st.session_state[
-                "listening-pronunciation-assessment"
-            ] = pronunciation_assessment_for(
-                audio_info,
-                reference_text,
-            )
-            display_pronunciation_result(
-                pronunciation_evaluation_container,
-                "listening-pronunciation-assessment",
-            )
+        # 语音发生变化时才评估
+        # if audio_info:
+        #     # 去掉发言者的名字
+        #     reference_text = st.session_state.conversation_scene[
+        #         st.session_state["ls-idx"]
+        #     ]
+        #     reference_text = reference_text.replace("**", "")
+        #     reference_text = re.sub(r"^\w+:\s", "", reference_text)
+            
+        #     st.session_state[
+        #         "listening-pronunciation-assessment"
+        #     ] = pronunciation_assessment_for(
+        #         audio_info,
+        #         reference_text,
+        #     )
+        #     display_pronunciation_result(
+        #         pronunciation_evaluation_container,
+        #         "listening-pronunciation-assessment",
+        #     )
 
-        if (
-            play_btn
-            and audio_info
-            and st.session_state["listening-pronunciation-assessment"]
-        ):
-            autoplay_audio_and_display_text(
-                pronunciation_evaluation_container,
-                audio_info["bytes"],
-                st.session_state["listening-pronunciation-assessment"][
-                    "recognized_words"
-                ],
-            )
+        # if (
+        #     play_btn
+        #     and audio_info
+        #     and st.session_state["listening-pronunciation-assessment"]
+        # ):
+        #     autoplay_audio_and_display_text(
+        #         pronunciation_evaluation_container,
+        #         audio_info["bytes"],
+        #         st.session_state["listening-pronunciation-assessment"][
+        #             "recognized_words"
+        #         ],
+        #     )
 
         if refresh_btn:
             st.session_state["ls-idx"] = -1
