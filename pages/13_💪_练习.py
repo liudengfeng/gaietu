@@ -33,6 +33,7 @@ from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     WORD_COUNT_BADGE_MAPS,
     PRONUNCIATION_SCORE_BADGE_MAPS,
+    autoplay_audio_and_display_text,
     check_access,
     check_and_force_logout,
     configure_google_apis,
@@ -972,6 +973,16 @@ if menu is not None and menu.endswith("听说练习"):
             display_pronunciation_result(
                 pronunciation_evaluation_container,
                 "listening-pronunciation-assessment",
+            )
+
+        if (
+            play_btn
+            and audio_info
+            and st.session_state["listening-pronunciation-assessment"]
+        ):
+            autoplay_audio_and_display_text(
+                pronunciation_evaluation_container, audio_info["bytes"],
+                st.session_state["listening-pronunciation-assessment"]["recognized_words"]
             )
 
         if refresh_btn:
