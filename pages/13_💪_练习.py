@@ -999,8 +999,9 @@ if menu is not None and menu.endswith("听说练习"):
             and audio_info
             and st.session_state["listening-pronunciation-assessment"]
         ):
+            elem = pronunciation_evaluation_container.empty()
             autoplay_audio_and_display_text(
-                pronunciation_evaluation_container,
+                elem,
                 audio_info["bytes"],
                 st.session_state["listening-pronunciation-assessment"][
                     "recognized_words"
