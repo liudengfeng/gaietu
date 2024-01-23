@@ -1,12 +1,16 @@
 from collections import defaultdict
 import difflib
 import json
+import logging
 import string
 import time
 import azure.cognitiveservices.speech as speechsdk
-from pydub import AudioSegment
 import wave
 from typing import Dict, List, Tuple, Iterator
+
+
+# 创建或获取logger对象
+logger = logging.getLogger("streamlit")
 
 
 def get_word_durations(
@@ -39,71 +43,12 @@ def get_syllable_durations_and_offsets(
         yield accumulated_text, duration_in_seconds, offset_in_seconds, w.accuracy_score
 
 
-def read_audio_file(file_path):
-    # 读取音频文件
-    audio = AudioSegment.from_file(file_path)
-
-    # 转换为 wav 格式并保存到临时文件
-    audio.export("temp.wav", format="wav")
-
-    # 读取 wav 文件的信息
-    with wave.open("temp.wav", "rb") as audio_file:
-        audio_info = {
-            "sample_rate": audio_file.getframerate(),
-            "sample_width": audio_file.getsampwidth(),
-            "channels": audio_file.getnchannels(),
-            "bytes": audio_file.readframes(audio_file.getnframes()),
-        }
-
-    return audio_info
-
-
 def read_wave_header(file_path):
     with wave.open(file_path, "rb") as audio_file:
         framerate = audio_file.getframerate()
         bits_per_sample = audio_file.getsampwidth() * 8
         num_channels = audio_file.getnchannels()
         return framerate, bits_per_sample, num_channels
-
-
-def speech_synthesis_get_available_voices(
-    language: str,
-    speech_key: str,
-    service_region: str,
-):
-    """gets the available voices list."""
-    res = []
-    # "Enter a locale in BCP-47 format (e.g. en-US) that you want to get the voices of, "
-    # "or enter empty to get voices in all locales."
-    speech_config = speechsdk.SpeechConfig(
-        subscription=speech_key, region=service_region
-    )
-
-    # Creates a speech synthesizer.
-    speech_synthesizer = speechsdk.SpeechSynthesizer(
-        speech_config=speech_config, audio_config=None
-    )
-
-    result = speech_synthesizer.get_voices_async(language).get()
-    # Check result
-    if (
-        result is not None
-        and result.reason == speechsdk.ResultReason.VoicesListRetrieved
-    ):
-        res = []
-        for voice in result.voices:
-            res.append(
-                (
-                    voice.short_name,
-                    voice.gender.name,
-                    voice.local_name,
-                )
-            )
-        return res
-    elif result is not None and result.reason == speechsdk.ResultReason.Canceled:
-        raise ValueError(
-            "Speech synthesis canceled; error details: {}".format(result.error_details)
-        )
 
 
 class _PronunciationAssessmentWordResultV2(speechsdk.PronunciationAssessmentWordResult):
@@ -513,5 +458,118 @@ def pronunciation_assessment_from_stream(
 
     output["pronunciation_result"] = scores
     output["recognized_words"] = final_words
+    output["error_counts"] = dict(error_counts)
+    return output
+
+
+def pronunciation_assessment_from_wavfile(
+    wavfile: str,
+    secrets: Dict[str, str],
+    topic: str,
+    language="en-US",
+):
+    output = {}
+    speech_config = speechsdk.SpeechConfig(
+        subscription=secrets["Microsoft"]["SPEECH_KEY"],
+        region=secrets["Microsoft"]["SPEECH_REGION"],
+    )
+    audio_config = speechsdk.audio.AudioConfig(filename=wavfile)
+    pronunciation_config = speechsdk.PronunciationAssessmentConfig(
+        grading_system=speechsdk.PronunciationAssessmentGradingSystem.HundredMark,
+        granularity=speechsdk.PronunciationAssessmentGranularity.Phoneme,
+        enable_miscue=False,
+    )
+    pronunciation_config.enable_prosody_assessment()
+    pronunciation_config.enable_content_assessment_with_topic(topic)
+    # must set phoneme_alphabet, otherwise the output of phoneme is **not** in form of  /hɛˈloʊ/
+    pronunciation_config.phoneme_alphabet = "IPA"
+
+    speech_recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config, language=language, audio_config=audio_config
+    )
+    # Apply pronunciation assessment config to speech recognizer
+    pronunciation_config.apply_to(speech_recognizer)
+
+    done = False
+    pron_results = []
+    recognized_text = ""
+
+    def stop_cb(evt):
+        """callback that signals to stop continuous recognition upon receiving an event `evt`"""
+        logger.debug("CLOSING on {}".format(evt))
+        nonlocal done
+        done = True
+
+    def recognized(evt):
+        nonlocal pron_results, recognized_text
+        if (
+            evt.result.reason == speechsdk.ResultReason.RecognizedSpeech
+            or evt.result.reason == speechsdk.ResultReason.NoMatch
+        ):
+            pron_results.append(speechsdk.PronunciationAssessmentResult(evt.result))
+            if evt.result.text.strip().rstrip(".") != "":
+                logger.debug(f"Recognizing: {evt.result.text}")
+                recognized_text += " " + evt.result.text.strip()
+
+    # Connect callbacks to the events fired by the speech recognizer
+    speech_recognizer.recognized.connect(recognized)
+    speech_recognizer.session_started.connect(
+        lambda evt: logger.debug("SESSION STARTED: {}".format(evt))
+    )
+    speech_recognizer.session_stopped.connect(
+        lambda evt: logger.debug("SESSION STOPPED {}".format(evt))
+    )
+    speech_recognizer.canceled.connect(
+        lambda evt: logger.debug("CANCELED {}".format(evt))
+    )
+    # Stop continuous recognition on either session stopped or canceled events
+    speech_recognizer.session_stopped.connect(stop_cb)
+    speech_recognizer.canceled.connect(stop_cb)
+
+    # Start continuous pronunciation assessment
+    speech_recognizer.start_continuous_recognition()
+    while not done:
+        time.sleep(0.5)
+    speech_recognizer.stop_continuous_recognition()
+
+    # Content assessment result is in the last pronunciation assessment block
+    assert pron_results[-1].content_assessment_result is not None
+    content_result = pron_results[-1].content_assessment_result
+
+    output["content_result"] = {
+        "grammar_score": content_result.grammar_score,
+        "vocabulary_score": content_result.vocabulary_score,
+        "topic_score": content_result.topic_score,
+    }
+    output["recognized_text"] = recognized_text.strip()
+    # 平均分
+    n = len(pron_results) - 1
+    pronunciation_score = []
+    accuracy_score = []
+    fluency_score = []
+    completeness_score = []
+    prosody_score = []
+    words_list = []
+    error_counts = defaultdict(int)
+    for i in range(n):
+        p = pron_results[i]
+        pronunciation_score.append(p.pronunciation_score)
+        accuracy_score.append(p.accuracy_score)
+        fluency_score.append(p.fluency_score)
+        completeness_score.append(p.completeness_score)
+        prosody_score.append(p.prosody_score)
+        words_list.extend(p.words)
+        for w in p.words:
+            if w.error_type:
+                error_counts[w.error_type] += 1
+    scores = {
+        "pronunciation_score": sum(pronunciation_score) / n,
+        "accuracy_score": sum(accuracy_score) / n,
+        "fluency_score": sum(fluency_score) / n,
+        "completeness_score": sum(completeness_score) / n,
+        "prosody_score": sum(prosody_score) / n,
+    }
+    output["pronunciation_result"] = scores
+    output["recognized_words"] = words_list
     output["error_counts"] = dict(error_counts)
     return output

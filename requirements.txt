@@ -24,5 +24,3 @@ google-cloud-texttospeech
 google-cloud-firestore
 cryptography
 pyyaml
-pydub
-ffmpeg 
