@@ -989,10 +989,10 @@ if menu is not None and menu.endswith("听说练习"):
                 reference_text,
             )
 
-        display_pronunciation_result(
-            pronunciation_evaluation_container,
-            "listening-pronunciation-assessment",
-        )
+            display_pronunciation_result(
+                pronunciation_evaluation_container,
+                "listening-pronunciation-assessment",
+            )
 
         if (
             play_btn
