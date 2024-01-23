@@ -415,6 +415,8 @@ def process_play_and_record_dialogue(
 ):
     container.empty()
     dialogue = st.session_state.conversation_scene
+    if dialogue is None or len(dialogue) == 0:
+        return
     cns = translate_text(dialogue, "zh-CN", True)
     idx = st.session_state["ls-idx"]
     sentence = dialogue[idx]
