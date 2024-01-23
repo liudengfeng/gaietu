@@ -413,7 +413,7 @@ def process_play_and_record_article(
 
 
 def process_play_and_record_dialogue(
-    container, m_voice_style, fm_voice_style, difficulty, selected_scenario, play=False
+    container, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
     container.empty()
     dialogue = st.session_state.conversation_scene
@@ -427,9 +427,8 @@ def process_play_and_record_dialogue(
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     result = get_synthesis_speech(sentence, voice_style[0])
 
-    if play:
-        audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
-        components.html(audio_html)
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
 
     content_cols = container.columns(2)
     if st.session_state["ls-display-state"] == "英文":
@@ -448,8 +447,7 @@ def process_play_and_record_dialogue(
 
     # content_cols[0].audio(result["audio_data"], format="audio/wav")
 
-    if play:
-        time.sleep(result["audio_duration"].total_seconds())
+    time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
     word_count = len(sentence.split())
@@ -1025,24 +1023,32 @@ if menu is not None and menu.endswith("听说练习"):
             else:
                 st.session_state["ls-display-state"] = "英文"
 
-        if prev_btn or next_btn or replay_btn:
+        if prev_btn:
             process_play_and_record_dialogue(
                 container,
                 m_voice_style,
                 fm_voice_style,
                 difficulty,
                 selected_scenario,
-                True,
             )
-        # else:
-        #     process_play_and_record_dialogue(
-        #         container,
-        #         m_voice_style,
-        #         fm_voice_style,
-        #         difficulty,
-        #         selected_scenario,
-        #         False,
-        #     )
+
+        if next_btn:
+            process_play_and_record_dialogue(
+                container,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                selected_scenario,
+            )
+
+        if replay_btn:
+            process_play_and_record_dialogue(
+                container,
+                m_voice_style,
+                fm_voice_style,
+                difficulty,
+                selected_scenario,
+            )
 
         if lsi_btn:
             total = autoplay_audio_and_display_dialogue(container)
