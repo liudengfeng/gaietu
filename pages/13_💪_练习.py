@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import List
-
+from pytz import timezone
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
@@ -416,6 +416,11 @@ def process_play_and_record_dialogue(
     container, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
     container.empty()
+    
+    beijing_tz = timezone('Asia/Shanghai')
+    beijing_time = datetime.now(beijing_tz)
+    st.write(beijing_time)
+    
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
@@ -1023,25 +1028,7 @@ if menu is not None and menu.endswith("听说练习"):
             else:
                 st.session_state["listening-display-state"] = "英文"
 
-        if prev_btn:
-            process_play_and_record_dialogue(
-                container,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                selected_scenario,
-            )
-
-        if next_btn:
-            process_play_and_record_dialogue(
-                container,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                selected_scenario,
-            )
-
-        if replay_btn:
+        if prev_btn or next_btn or replay_btn or lsi_btn:
             process_play_and_record_dialogue(
                 container,
                 m_voice_style,
