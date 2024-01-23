@@ -286,7 +286,9 @@ def view_stream_response(responses, placeholder):
     placeholder.markdown(full_response)
 
 
-def view_md_badges(container, d: dict, badge_maps: OrderedDict):
+def view_md_badges(
+    container, d: dict, badge_maps: OrderedDict, decimal_places: int = 2
+):
     cols = container.columns(len(badge_maps.keys()))
     for i, t in enumerate(badge_maps.keys()):
         n = d.get(t, None)
@@ -294,6 +296,8 @@ def view_md_badges(container, d: dict, badge_maps: OrderedDict):
             num = ""
         elif isinstance(n, int):
             num = f"{n:3d}"
+        elif isinstance(n, float):
+            num = f"{n:.{decimal_places}f}"
         else:
             num = n
         body = f"""{badge_maps[t][1]}[{num}]"""

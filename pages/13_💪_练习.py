@@ -171,7 +171,7 @@ def display_pronunciation_result(container, key):
     None
     """
     result = st.session_state[key]["pronunciation_result"]
-    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS)
+    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
 
 
 # endregion
