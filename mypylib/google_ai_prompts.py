@@ -9,32 +9,7 @@ Single Choice Question Guidelines:
 - Each option should be prefixed with a capital letter (A, B, C, D) followed by a '. '.
 - Options should not include "All of the above" or similar choices, as this could lead to multiple correct answers.
 - Avoid questions that are based on personal preferences, opinions, subjective circumstances or feelings. The answer should be a generally accepted fact or consensus.
-
-Example of a question that violates this guideline:
-1. Question: "Where do you come from?"
-    Options:
-    A. I am from China.
-    B. I am from the United States.
-    C. I am from the United Kingdom.
-    D. I am from Japan.
-    This question is based on personal circumstances and does not have a generally accepted fact as the answer.
-
-2. Question: "How do you feel?"
-    Options:
-    A. I am happy.
-    B. I am sad.
-    C. I am hungry.
-    D. I am tired.
-    This question is based on personal feelings and does not have a generally accepted fact as the answer.
-
-Example of a question that follows this guideline:
-1. Question: "John has just finished a big meal.How does John feel?"
-    Options:
-    A. John is happy.
-    B. John is sad.
-    C. John is hungry.
-    D. John is tired.
-    The answer to this question is based on the information provided in the context, not on personal feelings.
+- Personal preferences can only be the correct answer if a clear context is provided that makes the preference a fact in the given situation.
 """
 
 MULTIPLE_CHOICE_QUESTION = """
