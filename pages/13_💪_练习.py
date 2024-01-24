@@ -420,7 +420,7 @@ def process_play_and_record_dialogue(
     # beijing_tz = timezone('Asia/Shanghai')
     # beijing_time = datetime.now(beijing_tz)
     # st.write(beijing_time)
-    
+
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return

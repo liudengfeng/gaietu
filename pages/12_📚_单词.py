@@ -910,8 +910,9 @@ if menu and menu.endswith("闪卡记忆"):
     st.markdown(
         """✨ 闪卡记忆是一种依赖视觉记忆的学习策略，通过展示与单词或短语含义相关的四幅图片，帮助用户建立和强化单词或短语与其含义之间的关联。这四幅图片的共同特性可以引导用户快速理解和记忆单词或短语的含义，从而提高记忆效率和效果。"""
     )
+
     status_cols = st.columns(2)
-    play_audio_elem = status_cols[1].empty()
+
     update_and_display_progress(
         st.session_state["flashcard-idx"] + 1
         if st.session_state["flashcard-idx"] != -1
@@ -930,12 +931,12 @@ if menu and menu.endswith("闪卡记忆"):
         key="flashcard-refresh",
         on_click=generate_page_words,
         args=(word_lib, num_word, "flashcard-words"),
-        help="✨ 点击按钮，从词库中抽取单词，开始或重新开始记忆闪卡游戏。",
+        help="✨ 点击按钮，从词库中抽取单词，重新开始闪卡记忆游戏。",
     )
     display_status_button = btn_cols[1].button(
         "切换[:recycle:]",
         key="flashcard-mask",
-        help="✨ 点击按钮可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
+        help="✨ 点击按钮，可以在中英对照、只显示英文和只显示中文三种显示状态之间切换。初始状态为中英对照。",
     )
     prev_btn = btn_cols[2].button(
         "上一[:leftwards_arrow_with_hook:]",
@@ -1019,18 +1020,12 @@ if menu and menu.endswith("闪卡记忆"):
     if play_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        # record.start()
-
-        # 使用会话缓存，避免重复请求
-        # audio_html = get_audio_html(word, voice_style)
-        # components.html(audio_html)
 
         result = get_synthesis_speech(word, voice_style[0])
-        play_audio_elem.audio(result["audio_data"], format="audio/mp3")
+        html = audio_autoplay_elem(result["audio_data"], fmt="mav")
+        components.html(html)
         record.duration = result["audio_duration"].total_seconds()
-        # record.end()
         st.session_state.dbi.add_record_to_cache(record)
-        # logger.info(f"{record.duration:.2f} 秒")
 
     if add_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
