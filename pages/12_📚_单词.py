@@ -194,6 +194,7 @@ if "flashcard-idx" not in st.session_state:
 if "word-learning-times" not in st.session_state:
     st.session_state["word-learning-times"] = 0
 
+
 def reset_flashcard_word(clear=True):
     # 恢复初始显示状态
     if clear:
@@ -275,18 +276,6 @@ def view_pos(container, word_info, word):
 
 @st.cache_data(ttl=timedelta(hours=12), max_entries=10000, show_spinner="获取音频元素...")
 def get_audio_html(word, voice_style):
-    # """
-    # 获取单词的音频HTML代码，可供浏览器内自动播放。
-
-    # 参数：
-    # - word：要获取音频的单词（字符串）
-    # - voice_style：音频风格（字符串）
-
-    # 返回值：
-    # - 音频的HTML代码（字符串）
-    # """
-    # audio_data = get_or_create_and_return_audio_data(word, voice_style[0], st.secrets)  # type: ignore
-    # return audio_autoplay_elem(audio_data)
     result = get_synthesis_speech(word, voice_style[0])
     return audio_autoplay_elem(result["audio_data"], fmt="mav")
 
