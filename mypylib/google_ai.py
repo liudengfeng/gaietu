@@ -238,7 +238,7 @@ You are a professional English teacher, and you need to create a question to tes
 
 {guidelines}
 
-The dictionary will be output in YAML format, without using Markdown formatting.
+The output will be a single dictionary in YAML format, without using list or Markdown formatting.
 
 Word: {word}
 """
