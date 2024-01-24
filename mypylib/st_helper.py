@@ -500,6 +500,15 @@ def select_word_image_urls(word: str):
 # region 学习记录
 
 
+def process_learning_record(record, key):
+    if len(st.session_state["learning-record"]) > 0:
+        st.session_state["learning-record"][-1].end()
+
+    st.session_state["learning-record"].append(record)
+    record.start()
+    st.session_state[key] += 1
+
+
 def end_and_save_learning_records():
     """
     结束并保存学习记录。

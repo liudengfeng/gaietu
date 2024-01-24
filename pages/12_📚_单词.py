@@ -28,6 +28,7 @@ from mypylib.st_helper import (
     get_synthesis_speech,
     is_answer_correct,
     on_page_to,
+    process_learning_record,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -284,6 +285,18 @@ def get_audio_html(word, voice_style):
     """
     audio_data = get_or_create_and_return_audio_data(word, voice_style[0], st.secrets)  # type: ignore
     return audio_autoplay_elem(audio_data)
+
+
+def play_flashcard_word(voice_style):
+    word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
+    record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+    result = get_synthesis_speech(word, voice_style[0])
+    html = audio_autoplay_elem(result["audio_data"], fmt="mav")
+    components.html(html)
+    t = result["audio_duration"].total_seconds()
+    time.sleep(t)
+    record.duration = t
+    st.session_state.dbi.add_record_to_cache(record)
 
 
 def view_flash_word(container):
@@ -874,7 +887,9 @@ if menu and menu.endswith("闪卡记忆"):
     # region 侧边栏
     # 让用户选择语音风格
     pronunciation = st.sidebar.radio("发音标准", ("美式", "英式"))
-    autoplay = st.sidebar.toggle("自动音频", True, help="✨ 选择是否自动播放单词音频。")
+    autoplay = st.sidebar.toggle(
+        "自动音频", True, key="word-autoplay", help="✨ 选择是否自动播放单词音频。"
+    )
 
     style = "en-US" if pronunciation == "美式" else "en-GB"
 
@@ -981,6 +996,8 @@ if menu and menu.endswith("闪卡记忆"):
         disabled=st.session_state["flashcard-idx"] == -1,
     )
 
+    container = st.container()
+
     # 创建按钮
     if display_status_button:
         if st.session_state.flashcard_display_state == "全部":
@@ -995,24 +1012,22 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
-
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        record.start()
-        st.session_state["learning-record"].append(record)
+        process_learning_record(record, "word-learning-times")
+        view_flash_word(container)
+        if autoplay:
+            play_flashcard_word(voice_style)
 
     if next_btn:
         if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
-
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        record.start()
-        st.session_state["learning-record"].append(record)
+        process_learning_record(record, "word-learning-times")
+        view_flash_word(container)
+        if autoplay:
+            play_flashcard_word(voice_style)
 
     if refresh_btn:
         end_and_save_learning_records()
@@ -1020,14 +1035,7 @@ if menu and menu.endswith("闪卡记忆"):
         st.rerun()
 
     if play_btn:
-        word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
-        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-
-        result = get_synthesis_speech(word, voice_style[0])
-        html = audio_autoplay_elem(result["audio_data"], fmt="mav")
-        components.html(html)
-        record.duration = result["audio_duration"].total_seconds()
-        st.session_state.dbi.add_record_to_cache(record)
+        play_flashcard_word(voice_style)
 
     if add_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
@@ -1039,13 +1047,11 @@ if menu and menu.endswith("闪卡记忆"):
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
-    container = st.container()
     if st.session_state["flashcard-idx"] != -1:
         if auto_play_btn:
             container.empty()
             auto_play_flash_word(voice_style)
-        else:
-            view_flash_word(container)
+
 
 # endregion
 

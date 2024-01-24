@@ -44,6 +44,7 @@ from mypylib.st_helper import (
     get_synthesis_speech,
     is_answer_correct,
     on_page_to,
+    process_learning_record,
     setup_logger,
     translate_text,
     view_md_badges,
@@ -145,13 +146,7 @@ AI_TIPS = {
 # region 通用
 
 
-def process_learning_record(record, key):
-    if len(st.session_state["learning-record"]) > 0:
-        st.session_state["learning-record"][-1].end()
 
-    st.session_state["learning-record"].append(record)
-    record.start()
-    st.session_state[key] += 1
 
 
 def display_text_word_count_summary(container, text):
