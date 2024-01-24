@@ -791,7 +791,6 @@ def on_word_test_radio_change(idx, options):
 def view_test_word(container):
     idx = st.session_state["word-test-idx"]
     test = st.session_state["word-tests"][idx]
-    container.write(f"第 {idx+1} 题 \n{test}")
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["user-answer"][idx]
@@ -1369,7 +1368,7 @@ elif menu and menu.endswith("词意测试"):
                 st.session_state["word-tests"][idx] = generate_word_test(
                     "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
-                st.write(st.session_state["word-tests"][idx])
+                # st.write(st.session_state["word-tests"][idx])
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
         process_learning_record(record, "word-learning-times")
 
