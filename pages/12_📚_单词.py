@@ -1026,7 +1026,7 @@ if menu and menu.endswith("闪卡记忆"):
 
     if del_btn:
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
-        st.session_state.dbi.delete_words_from_personal_dictionary([word])
+        st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if auto_play_btn:
