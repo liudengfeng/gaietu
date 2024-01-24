@@ -356,7 +356,7 @@ def auto_play_flash_word(voice_style):
         record.duration = time.time() - start
         st.session_state.dbi.add_record_to_cache(record)
         container.empty()
-    
+
     # 恢复闪卡记忆的索引
     st.session_state["flashcard-idx"] = current_idx
 
@@ -873,7 +873,9 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 if menu and menu.endswith("闪卡记忆"):
     # region 侧边栏
     # 让用户选择语音风格
-    pronunciation = st.sidebar.radio("请选择发音标准", ("美式", "英式"))
+    pronunciation = st.sidebar.radio("发音标准", ("美式", "英式"))
+    autoplay = st.sidebar.toggle("自动音频", True, help="✨ 选择是否自动播放单词音频。")
+
     style = "en-US" if pronunciation == "美式" else "en-GB"
 
     # 固定语音风格
