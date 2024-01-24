@@ -238,14 +238,13 @@ You are a professional English teacher, and you need to create a question to tes
 
 {guidelines}
 
-The final result is output in YAML format.
+The dictionary will be output in YAML format.
 
 Word: {word}
 """
 
 
 def generate_word_test(model_name, model, word, level):
-    # 生成一道单词含义理解测试题
     prompt = WORD_TEST_PROMPT_TEMPLATE.format(
         word=word, level=level, guidelines=SINGLE_CHOICE_QUESTION
     )

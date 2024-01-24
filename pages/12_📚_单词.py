@@ -1369,6 +1369,7 @@ elif menu and menu.endswith("词意测试"):
                 st.session_state["word-tests"][idx] = generate_word_test(
                     "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
+                st.write(st.session_state["word-tests"][idx])
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
         process_learning_record(record, "word-learning-times")
 
