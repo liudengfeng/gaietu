@@ -287,7 +287,7 @@ def play_flashcard_word(voice_style):
     st.session_state.dbi.add_record_to_cache(record)
 
 
-def view_flash_word(container):
+def view_flash_word(container, view_detail=True):
     """
     Display the flashcard word and its information.
 
@@ -329,8 +329,9 @@ def view_flash_word(container):
     container.divider()
     container.markdown(md)
 
-    display_word_images(word, container)
-    view_pos(container, word_info, word)
+    if view_detail:
+        display_word_images(word, container)
+        view_pos(container, word_info, word)
 
 
 def auto_play_flash_word(voice_style):
@@ -339,19 +340,11 @@ def auto_play_flash_word(voice_style):
     container = st.container()
     for idx in range(n):
         start = time.time()
+        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         st.session_state["flashcard-idx"] = idx
 
-        view_flash_word(container)
-
-        word = st.session_state["flashcard-words"][idx]
-
-        result = get_synthesis_speech(word, voice_style[0])
-
-        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-
-        audio_html = audio_autoplay_elem(result["audio_data"], fmt="mav")
-        components.html(audio_html)
-        time.sleep(result["audio_duration"].total_seconds())
+        play_flashcard_word(voice_style)
+        view_flash_word(container, False)
 
         time.sleep(0.2)
         record.duration = time.time() - start
