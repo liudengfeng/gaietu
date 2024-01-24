@@ -274,15 +274,16 @@ def view_pos(container, word_info, word):
         _view_pos(container, key, en[key], zh[key], word)
 
 
-def play_flashcard_word(voice_style):
+def play_flashcard_word(voice_style, sleep=False):
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
     result = get_synthesis_speech(word, voice_style[0])
     t = result["audio_duration"].total_seconds()
     html = audio_autoplay_elem(result["audio_data"], fmt="mav")
     components.html(html)
-    # 休眠会播放二次
-    # time.sleep(t)
+    # 如果休眠，第二次重复时会播放二次
+    if sleep:
+        time.sleep(t)
     record.duration = t
     st.session_state.dbi.add_record_to_cache(record)
 
@@ -343,7 +344,7 @@ def auto_play_flash_word(voice_style):
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         st.session_state["flashcard-idx"] = idx
 
-        play_flashcard_word(voice_style)
+        play_flashcard_word(voice_style, True)
         view_flash_word(container, False)
 
         time.sleep(0.2)
