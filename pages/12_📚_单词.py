@@ -757,9 +757,6 @@ def check_word_test_answer(container, level):
             label_visibility="collapsed",
             key=f"test-options-{word}",
         )
-        # 比较正确答案与用户答案
-        st.write(f"用户答案：{options[user_answer_idx]}")
-        st.write(f"正确答案：{answer}")
         msg = ""
         # 用户答案是选项序号，而提供的标准答案是A、B、C、D
         if is_answer_correct(user_answer_idx, answer):
