@@ -69,14 +69,19 @@ def is_answer_correct(user_answer, standard_answer):
     # 创建一个字典，将选项序号映射到字母
     answer_dict = {0: "A", 1: "B", 2: "C", 3: "D"}
 
-    # 获取用户的答案对应的字母
-    user_answer_letter = answer_dict.get(user_answer, "")
+    # 检查用户答案是否是一个整数
+    if isinstance(user_answer, int):
+        # 获取用户的答案对应的字母
+        user_answer = answer_dict.get(user_answer, "")
+    else:
+        # 移除用户答案中的非字母字符，并只取第一个字符
+        user_answer = "".join(filter(str.isalpha, user_answer))[0]
 
-    # 移除标准答案中的非字母字符
-    standard_answer = "".join(filter(str.isalpha, standard_answer))
+    # 移除标准答案中的非字母字符，并只取第一个字符
+    standard_answer = "".join(filter(str.isalpha, standard_answer))[0]
 
     # 比较用户的答案和标准答案
-    return user_answer_letter == standard_answer
+    return user_answer == standard_answer
 
 
 def check_and_force_logout(status):
