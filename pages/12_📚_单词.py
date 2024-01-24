@@ -288,7 +288,7 @@ def play_flashcard_word(voice_style):
     html = get_audio_html(word, voice_style)
     components.html(html)
     t = result["audio_duration"].total_seconds()
-    time.sleep(t)
+    # time.sleep(t)
     record.duration = t
     st.session_state.dbi.add_record_to_cache(record)
     st.write(datetime.now(timezone.utc))
