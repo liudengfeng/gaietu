@@ -191,6 +191,8 @@ if "flashcard-idx" not in st.session_state:
 
 # region 闪卡辅助函数
 
+if "word-learning-times" not in st.session_state:
+    st.session_state["word-learning-times"] = 0
 
 def reset_flashcard_word(clear=True):
     # 恢复初始显示状态
