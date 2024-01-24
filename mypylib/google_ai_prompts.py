@@ -1,14 +1,13 @@
 SINGLE_CHOICE_QUESTION = """
 Single Choice Question Guidelines:
-- Question should be clear, concise, and focused. Question should accurately assess students' knowledge or skills, avoiding ambiguous, too broad, or difficult-to-understand questions.
-- Options should include one correct answer and several plausible distractors. The arrangement of options on the answer sheet should be reasonable, avoiding the influence of answer position on students' answers.
-- There is only one answer for a single-choice question. If two or more options are correct, the question is not designed reasonably. The answer should be output as the identifier of the correct option, such as 'A'.
-- Explanation should be detailed, clearly explaining why this answer is correct.
+- The question should be clear, concise, and focused. It should accurately assess the knowledge or skills of the respondent, avoiding ambiguity, overly broad or difficult-to-understand phrasing.
+- The options should include one correct answer and several plausible distractors. The arrangement of options should be logical, avoiding any bias that could influence the respondent's choice.
+- There should only be one correct answer for a single-choice question. If two or more options could be correct, the question needs to be redesigned. The correct answer should be output as the identifier of the correct option, such as 'A'.
+- The explanation should be detailed, clearly explaining why the correct answer is indeed correct.
 - Each question should be output as a dictionary with 'question', 'options', 'answer', and 'explanation' as keys.
 - The 'options' should be a list of strings, each string representing an option.
 - Each option should be prefixed with a capital letter (A, B, C, D) followed by a '. '.
-- Options should not include "All of the above" or similar choices, as this could lead to multiple correct answers.
-- Avoid questions that are based on personal preferences, opinions, subjective circumstances or feelings. The answer should be a generally accepted fact or consensus.
+- Options should not include "All of the above" or similar choices, as this could lead to ambiguity and multiple correct answers.
 - Questions should be based on generally accepted facts or consensus. Avoid questions that are based on personal preferences, opinions, subjective circumstances, or feelings. If a question involves personal preferences or subjective circumstances, ensure that a clear context is provided that makes the preference or circumstance a fact in the given situation.
 """
 
