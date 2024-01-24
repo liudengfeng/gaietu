@@ -338,14 +338,15 @@ def view_flash_word(container, view_detail=True):
 def auto_play_flash_word(voice_style):
     current_idx = st.session_state["flashcard-idx"]
     n = len(st.session_state["flashcard-words"])
-    container = st.empty()
+    cols = st.columns([1, 1, 2, 1, 1])
+    elem = cols[2].empty()
     for idx in range(n):
         start = time.time()
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         st.session_state["flashcard-idx"] = idx
 
         play_flashcard_word(voice_style, True)
-        view_flash_word(container, False)
+        view_flash_word(elem, False)
 
         time.sleep(0.5)
         record.duration = time.time() - start
