@@ -229,28 +229,25 @@ def select_best_images_for_word(model_name, model, word, images: List[Part]):
 
 
 WORD_TEST_PROMPT_TEMPLATE = """
-你是一名专业英语老师，需要出题考察学生对英语词汇含义的理解，要求：
-在出题时，要避免歧义，让题目具有明确性；
-题干要清晰明了。题干要让学生能够准确理解题意；
-单选题，每道题只有唯一正确的答案；
-选项的排列顺序通常是随机的;
-正确答案随机分布，不要总集中在某个选项；
-选项与题干密切相关，且互不重复；
-选项之间区分度高，不要造成困扰；
-选项使用A、B、C、D标识，以"."与选项分离；
-正确答案只需要输出字符标识；
-针对的受众是英语语言能力为CEFR标准{level}的人群；
-输出中不需要使用非必要的格式标注，如加黑等等；
+You are a professional English teacher, and you need to create a question to test students' understanding of English vocabulary. The requirements are as follows:
 
-输出键为"问题"、"选项"、"答案"、"解释"的字典，JSON格式。
-注意：选项共四个，以python list格式输出。
+- The target audience of the question is students whose English language ability has reached the {level} level of the CEFR standard;
+- CEFR Level: {level}
+- Output in English, do not use Chinese
+- The vocabulary used in the questions and options should be within (including) the word list of CEFR {level}
 
-单词：{word}
+{guidelines}
+
+Each question, originally represented as a dictionary, is compiled into a list. The final result is output in YAML format.
+
+Word: {word}
 """
 
 
 def generate_word_test(model_name, model, word, level):
-    prompt = WORD_TEST_PROMPT_TEMPLATE.format(word=word, level=level)
+    prompt = WORD_TEST_PROMPT_TEMPLATE.format(
+        word=word, level=level, guidelines=SINGLE_CHOICE_QUESTION
+    )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.4, top_p=1.0
@@ -262,7 +259,7 @@ def generate_word_test(model_name, model, word, level):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```python", "").replace("```", "")),
+        parser=lambda x: yaml.safe_load(x),
     )
 
 

@@ -738,10 +738,10 @@ def check_word_test_answer(container, level):
     score = 0
     n = count_non_none(st.session_state["word-tests"])
     for idx, test in enumerate(st.session_state["word-tests"]):
-        question = test["问题"]
-        options = test["选项"]
-        answer = test["答案"]
-        explanation = test["解释"]
+        question = test["question"]
+        options = test["options"]
+        answer = test["answer"]
+        explanation = test["explanation"]
 
         word = st.session_state["test-words"][idx]
         # 存储的是 None 或者 0、1、2、3
@@ -1217,19 +1217,6 @@ elif menu and menu.endswith("看图猜词"):
         help="✨ 只有在完成至少一道测试题后，才能点击按钮查看测验得分。",
     )
 
-    # add_btn = pic_word_test_btn_cols[4].button(
-    #     "添加[:heavy_plus_sign:]",
-    #     key="pic-add",
-    #     help="✨ 将当前单词添加到个人词库",
-    #     disabled=st.session_state.pic_idx == -1,
-    # )
-    # del_btn = pic_word_test_btn_cols[5].button(
-    #     "删除[:heavy_minus_sign:]",
-    #     key="pic-del",
-    #     help="✨ 将当前单词从个人词库中删除",
-    #     disabled=st.session_state.pic_idx == -1,
-    # )
-
     container = st.container()
 
     if refresh_btn:
@@ -1249,19 +1236,6 @@ elif menu and menu.endswith("看图猜词"):
     elif st.session_state.pic_idx != -1:
         view_pic_question(container)
 
-    # if add_btn:
-    #     tests = st.session_state.pic_tests
-    #     idx = st.session_state.pic_idx
-    #     word = tests[idx]["answer"]
-    #     st.session_state.dbi.add_words_to_personal_dictionary([word])
-    #     st.toast(f"添加单词：{word} 到个人词库。")
-
-    # if del_btn:
-    #     tests = st.session_state.pic_tests
-    #     idx = st.session_state.pic_idx
-    #     word = tests[idx]["answer"]
-    #     st.session_state.dbi.remove_words_from_personal_dictionary([word])
-    #     st.toast(f"从个人词库中删除单词：{word}。")
 
 # endregion
 
