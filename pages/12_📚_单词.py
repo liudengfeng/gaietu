@@ -757,6 +757,9 @@ def check_word_test_answer(container, level):
             label_visibility="collapsed",
             key=f"test-options-{word}",
         )
+        # 比较正确答案与用户答案
+        st.write(f"用户答案：{options[user_answer_idx]}")
+        st.write(f"正确答案：{answer}")
         msg = ""
         # 用户答案是选项序号，而提供的标准答案是A、B、C、D
         if is_answer_correct(user_answer_idx, answer):
@@ -1451,21 +1454,9 @@ elif menu and menu.endswith("词库管理"):
     view_selected_list = word_lib.split("-", 1)[1]
     base_placeholder.text(f"基础词库({view_selected_list})")
 
-    # start = time.time()
-
     base_lib_df = gen_base_lib(view_selected_list)
 
-    # elapsed_time = time.time() - start
-    # average_time_per_line = elapsed_time / base_lib_df.shape[0]
-    # logger.info(f"生成基础词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
-
-    # start = time.time()
-
     lib_df = get_my_word_lib()
-
-    # elapsed_time = time.time() - start
-    # average_time_per_line = elapsed_time / lib_df.shape[0]
-    # logger.info(f"生成个人词库耗时：{elapsed_time:.2f} 秒，平均每行耗时：{average_time_per_line:.6f} 秒。")
 
     mylib_placeholder.text(
         f"可删列表（{0 if lib_df.empty else lib_df.shape[0]}） 个单词",
