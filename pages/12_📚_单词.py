@@ -347,10 +347,9 @@ def auto_play_flash_word(voice_style):
         play_flashcard_word(voice_style, True)
         view_flash_word(container, False)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
         record.duration = time.time() - start
         st.session_state.dbi.add_record_to_cache(record)
-        # container.empty()
 
     # 恢复闪卡记忆的索引
     st.session_state["flashcard-idx"] = current_idx
