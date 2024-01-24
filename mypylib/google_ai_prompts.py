@@ -8,7 +8,7 @@ Single Choice Question Guidelines:
 - The 'options' should be a list of strings, each string representing an option.
 - Each option should be prefixed with a capital letter (A, B, C, D) followed by a '. '.
 - Options should not include "All of the above" or similar choices, as this could lead to ambiguity and multiple correct answers.
-- Questions should be based on generally accepted facts or consensus. Avoid questions that are based on personal preferences, opinions, subjective circumstances, or feelings. If a question involves personal preferences or subjective circumstances, ensure that a clear context is provided that makes the preference or circumstance a fact in the given situation.
+- Questions should be grounded in generally accepted facts or consensus. Avoid formulating questions that are based on personal preferences, opinions, subjective circumstances, or feelings. If a question does involve personal preferences or subjective circumstances, it is essential to provide a clear context that transforms the preference or circumstance into a fact within the given situation.
 """
 
 MULTIPLE_CHOICE_QUESTION = """
