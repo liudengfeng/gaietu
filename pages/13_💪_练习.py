@@ -43,6 +43,7 @@ from mypylib.st_helper import (
     format_token_count,
     get_synthesis_speech,
     is_answer_correct,
+    is_aside,
     on_page_to,
     process_learning_record,
     setup_logger,
@@ -144,9 +145,6 @@ AI_TIPS = {
 
 
 # region 通用
-
-
-
 
 
 def display_text_word_count_summary(container, text):
@@ -287,8 +285,11 @@ def autoplay_audio_and_display_dialogue(container):
     audio_list = []
     duration_list = []
     for i, sentence in enumerate(dialogue):
+        # 如果是旁白，使用小女孩的声音
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        result = get_synthesis_speech(sentence, voice_style[0])
+        style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+        sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
+        result = get_synthesis_speech(sentence_without_speaker_name, style)
         audio_list.append(result["audio_data"])
         duration_list.append(result["audio_duration"])
 
@@ -425,7 +426,9 @@ def process_play_and_record_dialogue(
     cns = translate_text(dialogue, "zh-CN", True)
     sentence = dialogue[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
-    result = get_synthesis_speech(sentence, voice_style[0])
+    style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
+    result = get_synthesis_speech(sentence_without_speaker_name, style)
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)

@@ -398,15 +398,11 @@ def is_aside(text):
 
 @st.cache_data(show_spinner="使用 Azure 将文本合成语音...", max_entries=10000, ttl=60 * 60 * 24)
 def get_synthesis_speech(text, voice):
-    # 如果是旁白，使用小女孩的声音
-    style = "en-US-AnaNeural" if is_aside(text) else voice
-    sentence = text.replace("**", "")
-    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence)
     result = synthesize_speech(
-        sentence_without_speaker_name,
+        text,
         st.secrets["Microsoft"]["SPEECH_KEY"],
         st.secrets["Microsoft"]["SPEECH_REGION"],
-        style,
+        voice,
     )
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
