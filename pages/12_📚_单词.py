@@ -1325,8 +1325,8 @@ elif menu and menu.endswith("词意测试"):
         "检查[:mag:]",
         key="submit-test-word",
         disabled=st.session_state["word-test-idx"] == -1
-        or len(st.session_state["user-answer"]) == 0,
-        help="✨ 至少完成一道测试题后，才可点击按钮，显示测验得分。",
+        or st.session_state["word-test-idx"] != len(st.session_state["word-tests"]) - 1,
+        help="✨ 只有在完成最后一道测试题后，才可以点击按钮提交，显示测验得分。",
     )
     add_btn = test_btns[4].button(
         "添加[:heavy_plus_sign:]",
