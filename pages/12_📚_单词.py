@@ -512,7 +512,7 @@ def handle_puzzle_input(word_lib):
         if idx == n - 1:
             d = {
                 "item": st.session_state["current-page"],
-                "level": word_lib,
+                "level": word_lib.split("-", 1)[1],
                 "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
                 "record_time": datetime.now(timezone.utc),
                 "score": score,
@@ -1127,17 +1127,13 @@ elif menu and menu.endswith("拼图游戏"):
 
     if prev_btn:
         prepare_puzzle()
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
         record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        record.start()
+        process_learning_record(record, "word-learning-times")
 
     if next_btn:
         prepare_puzzle()
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
         record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        record.start()
+        process_learning_record(record, "word-learning-times")
 
     if add_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
@@ -1387,10 +1383,8 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
-        record.start()
+        process_learning_record(record, "word-learning-times")
 
     if next_test_btn:
         idx = st.session_state["word-test-idx"]
@@ -1400,10 +1394,8 @@ elif menu and menu.endswith("词意测试"):
                 st.session_state["word-tests"][idx] = generate_word_test(
                     "gemini-pro", st.session_state["gemini-pro-model"], word, level
                 )
-        if len(st.session_state["learning-record"]) > 0:
-            st.session_state["learning-record"][-1].end()
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
-        record.start()
+        process_learning_record(record, "word-learning-times")
 
     if refresh_btn:
         end_and_save_learning_records()
@@ -1411,11 +1403,6 @@ elif menu and menu.endswith("词意测试"):
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         st.session_state["word-tests"] = [None] * test_num  # type: ignore
         generate_page_words(word_lib, test_num, "test-words", True)
-        # 学习记录
-        item = st.session_state["current-page"]
-        # save_and_clear_learning_records(item)
-        # 新记录
-        # create_learning_records(item)
         st.rerun()
 
     if (
