@@ -1146,7 +1146,7 @@ elif menu and menu.endswith("拼图游戏"):
 
     if del_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
-        st.session_state.dbi.delete_words_from_personal_dictionary([word])
+        st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if st.session_state["puzzle-idx"] != -1:
@@ -1264,7 +1264,7 @@ elif menu and menu.endswith("看图猜词"):
     #     tests = st.session_state.pic_tests
     #     idx = st.session_state.pic_idx
     #     word = tests[idx]["answer"]
-    #     st.session_state.dbi.delete_words_from_personal_dictionary([word])
+    #     st.session_state.dbi.remove_words_from_personal_dictionary([word])
     #     st.toast(f"从个人词库中删除单词：{word}。")
 
 # endregion
@@ -1440,7 +1440,7 @@ elif menu and menu.endswith("词意测试"):
 
     if del_btn:
         word = st.session_state["test-words"][st.session_state["word-test-idx"]]
-        st.session_state.dbi.delete_words_from_personal_dictionary([word])
+        st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
 # endregion
