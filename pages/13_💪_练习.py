@@ -288,7 +288,9 @@ def autoplay_audio_and_display_dialogue(container):
         # 如果是旁白，使用小女孩的声音
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
         style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
-        sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
+        sentence_without_speaker_name = re.sub(
+            r"^\w+:\s", "", sentence.replace("**", "")
+        )
         result = get_synthesis_speech(sentence_without_speaker_name, style)
         audio_list.append(result["audio_data"])
         duration_list.append(result["audio_duration"])
