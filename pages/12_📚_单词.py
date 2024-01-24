@@ -957,7 +957,7 @@ if menu and menu.endswith("闪卡记忆"):
         "播放[:sound:]",
         key="flashcard-play",
         help="✨ 聆听单词发音",
-        disabled=st.session_state["flashcard-idx"] == -1,
+        disabled=len(st.session_state["flashcard-words"]) == 0,
     )
     auto_play_btn = btn_cols[5].button(
         "轮播[:arrow_forward:]",
@@ -1030,7 +1030,6 @@ if menu and menu.endswith("闪卡记忆"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if auto_play_btn:
-        # if st.session_state["flashcard-idx"] != -1:
         container.empty()
         auto_play_flash_word(voice_style)
 
