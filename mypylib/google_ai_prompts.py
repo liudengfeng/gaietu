@@ -2,7 +2,7 @@ SINGLE_CHOICE_QUESTION = """
 Single Choice Question Guidelines:
 - Question should be clear, concise, and focused. Question should accurately assess students' knowledge or skills, avoiding ambiguous, too broad, or difficult-to-understand questions.
 - Options should include one correct answer and several plausible distractors. The arrangement of options on the answer sheet should be reasonable, avoiding the influence of answer position on students' answers.
-- The answer should be the only correct one. There is only one answer for a single-choice question. If two or more options are correct, the question is not designed reasonably. The answer should be output as the identifier of the correct option, such as 'A'.
+- The answer should be the only correct one and should be a generally accepted fact, not a matter of personal preference. There is only one answer for a single-choice question. If two or more options are correct, the question is not designed reasonably. The answer should be output as the identifier of the correct option, such as 'A'.
 - Explanation should be detailed, clearly explaining why this answer is correct.
 - Each question should be output as a dictionary with 'question', 'options', 'answer', and 'explanation' as keys.
 - The 'options' should be a list of strings, each string representing an option.
