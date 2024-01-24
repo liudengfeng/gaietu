@@ -791,8 +791,8 @@ def on_word_test_radio_change(idx, options):
 def view_test_word(container):
     idx = st.session_state["word-test-idx"]
     test = st.session_state["word-tests"][idx]
-    question = test["问题"]
-    options = test["选项"]
+    question = test["question"]
+    options = test["options"]
     user_answer_idx = st.session_state["user-answer"][idx]
 
     container.markdown(question)
