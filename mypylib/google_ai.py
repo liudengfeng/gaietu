@@ -250,7 +250,7 @@ def generate_word_test(model_name, model, word, level):
     )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.4, top_p=1.0
+        max_output_tokens=2048, temperature=0.1, top_p=1.0
     )
     return parse_generated_content_and_update_token(
         "单词理解考题",
