@@ -238,7 +238,7 @@ You are a professional English teacher, and you need to create a question to tes
 
 {guidelines}
 
-The output will be a single dictionary in YAML format, without using list or Markdown formatting.
+Output in JSON format, without using list or Markdown formatting.
 
 Word: {word}
 """
@@ -259,7 +259,7 @@ def generate_word_test(model_name, model, word, level):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: yaml.safe_load(x),
+        parser=lambda x: json.loads(x),
     )
 
 
