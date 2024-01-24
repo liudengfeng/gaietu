@@ -954,9 +954,9 @@ if menu and menu.endswith("闪卡记忆"):
         == len(st.session_state["flashcard-words"]) - 1,  # type: ignore
     )
     play_btn = btn_cols[4].button(
-        "播放[:sound:]",
+        "重放[:sound:]",
         key="flashcard-play",
-        help="✨ 聆听单词发音",
+        help="✨ 重新播放单词发音",
         disabled=len(st.session_state["flashcard-words"]) == 0,
     )
     auto_play_btn = btn_cols[5].button(
