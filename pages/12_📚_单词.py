@@ -1029,10 +1029,10 @@ if menu and menu.endswith("闪卡记忆"):
         st.session_state.dbi.delete_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
 
-    if st.session_state["flashcard-idx"] != -1:
-        if auto_play_btn:
-            container.empty()
-            auto_play_flash_word(voice_style)
+    if auto_play_btn:
+        # if st.session_state["flashcard-idx"] != -1:
+        container.empty()
+        auto_play_flash_word(voice_style)
 
 
 # endregion
