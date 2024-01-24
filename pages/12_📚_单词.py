@@ -791,6 +791,7 @@ def on_word_test_radio_change(idx, options):
 def view_test_word(container):
     idx = st.session_state["word-test-idx"]
     test = st.session_state["word-tests"][idx]
+    container.write(f"第 {idx+1} 题 \n{test}")
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["user-answer"][idx]
