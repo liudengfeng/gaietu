@@ -2,12 +2,22 @@ SINGLE_CHOICE_QUESTION = """
 Single Choice Question Guidelines:
 - Question should be clear, concise, and focused. Question should accurately assess students' knowledge or skills, avoiding ambiguous, too broad, or difficult-to-understand questions.
 - Options should include one correct answer and several plausible distractors. The arrangement of options on the answer sheet should be reasonable, avoiding the influence of answer position on students' answers.
-- The answer should be the only correct one and should be a generally accepted fact, not a matter of personal preference. There is only one answer for a single-choice question. If two or more options are correct, the question is not designed reasonably. The answer should be output as the identifier of the correct option, such as 'A'.
+- There is only one answer for a single-choice question. If two or more options are correct, the question is not designed reasonably. The answer should be output as the identifier of the correct option, such as 'A'.
 - Explanation should be detailed, clearly explaining why this answer is correct.
 - Each question should be output as a dictionary with 'question', 'options', 'answer', and 'explanation' as keys.
 - The 'options' should be a list of strings, each string representing an option.
 - Each option should be prefixed with a capital letter (A, B, C, D) followed by a '. '.
 - Options should not include "All of the above" or similar choices, as this could lead to multiple correct answers.
+- Avoid questions that are based on personal preferences, opinions or subjective circumstances. The answer should be a generally accepted fact or consensus.
+
+Example of a question that violates this guideline:
+Question: "Where do you come from?"
+Options:
+A. I am from China.
+B. I am from the United States.
+C. I am from the United Kingdom.
+D. I am from Japan.
+This question is based on personal circumstances and does not have a generally accepted fact as the answer.
 """
 
 MULTIPLE_CHOICE_QUESTION = """
