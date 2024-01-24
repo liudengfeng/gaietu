@@ -274,21 +274,21 @@ def view_pos(container, word_info, word):
         _view_pos(container, key, en[key], zh[key], word)
 
 
-@st.cache_data(ttl=timedelta(hours=12), max_entries=10000, show_spinner="获取音频元素...")
-def get_audio_html(word, voice_style):
-    result = get_synthesis_speech(word, voice_style[0])
-    return audio_autoplay_elem(result["audio_data"], fmt="mav")
+# @st.cache_data(ttl=timedelta(hours=12), max_entries=10000, show_spinner="获取音频元素...")
+# def get_audio_html(word, voice_style):
+#     result = get_synthesis_speech(word, voice_style[0])
+#     return audio_autoplay_elem(result["audio_data"], fmt="mav")
 
 
 def play_flashcard_word(voice_style):
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
     result = get_synthesis_speech(word, voice_style[0])
-    html = get_audio_html(word, voice_style)
-    components.html(html)
     t = result["audio_duration"].total_seconds()
+    html = audio_autoplay_elem(result["audio_data"], fmt="mav")
+    components.html(html)
     # 休眠会播放二次
-    time.sleep(t)
+    # time.sleep(t)
     record.duration = t
     st.session_state.dbi.add_record_to_cache(record)
 
@@ -992,6 +992,11 @@ if menu and menu.endswith("闪卡记忆"):
 
     container = st.container()
 
+    if refresh_btn:
+        end_and_save_learning_records()
+        reset_flashcard_word(False)
+        st.rerun()
+
     # 创建按钮
     if display_status_button:
         if st.session_state.flashcard_display_state == "全部":
@@ -1022,11 +1027,6 @@ if menu and menu.endswith("闪卡记忆"):
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)
-
-    if refresh_btn:
-        end_and_save_learning_records()
-        reset_flashcard_word(False)
-        st.rerun()
 
     if play_btn:
         play_flashcard_word(voice_style)
