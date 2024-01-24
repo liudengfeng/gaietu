@@ -281,17 +281,16 @@ def get_audio_html(word, voice_style):
 
 
 def play_flashcard_word(voice_style):
-    st.write(datetime.now(timezone.utc))
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
     result = get_synthesis_speech(word, voice_style[0])
     html = get_audio_html(word, voice_style)
     components.html(html)
     t = result["audio_duration"].total_seconds()
+    # 如果休眠会播放二次
     # time.sleep(t)
     record.duration = t
     st.session_state.dbi.add_record_to_cache(record)
-    st.write(datetime.now(timezone.utc))
 
 
 def view_flash_word(container):
