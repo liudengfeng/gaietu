@@ -283,33 +283,6 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_data_list)
 
 
-def autoplay_audio_and_display_dialogue(audio_data_list, duration_list):
-    content_cols = st.columns(2)
-    # 创建一个空的插槽
-    slot_1 = content_cols[0].empty()
-    slot_2 = content_cols[1].empty()
-    # 如果需要显示中文，那么翻译文本
-    if st.session_state.get("listening-display-state", "英文") != "英文":
-        cns = translate_text(dialogue, "zh-CN", True)
-    # 播放音频并同步显示文本
-    for i, duration in enumerate(duration_list):
-        # 播放音频
-        audio_html = audio_autoplay_elem(audio_data_list[i], fmt="wav")
-        components.html(audio_html)
-        # 检查 session state 的值
-        if st.session_state.get("listening-display-state", "英文") == "英文":
-            # 显示英文
-            slot_1.markdown(f"**{dialogue[i]}**")
-        elif st.session_state.get("listening-display-state", "中文") == "中文":
-            # 显示中文
-            slot_2.markdown(cns[i])
-        else:
-            # 同时显示英文和中文
-            slot_1.markdown(f"**{dialogue[i]}**")
-            slot_2.markdown(cns[i])
-        t = duration.total_seconds()
-        time.sleep(t)
-
 
 def autoplay_audio_and_display_article(content_cols):
     article = st.session_state["reading-article"]
@@ -395,7 +368,7 @@ def process_play_and_record_article(
 
 
 def display_dialogue(container):
-    container.empty()
+    # container.empty()
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
@@ -1035,10 +1008,11 @@ if menu is not None and menu.endswith("听说练习"):
                 duration_list.append(result["audio_duration"])
                 total += result["audio_duration"].total_seconds()
 
-            # autoplay_audio_and_display_dialogue(audio_data_list, duration_list)
             current_idx = st.session_state["listening-idx"]
+            
             for i, duration in enumerate(duration_list):
                 st.session_state["listening-idx"] = i
+                display_dialogue(container)
                 play_and_record_dialogue(
                     m_voice_style, fm_voice_style, difficulty, selected_scenario
                 )
