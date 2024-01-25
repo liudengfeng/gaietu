@@ -93,22 +93,17 @@ def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
     # 生成一个随机的 ID
     audio_id = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
     return f"""\
-<audio id="{audio_id}" autoplay>\
-    <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
-    Your browser does not support the audio element.\
-</audio>\
-            """
-#     return f"""\
-# <audio id="{audio_id}" autoplay>\
-#     <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
-#     Your browser does not support the audio element.\
-# </audio>\
-# <script>\
-#     var audio = document.querySelector('#{audio_id}');\
-#     audio.load();\
-#     audio.play();\
-# </script>\
-#             """
+    <audio id="{audio_id}" autoplay>\
+        <source src="data:{audio_type};base64,{b64}" type="{audio_type}">\
+        Your browser does not support the audio element.\
+    </audio>\
+    <script>\
+        var audio = document.querySelector('#{audio_id}');\
+        audio.onended = function() {{audio.remove();}};\
+        audio.load();\
+        audio.play();\
+    </script>\
+                """
 
 
 def gtts_autoplay_elem(text: str, lang: str, tld: str):

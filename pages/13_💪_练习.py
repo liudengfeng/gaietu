@@ -324,7 +324,7 @@ def autoplay_audio_and_display_dialogue(container):
             # 同时显示英文和中文
             slot_1.markdown(f"**{dialogue[i]}**")
             slot_2.markdown(cns[i])
-        t = duration.total_seconds()
+        t = duration.total_seconds() + 0.5
         time.sleep(t)
         total += t
     return total
@@ -941,7 +941,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         full_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
-            key="listening-lsi",
+            key="listening-full",
             help="✨ 点击按钮，收听对话全文。",
             disabled=len(st.session_state.conversation_scene) == 0,
         )
