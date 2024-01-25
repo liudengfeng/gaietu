@@ -1233,8 +1233,9 @@ elif menu == "词典管理":
             bar = st.progress(0)
             d = {}
             for i, word in enumerate(words):
-                d[word] = estimate_cefr_level(word)
-                bar.progress(((i + 1) / n) * 100, text=word)
+                level = estimate_cefr_level(word)
+                d[word] = level
+                bar.progress(((i + 1) / n) * 100, text=f"{word} 🎆 {level}")
             st.session_state.dbi.batch_update_levels(d)
 
     # endregion
