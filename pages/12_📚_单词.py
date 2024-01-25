@@ -1284,6 +1284,7 @@ elif menu and menu.endswith("词意测试"):
     if "text-model" not in st.session_state:
         st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
+    cols = st.columns(2)
     update_and_display_progress(
         st.session_state["word-test-idx"] + 1
         if st.session_state["word-test-idx"] != -1
@@ -1291,7 +1292,7 @@ elif menu and menu.endswith("词意测试"):
         len(st.session_state["test-words"])
         if len(st.session_state["test-words"]) != 0
         else 1,
-        st.empty(),
+        cols[0].empty(),
         # message=st.session_state["test-words"][st.session_state["word-test-idx"]]
         # if st.session_state["word-test-idx"] != -1
         # else "",
