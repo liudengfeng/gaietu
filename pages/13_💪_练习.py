@@ -1121,7 +1121,7 @@ if menu is not None and menu.endswith("听说练习"):
             or st.session_state["listening-test-idx"] == len(st.session_state["listening-test"]) - 1,  # type: ignore
         )
         rpl_test_btn = ls_text_btn_cols[4].button(
-            "重放[:headphones:]",
+            "听题[:headphones:]",
             key="listening-test-replay",
             help="✨ 点击此按钮，可以重新播放当前测试题目的语音。",
             disabled=len(st.session_state["listening-test"]) == 0
@@ -1532,8 +1532,7 @@ if menu is not None and menu.endswith("阅读练习"):
             key="ra-test-replay",
             help="✨ 点击此按钮，使用语音播放问题。",
             disabled=len(st.session_state["reading-test"]) == 0
-            or st.session_state["reading-test-idx"] == -1
-            # or st.session_state["reading-test-display-state"] == "文本",  # type: ignore
+            or st.session_state["reading-test-idx"] == -1,
         )
         sumbit_test_btn = ra_test_btn_cols[4].button(
             "检查[:mag:]",
@@ -1565,10 +1564,16 @@ if menu is not None and menu.endswith("阅读练习"):
         if next_test_btn:
             view_reading_test(container, difficulty, exercise_type, genre)
 
-        if prev_test_btn:
-            container.empty()
-            st.session_state["reading-test-display-state"] = "文本"
-
+        if rpl_test_btn:
+            idx = st.session_state["reading-test-idx"]
+            test = st.session_state["reading-test"][idx]
+            question = test["question"]
+            with st.spinner(f"使用 Azure 将文本合成语音..."):
+                question_audio = get_synthesis_speech(question, m_voice_style[0])
+            audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
+            components.html(audio_html)
+            view_reading_test(container, difficulty, exercise_type, genre)
+        
         if sumbit_test_btn:
             container.empty()
 
