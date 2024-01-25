@@ -1137,10 +1137,15 @@ if menu is not None and menu.endswith("听说练习"):
             else:
                 st.session_state["listening-test-display-state"] = "文本"
 
+            if st.session_state["listening-test-idx"] != -1:
+                view_listening_test(container, difficulty, selected_scenario)
+
         if rpl_test_btn:
-            if st.session_state["listening-test-display-state"] == "文本":
-                st.warning("请先切换到语音模式")
-                st.stop()
+            if st.session_state["listening-test-idx"] != -1:
+                view_listening_test(container, difficulty, selected_scenario)
+
+        if prev_test_btn or next_test_btn:
+            view_listening_test(container, difficulty, selected_scenario)
 
         if sumbit_test_btn:
             container.empty()
@@ -1155,9 +1160,6 @@ if menu is not None and menu.endswith("听说练习"):
                 container.warning("您尚未完成测试。")
 
             check_listening_test_answer(container, difficulty, selected_scenario)
-        else:
-            if st.session_state["listening-test-idx"] != -1:
-                view_listening_test(container, difficulty, selected_scenario)
 
     # endregion
 
