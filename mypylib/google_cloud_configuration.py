@@ -58,10 +58,10 @@ def google_configure(secrets):
     aiplatform.init(
         # your Google Cloud Project ID or number
         # environment default used is not set
-        # project=PROJECT_ID,
+        project=PROJECT_ID,
         # the Vertex AI region you will use
         # defaults to us-central1
-        # location=LOCATION,
+        location=LOCATION,
         # Google Cloud Storage bucket in same region as location
         # used to stage artifacts
         # staging_bucket="gs://my_staging_bucket",
