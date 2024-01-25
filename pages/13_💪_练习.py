@@ -394,6 +394,56 @@ def process_play_and_record_article(
     process_learning_record(record, "reading-learning-times")
 
 
+def display_dialogue(container):
+    container.empty()
+    dialogue = st.session_state.conversation_scene
+    if dialogue is None or len(dialogue) == 0:
+        return
+    idx = st.session_state["listening-idx"]
+    if idx == -1:
+        return
+    cns = translate_text(dialogue, "zh-CN", True)
+    sentence = dialogue[idx]
+
+    content_cols = container.columns(2)
+    if st.session_state["listening-display-state"] == "英文":
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(sentence)
+    elif st.session_state["listening-display-state"] == "中文":
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
+    else:
+        content_cols[0].markdown("英文")
+        content_cols[0].markdown(sentence)
+        content_cols[1].markdown("中文")
+        content_cols[1].markdown(cns[idx])
+
+
+def play_and_record_dialogue(
+    m_voice_style, fm_voice_style, difficulty, selected_scenario
+):
+    dialogue = st.session_state.conversation_scene
+    if dialogue is None or len(dialogue) == 0:
+        return
+    idx = st.session_state["listening-idx"]
+    if idx == -1:
+        return
+
+    sentence = dialogue[idx]
+    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+    style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
+    result = get_synthesis_speech(sentence_without_speaker_name, style)
+
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
+
+    # 记录学习时长
+    word_count = len(sentence.split())
+    record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
+    process_learning_record(record, "listening-learning-times")
+
+
 def process_play_and_record_dialogue(
     container, m_voice_style, fm_voice_style, difficulty, selected_scenario
 ):
@@ -1003,12 +1053,15 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["listening-display-state"] = "英文"
 
         if prev_btn or next_btn or replay_btn:
-            process_play_and_record_dialogue(
-                container,
-                m_voice_style,
-                fm_voice_style,
-                difficulty,
-                selected_scenario,
+            # process_play_and_record_dialogue(
+            #     container,
+            #     m_voice_style,
+            #     fm_voice_style,
+            #     difficulty,
+            #     selected_scenario,
+            # )
+            play_and_record_dialogue(
+                m_voice_style, fm_voice_style, difficulty, selected_scenario
             )
 
         if full_btn:
@@ -1043,6 +1096,9 @@ if menu is not None and menu.endswith("听说练习"):
                 word_count=word_count,
             )
             st.session_state.dbi.add_record_to_cache(record)
+
+        # 始终显示当前对话文本
+        display_dialogue(container)
 
     # endregion
 
