@@ -1029,6 +1029,8 @@ if menu is not None and menu.endswith("听说练习"):
                 word_count=word_count,
             )
             st.session_state.dbi.add_record_to_cache(record)
+            # 防止重复播放
+            st.rerun()
 
         # 始终显示当前对话文本
         display_dialogue(dialogue_placeholder)
