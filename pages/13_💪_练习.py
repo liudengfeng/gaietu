@@ -284,7 +284,6 @@ def get_and_combine_audio_data():
 
 
 def autoplay_audio_and_display_dialogue(container):
-    container.empty()
     dialogue = st.session_state.conversation_scene
     audio_data_list = []
     duration_list = []
@@ -309,6 +308,7 @@ def autoplay_audio_and_display_dialogue(container):
     total = 0
     # 播放音频并同步显示文本
     for i, duration in enumerate(duration_list):
+        container.empty()
         # 播放音频
         audio_html = audio_autoplay_elem(audio_data_list[i], fmt="wav")
         components.html(audio_html)
