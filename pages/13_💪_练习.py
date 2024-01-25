@@ -970,8 +970,8 @@ if menu is not None and menu.endswith("听说练习"):
                 "topic": scenario_category,
                 "level": f"{difficulty}-{len(reference_text.split())}",
                 "score": st.session_state["listening-pronunciation-assessment"][
-                    "pronunciation_score"
-                ],
+                    "pronunciation_result"
+                ]["pronunciation_score"],
                 "duration": datetime.now(pytz.UTC) - start,
                 "record_time": datetime.now(pytz.UTC),
             }
