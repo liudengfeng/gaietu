@@ -297,7 +297,7 @@ def generate_scenarios(model, subject):
 DIALOGUE_TEMPLATE = """
 You have mastered the CEFR English proficiency levels and have a comprehensive grasp of the vocabulary list for each level. Please refer to the following instructions to simulate a dialogue in authentic American English:
 - Simulate a dialogue in authentic American English, avoiding Chinglish or Chinese.
-- Do not directly translate Chinese into English in the dialogue, for example: "Hi, John. I'm Evelyn. (你好，John。我是Evelyn.)".
+- Dialogues should be conducted entirely in English, without the use of Chinese or a mixture of Chinese and English.
 - The participants in the dialogue should be: Boy: {boy_name} and Girl: {girl_name}.
 - The dialogue should only involve these two participants and should not include others.
 - Scenario: {scenario}.

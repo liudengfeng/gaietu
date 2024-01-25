@@ -946,7 +946,7 @@ if menu is not None and menu.endswith("听说练习"):
             or len(st.session_state.conversation_scene) == 0,
         )
 
-        lsi_btn = ls_btn_cols[5].button(
+        full_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
             key="listening-lsi",
             help="✨ 点击按钮，收听对话全文。",
@@ -1028,7 +1028,7 @@ if menu is not None and menu.endswith("听说练习"):
             else:
                 st.session_state["listening-display-state"] = "英文"
 
-        if prev_btn or next_btn or replay_btn or lsi_btn:
+        if prev_btn or next_btn or replay_btn:
             process_play_and_record_dialogue(
                 container,
                 m_voice_style,
@@ -1037,7 +1037,7 @@ if menu is not None and menu.endswith("听说练习"):
                 selected_scenario,
             )
 
-        if lsi_btn:
+        if full_btn:
             total = autoplay_audio_and_display_dialogue(container)
             st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
