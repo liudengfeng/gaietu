@@ -170,23 +170,6 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
-def new_display_word_images(word):
-    urls = select_word_image_urls(word)
-    cols = st.columns(len(urls))
-    caption = [f"图片 {i+1}" for i in range(len(urls))]
-
-    for i, col in enumerate(cols):
-        # 下载图片
-        response = requests.get(urls[i])
-        img = Image.open(BytesIO(response.content))
-
-        # 调整图片尺寸
-        new_size = (400, 400)
-        img = img.resize(new_size)
-        # 显示图片
-        col.image(img, use_column_width=True, caption=caption[i])
-
-
 # endregion
 
 # region 闪卡状态
@@ -305,7 +288,7 @@ def play_flashcard_word(voice_style, sleep=False):
     st.session_state.dbi.add_record_to_cache(record)
 
 
-def view_flash_word(container, view_detail=True):
+def view_flash_word(container, view_detail=True, placeholder=None):
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     if word not in st.session_state["flashcard-word-info"]:
         st.session_state["flashcard-word-info"][word] = get_word_info(word)
@@ -335,13 +318,12 @@ def view_flash_word(container, view_detail=True):
 
     container.divider()
     container.markdown(md)
+    if placeholder:
+        view_pos(placeholder, word_info, word)
 
     if view_detail:
         display_word_images(word, container)
         view_pos(container, word_info, word)
-    else:
-        with st.empty():
-            new_display_word_images(word)
 
 
 def auto_play_flash_word(voice_style):
@@ -349,13 +331,14 @@ def auto_play_flash_word(voice_style):
     n = len(st.session_state["flashcard-words"])
     cols = st.columns([1, 1, 2, 1, 1])
     elem = cols[2].empty()
+    placeholder = st.empty()
     for idx in range(n):
         start = time.time()
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         st.session_state["flashcard-idx"] = idx
 
         play_flashcard_word(voice_style, True)
-        view_flash_word(elem, False)
+        view_flash_word(elem, False, placeholder)
 
         time.sleep(0.5)
         record.duration = time.time() - start
