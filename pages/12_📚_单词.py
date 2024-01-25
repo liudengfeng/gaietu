@@ -289,17 +289,6 @@ def play_flashcard_word(voice_style, sleep=False):
 
 
 def view_flash_word(container, view_detail=True):
-    """
-    Display the flashcard word and its information.
-
-    Args:
-        container (object): The container to display the flashcard word and information.
-        tip_placeholder (object): The placeholder to display the memory tip.
-
-    Returns:
-        None
-    """
-
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     if word not in st.session_state["flashcard-word-info"]:
         st.session_state["flashcard-word-info"][word] = get_word_info(word)
@@ -333,6 +322,9 @@ def view_flash_word(container, view_detail=True):
     if view_detail:
         display_word_images(word, container)
         view_pos(container, word_info, word)
+    else:
+        container = st.container()
+        display_word_images(word, container)
 
 
 def auto_play_flash_word(voice_style):
@@ -1373,7 +1365,7 @@ elif menu and menu.endswith("词意测试"):
                     "gemini-pro", st.session_state["text-model"], word, level
                 )
                 # st.write(st.session_state["word-tests"][idx])
-        
+
         # 统计整个测试题的单词
         record = create_learning_record("word-test-idx", "word-tests", "词意测试")
         process_learning_record(record, "word-learning-times")
