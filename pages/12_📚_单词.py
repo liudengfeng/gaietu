@@ -359,7 +359,10 @@ def auto_play_flash_word(voice_style):
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
-    word_count = len(word.split())
+    if words_key == "word-tests":
+        word_count = sum(len(value.split()) for value in word.values())
+    else:
+        word_count = len(word.split())
     record = LearningTime(
         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
         project=project,
@@ -1358,7 +1361,7 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
-        record = create_learning_record("word-test-idx", "test-words", "词意测试")
+        record = create_learning_record("word-test-idx", "word-tests", "词意测试")
         process_learning_record(record, "word-learning-times")
 
     if next_test_btn:
@@ -1370,7 +1373,9 @@ elif menu and menu.endswith("词意测试"):
                     "gemini-pro", st.session_state["text-model"], word, level
                 )
                 # st.write(st.session_state["word-tests"][idx])
-        record = create_learning_record("word-test-idx", "test-words", "词意测试")
+        
+        # 统计整个测试题的单词
+        record = create_learning_record("word-test-idx", "word-tests", "词意测试")
         process_learning_record(record, "word-learning-times")
 
     if refresh_btn:
