@@ -40,6 +40,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
+    update_and_display_progress,
     end_and_save_learning_records,
     format_token_count,
     get_synthesis_speech,
@@ -1070,6 +1071,16 @@ if menu is not None and menu.endswith("听说练习"):
             st.warning("请先完成听说练习")
             # st.stop()
 
+        cols = st.columns(2)
+        update_and_display_progress(
+            st.session_state["listening-test-idx"] + 1
+            if st.session_state["listening-test-idx"] != -1
+            else 0,
+            len(st.session_state["listening-test"])
+            if len(st.session_state["listening-test"]) != 0
+            else 1,
+            cols[0].empty(),
+        )
         ls_text_btn_cols = st.columns(8)
 
         st.divider()
