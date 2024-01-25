@@ -340,7 +340,7 @@ def auto_play_flash_word(voice_style):
         play_flashcard_word(voice_style, True)
         view_flash_word(elem, False, placeholder)
 
-        time.sleep(0.5)
+        time.sleep(max(1 - time.time() + start, 0))
         record.duration = time.time() - start
         st.session_state.dbi.add_record_to_cache(record)
 
