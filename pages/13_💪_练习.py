@@ -366,7 +366,7 @@ def process_play_and_record_article(
     process_learning_record(record, "reading-learning-times")
 
 
-def display_dialogue():
+def display_dialogue(dialogue_placeholder):
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
@@ -376,7 +376,7 @@ def display_dialogue():
     cns = translate_text(dialogue, "zh-CN", True)
     sentence = dialogue[idx]
 
-    content_cols = st.columns(2)
+    content_cols = dialogue_placeholder.columns(2)
     if st.session_state["listening-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -932,7 +932,7 @@ if menu is not None and menu.endswith("听说练习"):
             help="✨ 点击按钮，播放您的跟读录音。",
         )
 
-        container = st.container()
+        dialogue_placeholder = st.empty()
 
         if pro_btn and audio_info is not None:
             # 去掉发言者的名字
@@ -989,7 +989,6 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if full_btn:
-            container.empty()
             dialogue = st.session_state.conversation_scene
             audio_data_list = []
             duration_list = []
@@ -1010,7 +1009,7 @@ if menu is not None and menu.endswith("听说练习"):
 
             for i, duration in enumerate(duration_list):
                 st.session_state["listening-idx"] = i
-                display_dialogue(container)
+                display_dialogue(dialogue_placeholder)
                 play_and_record_dialogue(
                     m_voice_style, fm_voice_style, difficulty, selected_scenario
                 )
@@ -1032,7 +1031,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state.dbi.add_record_to_cache(record)
 
         # 始终显示当前对话文本
-        display_dialogue()
+        display_dialogue(dialogue_placeholder)
 
     # endregion
 
