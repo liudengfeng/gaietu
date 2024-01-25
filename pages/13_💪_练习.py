@@ -324,8 +324,8 @@ def autoplay_audio_and_display_dialogue(container):
             # 同时显示英文和中文
             slot_1.markdown(f"**{dialogue[i]}**")
             slot_2.markdown(cns[i])
-        t = duration.total_seconds() + 0.5
-        time.sleep(t)
+        t = duration.total_seconds()
+        # time.sleep(t)
         total += t
         # st.rerun()
     return total
