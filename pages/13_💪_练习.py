@@ -360,9 +360,6 @@ def process_play_and_record_article(
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
 
-    # content_cols[0].audio(result["audio_data"], format="audio/wav")
-
-    # st.markdown(audio_html, unsafe_allow_html=True)
     time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
