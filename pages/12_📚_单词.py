@@ -1281,8 +1281,8 @@ elif menu and menu.endswith("词意测试"):
     st.subheader(":pencil: 英语单词理解测试", divider="rainbow", anchor=False)
     st.markdown("""✨ 英语单词理解测试是一种选择题形式的测试，提供一个英语单词和四个选项，要求选出正确的词义。""")
 
-    if "gemini-pro-model" not in st.session_state:
-        st.session_state["gemini-pro-model"] = load_vertex_model("gemini-pro")
+    if "text-model" not in st.session_state:
+        st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
     update_and_display_progress(
         st.session_state["word-test-idx"] + 1
@@ -1352,7 +1352,7 @@ elif menu and menu.endswith("词意测试"):
                 with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
                     st.session_state["word-tests"][idx] = generate_word_test(
                         "gemini-pro",
-                        st.session_state["gemini-pro-model"],
+                        st.session_state["text-model"],
                         word,
                         level,
                     )
@@ -1366,7 +1366,7 @@ elif menu and menu.endswith("词意测试"):
         if not st.session_state["word-tests"][idx]:
             with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
                 st.session_state["word-tests"][idx] = generate_word_test(
-                    "gemini-pro", st.session_state["gemini-pro-model"], word, level
+                    "gemini-pro", st.session_state["text-model"], word, level
                 )
                 # st.write(st.session_state["word-tests"][idx])
         record = create_learning_record("word-test-idx", "test-words", "词意测试")
