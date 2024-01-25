@@ -1479,7 +1479,8 @@ if menu is not None and menu.endswith("阅读练习"):
         if st.session_state["reading-learning-times"] == 0:
             st.warning("请先完成练习")
             st.stop()
-        
+
+        cols = st.columns(2)
         update_and_display_progress(
             st.session_state["reading-test-idx"] + 1
             if st.session_state["reading-test-idx"] != -1
@@ -1489,9 +1490,9 @@ if menu is not None and menu.endswith("阅读练习"):
             else 1,
             cols[0].empty(),
         )
-        
+
         st.divider()
-        
+
         ra_test_btn_cols = st.columns(8)
 
         st.divider()
