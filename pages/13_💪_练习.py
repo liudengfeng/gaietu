@@ -953,7 +953,7 @@ if menu is not None and menu.endswith("听说练习"):
             ]
             reference_text = reference_text.replace("**", "")
             reference_text = re.sub(r"^\w+:\s", "", reference_text)
-
+            start = time.now(pytz.UTC)
             st.session_state[
                 "listening-pronunciation-assessment"
             ] = pronunciation_assessment_for(
@@ -972,7 +972,10 @@ if menu is not None and menu.endswith("听说练习"):
                 "item": "发音评估",
                 "topic": scenario_category,
                 "level": f"{difficulty}-{len(reference_text.split())}",
-                "score": "pronunciation_score",
+                "score": st.session_state["listening-pronunciation-assessment"][
+                    "pronunciation_score"
+                ],
+                "duration": time.now(pytz.UTC) - start,
                 "record_time": datetime.now(pytz.UTC),
             }
             st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -1067,7 +1070,7 @@ if menu is not None and menu.endswith("听说练习"):
 
         if "listening-start-time" not in st.session_state:
             st.session_state["listening-start-time"] = None
-        
+
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             # st.stop()
