@@ -283,22 +283,7 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_data_list)
 
 
-def autoplay_audio_and_display_dialogue(container):
-    container.empty()
-    dialogue = st.session_state.conversation_scene
-    audio_data_list = []
-    duration_list = []
-    for i, sentence in enumerate(dialogue):
-        # 如果是旁白，使用小女孩的声音
-        voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
-        sentence_without_speaker_name = re.sub(
-            r"^\w+:\s", "", sentence.replace("**", "")
-        )
-        result = get_synthesis_speech(sentence_without_speaker_name, style)
-        audio_data_list.append(result["audio_data"])
-        duration_list.append(result["audio_duration"])
-
+def autoplay_audio_and_display_dialogue(container, audio_data_list, duration_list):
     content_cols = container.columns(2)
     # 创建一个空的插槽
     slot_1 = content_cols[0].empty()
@@ -325,8 +310,6 @@ def autoplay_audio_and_display_dialogue(container):
             slot_2.markdown(cns[i])
         t = duration.total_seconds()
         time.sleep(t)
-        total += t
-    return total
 
 
 def autoplay_audio_and_display_article(content_cols):
@@ -1030,7 +1013,26 @@ if menu is not None and menu.endswith("听说练习"):
             )
 
         if full_btn:
-            total = autoplay_audio_and_display_dialogue(container)
+            container.empty()
+            dialogue = st.session_state.conversation_scene
+            audio_data_list = []
+            duration_list = []
+            total = 0
+            for i, sentence in enumerate(dialogue):
+                # 如果是旁白，使用小女孩的声音
+                voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
+                style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+                sentence_without_speaker_name = re.sub(
+                    r"^\w+:\s", "", sentence.replace("**", "")
+                )
+                result = get_synthesis_speech(sentence_without_speaker_name, style)
+                audio_data_list.append(result["audio_data"])
+                duration_list.append(result["audio_duration"])
+                total += result["audio_duration"].total_seconds()
+
+            autoplay_audio_and_display_dialogue(
+                container, audio_data_list, duration_list
+            )
             st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
             )
