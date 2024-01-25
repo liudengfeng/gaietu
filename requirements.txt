@@ -24,3 +24,4 @@ google-cloud-texttospeech
 google-cloud-firestore
 cryptography
 pyyaml
+spacy

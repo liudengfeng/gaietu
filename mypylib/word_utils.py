@@ -15,6 +15,7 @@ import requests
 from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
 from gtts import gTTS
 from PIL import Image
+import spacy
 
 from .azure_speech import synthesize_speech_to_file
 
@@ -75,12 +76,6 @@ def hash_word(word: str):
     return hash_value
 
 
-def get_word_cefr_map(name, fp):
-    assert name in ("us", "uk"), "只支持`US、UK`二种发音。"
-    with open(os.path.join(fp, f"{name}_cefr.json"), "r") as f:
-        return json.load(f)
-
-
 def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
     audio_type = "audio/mp3" if fmt == "mp3" else "audio/wav"
     # 如果 data 是字符串，假定它是一个文件路径，并从文件中读取音频数据
@@ -117,22 +112,24 @@ def gtts_autoplay_elem(text: str, lang: str, tld: str):
         """
 
 
-def get_lowest_cefr_level(word):
+def get_lowest_cefr_level(word, cefr=None):
     """
     Get the lowest CEFR level of a given word.
 
     Parameters:
     word (str): The word to check the CEFR level for.
+    cefr (dict, optional): The CEFR dictionary. If None, the dictionary will be loaded from the file.
 
     Returns:
     str or None: The lowest CEFR level of the word, or None if the word is not found in the CEFR dictionary.
     """
-    fp = os.path.join(
-        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-    )
     levels = ["A1", "A2", "B1", "B2", "C1", "C2"]
-    with open(fp, "r") as f:
-        cefr = json.load(f)
+    if cefr is None:
+        fp = os.path.join(
+            CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
+        )
+        with open(fp, "r", encoding="utf-8") as f:
+            cefr = json.load(f)
     for level in levels:
         level_flag = f"1-CEFR-{level}"
         if word in cefr[level_flag]:
@@ -289,3 +286,42 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     img_byte_arr = img_byte_arr.getvalue()
 
     return img_byte_arr
+
+
+def ensure_model_downloaded(model_name="en_core_web_sm"):
+    try:
+        spacy.load(model_name)
+        print(f"{model_name} is already downloaded.")
+    except OSError:
+        import os
+
+        print(f"{model_name} not found. Downloading...")
+        os.system(f"python -m spacy download {model_name}")
+        print(f"{model_name} downloaded.")
+
+
+def get_cefr_vocabulary_list(texts):
+    model_name = "en_core_web_sm"
+    ensure_model_downloaded(model_name)
+    nlp = spacy.load(model_name)
+    # lemmatizer = nlp.get_pipe("lemmatizer")
+    fp = os.path.join(
+        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
+    )
+    with open(fp, "r", encoding="utf-8") as f:
+        cefr = json.load(f)
+
+    cefr_vocabulary = {}
+    for text in texts:
+        doc = nlp(text)
+        for token in doc:
+            if not token.is_punct:
+                lemma = token.lemma_
+                cefr_level = get_lowest_cefr_level(lemma, cefr)
+                if cefr_level is None:
+                    cefr_level = "未分级"
+                if cefr_level not in cefr_vocabulary:
+                    cefr_vocabulary[cefr_level] = set()
+                cefr_vocabulary[cefr_level].add(lemma)
+
+    return cefr_vocabulary

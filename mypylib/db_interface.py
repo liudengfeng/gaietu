@@ -620,6 +620,21 @@ class DbInterface:
         # 如果文档存在，将其转换为字典，否则返回一个空字典
         return doc.to_dict() if doc.exists else {}
 
+    def find_docs_with_empty_level(self):
+        mini_dict_ref = self.db.collection("mini_dict")
+        docs = mini_dict_ref.where(filter=FieldFilter("level", "==", None)).stream()
+        return [doc.id for doc in docs]
+
+    def batch_update_levels(self, cefr_words):
+        batch = self.db.batch()
+
+        for level, words in cefr_words.items():
+            for word in words:
+                doc_ref = self.db.collection("mini_dict").document(word)
+                batch.update(doc_ref, {"level": level})
+
+        batch.commit()
+
     def find_docs_with_category(self, category):
         # 获取 mini_dict 集合的引用
         mini_dict_ref = self.db.collection("mini_dict")
