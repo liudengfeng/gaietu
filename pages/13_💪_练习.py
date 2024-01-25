@@ -559,7 +559,7 @@ def check_listening_test_answer(container, level, selected_scenario):
         "topic": selected_scenario,
         "level": level,
         "score": percentage,
-        "duration": datetime.now(pytz.UTC) - st.session_state["listening-start-time"],
+        "duration": (datetime.now(pytz.UTC) - st.session_state["listening-start-time"]).total_seconds(),
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -608,7 +608,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         "topic": genre,
         "level": f"{difficulty}-{exercise_type}",
         "score": percentage,
-        "duration": datetime.now(pytz.UTC) - st.session_state["reading-start-time"],
+        "duration": (datetime.now(pytz.UTC) - st.session_state["reading-start-time"]).total_seconds(),
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -972,7 +972,7 @@ if menu is not None and menu.endswith("听说练习"):
                 "score": st.session_state["listening-pronunciation-assessment"][
                     "pronunciation_result"
                 ]["pronunciation_score"],
-                "duration": datetime.now(pytz.UTC) - start,
+                "duration": (datetime.now(pytz.UTC) - start).total_seconds(),
                 "record_time": datetime.now(pytz.UTC),
             }
             st.session_state.dbi.save_daily_quiz_results(test_dict)
