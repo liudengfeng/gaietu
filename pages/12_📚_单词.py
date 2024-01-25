@@ -319,7 +319,7 @@ def view_flash_word(container, view_detail=True, placeholder=None):
     container.divider()
     container.markdown(md)
     if placeholder:
-        view_pos(placeholder, word_info, word)
+        display_word_images(word, placeholder)
 
     if view_detail:
         display_word_images(word, container)
