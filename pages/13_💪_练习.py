@@ -559,7 +559,7 @@ def check_listening_test_answer(container, level, selected_scenario):
         "topic": selected_scenario,
         "level": level,
         "score": percentage,
-        "duration": time.now(pytz.UTC) - st.session_state["listening-start-time"],
+        "duration": datetime.now(pytz.UTC) - st.session_state["listening-start-time"],
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -608,7 +608,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         "topic": genre,
         "level": f"{difficulty}-{exercise_type}",
         "score": percentage,
-        "duration": time.now(pytz.UTC) - st.session_state["reading-start-time"],
+        "duration": datetime.now(pytz.UTC) - st.session_state["reading-start-time"],
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -950,7 +950,7 @@ if menu is not None and menu.endswith("听说练习"):
             ]
             reference_text = reference_text.replace("**", "")
             reference_text = re.sub(r"^\w+:\s", "", reference_text)
-            start = time.now(pytz.UTC)
+            start = datetime.now(pytz.UTC)
             st.session_state[
                 "listening-pronunciation-assessment"
             ] = pronunciation_assessment_for(
@@ -972,7 +972,7 @@ if menu is not None and menu.endswith("听说练习"):
                 "score": st.session_state["listening-pronunciation-assessment"][
                     "pronunciation_score"
                 ],
-                "duration": time.now(pytz.UTC) - start,
+                "duration": datetime.now(pytz.UTC) - start,
                 "record_time": datetime.now(pytz.UTC),
             }
             st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -1147,7 +1147,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-test-answer"] = [None] * len(
                 st.session_state["listening-test"]
             )
-            st.session_state["listening-start-time"] = time.now(pytz.UTC)
+            st.session_state["listening-start-time"] = datetime.now(pytz.UTC)
             # 更新
             st.rerun()
 
@@ -1573,7 +1573,7 @@ if menu is not None and menu.endswith("阅读练习"):
             audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
             components.html(audio_html)
             view_reading_test(container, difficulty, exercise_type, genre)
-        
+
         if sumbit_test_btn:
             container.empty()
 
