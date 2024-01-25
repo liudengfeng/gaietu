@@ -230,7 +230,7 @@ def select_best_images_for_word(model_name, model, word, images: List[Part]):
 
 WORD_TEST_PROMPT_TEMPLATE = """
 As a professional English teacher, you have a thorough understanding of the CEFR English proficiency levels and a comprehensive knowledge of the vocabulary list for each level. You also understand the sequential relationship between numbers. Your task is to create a question to assess students' understanding of English vocabulary. Please follow the requirements below:
-
+- avoiding Chinglish or Chinese.
 - The target audience of the question is students whose English language ability has reached the {level} level of the CEFR standard;
 - CEFR Level: {level}
 - Output in English, do not use Chinese
