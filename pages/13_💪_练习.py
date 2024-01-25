@@ -1053,13 +1053,6 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["listening-display-state"] = "英文"
 
         if prev_btn or next_btn or replay_btn:
-            # process_play_and_record_dialogue(
-            #     container,
-            #     m_voice_style,
-            #     fm_voice_style,
-            #     difficulty,
-            #     selected_scenario,
-            # )
             play_and_record_dialogue(
                 m_voice_style, fm_voice_style, difficulty, selected_scenario
             )
