@@ -283,7 +283,6 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_data_list)
 
 
-
 def autoplay_audio_and_display_article(content_cols):
     article = st.session_state["reading-article"]
     audio_data_list = []
@@ -367,8 +366,7 @@ def process_play_and_record_article(
     process_learning_record(record, "reading-learning-times")
 
 
-def display_dialogue(container):
-    # container.empty()
+def display_dialogue():
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
@@ -378,7 +376,7 @@ def display_dialogue(container):
     cns = translate_text(dialogue, "zh-CN", True)
     sentence = dialogue[idx]
 
-    content_cols = container.columns(2)
+    content_cols = st.columns(2)
     if st.session_state["listening-display-state"] == "英文":
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
@@ -1009,7 +1007,7 @@ if menu is not None and menu.endswith("听说练习"):
                 total += result["audio_duration"].total_seconds()
 
             current_idx = st.session_state["listening-idx"]
-            
+
             for i, duration in enumerate(duration_list):
                 st.session_state["listening-idx"] = i
                 display_dialogue(container)
@@ -1034,7 +1032,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state.dbi.add_record_to_cache(record)
 
         # 始终显示当前对话文本
-        display_dialogue(container)
+        display_dialogue()
 
     # endregion
 
