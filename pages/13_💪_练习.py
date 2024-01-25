@@ -322,6 +322,7 @@ def autoplay_audio_and_display_dialogue(container):
         # st.markdown(audio_html, unsafe_allow_html=True)
         # 等待音频播放完毕
         t = duration.total_seconds()
+        time.sleep(t)
         total += t
         time.sleep(t)
     return total
