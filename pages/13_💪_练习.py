@@ -271,18 +271,22 @@ def summarize_in_one_sentence_for(dialogue: str):
 
 def get_and_combine_audio_data():
     dialogue = st.session_state.conversation_scene
-    audio_list = []
+    audio_data_list = []
     for i, sentence in enumerate(dialogue):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        result = get_synthesis_speech(sentence, voice_style[0])
-        audio_list.append(result["audio_data"])
-    return combine_audio_data(audio_list)
+        style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+        sentence_without_speaker_name = re.sub(
+            r"^\w+:\s", "", sentence.replace("**", "")
+        )
+        result = get_synthesis_speech(sentence_without_speaker_name, style)
+        audio_data_list.append(result["audio_data"])
+    return combine_audio_data(audio_data_list)
 
 
 def autoplay_audio_and_display_dialogue(container):
     container.empty()
     dialogue = st.session_state.conversation_scene
-    audio_list = []
+    audio_data_list = []
     duration_list = []
     for i, sentence in enumerate(dialogue):
         # 如果是旁白，使用小女孩的声音
@@ -292,7 +296,7 @@ def autoplay_audio_and_display_dialogue(container):
             r"^\w+:\s", "", sentence.replace("**", "")
         )
         result = get_synthesis_speech(sentence_without_speaker_name, style)
-        audio_list.append(result["audio_data"])
+        audio_data_list.append(result["audio_data"])
         duration_list.append(result["audio_duration"])
 
     content_cols = container.columns(2)
@@ -306,7 +310,7 @@ def autoplay_audio_and_display_dialogue(container):
     # 播放音频并同步显示文本
     for i, duration in enumerate(duration_list):
         # 播放音频
-        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
+        audio_html = audio_autoplay_elem(audio_data_list[i], fmt="wav")
         components.html(audio_html)
         # 检查 session state 的值
         if st.session_state.get("listening-display-state", "英文") == "英文":
@@ -319,24 +323,21 @@ def autoplay_audio_and_display_dialogue(container):
             # 同时显示英文和中文
             slot_1.markdown(f"**{dialogue[i]}**")
             slot_2.markdown(cns[i])
-        # st.markdown(audio_html, unsafe_allow_html=True)
-        # 等待音频播放完毕
         t = duration.total_seconds()
-        # time.sleep(t)
-        total += t
         time.sleep(t)
+        total += t
     return total
 
 
 def autoplay_audio_and_display_article(content_cols):
     article = st.session_state["reading-article"]
-    audio_list = []
+    audio_data_list = []
     durations = []
     total = 0
     for i, paragraph in enumerate(article):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
         result = get_synthesis_speech(paragraph, voice_style[0])
-        audio_list.append(result["audio_data"])
+        audio_data_list.append(result["audio_data"])
         duration = result["audio_duration"]
         total += duration.total_seconds()
         durations.append(duration)
@@ -352,7 +353,7 @@ def autoplay_audio_and_display_article(content_cols):
     for i, duration in enumerate(durations):
         # 计算这一段音频的播放长度与总长度的占比
         # 播放音频
-        audio_html = audio_autoplay_elem(audio_list[i], fmt="wav")
+        audio_html = audio_autoplay_elem(audio_data_list[i], fmt="wav")
         components.html(audio_html)
 
         # 检查 session state 的值
@@ -444,7 +445,6 @@ def process_play_and_record_dialogue(
         content_cols[0].markdown(sentence)
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
-
 
     # 记录学习时长
     word_count = len(sentence.split())
