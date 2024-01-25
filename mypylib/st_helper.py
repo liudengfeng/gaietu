@@ -402,7 +402,7 @@ def is_aside(text):
     return re.match(r"^\(.*\)$", text) is not None
 
 
-@st.cache_data(show_spinner="使用 Azure 将文本合成语音...", max_entries=10000, ttl=60 * 60 * 24)
+@st.cache_data(max_entries=10000, ttl=60 * 60 * 24)
 def get_synthesis_speech(text, voice):
     result = synthesize_speech(
         text,

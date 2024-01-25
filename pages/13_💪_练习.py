@@ -1012,7 +1012,8 @@ if menu is not None and menu.endswith("听说练习"):
                 sentence_without_speaker_name = re.sub(
                     r"^\w+:\s", "", sentence.replace("**", "")
                 )
-                result = get_synthesis_speech(sentence_without_speaker_name, style)
+                with st.spinner(f"使用 Azure 将第{i+1:2d}段文本合成语音..."):
+                    result = get_synthesis_speech(sentence_without_speaker_name, style)
                 audio_data_list.append(result["audio_data"])
                 duration_list.append(result["audio_duration"])
                 total += result["audio_duration"].total_seconds()
