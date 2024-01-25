@@ -862,6 +862,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-idx"] = -1
 
         pronunciation_evaluation_container = st.container()
+        replay_text_placeholder = st.empty()
         st.divider()
         ls_btn_cols = st.columns(9)
         st.divider()
@@ -959,9 +960,8 @@ if menu is not None and menu.endswith("听说练习"):
             and audio_info
             and st.session_state["listening-pronunciation-assessment"]
         ):
-            elem = pronunciation_evaluation_container.empty()
             autoplay_audio_and_display_text(
-                elem,
+                replay_text_placeholder,
                 audio_info["bytes"],
                 st.session_state["listening-pronunciation-assessment"][
                     "recognized_words"
