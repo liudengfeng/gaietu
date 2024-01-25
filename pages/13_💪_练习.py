@@ -311,8 +311,7 @@ def autoplay_audio_and_display_dialogue(container):
     for i, duration in enumerate(duration_list):
         # 播放音频
         audio_html = audio_autoplay_elem(audio_data_list[i], fmt="wav")
-        # components.html(audio_html)
-        container.markdown(audio_html, unsafe_allow_html=True)
+        components.html(audio_html)
         # 检查 session state 的值
         if st.session_state.get("listening-display-state", "英文") == "英文":
             # 显示英文
@@ -327,7 +326,6 @@ def autoplay_audio_and_display_dialogue(container):
         t = duration.total_seconds()
         time.sleep(t)
         total += t
-        st.rerun()
     return total
 
 
