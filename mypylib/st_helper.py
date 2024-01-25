@@ -331,11 +331,10 @@ def autoplay_audio_and_display_text(
     auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
     components.html(auto_html)
 
-    previous_offset = 0
     for (
         accumulated_text,
         duration,
-        offset,
+        _,
         _,
     ) in get_syllable_durations_and_offsets(words):
         # 更新文本
@@ -347,6 +346,7 @@ def autoplay_audio_and_display_text(
         time.sleep(duration)  # 暂停的时间等于当前音节的持续时间
 
     elem.markdown(accumulated_text)
+    st.rerun()
 
 
 # endregion
