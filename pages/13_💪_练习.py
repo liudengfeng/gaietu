@@ -562,6 +562,7 @@ def check_listening_test_answer(container, level, selected_scenario):
         "topic": selected_scenario,
         "level": level,
         "score": percentage,
+        "duration": time.now(pytz.UTC) - st.session_state["listening-start-time"],
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -610,6 +611,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         "topic": genre,
         "level": f"{difficulty}-{exercise_type}",
         "score": percentage,
+        "duration": time.now(pytz.UTC) - st.session_state["reading-start-time"],
         "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -1063,6 +1065,9 @@ if menu is not None and menu.endswith("听说练习"):
     with tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
 
+        if "listening-start-time" not in st.session_state:
+            st.session_state["listening-start-time"] = None
+        
         if len(st.session_state.conversation_scene) == 0:
             st.warning("请先配置场景")
             # st.stop()
@@ -1142,6 +1147,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-test-answer"] = [None] * len(
                 st.session_state["listening-test"]
             )
+            st.session_state["listening-start-time"] = time.now(pytz.UTC)
             # 更新
             st.rerun()
 
@@ -1471,6 +1477,8 @@ if menu is not None and menu.endswith("阅读练习"):
 
     with tabs[2]:
         st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
+        if "reading-start-time" not in st.session_state:
+            st.session_state["reading-start-time"] = None
 
         if len(st.session_state["reading-article"]) == 0:
             st.warning("请先配置阅读理解练习材料")
@@ -1547,6 +1555,7 @@ if menu is not None and menu.endswith("阅读练习"):
             st.session_state["reading-test-answer"] = [None] * len(
                 st.session_state["reading-test"]
             )
+            st.session_state["reading-start-time"] = datetime.now(pytz.UTC)
             # 更新
             st.rerun()
 
