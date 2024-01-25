@@ -849,7 +849,7 @@ if menu is not None and menu.endswith("听说练习"):
         with st.expander("✨ 跟读录音提示", expanded=False):
             st.markdown(
                 """\
-- 跟读当前显示的对话内容，以进行发音练习，不包括发言人的名称。
+- 跟读当前显示的对话内容【不包括发言人的名称】，以进行发音练习。
 - 首次点击 '录音[⏸️]' 按钮，开始录音。
 - 再次点击 '停止[🔴]' 按钮，结束录音。
 - 在跟读练习中，系统将对用户的发音进行评估。评估的标准包括发音的准确性、流畅性、完整性以及韵律感。
@@ -1012,7 +1012,7 @@ if menu is not None and menu.endswith("听说练习"):
                 sentence_without_speaker_name = re.sub(
                     r"^\w+:\s", "", sentence.replace("**", "")
                 )
-                with st.spinner(f"使用 Azure 将第{i+1:2d}段文本合成语音..."):
+                with st.spinner(f"使用 Azure 将第 {i+1:2d} 轮对话文本合成语音..."):
                     result = get_synthesis_speech(sentence_without_speaker_name, style)
                 audio_data_list.append(result["audio_data"])
                 duration_list.append(result["audio_duration"])
@@ -1026,7 +1026,7 @@ if menu is not None and menu.endswith("听说练习"):
                 play_and_record_dialogue(
                     m_voice_style, fm_voice_style, difficulty, selected_scenario
                 )
-                time.sleep(duration.total_seconds())
+                time.sleep(duration.total_seconds() + 0.2)
             # 恢复指针
             st.session_state["listening-idx"] = current_idx
             st.session_state["listening-learning-times"] = len(
