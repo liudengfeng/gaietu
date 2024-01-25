@@ -415,10 +415,6 @@ def process_play_and_record_dialogue(
 ):
     container.empty()
 
-    # beijing_tz = timezone('Asia/Shanghai')
-    # beijing_time = datetime.now(beijing_tz)
-    # st.write(beijing_time)
-
     dialogue = st.session_state.conversation_scene
     if dialogue is None or len(dialogue) == 0:
         return
@@ -440,19 +436,14 @@ def process_play_and_record_dialogue(
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
     elif st.session_state["listening-display-state"] == "中文":
-        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
     else:
         content_cols[0].markdown("英文")
         content_cols[0].markdown(sentence)
-        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
 
-    # content_cols[0].audio(result["audio_data"], format="audio/wav")
-
-    # time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
     word_count = len(sentence.split())
