@@ -36,6 +36,7 @@ from mypylib.st_helper import (
     update_and_display_progress,
 )
 from mypylib.word_utils import (
+    estimate_cefr_level,
     get_lowest_cefr_level,
     get_unique_words,
     get_word_image_urls,
@@ -1223,13 +1224,18 @@ elif menu == "词典管理":
     # endregion
 
     # region 更新分级
-    with dict_tabs[dict_items.index("更新分级")]:
-        st.subheader("打印未分级的单词，对简版词典单词分级更新", divider="rainbow", anchor=False)
 
-        if st.button("打印", help="✨ 打印未分级的单词"):
+    with dict_tabs[dict_items.index("更新分级")]:
+        st.subheader("对简版词典单词分级更新", divider="rainbow", anchor=False)
+        if st.button("更新", help="✨ 打印未分级的单词"):
             words = st.session_state.dbi.find_docs_with_empty_level()
-            st.write(f"待处理的文档数量：{len(words)}")
-            st.write(f"{words=}")
+            n = len(words)
+            bar = st.progress(0)
+            d = {}
+            for i, word in enumerate(words):
+                d[word] = estimate_cefr_level(word)
+                bar.progress(((i + 1) / n) * 100, text=word)
+            st.session_state.dbi.batch_update_levels(d)
 
     # endregion
 # endregion

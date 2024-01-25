@@ -625,15 +625,18 @@ class DbInterface:
         docs = mini_dict_ref.where(filter=FieldFilter("level", "==", None)).stream()
         return [doc.id for doc in docs]
 
-    def batch_update_levels(self, cefr_words):
-        batch = self.db.batch()
-
-        for level, words in cefr_words.items():
-            for word in words:
+    def batch_update_levels(self, words_cefr):
+        words = list(words_cefr.keys())
+        for i in range(0, len(words), 500):
+            batch = self.db.batch()
+            words_batch = words[i : i + 500]
+            for word in words_batch:
                 doc_ref = self.db.collection("mini_dict").document(word)
-                batch.update(doc_ref, {"level": level})
-
-        batch.commit()
+                doc = doc_ref.get()
+                if not doc.exists or "level" in doc.to_dict():
+                    continue
+                batch.update(doc_ref, {"level": words_cefr[word]})
+            batch.commit()
 
     def find_docs_with_category(self, category):
         # 获取 mini_dict 集合的引用

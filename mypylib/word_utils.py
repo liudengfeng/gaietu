@@ -22,6 +22,12 @@ from .azure_speech import synthesize_speech_to_file
 CURRENT_CWD: Path = Path(__file__).parent.parent
 
 
+def get_word_cefr_map(name, fp):
+    assert name in ("us", "uk"), "只支持`US、UK`二种发音。"
+    with open(os.path.join(fp, f"{name}_cefr.json"), "r") as f:
+        return json.load(f)
+
+
 def get_unique_words(
     word_file_path: str, include_phrases: bool, cate: str = "all"
 ) -> list:
@@ -124,6 +130,31 @@ def get_lowest_cefr_level(word, cefr=None):
     str or None: The lowest CEFR level of the word, or None if the word is not found in the CEFR dictionary.
     """
     levels = ["A1", "A2", "B1", "B2", "C1", "C2"]
+    if cefr is None:
+        fp = os.path.join(
+            CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
+        )
+        with open(fp, "r", encoding="utf-8") as f:
+            cefr = json.load(f)
+    for level in levels:
+        level_flag = f"1-CEFR-{level}"
+        if word in cefr[level_flag]:
+            return level
+    return None
+
+
+def get_highest_cefr_level(word, cefr=None):
+    """
+    Get the highest CEFR level of a given word.
+
+    Parameters:
+    word (str): The word to check the CEFR level for.
+    cefr (dict, optional): The CEFR dictionary. If None, the dictionary will be loaded from the file.
+
+    Returns:
+    str or None: The highest CEFR level of the word, or None if the word is not found in the CEFR dictionary.
+    """
+    levels = ["C2", "C1", "B2", "B1", "A2", "A1"]
     if cefr is None:
         fp = os.path.join(
             CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
@@ -325,3 +356,32 @@ def get_cefr_vocabulary_list(texts):
                 cefr_vocabulary[cefr_level].add(lemma)
 
     return cefr_vocabulary
+
+
+def estimate_cefr_level(text):
+    model_name = "en_core_web_sm"
+    ensure_model_downloaded(model_name)
+    nlp = spacy.load(model_name)
+
+    fp = os.path.join(
+        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
+    )
+    with open(fp, "r", encoding="utf-8") as f:
+        cefr = json.load(f)
+    cefr_levels = {"A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6}
+    words = text.split(" ")
+    highest_cefr_level = None
+    for word in words:
+        doc = nlp(word)
+        for token in doc:
+            if not token.is_punct:
+                lemma = token.lemma_
+                cefr_level = get_highest_cefr_level(lemma, cefr)
+                # 在比较时使用映射的数值
+                if cefr_level is not None and (
+                    highest_cefr_level is None
+                    or cefr_levels[cefr_level] > cefr_levels[highest_cefr_level]
+                ):
+                    highest_cefr_level = cefr_level
+
+    return highest_cefr_level
