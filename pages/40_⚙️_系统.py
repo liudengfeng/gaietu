@@ -1031,7 +1031,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片", "简版类别"]
+    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片", "简版类别", "更新分级"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
@@ -1222,6 +1222,16 @@ elif menu == "词典管理":
 
     # endregion
 
+    # region 更新分级
+    with dict_tabs[dict_items.index("更新分级")]:
+        st.subheader("打印未分级的单词，对简版词典单词分级更新", divider="rainbow", anchor=False)
+
+        if st.button("打印", help="✨ 打印未分级的单词"):
+            words = st.session_state.dbi.find_docs_with_empty_level()
+            st.write(f"待处理的文档数量：{len(words)}")
+            st.write(f"{words=}")
+
+    # endregion
 # endregion
 
 # # region 转移数据库
