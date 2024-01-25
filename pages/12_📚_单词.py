@@ -170,6 +170,23 @@ def display_word_images(word, container):
         col.image(img, use_column_width=True, caption=caption[i])
 
 
+def new_display_word_images(word):
+    urls = select_word_image_urls(word)
+    cols = st.columns(len(urls))
+    caption = [f"图片 {i+1}" for i in range(len(urls))]
+
+    for i, col in enumerate(cols):
+        # 下载图片
+        response = requests.get(urls[i])
+        img = Image.open(BytesIO(response.content))
+
+        # 调整图片尺寸
+        new_size = (400, 400)
+        img = img.resize(new_size)
+        # 显示图片
+        col.image(img, use_column_width=True, caption=caption[i])
+
+
 # endregion
 
 # region 闪卡状态
@@ -323,8 +340,8 @@ def view_flash_word(container, view_detail=True):
         display_word_images(word, container)
         view_pos(container, word_info, word)
     else:
-        placeholder = st.empty()
-        display_word_images(word, placeholder)
+        with st.empty():
+            new_display_word_images(word)
 
 
 def auto_play_flash_word(voice_style):
