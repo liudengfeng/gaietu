@@ -323,8 +323,8 @@ def view_flash_word(container, view_detail=True):
         display_word_images(word, container)
         view_pos(container, word_info, word)
     else:
-        container = st.container()
-        display_word_images(word, container)
+        placeholder = st.empty()
+        display_word_images(word, placeholder)
 
 
 def auto_play_flash_word(voice_style):
