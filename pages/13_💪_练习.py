@@ -1456,7 +1456,6 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if full_btn:
             total = autoplay_audio_and_display_article(content_cols)
-
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
@@ -1470,6 +1469,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 word_count=word_count,
             )
             st.session_state.dbi.add_record_to_cache(record)
+            st.rerun()
 
     # endregion
 
