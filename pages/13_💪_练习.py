@@ -279,7 +279,8 @@ def get_and_combine_audio_data():
         sentence_without_speaker_name = re.sub(
             r"^\w+:\s", "", sentence.replace("**", "")
         )
-        result = get_synthesis_speech(sentence_without_speaker_name, style)
+        with st.spinner(f"使用 Azure 将文本合成语音..."):
+            result = get_synthesis_speech(sentence_without_speaker_name, style)
         audio_data_list.append(result["audio_data"])
     return combine_audio_data(audio_data_list)
 
@@ -291,7 +292,8 @@ def autoplay_audio_and_display_article(content_cols):
     total = 0
     for i, paragraph in enumerate(article):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        result = get_synthesis_speech(paragraph, voice_style[0])
+        with st.spinner(f"使用 Azure 将文本合成语音..."):
+            result = get_synthesis_speech(paragraph, voice_style[0])
         audio_data_list.append(result["audio_data"])
         duration = result["audio_duration"]
         total += duration.total_seconds()
@@ -337,7 +339,8 @@ def process_play_and_record_article(
     idx = st.session_state["reading-exercise-idx"]
     paragraph = paragraphs[idx]
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
-    result = get_synthesis_speech(paragraph, voice_style[0])
+    with st.spinner(f"使用 Azure 将文本合成语音..."):
+        result = get_synthesis_speech(paragraph, voice_style[0])
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
@@ -405,7 +408,8 @@ def play_and_record_dialogue(
     voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
     sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
-    result = get_synthesis_speech(sentence_without_speaker_name, style)
+    with st.spinner(f"使用 Azure 将文本合成语音..."):
+        result = get_synthesis_speech(sentence_without_speaker_name, style)
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
@@ -438,7 +442,8 @@ def view_listening_test(container, difficulty, selected_scenario):
     user_answer_idx = st.session_state["listening-test-answer"][idx]
     t = 0
     if st.session_state["listening-test-display-state"] == "语音":
-        question_audio = get_synthesis_speech(question, m_voice_style[0])
+        with st.spinner(f"使用 Azure 将文本合成语音..."):
+            question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
         t = question_audio["audio_duration"].total_seconds()
@@ -482,7 +487,8 @@ def view_reading_test(container, difficulty, exercise_type, genre):
     user_answer_idx = st.session_state["reading-test-answer"][idx]
     t = 0
     if st.session_state["reading-test-display-state"] == "语音":
-        question_audio = get_synthesis_speech(question, m_voice_style[0])
+        with st.spinner(f"使用 Azure 将文本合成语音..."):
+            question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
         t = question_audio["audio_duration"].total_seconds()
@@ -1413,6 +1419,15 @@ if menu is not None and menu.endswith("阅读练习"):
             else:
                 st.session_state["ra-display-state"] = "英文"
 
+            if st.session_state["reading-exercise-idx"] != -1:
+                process_play_and_record_article(
+                    content_cols,
+                    m_voice_style,
+                    fm_voice_style,
+                    difficulty,
+                    genre,
+                )
+
         if prev_btn or next_btn or replay_btn:
             process_play_and_record_article(
                 content_cols,
@@ -1424,6 +1439,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if full_btn:
             total = autoplay_audio_and_display_article(content_cols)
+            
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
