@@ -452,7 +452,7 @@ def process_play_and_record_dialogue(
 
     # content_cols[0].audio(result["audio_data"], format="audio/wav")
 
-    time.sleep(result["audio_duration"].total_seconds())
+    # time.sleep(result["audio_duration"].total_seconds())
 
     # 记录学习时长
     word_count = len(sentence.split())
