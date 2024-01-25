@@ -4,15 +4,16 @@ import logging
 import random
 import re
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
-from pytz import timezone
+
+import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
-from mypylib.azure_pronunciation_assessment import pronunciation_assessment_from_stream
 
+from mypylib.azure_pronunciation_assessment import pronunciation_assessment_from_stream
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
     CEFR_LEVEL_TOPIC,
@@ -31,9 +32,9 @@ from mypylib.google_ai import (
     summarize_in_one_sentence,
 )
 from mypylib.st_helper import (
+    PRONUNCIATION_SCORE_BADGE_MAPS,
     TOEKN_HELP_INFO,
     WORD_COUNT_BADGE_MAPS,
-    PRONUNCIATION_SCORE_BADGE_MAPS,
     autoplay_audio_and_display_text,
     check_access,
     check_and_force_logout,
@@ -554,7 +555,7 @@ def check_listening_test_answer(container, level, selected_scenario):
         "topic": selected_scenario,
         "level": level,
         "score": percentage,
-        "record_time": datetime.now(timezone.utc),
+        "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
 
@@ -602,7 +603,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         "topic": genre,
         "level": f"{difficulty}-{exercise_type}",
         "score": percentage,
-        "record_time": datetime.now(timezone.utc),
+        "record_time": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.save_daily_quiz_results(test_dict)
 
@@ -962,7 +963,7 @@ if menu is not None and menu.endswith("听说练习"):
                 "topic": scenario_category,
                 "level": f"{difficulty}-{len(reference_text.split())}",
                 "score": "pronunciation_score",
-                "record_time": datetime.now(timezone.utc),
+                "record_time": datetime.now(pytz.UTC),
             }
             st.session_state.dbi.save_daily_quiz_results(test_dict)
 
