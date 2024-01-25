@@ -955,6 +955,17 @@ if menu is not None and menu.endswith("听说练习"):
                 "listening-pronunciation-assessment",
             )
 
+            # 添加成绩记录
+            test_dict = {
+                "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+                "item": "发音评估",
+                "topic": scenario_category,
+                "level": f"{difficulty}-{len(reference_text.split())}",
+                "score": "pronunciation_score",
+                "record_time": datetime.now(timezone.utc),
+            }
+            st.session_state.dbi.save_daily_quiz_results(test_dict)
+
         if (
             play_btn
             and audio_info
