@@ -370,7 +370,7 @@ PRONUNCIATION_SCORE_BADGE_MAPS = OrderedDict(
     {
         "pronunciation_score": (
             "green",
-            "发音分数",
+            "综合评分",
             "表示给定语音发音质量的总体分数。这是由 AccuracyScore、FluencyScore、CompletenessScore (如果适用)、ProsodyScore (如果适用)加权聚合而成。",
             "success",
         ),
