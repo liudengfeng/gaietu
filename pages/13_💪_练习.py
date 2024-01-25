@@ -325,9 +325,9 @@ def autoplay_audio_and_display_dialogue(container):
             slot_1.markdown(f"**{dialogue[i]}**")
             slot_2.markdown(cns[i])
         t = duration.total_seconds()
-        # time.sleep(t)
+        time.sleep(t)
         total += t
-        # st.rerun()
+        st.rerun()
     return total
 
 
