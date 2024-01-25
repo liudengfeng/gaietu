@@ -444,46 +444,6 @@ def play_and_record_dialogue(
     process_learning_record(record, "listening-learning-times")
 
 
-def process_play_and_record_dialogue(
-    container, m_voice_style, fm_voice_style, difficulty, selected_scenario
-):
-    container.empty()
-
-    dialogue = st.session_state.conversation_scene
-    if dialogue is None or len(dialogue) == 0:
-        return
-    idx = st.session_state["listening-idx"]
-    if idx == -1:
-        return
-    cns = translate_text(dialogue, "zh-CN", True)
-    sentence = dialogue[idx]
-    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
-    style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
-    sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
-    result = get_synthesis_speech(sentence_without_speaker_name, style)
-
-    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
-    components.html(audio_html)
-
-    content_cols = container.columns(2)
-    if st.session_state["listening-display-state"] == "英文":
-        content_cols[0].markdown("英文")
-        content_cols[0].markdown(sentence)
-    elif st.session_state["listening-display-state"] == "中文":
-        content_cols[1].markdown("中文")
-        content_cols[1].markdown(cns[idx])
-    else:
-        content_cols[0].markdown("英文")
-        content_cols[0].markdown(sentence)
-        content_cols[1].markdown("中文")
-        content_cols[1].markdown(cns[idx])
-
-    # 记录学习时长
-    word_count = len(sentence.split())
-    record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
-    process_learning_record(record, "listening-learning-times")
-
-
 def on_prev_btn_click(key):
     st.session_state[key] -= 1
 
@@ -1075,7 +1035,16 @@ if menu is not None and menu.endswith("听说练习"):
                 duration_list.append(result["audio_duration"])
                 total += result["audio_duration"].total_seconds()
 
-            autoplay_audio_and_display_dialogue(audio_data_list, duration_list)
+            # autoplay_audio_and_display_dialogue(audio_data_list, duration_list)
+            current_idx = st.session_state["listening-idx"]
+            for i, duration in enumerate(duration_list):
+                st.session_state["listening-idx"] = i
+                play_and_record_dialogue(
+                    m_voice_style, fm_voice_style, difficulty, selected_scenario
+                )
+                time.sleep(duration.total_seconds())
+            # 恢复指针
+            st.session_state["listening-idx"] = current_idx
             st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
             )
