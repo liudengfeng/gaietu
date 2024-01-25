@@ -1142,14 +1142,6 @@ if menu is not None and menu.endswith("听说练习"):
                 st.warning("请先切换到语音模式")
                 st.stop()
 
-            view_listening_test(container, difficulty, selected_scenario)
-
-        if prev_test_btn:
-            view_listening_test(container, difficulty, selected_scenario)
-
-        if next_test_btn:
-            view_listening_test(container, difficulty, selected_scenario)
-
         if sumbit_test_btn:
             container.empty()
 
@@ -1163,6 +1155,9 @@ if menu is not None and menu.endswith("听说练习"):
                 container.warning("您尚未完成测试。")
 
             check_listening_test_answer(container, difficulty, selected_scenario)
+        else:
+            if st.session_state["listening-test-idx"] != -1:
+                view_listening_test(container, difficulty, selected_scenario)
 
     # endregion
 
@@ -1439,7 +1434,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if full_btn:
             total = autoplay_audio_and_display_article(content_cols)
-            
+
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
