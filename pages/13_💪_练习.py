@@ -283,15 +283,14 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_data_list)
 
 
-def autoplay_audio_and_display_dialogue(container, audio_data_list, duration_list):
-    content_cols = container.columns(2)
+def autoplay_audio_and_display_dialogue(audio_data_list, duration_list):
+    content_cols = st.columns(2)
     # 创建一个空的插槽
     slot_1 = content_cols[0].empty()
     slot_2 = content_cols[1].empty()
     # 如果需要显示中文，那么翻译文本
     if st.session_state.get("listening-display-state", "英文") != "英文":
         cns = translate_text(dialogue, "zh-CN", True)
-    total = 0
     # 播放音频并同步显示文本
     for i, duration in enumerate(duration_list):
         # 播放音频
@@ -1030,9 +1029,7 @@ if menu is not None and menu.endswith("听说练习"):
                 duration_list.append(result["audio_duration"])
                 total += result["audio_duration"].total_seconds()
 
-            autoplay_audio_and_display_dialogue(
-                container, audio_data_list, duration_list
-            )
+            autoplay_audio_and_display_dialogue(audio_data_list, duration_list)
             st.session_state["listening-learning-times"] = len(
                 st.session_state.conversation_scene
             )

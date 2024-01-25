@@ -99,7 +99,6 @@ def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
     </audio>\
     <script>\
         var audio = document.querySelector('#{audio_id}');\
-        audio.onended = function() {{audio.remove();}};\
         audio.load();\
         audio.play();\
     </script>\
