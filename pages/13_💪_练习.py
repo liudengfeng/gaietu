@@ -1081,6 +1081,9 @@ if menu is not None and menu.endswith("听说练习"):
             else 1,
             cols[0].empty(),
         )
+        
+        st.divider()
+
         ls_text_btn_cols = st.columns(8)
 
         st.divider()
