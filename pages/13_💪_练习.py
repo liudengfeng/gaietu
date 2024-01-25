@@ -1510,9 +1510,15 @@ if menu is not None and menu.endswith("阅读练习"):
             # 更新
             st.rerun()
 
-        if rpl_test_btn:
+        if prev_test_btn:
+            view_reading_test(container, difficulty, exercise_type, genre)
+
+        if next_test_btn:
+            view_reading_test(container, difficulty, exercise_type, genre)
+
+        if prev_test_btn:
             container.empty()
-            st.session_state["reading-test-display-state"] = "语音"
+            st.session_state["reading-test-display-state"] = "文本"
 
         if sumbit_test_btn:
             container.empty()
@@ -1527,9 +1533,6 @@ if menu is not None and menu.endswith("阅读练习"):
                 container.warning("您尚未完成测试。")
 
             check_reading_test_answer(container, difficulty, exercise_type, genre)
-        else:
-            view_reading_test(container, difficulty, exercise_type, genre)
-            st.session_state["reading-test-display-state"] = "文本"
 
     # endregion
 
