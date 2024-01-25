@@ -326,7 +326,7 @@ def autoplay_audio_and_display_article(content_cols):
             slot_1.markdown(f"**{article[i]}**")
             slot_2.markdown(cns[i])
         # 等待音频播放完毕
-        t = duration.total_seconds()
+        t = duration.total_seconds() + 0.5
         time.sleep(t)
     return total
 
@@ -359,8 +359,8 @@ def process_play_and_record_article(
         # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
-
-    time.sleep(result["audio_duration"].total_seconds())
+    t = result["audio_duration"].total_seconds() + 0.5
+    time.sleep(t)
 
     # 记录学习时长
     word_count = len(paragraph.split())
@@ -444,7 +444,7 @@ def view_listening_test(container, difficulty, selected_scenario):
             question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
-        t = question_audio["audio_duration"].total_seconds()
+        t = question_audio["audio_duration"].total_seconds() + 0.5
         time.sleep(t)
     else:
         container.markdown(question)
@@ -489,7 +489,7 @@ def view_reading_test(container, difficulty, exercise_type, genre):
             question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
-        t = question_audio["audio_duration"].total_seconds()
+        t = question_audio["audio_duration"].total_seconds() + 0.5
         time.sleep(t)
     else:
         container.markdown(question)
@@ -1036,7 +1036,7 @@ if menu is not None and menu.endswith("听说练习"):
                 play_and_record_dialogue(
                     m_voice_style, fm_voice_style, difficulty, selected_scenario
                 )
-                time.sleep(duration.total_seconds() + 0.2)
+                time.sleep(duration.total_seconds() + 0.5)
             # 恢复指针
             st.session_state["listening-idx"] = current_idx
             st.session_state["listening-learning-times"] = len(
