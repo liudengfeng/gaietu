@@ -371,7 +371,7 @@ def estimate_cefr_level(text):
         doc = nlp(word)
         for token in doc:
             if not token.is_punct:
-                lemma = token.lemma_
+                lemma = token.lemma_.lower()
                 cefr_level = get_highest_cefr_level(lemma, cefr)
                 # 在比较时使用映射的数值
                 if cefr_level is not None and (
