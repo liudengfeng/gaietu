@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 import uuid
@@ -206,9 +207,13 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
 
+    now = datetime.date.today()
+    weekday = now.weekday()
+    # 计算当前日期所在周的周一
+    start_date_default = now - datetime.timedelta(days=weekday)
     with st.sidebar:
-        start_date = st.date_input("开始日期")
-        end_date = st.date_input("结束日期")
+        start_date = st.date_input("开始日期", value=start_date_default)
+        end_date = st.date_input("结束日期", value=now)
 
     # 创建列映射
     column_mapping = {
@@ -223,19 +228,17 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
     current_records.rename(columns=column_mapping, inplace=True)
 
-    study_report_items = ["学习时长", "学习项目", "单词量", "个人排位"]
+    study_report_items = ["学习时间", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
 
-    with study_report_tabs[study_report_items.index("学习时长")]:
-        st.subheader("学习时长", divider="rainbow")
+    with study_report_tabs[study_report_items.index("学习时间")]:
+        st.subheader("学习时间", divider="rainbow")
         if current_records.empty:
             st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
             cols = st.columns(3)
             with cols[1]:
-                project_time = (
-                    current_records.groupby("项目")["时长"].sum().reset_index()
-                )
+                project_time = current_records.groupby("项目")["时长"].sum().reset_index()
                 fig = px.pie(
                     project_time, values="时长", names="项目", title="你的学习时间是如何分配的？"
                 )
