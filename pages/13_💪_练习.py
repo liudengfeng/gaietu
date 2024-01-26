@@ -433,6 +433,7 @@ def on_word_test_radio_change(idx, options):
 
 
 def view_listening_test(container, difficulty, selected_scenario, play=False):
+    container.empty()
     idx = st.session_state["listening-test-idx"]
     test = st.session_state["listening-test"][idx]
     question = test["question"]
@@ -1188,7 +1189,6 @@ if menu is not None and menu.endswith("听说练习"):
 
             check_listening_test_answer(container, difficulty, selected_scenario)
         else:
-            container.empty()
             view_listening_test(container, difficulty, selected_scenario)
 
     # endregion
