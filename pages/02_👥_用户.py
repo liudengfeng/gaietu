@@ -206,6 +206,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
 
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
+    user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
 
     now = datetime.date.today()
     weekday = now.weekday()
@@ -222,7 +223,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "duration": "时长",
         "word_count": "字数",
         "phone_number": "手机号码",
-        "record_time": "学习时间",
+        "record_time": "学习日期",
     }
 
     current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
@@ -236,6 +237,8 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         if current_records.empty:
             st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
+            current_records["时长"] = current_records["时长"] / 60
+            current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(user_tz)
             cols = st.columns(3)
             with cols[1]:
                 project_time = current_records.groupby("项目")["时长"].sum().reset_index()
@@ -243,6 +246,21 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     project_time, values="时长", names="项目", title="你的学习时间是如何分配的？"
                 )
                 fig.update_layout(title_x=0.27)
+                st.plotly_chart(fig)
+
+            with cols[1]:
+                daily_time = (
+                    current_records.groupby(current_records["学习日期"].dt.date)["时长"]
+                    .sum()
+                    .reset_index()
+                )
+                # 创建柱状图
+                fig = px.bar(daily_time, x="学习日期", y="时长", title="每天的学习时间")
+
+                # 更新图表布局
+                fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
+
+                # 显示图表
                 st.plotly_chart(fig)
 
             # with cols[1]:
