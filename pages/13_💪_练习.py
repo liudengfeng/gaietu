@@ -432,33 +432,19 @@ def on_word_test_radio_change(idx, options):
     st.session_state["listening-test-answer"][idx] = options.index(current)
 
 
-def view_listening_test(container, difficulty, selected_scenario, play=False):
-    container.empty()
+def play_listening_test(difficulty, selected_scenario):
     idx = st.session_state["listening-test-idx"]
     test = st.session_state["listening-test"][idx]
     question = test["question"]
-    options = test["options"]
-    user_answer_idx = st.session_state["listening-test-answer"][idx]
+
     t = 0
-    if play and st.session_state["listening-test-display-state"] == "语音":
+    if st.session_state["listening-test-display-state"] == "语音":
         with st.spinner(f"使用 Azure 将文本合成语音..."):
             question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
         components.html(audio_html)
         t = question_audio["audio_duration"].total_seconds() + 0.5
         time.sleep(t)
-    else:
-        container.markdown(question)
-
-    container.radio(
-        "选项",
-        options,
-        index=user_answer_idx,
-        label_visibility="collapsed",
-        on_change=on_word_test_radio_change,
-        args=(idx, options),
-        key="listening-test-options",
-    )
 
     # 添加一个学习时间记录
     record = LearningTime(
@@ -469,6 +455,26 @@ def view_listening_test(container, difficulty, selected_scenario, play=False):
         duration=t,
     )
     st.session_state.dbi.add_record_to_cache(record)
+
+
+def view_listening_test(container):
+    container.empty()
+    idx = st.session_state["listening-test-idx"]
+    test = st.session_state["listening-test"][idx]
+    question = test["question"]
+    options = test["options"]
+    user_answer_idx = st.session_state["listening-test-answer"][idx]
+    if st.session_state["listening-test-display-state"] != "语音":
+        container.markdown(question)
+    container.radio(
+        "选项",
+        options,
+        index=user_answer_idx,
+        label_visibility="collapsed",
+        on_change=on_word_test_radio_change,
+        args=(idx, options),
+        key="listening-test-options",
+    )
 
 
 def on_reading_test_radio_change(idx, options):
@@ -1163,17 +1169,17 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["listening-test-display-state"] = "文本"
 
             if st.session_state["listening-test-idx"] != -1:
-                view_listening_test(container, difficulty, selected_scenario, True)
+                play_listening_test(difficulty, selected_scenario)
 
         if rpl_test_btn:
             if st.session_state["listening-test-idx"] != -1:
-                view_listening_test(container, difficulty, selected_scenario, True)
+                play_listening_test(difficulty, selected_scenario)
 
         if listening_prev_test_btn:
-            view_listening_test(container, difficulty, selected_scenario, True)
+            play_listening_test(difficulty, selected_scenario)
 
         if listening_next_test_btn:
-            view_listening_test(container, difficulty, selected_scenario, True)
+            play_listening_test(difficulty, selected_scenario)
 
         if sumbit_test_btn:
             container.empty()
@@ -1189,7 +1195,8 @@ if menu is not None and menu.endswith("听说练习"):
 
             check_listening_test_answer(container, difficulty, selected_scenario)
         else:
-            view_listening_test(container, difficulty, selected_scenario)
+            if st.session_state["listening-test-idx"] != -1:
+                view_listening_test(container)
 
     # endregion
 
