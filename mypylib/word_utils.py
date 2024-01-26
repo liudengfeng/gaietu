@@ -10,7 +10,7 @@ from collections import defaultdict
 from io import BytesIO
 from pathlib import Path
 from typing import Union
-
+import subprocess
 import requests
 from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
 from gtts import gTTS
@@ -324,16 +324,12 @@ def ensure_model_downloaded(model_name="en_core_web_sm"):
         spacy.load(model_name)
         print(f"{model_name} is already downloaded.")
     except OSError:
-        import os
-
-        print(f"{model_name} not found. Downloading...")
-        os.system(f"python -m spacy download {model_name}")
-        print(f"{model_name} downloaded.")
+        print(f"{model_name} not found.")
 
 
 def get_cefr_vocabulary_list(texts):
     model_name = "en_core_web_sm"
-    ensure_model_downloaded(model_name)
+    # ensure_model_downloaded(model_name)
     nlp = spacy.load(model_name)
     # lemmatizer = nlp.get_pipe("lemmatizer")
     fp = os.path.join(
@@ -360,7 +356,7 @@ def get_cefr_vocabulary_list(texts):
 
 def estimate_cefr_level(text):
     model_name = "en_core_web_sm"
-    ensure_model_downloaded(model_name)
+    # ensure_model_downloaded(model_name)
     nlp = spacy.load(model_name)
 
     fp = os.path.join(
