@@ -237,7 +237,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     current_records.groupby("项目")["时长"].sum().reset_index()
                 )
                 fig = px.pie(
-                    project_time, values="时长", names="项目", title="学习项目时间分布"
+                    project_time, values="时长", names="项目", title="你的学习时间是如何分配的？"
                 )
                 fig.update_layout(title_x=0.33)
                 st.plotly_chart(fig)
