@@ -351,11 +351,13 @@ def auto_play_flash_word(voice_style):
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
+    # 统计单词词意测试的单词数量
     if words_key == "word-tests":
         word_count = 0
         for value in word.values():
             if isinstance(value, str):
                 word_count += len(value.split())
+            # 也可能为列表
             elif isinstance(value, list):
                 word_count += sum(len(v.split()) for v in value)
     else:
