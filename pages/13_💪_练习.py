@@ -1188,6 +1188,7 @@ if menu is not None and menu.endswith("听说练习"):
 
             check_listening_test_answer(container, difficulty, selected_scenario)
         else:
+            container.empty()
             view_listening_test(container, difficulty, selected_scenario)
 
     # endregion
