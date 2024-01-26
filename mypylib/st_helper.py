@@ -298,7 +298,7 @@ def view_md_badges(
     for i, t in enumerate(badge_maps.keys()):
         n = d.get(t, None)
         if n is None:
-            num = ""
+            num = "0"
         elif isinstance(n, int):
             num = f"{n:3d}"
         elif isinstance(n, float):
