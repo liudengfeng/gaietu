@@ -3,6 +3,8 @@ import time
 import uuid
 from pathlib import Path
 
+import pandas as pd
+import plotly.express as px
 import pytz
 import streamlit as st
 from azure.core.exceptions import ResourceNotFoundError
@@ -12,7 +14,7 @@ from azure.storage.blob import BlobServiceClient
 from PIL import Image
 
 from mypylib.auth_utils import is_valid_email
-from mypylib.constants import PROVINCES, CEFR_LEVEL_MAPS
+from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
@@ -21,6 +23,7 @@ from mypylib.st_helper import (
     on_page_to,
     setup_logger,
 )
+from mypylib.statistics import get_records
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 FEEDBACK_DIR = CURRENT_CWD / "resource" / "feedback"
@@ -55,7 +58,7 @@ emojis = [
     ":bar_chart:",
     ":memo:",
 ]
-item_names = ["更新信息", "重置密码", "统计报表", "问题反馈"]
+item_names = ["更新信息", "重置密码", "学习报告", "问题反馈"]
 items = [f"{e} {n}" for e, n in zip(emojis, item_names)]
 tabs = st.tabs(items)
 
@@ -196,8 +199,40 @@ with tabs[items.index(":key: 重置密码")]:
 
 # region 创建统计页面
 
-with tabs[items.index(":bar_chart: 统计报表")]:
-    st.subheader(":bar_chart: 统计报表")
+with tabs[items.index(":bar_chart: 学习报告")]:
+    st.subheader(":bar_chart: 学习报告")
+
+    phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
+
+    with st.sidebar:
+        start_date = st.date_input("开始日期")
+        end_date = st.date_input("结束日期")
+
+    records = get_records(phone_number, start_date, end_date)
+
+    study_report_items = ["学习时长", "学习项目", "单词量", "个人排位"]
+    study_report_tabs = st.tabs(study_report_items)
+
+    with study_report_tabs[study_report_items.index("学习时长")]:
+        st.subheader("学习时长", divider="rainbow")
+        if records:
+            cols = st.columns(3)
+            df = pd.DataFrame(records)
+            with cols[0]:
+                project_time = df.groupby("project")["duration"].sum().reset_index()
+                fig = px.pie(
+                    project_time, values="duration", names="project", title="学习项目时间分布"
+                )
+                st.plotly_chart(fig)
+
+            with cols[1]:
+                st.subheader("学习时长趋势变动")
+                # 这里可以添加获取数据和绘制折线图的代码
+
+            with cols[2]:
+                st.subheader("按小时分组统计")
+                # 这里可以添加获取数据和绘制柱状图的代码
+
 
 # endregion
 
