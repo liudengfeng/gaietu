@@ -432,14 +432,14 @@ def on_word_test_radio_change(idx, options):
     st.session_state["listening-test-answer"][idx] = options.index(current)
 
 
-def view_listening_test(container, difficulty, selected_scenario):
+def view_listening_test(container, difficulty, selected_scenario, play=False):
     idx = st.session_state["listening-test-idx"]
     test = st.session_state["listening-test"][idx]
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["listening-test-answer"][idx]
     t = 0
-    if st.session_state["listening-test-display-state"] == "语音":
+    if play and st.session_state["listening-test-display-state"] == "语音":
         with st.spinner(f"使用 Azure 将文本合成语音..."):
             question_audio = get_synthesis_speech(question, m_voice_style[0])
         audio_html = audio_autoplay_elem(question_audio["audio_data"], fmt="wav")
@@ -1162,17 +1162,17 @@ if menu is not None and menu.endswith("听说练习"):
                 st.session_state["listening-test-display-state"] = "文本"
 
             if st.session_state["listening-test-idx"] != -1:
-                view_listening_test(container, difficulty, selected_scenario)
+                view_listening_test(container, difficulty, selected_scenario, True)
 
         if rpl_test_btn:
             if st.session_state["listening-test-idx"] != -1:
-                view_listening_test(container, difficulty, selected_scenario)
+                view_listening_test(container, difficulty, selected_scenario, True)
 
         if listening_prev_test_btn:
-            view_listening_test(container, difficulty, selected_scenario)
+            view_listening_test(container, difficulty, selected_scenario, True)
 
         if listening_next_test_btn:
-            view_listening_test(container, difficulty, selected_scenario)
+            view_listening_test(container, difficulty, selected_scenario, True)
 
         if sumbit_test_btn:
             container.empty()
@@ -1187,6 +1187,8 @@ if menu is not None and menu.endswith("听说练习"):
                 container.warning("您尚未完成测试。")
 
             check_listening_test_answer(container, difficulty, selected_scenario)
+        else:
+            view_listening_test(container, difficulty, selected_scenario)
 
     # endregion
 
