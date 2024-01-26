@@ -218,7 +218,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     with study_report_tabs[study_report_items.index("学习时长")]:
         st.subheader("学习时长", divider="rainbow")
         if current_records.empty:
-            st.write("当前期间内没有学习记录。")
+            st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
             cols = st.columns(3)
             with cols[0]:
@@ -238,7 +238,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     get_records(phone_number, previous_start_date, previous_end_date)
                 )
                 if previous_records.empty:
-                    st.write("前一个周期内没有学习记录。")
+                    st.warning("前一个周期内没有学习记录。", icon="⚠️")
                 else:
                     # 计算每天的学习时间
                     current_daily_time = current_records.groupby(
