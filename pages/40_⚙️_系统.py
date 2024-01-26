@@ -1238,7 +1238,7 @@ elif menu == "词典管理":
                 level = estimate_cefr_level(word)
                 d[word] = level
                 progress = (i + 1) / n
-                bar.progress(min(progress, 1.0), text=f"{word} 🎆 {level}")
+                bar.progress(min(progress, 1.0), text=f"({i+1}/{n}) {word} 🎆 {level}")
                 # if len(d) >= 500:
                 #     st.session_state.dbi.batch_update_levels(d)
                 #     d = {}
