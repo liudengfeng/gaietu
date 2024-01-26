@@ -286,7 +286,9 @@ def get_and_combine_audio_data():
     return combine_audio_data(audio_data_list)
 
 
-def autoplay_audio_and_display_article(content_cols):
+def autoplay_audio_and_display_article(container):
+    container.empty()
+    content_cols = container.columns(2)    
     article = st.session_state["reading-article"]
     audio_data_list = []
     durations = []
@@ -332,8 +334,10 @@ def autoplay_audio_and_display_article(content_cols):
 
 
 def process_play_and_record_article(
-    content_cols, m_voice_style, fm_voice_style, difficulty, genre
+    container, m_voice_style, fm_voice_style, difficulty, genre
 ):
+    container.empty()
+    content_cols = container.columns(2)
     paragraphs = st.session_state["reading-article"]
     cns = translate_text(paragraphs, "zh-CN", True)
 
@@ -1437,7 +1441,7 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=len(st.session_state["reading-article"]) == 0,
         )
 
-        content_cols = st.columns(2)
+        container = st.container()
 
         if refresh_btn:
             st.session_state["reading-exercise-idx"] = -1
@@ -1455,7 +1459,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
             if st.session_state["reading-exercise-idx"] != -1:
                 process_play_and_record_article(
-                    content_cols,
+                    container,
                     m_voice_style,
                     fm_voice_style,
                     difficulty,
@@ -1464,7 +1468,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
         if prev_btn or next_btn or replay_btn:
             process_play_and_record_article(
-                content_cols,
+                container,
                 m_voice_style,
                 fm_voice_style,
                 difficulty,
@@ -1472,7 +1476,7 @@ if menu is not None and menu.endswith("阅读练习"):
             )
 
         if full_reading_btn:
-            total = autoplay_audio_and_display_article(content_cols)
+            total = autoplay_audio_and_display_article(container)
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
