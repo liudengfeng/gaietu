@@ -227,7 +227,6 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     }
 
     current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
-    current_records.rename(columns=column_mapping, inplace=True)
 
     study_report_items = ["学习时间", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
@@ -237,6 +236,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         if current_records.empty:
             st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
+            current_records.rename(columns=column_mapping, inplace=True)
             current_records["时长"] = current_records["时长"] / 60
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(user_tz)
             cols = st.columns(3)
@@ -247,6 +247,23 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 )
                 fig.update_layout(title_x=0.27)
                 st.plotly_chart(fig)
+
+            previous_period_start = start_date - (end_date - start_date)
+            previous_period_end = start_date
+            previous_records = pd.DataFrame(
+                get_records(phone_number, previous_period_start, previous_period_end)
+            )
+            # 如果上一个周期没有学习记录，显示警告信息
+            if previous_records.empty:
+                st.warning("上一个周期没有学习记录。", icon="⚠️")
+            else:
+                previous_records.rename(columns=column_mapping, inplace=True)
+                # 按日期分组并计算每天的学习时间
+                previous_daily_time = (
+                    previous_records.groupby(previous_records["学习日期"].dt.date)["时长"]
+                    .sum()
+                    .reset_index()
+                )
 
             with cols[1]:
                 daily_time = (
@@ -271,49 +288,6 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
                 # 显示图表
                 st.plotly_chart(fig)
-
-            # with cols[1]:
-            #     # 计算前一个周期的开始日期和结束日期
-            #     previous_start_date = start_date - (end_date - start_date)
-            #     previous_end_date = start_date
-            #     previous_records = pd.DataFrame(
-            #         get_records(phone_number, previous_start_date, previous_end_date)
-            #     )
-            #     if previous_records.empty:
-            #         st.warning("前一个周期内没有学习记录。", icon="⚠️")
-            #     else:
-            #         # 计算每天的学习时间
-            #         current_daily_time = current_records.groupby(
-            #             current_records["record_time"].dt.date
-            #         )["duration"].sum()
-            #         previous_daily_time = previous_records.groupby(
-            #             previous_records["record_time"].dt.date
-            #         )["duration"].sum()
-
-            #         # 创建折线图
-            #         fig = go.Figure()
-            #         fig.add_trace(
-            #             go.Scatter(
-            #                 x=current_daily_time.index,
-            #                 y=current_daily_time.values,
-            #                 mode="lines",
-            #                 name="当前周期",
-            #             )
-            #         )
-            #         fig.add_trace(
-            #             go.Scatter(
-            #                 x=previous_daily_time.index,
-            #                 y=previous_daily_time.values,
-            #                 mode="lines",
-            #                 name="前一个周期",
-            #             )
-            #         )
-
-            #         fig.update_layout(
-            #             title="学习时长趋势变动", xaxis_title="日期", yaxis_title="学习时长"
-            #         )
-
-            #         st.plotly_chart(fig)
 
             with cols[2]:
                 pass

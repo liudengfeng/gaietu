@@ -352,6 +352,7 @@ def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
     if words_key == "word-tests":
+        st.write(word)
         word_count = sum(len(value.split()) for value in word.values())
     else:
         word_count = len(word.split())
