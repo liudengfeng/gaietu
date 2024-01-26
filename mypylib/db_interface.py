@@ -634,7 +634,11 @@ class DbInterface:
                 doc_ref = self.db.collection("mini_dict").document(word)
                 doc = doc_ref.get()
                 doc_dict = doc.to_dict()
-                if "level" in doc_dict and doc_dict["level"] is not None:
+                if (
+                    "level" in doc_dict
+                    and doc_dict["level"] is None
+                    and words_cefr[word] is not None
+                ):
                     batch.update(doc_ref, {"level": words_cefr[word]})
             batch.commit()
 
