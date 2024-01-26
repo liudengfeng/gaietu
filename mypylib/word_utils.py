@@ -319,17 +319,8 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     return img_byte_arr
 
 
-def ensure_model_downloaded(model_name="en_core_web_sm"):
-    try:
-        spacy.load(model_name)
-        print(f"{model_name} is already downloaded.")
-    except OSError:
-        print(f"{model_name} not found.")
-
-
 def get_cefr_vocabulary_list(texts):
     model_name = "en_core_web_sm"
-    # ensure_model_downloaded(model_name)
     nlp = spacy.load(model_name)
     # lemmatizer = nlp.get_pipe("lemmatizer")
     fp = os.path.join(
@@ -356,7 +347,6 @@ def get_cefr_vocabulary_list(texts):
 
 def estimate_cefr_level(text):
     model_name = "en_core_web_sm"
-    # ensure_model_downloaded(model_name)
     nlp = spacy.load(model_name)
 
     fp = os.path.join(
