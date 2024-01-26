@@ -210,7 +210,18 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         start_date = st.date_input("开始日期")
         end_date = st.date_input("结束日期")
 
+    # 创建列映射
+    column_mapping = {
+        "project": "项目",
+        "content": "细节",
+        "duration": "时长",
+        "word_count": "字数",
+        "phone_number": "手机号码",
+        "record_time": "学习时间",
+    }
+
     current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
+    current_records.rename(columns=column_mapping, inplace=True)
 
     study_report_items = ["学习时长", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
@@ -223,12 +234,12 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             cols = st.columns(3)
             with cols[1]:
                 project_time = (
-                    current_records.groupby("project")["duration"].sum().reset_index()
+                    current_records.groupby("项目")["时长"].sum().reset_index()
                 )
                 fig = px.pie(
-                    project_time, values="duration", names="project", title="学习项目时间分布"
+                    project_time, values="时长", names="项目", title="学习项目时间分布"
                 )
-                fig.update_layout(title_x=0.35)
+                fig.update_layout(title_x=0.33)
                 st.plotly_chart(fig)
 
             # with cols[1]:
