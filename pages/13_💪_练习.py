@@ -293,7 +293,7 @@ def autoplay_audio_and_display_article(content_cols):
     total = 0
     for i, paragraph in enumerate(article):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        with st.spinner(f"使用 Azure 将文本合成语音..."):
+        with st.spinner(f"使用 Azure 将第{i+1}段文本合成语音..."):
             result = get_synthesis_speech(paragraph, voice_style[0])
         audio_data_list.append(result["audio_data"])
         duration = result["audio_duration"]
@@ -1430,7 +1430,7 @@ if menu is not None and menu.endswith("阅读练习"):
             disabled=len(st.session_state["reading-article"]) == 0
             or st.session_state["reading-exercise-idx"] == -1,
         )
-        full_btn = ra_btn_cols[5].button(
+        full_reading_btn = ra_btn_cols[5].button(
             "全文[:film_frames:]",
             key="reading-exercise-full",
             help="✨ 点击按钮，收听整个文章。",
@@ -1471,7 +1471,7 @@ if menu is not None and menu.endswith("阅读练习"):
                 genre,
             )
 
-        if full_btn:
+        if full_reading_btn:
             total = autoplay_audio_and_display_article(content_cols)
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
