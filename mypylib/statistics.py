@@ -2,7 +2,7 @@ import datetime
 import streamlit as st
 
 
-@st.cache_data(ttl=60 * 60 * 1, suppress_st_warning=True)
+@st.cache_data(ttl=60 * 60 * 1)
 def get_records(phone_number, start_date, end_date):
     dbi = st.session_state.dbi
     db = dbi.db
