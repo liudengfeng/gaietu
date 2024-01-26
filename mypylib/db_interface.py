@@ -633,9 +633,9 @@ class DbInterface:
             for word in words_batch:
                 doc_ref = self.db.collection("mini_dict").document(word)
                 doc = doc_ref.get()
-                if not doc.exists or "level" in doc.to_dict():
-                    continue
-                batch.update(doc_ref, {"level": words_cefr[word]})
+                doc_dict = doc.to_dict()
+                if "level" in doc_dict and doc_dict["level"] is not None:
+                    batch.update(doc_ref, {"level": words_cefr[word]})
             batch.commit()
 
     def find_docs_with_category(self, category):
