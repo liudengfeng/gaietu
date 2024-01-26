@@ -221,7 +221,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
             cols = st.columns(3)
-            with cols[0]:
+            with cols[1]:
                 project_time = (
                     current_records.groupby("project")["duration"].sum().reset_index()
                 )
@@ -230,51 +230,52 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 )
                 st.plotly_chart(fig)
 
-            with cols[1]:
-                # 计算前一个周期的开始日期和结束日期
-                previous_start_date = start_date - (end_date - start_date)
-                previous_end_date = start_date
-                previous_records = pd.DataFrame(
-                    get_records(phone_number, previous_start_date, previous_end_date)
-                )
-                if previous_records.empty:
-                    st.warning("前一个周期内没有学习记录。", icon="⚠️")
-                else:
-                    # 计算每天的学习时间
-                    current_daily_time = current_records.groupby(
-                        current_records["record_time"].dt.date
-                    )["duration"].sum()
-                    previous_daily_time = previous_records.groupby(
-                        previous_records["record_time"].dt.date
-                    )["duration"].sum()
+            # with cols[1]:
+            #     # 计算前一个周期的开始日期和结束日期
+            #     previous_start_date = start_date - (end_date - start_date)
+            #     previous_end_date = start_date
+            #     previous_records = pd.DataFrame(
+            #         get_records(phone_number, previous_start_date, previous_end_date)
+            #     )
+            #     if previous_records.empty:
+            #         st.warning("前一个周期内没有学习记录。", icon="⚠️")
+            #     else:
+            #         # 计算每天的学习时间
+            #         current_daily_time = current_records.groupby(
+            #             current_records["record_time"].dt.date
+            #         )["duration"].sum()
+            #         previous_daily_time = previous_records.groupby(
+            #             previous_records["record_time"].dt.date
+            #         )["duration"].sum()
 
-                    # 创建折线图
-                    fig = go.Figure()
-                    fig.add_trace(
-                        go.Scatter(
-                            x=current_daily_time.index,
-                            y=current_daily_time.values,
-                            mode="lines",
-                            name="当前周期",
-                        )
-                    )
-                    fig.add_trace(
-                        go.Scatter(
-                            x=previous_daily_time.index,
-                            y=previous_daily_time.values,
-                            mode="lines",
-                            name="前一个周期",
-                        )
-                    )
+            #         # 创建折线图
+            #         fig = go.Figure()
+            #         fig.add_trace(
+            #             go.Scatter(
+            #                 x=current_daily_time.index,
+            #                 y=current_daily_time.values,
+            #                 mode="lines",
+            #                 name="当前周期",
+            #             )
+            #         )
+            #         fig.add_trace(
+            #             go.Scatter(
+            #                 x=previous_daily_time.index,
+            #                 y=previous_daily_time.values,
+            #                 mode="lines",
+            #                 name="前一个周期",
+            #             )
+            #         )
 
-                    fig.update_layout(
-                        title="学习时长趋势变动", xaxis_title="日期", yaxis_title="学习时长"
-                    )
+            #         fig.update_layout(
+            #             title="学习时长趋势变动", xaxis_title="日期", yaxis_title="学习时长"
+            #         )
 
-                    st.plotly_chart(fig)
+            #         st.plotly_chart(fig)
 
             with cols[2]:
-                st.subheader("按小时分组统计")
+                pass
+                # st.subheader("按小时分组统计")
                 # 这里可以添加获取数据和绘制柱状图的代码
 
 
