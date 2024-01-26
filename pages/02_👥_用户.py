@@ -254,9 +254,17 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     .sum()
                     .reset_index()
                 )
-                daily_time['学习日期'] = daily_time['学习日期'].apply(lambda x: x.strftime('%Y年%m月%d日'))
+                daily_time["学习日期"] = daily_time["学习日期"].apply(
+                    lambda x: x.strftime("%Y年%m月%d日")
+                )
                 # 创建柱状图
-                fig = px.bar(daily_time, x="学习日期", y="时长", title="每天的学习时间")
+                fig = px.bar(
+                    daily_time,
+                    x="学习日期",
+                    y="时长",
+                    title="每天的学习时间",
+                    hover_data={"时长": ":.0f"},
+                )
 
                 # 更新图表布局
                 fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
