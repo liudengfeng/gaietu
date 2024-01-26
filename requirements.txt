@@ -1,3 +1,6 @@
+pip==latest
+setuptools==latest
+wheel==latest
 pydantic
 requests
 uuid
