@@ -625,6 +625,14 @@ class DbInterface:
         docs = mini_dict_ref.where(filter=FieldFilter("level", "==", None)).stream()
         return [doc.id for doc in docs]
 
+    def update_level(self, word_cefr):
+        word, level = list(word_cefr.items())[0]
+        doc_ref = self.db.collection("mini_dict").document(word)
+        doc = doc_ref.get()
+        doc_dict = doc.to_dict()
+        if "level" in doc_dict and doc_dict["level"] is None and level is not None:
+            doc_ref.update({"level": level})
+
     def batch_update_levels(self, words_cefr):
         words = list(words_cefr.keys())
         for i in range(0, len(words), 500):
