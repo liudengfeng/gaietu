@@ -1,10 +1,12 @@
 import logging
 import time
 import uuid
+from datetime import timedelta
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import pytz
 import streamlit as st
 from azure.core.exceptions import ResourceNotFoundError
@@ -208,26 +210,68 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         start_date = st.date_input("开始日期")
         end_date = st.date_input("结束日期")
 
-    records = get_records(phone_number, start_date, end_date)
+    current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
 
     study_report_items = ["学习时长", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
 
     with study_report_tabs[study_report_items.index("学习时长")]:
         st.subheader("学习时长", divider="rainbow")
-        if records:
+        if current_records.empty:
+            st.write("当前期间内没有学习记录。")
+        else:
             cols = st.columns(3)
-            df = pd.DataFrame(records)
             with cols[0]:
-                project_time = df.groupby("project")["duration"].sum().reset_index()
+                project_time = (
+                    current_records.groupby("project")["duration"].sum().reset_index()
+                )
                 fig = px.pie(
                     project_time, values="duration", names="project", title="学习项目时间分布"
                 )
                 st.plotly_chart(fig)
 
             with cols[1]:
-                st.subheader("学习时长趋势变动")
-                # 这里可以添加获取数据和绘制折线图的代码
+                # 计算前一个周期的开始日期和结束日期
+                previous_start_date = start_date - (end_date - start_date)
+                previous_end_date = start_date
+                previous_records = pd.DataFrame(
+                    get_records(phone_number, previous_start_date, previous_end_date)
+                )
+                if previous_records.empty:
+                    st.write("前一个周期内没有学习记录。")
+                else:
+                    # 计算每天的学习时间
+                    current_daily_time = current_records.groupby(
+                        current_records["record_time"].dt.date
+                    )["duration"].sum()
+                    previous_daily_time = previous_records.groupby(
+                        previous_records["record_time"].dt.date
+                    )["duration"].sum()
+
+                    # 创建折线图
+                    fig = go.Figure()
+                    fig.add_trace(
+                        go.Scatter(
+                            x=current_daily_time.index,
+                            y=current_daily_time.values,
+                            mode="lines",
+                            name="当前周期",
+                        )
+                    )
+                    fig.add_trace(
+                        go.Scatter(
+                            x=previous_daily_time.index,
+                            y=previous_daily_time.values,
+                            mode="lines",
+                            name="前一个周期",
+                        )
+                    )
+
+                    fig.update_layout(
+                        title="学习时长趋势变动", xaxis_title="日期", yaxis_title="学习时长"
+                    )
+
+                    st.plotly_chart(fig)
 
             with cols[2]:
                 st.subheader("按小时分组统计")
