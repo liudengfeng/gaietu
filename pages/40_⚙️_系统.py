@@ -1230,12 +1230,14 @@ elif menu == "词典管理":
         if st.button("更新", help="✨ 打印未分级的单词"):
             words = st.session_state.dbi.find_docs_with_empty_level()
             n = len(words)
+            st.write(f"待处理的文档数量：{n}")
             bar = st.progress(0)
             d = {}
             for i, word in enumerate(words):
                 level = estimate_cefr_level(word)
                 d[word] = level
-                bar.progress(((i + 1) / n) * 100, text=f"{word} 🎆 {level}")
+                progress = ((i + 1) / n) * 100
+                bar.progress(min(progress, 100), text=f"{word} 🎆 {level}")
             st.session_state.dbi.batch_update_levels(d)
 
     # endregion
