@@ -1232,16 +1232,17 @@ elif menu == "词典管理":
             n = len(words)
             st.write(f"待处理的文档数量：{n}")
             bar = st.progress(0)
-            d = {}
+            # d = {}
             for i, word in enumerate(words):
+                d = {}
                 level = estimate_cefr_level(word)
                 d[word] = level
                 progress = (i + 1) / n
                 bar.progress(min(progress, 1.0), text=f"{word} 🎆 {level}")
-                if len(d) >= 500:
-                    st.session_state.dbi.batch_update_levels(d)
-                    d = {}
-
+                # if len(d) >= 500:
+                #     st.session_state.dbi.batch_update_levels(d)
+                #     d = {}
+                st.session_state.dbi.update_level(d)
 
     # endregion
 # endregion
