@@ -254,7 +254,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     .sum()
                     .reset_index()
                 )
-                daily_time['学习日期'] = daily_time['学习日期'].dt.strftime('%Y年%m月%d日')
+                daily_time['学习日期'] = daily_time['学习日期'].apply(lambda x: x.strftime('%Y年%m月%d日'))
                 # 创建柱状图
                 fig = px.bar(daily_time, x="学习日期", y="时长", title="每天的学习时间")
 
