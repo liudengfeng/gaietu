@@ -228,7 +228,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 fig = px.pie(
                     project_time, values="duration", names="project", title="学习项目时间分布"
                 )
-                fig.update_layout(title_x=0.4)
+                fig.update_layout(title_x=0.35)
                 st.plotly_chart(fig)
 
             # with cols[1]:
