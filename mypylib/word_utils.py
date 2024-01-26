@@ -319,32 +319,6 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     return img_byte_arr
 
 
-def get_cefr_vocabulary_list(texts):
-    model_name = "en_core_web_sm"
-    nlp = spacy.load(model_name)
-    # lemmatizer = nlp.get_pipe("lemmatizer")
-    fp = os.path.join(
-        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-    )
-    with open(fp, "r", encoding="utf-8") as f:
-        cefr = json.load(f)
-
-    cefr_vocabulary = {}
-    for text in texts:
-        doc = nlp(text)
-        for token in doc:
-            if not token.is_punct:
-                lemma = token.lemma_
-                cefr_level = get_lowest_cefr_level(lemma, cefr)
-                if cefr_level is None:
-                    cefr_level = "未分级"
-                if cefr_level not in cefr_vocabulary:
-                    cefr_vocabulary[cefr_level] = set()
-                cefr_vocabulary[cefr_level].add(lemma)
-
-    return cefr_vocabulary
-
-
 def estimate_cefr_level(text):
     model_name = "en_core_web_sm"
     nlp = spacy.load(model_name)
@@ -371,3 +345,31 @@ def estimate_cefr_level(text):
                     highest_cefr_level = cefr_level
 
     return highest_cefr_level
+
+
+def get_cefr_vocabulary_list(texts):
+    model_name = "en_core_web_sm"
+    nlp = spacy.load(model_name)
+    # lemmatizer = nlp.get_pipe("lemmatizer")
+    fp = os.path.join(
+        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
+    )
+    with open(fp, "r", encoding="utf-8") as f:
+        cefr = json.load(f)
+
+    cefr_vocabulary = {}
+    for text in texts:
+        doc = nlp(text)
+        for token in doc:
+            if not token.is_punct:
+                lemma = token.lemma_
+                cefr_level = get_lowest_cefr_level(lemma, cefr)
+                if cefr_level is None:
+                    cefr_level = estimate_cefr_level(lemma)
+                    if cefr_level is None:
+                        cefr_level = "未分级"
+                if cefr_level not in cefr_vocabulary:
+                    cefr_vocabulary[cefr_level] = set()
+                cefr_vocabulary[cefr_level].add(lemma)
+
+    return cefr_vocabulary
