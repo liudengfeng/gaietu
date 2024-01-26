@@ -351,6 +351,7 @@ def auto_play_flash_word(voice_style):
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
+    content=word
     # 统计单词词意测试的单词数量
     if words_key == "word-tests":
         word_count = 0
@@ -360,12 +361,14 @@ def create_learning_record(idx_key, words_key, project):
             # 也可能为列表
             elif isinstance(value, list):
                 word_count += sum(len(v.split()) for v in value)
+        # 记录测试单词
+        content=st.session_state["test-words"][idx]
     else:
         word_count = len(word.split())
     record = LearningTime(
         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
         project=project,
-        content=word,
+        content=content,
         word_count=word_count,
     )
     return record
