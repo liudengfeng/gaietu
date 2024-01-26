@@ -723,11 +723,11 @@ if menu is not None and menu.endswith("听说练习"):
         format_func=lambda x: f"{x[2]}",  # type: ignore
     )
 
-    tabs = st.tabs(["配置场景", "开始练习", "小测验"])
+    listening_tabs = st.tabs(["配置场景", "开始练习", "小测验"])
 
     # region "配置场景"
 
-    with tabs[0]:
+    with listening_tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
         steps = ["1. CEFR等级", "2. 场景类别", "3. 选择场景", "4. 添加情节", "5. 预览场景"]
@@ -855,7 +855,7 @@ if menu is not None and menu.endswith("听说练习"):
 
     # region "听说练习"
 
-    with tabs[1]:
+    with listening_tabs[1]:
         st.subheader("听说练习", divider="rainbow", anchor="听说练习")
         st.markdown(
             """
@@ -1073,7 +1073,7 @@ if menu is not None and menu.endswith("听说练习"):
 
     # region "听力测验"
 
-    with tabs[2]:
+    with listening_tabs[2]:
         st.subheader("听力测验(五道题)", divider="rainbow", anchor="听力测验")
 
         if "listening-start-time" not in st.session_state:
@@ -1227,7 +1227,7 @@ if menu is not None and menu.endswith("阅读练习"):
     # 获取英文的考题类型
     english_exercise_type = EXERCISE_TYPE_MAPPING[exercise_type]
 
-    tabs = st.tabs(["配置场景", "开始练习", "小测验"])
+    reading_tabs = st.tabs(["配置场景", "开始练习", "小测验"])
 
     # region "配置场景"
 
@@ -1377,7 +1377,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
     # region 阅读练习
 
-    with tabs[1]:
+    with reading_tabs[1]:
         st.subheader("阅读练习", divider="rainbow", anchor="阅读练习")
         st.markdown(
             """
@@ -1492,7 +1492,7 @@ if menu is not None and menu.endswith("阅读练习"):
 
     # region 阅读测验
 
-    with tabs[2]:
+    with reading_tabs[2]:
         st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
         if "reading-start-time" not in st.session_state:
             st.session_state["reading-start-time"] = None
