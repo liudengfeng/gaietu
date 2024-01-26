@@ -1103,7 +1103,7 @@ if menu is not None and menu.endswith("听说练习"):
             key="listening-test-mask",
             help="✨ 此按钮可切换题目展示方式：文本或语音。默认为文本形式。",
         )
-        prev_test_btn = ls_text_btn_cols[2].button(
+        listening_prev_test_btn = ls_text_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="listening-test-prev",
             help="✨ 点击按钮，切换到上一道听力测试题。",
@@ -1111,7 +1111,7 @@ if menu is not None and menu.endswith("听说练习"):
             args=("listening-test-idx",),
             disabled=st.session_state["listening-test-idx"] <= 0,
         )
-        next_test_btn = ls_text_btn_cols[3].button(
+        listening_next_test_btn = ls_text_btn_cols[3].button(
             "下一[:arrow_right_hook:]",
             key="listening-test-next",
             help="✨ 点击按钮，切换到下一道听力测试题。",
@@ -1164,7 +1164,7 @@ if menu is not None and menu.endswith("听说练习"):
             if st.session_state["listening-test-idx"] != -1:
                 view_listening_test(container, difficulty, selected_scenario)
 
-        if prev_test_btn or next_test_btn:
+        if listening_prev_test_btn or listening_next_test_btn:
             view_listening_test(container, difficulty, selected_scenario)
 
         if sumbit_test_btn:
