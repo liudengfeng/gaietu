@@ -58,6 +58,18 @@ def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
     )
 
 
+def process_dialogue_text(reference_text):
+    # 去掉对话者名字
+    reference_text = re.sub(r"^\w+:\s", "", reference_text, flags=re.MULTILINE)
+    # 去掉空行
+    reference_text = re.sub("\n\s*\n*", "\n", reference_text)
+    # 去掉所有句子尾部标点符号
+    reference_text = re.sub(r"[.,;!?]$", "", reference_text, flags=re.MULTILINE)
+    # 去掉加黑等标注
+    reference_text = reference_text.replace("**", "")
+    return reference_text
+
+
 # endregion
 
 # region 发音评估
@@ -117,10 +129,7 @@ if menu and menu.endswith("发音评估"):
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
-        reference_text = st.session_state["pa-text"]
-        reference_text = re.sub("\n\s*\n*", "\n", reference_text)
-        reference_text = reference_text.replace("**", "")
-        reference_text = re.sub(r"^\w+:\s", "", reference_text)
+        reference_text = process_dialogue_text(st.session_state["pa-text"])
         start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
