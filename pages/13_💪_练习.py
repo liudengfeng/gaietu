@@ -149,8 +149,13 @@ AI_TIPS = {
 # region 通用
 
 
+@st.cache_data(ttl=60 * 60 * 24)
+def count_words_and_get_levels_for(text):
+    return count_words_and_get_levels(text, True, True)
+
+
 def display_text_word_count_summary(container, text):
-    total_words, level_dict = count_words_and_get_levels(text, True, True)
+    total_words, level_dict = count_words_and_get_levels_for(text)
     container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
