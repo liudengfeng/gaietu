@@ -483,3 +483,14 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         stream=False,
         parser=parse_json_string,
     )
+
+
+PRONUNCIATION_ASSESSMENT_TEMPLATE = """
+生成以下要求的英语发音评估材料：
+- 使用地道的英语，风格偏向口语
+- 难度：CEFR {difficulty}
+- 场景：{scenario}，生成的文本材料需贴合该场景
+- 根据 CEFR 级别选择词汇
+- 总字数应在200到300字之间
+请注意，这段材料是为了评估用户的英语发音能力而准备的。
+"""
