@@ -51,8 +51,11 @@ with st.expander(":bulb: 如何把一个基础词库整体添加到个人词库�
     pass
 
 with st.expander(":bulb: 如何进行阅读练习", expanded=False):
-    fp = VIDEO_DIR / "reading_excise.mp4"
-    st.video(str(fp))
+    fp = str(VIDEO_DIR / "reading_excise.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
+
 # endregion
 
 # region 联系我们
