@@ -216,15 +216,17 @@ def generate_listening_test_for(difficulty: str, conversation: str):
     )
 
 
-# @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
 def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]):
-    return generate_reading_comprehension_test(
+    test = generate_reading_comprehension_test(
         st.session_state["text_model"],
         exercise_type,
         5,
         difficulty,
-        "\n\n".join(article),
+        "\n".join(article),
     )
+    logger.info(test)
+    return test
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
@@ -490,7 +492,6 @@ def on_reading_test_radio_change(idx, options):
 def view_reading_test(container, difficulty, exercise_type, genre):
     idx = st.session_state["reading-test-idx"]
     test = st.session_state["reading-test"][idx]
-    # logger.info(test)
     question = test["question"]
     options = test["options"]
     user_answer_idx = st.session_state["reading-test-answer"][idx]

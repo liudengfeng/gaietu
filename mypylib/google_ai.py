@@ -468,5 +468,6 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        # parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        parser=lambda x: x,
     )
