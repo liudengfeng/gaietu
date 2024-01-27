@@ -129,6 +129,7 @@ if menu and menu.endswith("发音评估"):
         for word in st.session_state["pa-assessment"]["recognized_words"]:
             st.write(
                 f"{word.word=}",
+                f"{word.accuracy_score=}",
                 f"{word.error_type=}",
                 f"{word.is_unexpected_break=}",
                 f"{word.is_missing_break=}",
