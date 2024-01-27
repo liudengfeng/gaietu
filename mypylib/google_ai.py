@@ -37,6 +37,19 @@ QUESTION_TYPE_GUIDELINES = {
 }
 
 
+def parse_json_string(s, prefix="```python", suffix="```"):
+    # 删除换行符
+    s = s.replace("\n", "")
+
+    # 删除前缀和后缀
+    s = s.replace(prefix, "").replace(suffix, "")
+
+    # 解析 JSON
+    d = json.loads(s)
+
+    return d
+
+
 @st.cache_resource
 def load_vertex_model(model_name):
     return GenerativeModel(model_name)
@@ -468,6 +481,5 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         contents,
         generation_config,
         stream=False,
-        # parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
-        parser=lambda x: x,
+        parser=parse_json_string,
     )
