@@ -216,7 +216,7 @@ def generate_listening_test_for(difficulty: str, conversation: str):
     )
 
 
-# @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
 def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]):
     test = generate_reading_comprehension_test(
         st.session_state["text_model"],
@@ -225,7 +225,7 @@ def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]
         difficulty,
         "\n".join(article),
     )
-    logger.info(test)
+    # logger.info(test)
     return test
 
 
