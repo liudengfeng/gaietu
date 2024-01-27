@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-
 # import mimetypes
 import os
 import random
@@ -10,6 +9,7 @@ import time
 from pathlib import Path
 from typing import List
 from urllib.parse import quote
+from google.api_core.exceptions import Aborted
 import pandas as pd
 import pytz
 import streamlit as st
@@ -22,26 +22,16 @@ from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_ai import load_vertex_model, select_best_images_for_word
 from mypylib.google_cloud_configuration import PROJECT_ID
-from mypylib.st_helper import (
-    check_access,
-    check_and_force_logout,
-    configure_google_apis,
-    get_and_save_word_image_urls,
-    get_blob_container_client,
-    get_blob_service_client,
-    on_page_to,
-    select_word_image_indices,
-    select_word_image_urls,
-    setup_logger,
-    translate_text,
-    update_and_display_progress,
-)
-from mypylib.word_utils import (
-    get_lowest_cefr_level,
-    get_unique_words,
-    get_word_image_urls,
-    load_image_bytes_from_url,
-)
+from mypylib.st_helper import (check_access, check_and_force_logout,
+                               configure_google_apis,
+                               get_and_save_word_image_urls,
+                               get_blob_container_client,
+                               get_blob_service_client, on_page_to,
+                               select_word_image_indices,
+                               select_word_image_urls, setup_logger,
+                               translate_text, update_and_display_progress)
+from mypylib.word_utils import (get_lowest_cefr_level, get_unique_words,
+                                get_word_image_urls, load_image_bytes_from_url)
 
 # region 配置
 
@@ -1238,12 +1228,17 @@ elif menu == "词典管理":
             n = 26000
             for i, doc in enumerate(mini_dict):
                 update_and_display_progress(i + 1, n, progress_bar, doc.id)
-                # 将文档转换为字典
                 data = doc.to_dict()
-                # 将其添加到 blob 中
                 blob_name = quote(f"{doc.id}.json")
-                blob_client = blob_service_client.get_blob_client(container_name, blob_name)
-                blob_client.upload_blob(json.dumps(data), overwrite=True)
+                blob_client = container_client.get_blob_client(blob_name)
+                try:
+                    if not blob_client.exists():
+                        blob_client.upload_blob(json.dumps(data), overwrite=True)
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+                except Aborted:
+                    continue
+
 
 
 # endregion
