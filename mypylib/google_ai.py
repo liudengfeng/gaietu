@@ -442,7 +442,7 @@ You are a professional English teacher with a comprehensive grasp of the CEFR vo
 
 {guidelines}
 
-Each question, originally represented as a dictionary, is compiled into a list. The final result is output in JSON format.
+All the questions are compiled into a Python list. This list is then output in JSON format.
 
 Article: {article}
 """
