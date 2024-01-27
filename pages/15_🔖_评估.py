@@ -1,5 +1,5 @@
 import streamlit as st
-from mypylib.constants import CEFR_LEVEL_MAPS
+from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
 
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -49,7 +49,14 @@ if menu and menu.endswith("发音评估"):
         format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
         placeholder="请选择CEFR等级",
     )
-
+    scenario_category = st.selectbox(
+        "场景类别",
+        CEFR_LEVEL_TOPIC[difficulty],
+        # index=None,
+        index=0,
+        key="scenario_category",
+        placeholder="请选择场景类别",
+    )
 # endregion
 
 # region 口语评估

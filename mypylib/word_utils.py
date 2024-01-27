@@ -168,6 +168,54 @@ def get_highest_cefr_level(word, cefr=None):
     return None
 
 
+# def count_words_and_get_levels(text, percentage=False):
+#     """
+#     统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
+
+#     参数：
+#     text (str)：要处理的文本。
+#     percentage (bool)：是否将结果转换为百分比形式。
+
+#     返回值：
+#     tuple：包含两个元素的元组，第一个元素是文本中的单词数量，第二个元素是一个字典，包含每个等级的单词数量。
+
+#     示例：
+#     >>> count_words_and_get_levels("Hello world! This is a test.")
+#     (5, {'未定义': 5})
+#     """
+
+#     # 移除所有标点符号并转换为小写
+#     text = re.sub(r"[^\w\s]", "", text).lower()
+
+#     # 获取所有唯一的单词
+#     words = set(text.split())
+
+#     # 初始化字典
+#     levels = defaultdict(int)
+
+#     # 遍历所有的单词
+#     for word in words:
+#         # 获取单词的最低 CEFR 等级
+#         level = get_lowest_cefr_level(word)
+
+#         # 如果单词没有 CEFR 等级，将等级设置为 "未定义"
+#         if level is None:
+#             level = "未分级"
+
+#         # 将等级添加到字典中
+#         levels[level] += 1
+
+#     total_words = len(words)
+#     if percentage:
+#         for level in levels:
+#             levels[
+#                 level
+#             ] = f"{levels[level]} ({levels[level] / total_words * 100:.2f}%)"
+
+#     # 返回总字数和字典
+#     return total_words, dict(levels)
+
+
 def count_words_and_get_levels(text, percentage=False):
     """
     统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
@@ -183,29 +231,16 @@ def count_words_and_get_levels(text, percentage=False):
     >>> count_words_and_get_levels("Hello world! This is a test.")
     (5, {'未定义': 5})
     """
-
-    # 移除所有标点符号并转换为小写
-    text = re.sub(r"[^\w\s]", "", text).lower()
-
-    # 获取所有唯一的单词
-    words = set(text.split())
-
+    level_words = get_cefr_vocabulary_list([text])
     # 初始化字典
     levels = defaultdict(int)
+    # 遍历分级词汇列表
+    for level, words in level_words.items():
+        # 增加对应级别的计数
+        levels[level] = len(words)
 
-    # 遍历所有的单词
-    for word in words:
-        # 获取单词的最低 CEFR 等级
-        level = get_lowest_cefr_level(word)
+    total_words = sum(len(words) for words in level_words.values())
 
-        # 如果单词没有 CEFR 等级，将等级设置为 "未定义"
-        if level is None:
-            level = "未分级"
-
-        # 将等级添加到字典中
-        levels[level] += 1
-
-    total_words = len(words)
     if percentage:
         for level in levels:
             levels[
