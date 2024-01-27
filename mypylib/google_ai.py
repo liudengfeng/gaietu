@@ -442,7 +442,7 @@ You are a professional English teacher with a comprehensive grasp of the CEFR vo
 
 {guidelines}
 
-Each question, originally represented as a dictionary, is compiled into a list. The final result is output in YAML format.
+Each question, originally represented as a dictionary, is compiled into a list. The final result is output in JSON format.
 
 Article: {article}
 """
@@ -468,5 +468,5 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: yaml.safe_load(x),
+        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
     )
