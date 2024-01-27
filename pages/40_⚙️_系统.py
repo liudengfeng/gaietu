@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+
 # import mimetypes
 import os
 import random
@@ -22,16 +23,26 @@ from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_ai import load_vertex_model, select_best_images_for_word
 from mypylib.google_cloud_configuration import PROJECT_ID
-from mypylib.st_helper import (check_access, check_and_force_logout,
-                               configure_google_apis,
-                               get_and_save_word_image_urls,
-                               get_blob_container_client,
-                               get_blob_service_client, on_page_to,
-                               select_word_image_indices,
-                               select_word_image_urls, setup_logger,
-                               translate_text, update_and_display_progress)
-from mypylib.word_utils import (get_lowest_cefr_level, get_unique_words,
-                                get_word_image_urls, load_image_bytes_from_url)
+from mypylib.st_helper import (
+    check_access,
+    check_and_force_logout,
+    configure_google_apis,
+    get_and_save_word_image_urls,
+    get_blob_container_client,
+    get_blob_service_client,
+    on_page_to,
+    select_word_image_indices,
+    select_word_image_urls,
+    setup_logger,
+    translate_text,
+    update_and_display_progress,
+)
+from mypylib.word_utils import (
+    get_lowest_cefr_level,
+    get_unique_words,
+    get_word_image_urls,
+    load_image_bytes_from_url,
+)
 
 # region 配置
 
@@ -1233,9 +1244,20 @@ elif menu == "词典管理":
 
             while True:
                 if last_doc:
-                    mini_dict = db.collection("mini_dict").order_by(u'__name__').start_after({u'__name__': last_doc}).limit(batch_size).stream()
+                    mini_dict = (
+                        db.collection("mini_dict")
+                        .order_by("__name__")
+                        .start_after({"__name__": last_doc})
+                        .limit(batch_size)
+                        .stream()
+                    )
                 else:
-                    mini_dict = db.collection("mini_dict").order_by(u'__name__').limit(batch_size).stream()
+                    mini_dict = (
+                        db.collection("mini_dict")
+                        .order_by("__name__")
+                        .limit(batch_size)
+                        .stream()
+                    )
 
                 docs = list(mini_dict)
                 if not docs:
@@ -1243,7 +1265,9 @@ elif menu == "词典管理":
 
                 for i, doc in enumerate(docs):
                     total_docs_processed += 1
-                    update_and_display_progress(total_docs_processed, n, progress_bar, doc.id)
+                    update_and_display_progress(
+                        total_docs_processed, n, progress_bar, doc.id
+                    )
                     data = doc.to_dict()
                     blob_name = quote(f"{doc.id}.json")
                     blob_client = container_client.get_blob_client(blob_name)
@@ -1255,7 +1279,30 @@ elif menu == "词典管理":
 
                 last_doc = doc.id
 
+        if st.button(
+            "执行整体导出",
+            key="export-all-mini-dict-btn",
+            help="✨ 将整个简版字典作为一个整体导出并存储到微软 blob",
+        ):
+            db = st.session_state.dbi.db
+            mini_dict = db.collection("mini_dict").stream()
+            # 将所有文档读取到一个字典中，其中键是文档的 ID，值是文档的数据
+            docs = {doc.id: doc.to_dict() for doc in mini_dict}
+            # 将列表转换为 JSON 格式
+            data = json.dumps(docs)
 
+            container_name = "mini-dict"
+            connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
+            blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+            container_client = blob_service_client.get_container_client(container_name)
+            blob_name = "mini_dict.json"
+            blob_client = container_client.get_blob_client(blob_name)
+
+            try:
+                # 将 JSON 数据上传到 blob
+                blob_client.upload_blob(data, overwrite=True)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
 # endregion
 
