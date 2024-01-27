@@ -1223,21 +1223,35 @@ elif menu == "词典管理":
             connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
             blob_service_client = BlobServiceClient.from_connection_string(connect_str)
             container_client = blob_service_client.get_container_client(container_name)
+
             # 创建一个进度条
             progress_bar = st.progress(0)
             n = 26000
-            for i, doc in enumerate(mini_dict):
-                update_and_display_progress(i + 1, n, progress_bar, doc.id)
-                data = doc.to_dict()
-                blob_name = quote(f"{doc.id}.json")
-                blob_client = container_client.get_blob_client(blob_name)
-                try:
-                    if not blob_client.exists():
-                        blob_client.upload_blob(json.dumps(data), overwrite=True)
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-                except Aborted:
-                    continue
+            batch_size = 500
+            last_doc = None
+
+            while True:
+                if last_doc:
+                    mini_dict = db.collection("mini_dict").order_by(u'__name__').start_after({u'__name__': last_doc}).limit(batch_size).stream()
+                else:
+                    mini_dict = db.collection("mini_dict").order_by(u'__name__').limit(batch_size).stream()
+
+                docs = list(mini_dict)
+                if not docs:
+                    break
+
+                for i, doc in enumerate(docs):
+                    update_and_display_progress(i + 1, n, progress_bar, doc.id)
+                    data = doc.to_dict()
+                    blob_name = quote(f"{doc.id}.json")
+                    blob_client = container_client.get_blob_client(blob_name)
+                    try:
+                        if not blob_client.exists():
+                            blob_client.upload_blob(json.dumps(data), overwrite=True)
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+
+                last_doc = doc.id
 
 
 
