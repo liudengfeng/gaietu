@@ -488,7 +488,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
 根据以下要求，提供一段英语对话材料：
 - 使用地道的英语，风格偏向口语
-- 分级：CEFR {difficulty}
+- 分级：CEFR {level}
 - 场景：{scenario}
 - 生成的文本材料需贴合上述场景
 - 根据 英语 CEFR 级别选择词汇
