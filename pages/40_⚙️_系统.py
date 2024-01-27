@@ -1229,6 +1229,7 @@ elif menu == "词典管理":
             n = 26000
             batch_size = 500
             last_doc = None
+            total_docs_processed = 0
 
             while True:
                 if last_doc:
@@ -1241,7 +1242,8 @@ elif menu == "词典管理":
                     break
 
                 for i, doc in enumerate(docs):
-                    update_and_display_progress(i + 1, n, progress_bar, doc.id)
+                    total_docs_processed += 1
+                    update_and_display_progress(total_docs_processed, n, progress_bar, doc.id)
                     data = doc.to_dict()
                     blob_name = quote(f"{doc.id}.json")
                     blob_client = container_client.get_blob_client(blob_name)
