@@ -46,9 +46,13 @@ with st.expander(":bulb: 如何调整布局让屏幕显示更美观？", expande
 
 # region 使用指南
 st.subheader("使用指南")
+
 with st.expander(":bulb: 如何把一个基础词库整体添加到个人词库？", expanded=False):
     pass
 
+with st.expander(":bulb: 如何进行阅读练习", expanded=False):
+    fp = VIDEO_DIR / "reading_excise.mp4"
+    st.video(str(fp))
 # endregion
 
 # region 联系我们
