@@ -1,5 +1,6 @@
 import streamlit as st
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
+from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
 
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -36,6 +37,22 @@ sidebar_status.markdown(
     help=TOEKN_HELP_INFO,
 )
 
+if "text_model" not in st.session_state:
+    st.session_state["text_model"] = load_vertex_model("gemini-pro")
+
+# endregion
+
+
+# region 函数
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成发音评估文本，请稍候...")
+def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
+    return generate_pronunciation_assessment_text(
+        st.session_state["text_model"], scenario_category, difficulty
+    )
+
+
 # endregion
 
 # region 发音评估
@@ -57,6 +74,15 @@ if menu and menu.endswith("发音评估"):
         key="scenario_category",
         placeholder="请选择场景类别",
     )
+    pa_cols = st.columns(8)
+    pa_refresh_btn = pa_cols[0].button(
+        "刷新[:arrows_counterclockwise:]", key="refresh_pronunciation_assessment_text"
+    )
+    if pa_refresh_btn:
+        pronunciation_assessment_text = generate_pronunciation_assessment_text_for(
+            scenario_category, difficulty
+        )
+        st.markdown(pronunciation_assessment_text, unsafe_allow_html=True)
 
 # endregion
 

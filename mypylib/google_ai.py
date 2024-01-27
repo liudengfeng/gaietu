@@ -486,11 +486,29 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 
 
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
-生成以下要求的英语发音评估材料：
+根据以下要求，提供一段英语对话材料：
 - 使用地道的英语，风格偏向口语
-- 难度：CEFR {difficulty}
-- 场景：{scenario}，生成的文本材料需贴合该场景
-- 根据 CEFR 级别选择词汇
+- 分级：CEFR {difficulty}
+- 场景：{scenario}
+- 生成的文本材料需贴合上述场景
+- 根据 英语 CEFR 级别选择词汇
 - 总字数应在200到300字之间
-请注意，这段材料是为了评估用户的英语发音能力而准备的。
+- 使用英语，不要使用简体中文
 """
+
+
+def generate_pronunciation_assessment_text(model, scenario, level):
+    prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(scenario=scenario, level=level)
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=500, temperature=0.9, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "发音评估材料",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: x,
+    )
