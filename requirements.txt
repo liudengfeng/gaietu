@@ -160,3 +160,4 @@ wheel==0.42.0
 widgetsnbextension==4.0.9
 zhon==2.0.2
 zipp==3.17.0
+st-annotated-text==4.0.1

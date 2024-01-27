@@ -15,7 +15,10 @@ from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
 
-from .azure_pronunciation_assessment import get_syllable_durations_and_offsets
+from .azure_pronunciation_assessment import (
+    get_syllable_durations_and_offsets,
+    pronunciation_assessment_from_stream,
+)
 from .azure_speech import synthesize_speech
 from .db_interface import DbInterface
 from .google_ai import (
@@ -352,7 +355,7 @@ def autoplay_audio_and_display_text(
 
 # endregion
 
-# region 单词
+# region 单词与发音评估
 
 WORD_COUNT_BADGE_MAPS = OrderedDict(
     {
@@ -430,6 +433,13 @@ def get_mini_dict_doc(word):
 def select_word_image_urls(word: str):
     mini_dict_doc = get_mini_dict_doc(word)
     return mini_dict_doc.get("image_urls", [])
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
+def pronunciation_assessment_for(audio_info: dict, reference_text: str):
+    return pronunciation_assessment_from_stream(
+        audio_info, st.secrets, None, reference_text
+    )
 
 
 # endregion

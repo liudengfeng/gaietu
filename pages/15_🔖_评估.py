@@ -1,7 +1,10 @@
 import streamlit as st
+from datetime import datetime, timedelta
+import pytz
+import re
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
 from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
-
+from streamlit_mic_recorder import mic_recorder
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     check_access,
@@ -9,6 +12,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     format_token_count,
     on_page_to,
+    pronunciation_assessment_for,
 )
 
 # region 配置
@@ -76,13 +80,58 @@ if menu and menu.endswith("发音评估"):
     )
     pa_cols = st.columns(8)
     pa_refresh_btn = pa_cols[0].button(
-        "刷新[:arrows_counterclockwise:]", key="refresh_pronunciation_assessment_text"
+        "刷新[:arrows_counterclockwise:]",
+        key="refresh_pronunciation_assessment_text",
+        help="点击按钮，生成发音评估文本",
     )
+    audio_key = "pa-mic-recorder"
+    audio_session_output_key = f"{audio_key}-output"
+    with pa_cols[1]:
+        audio_info = mic_recorder(
+            start_prompt="录音[⏸️]",
+            stop_prompt="停止[🔴]",
+            key=audio_key,
+        )
+    pa_pro_btn = pa_cols[2].button(
+        "评估[🔖]",
+        disabled=not audio_info,
+        key="pa-evaluation-btn",
+        help="✨ 点击按钮，开始发音评估。",
+    )
+    # 左侧显示发音评估文本
+    # 右侧显示评估内容
+    content_cols = st.columns(2)
+    if "pa_text" in st.session_state:
+        st.session_state["pa_text"] = ""
+
     if pa_refresh_btn:
-        pronunciation_assessment_text = generate_pronunciation_assessment_text_for(
+        st.session_state["pa_text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
-        st.markdown(pronunciation_assessment_text, unsafe_allow_html=True)
+
+    content_cols[0].markdown(st.session_state["pa_text"], unsafe_allow_html=True)
+
+    if pa_pro_btn and audio_info is not None:
+        # 去掉发言者的名字
+        reference_text = st.session_state["pa_text"]
+        reference_text = reference_text.replace("**", "")
+        reference_text = re.sub(r"^\w+:\s", "", reference_text)
+        start = datetime.now(pytz.UTC)
+        st.session_state["pa-assessment"] = pronunciation_assessment_for(
+            audio_info,
+            reference_text,
+        )
+
+        # 临时测试显示评估结果
+        for word in st.session_state["pa-assessment"]["recognized_words"]:
+            st.write(
+                f"{word.word=}",
+                f"{word.error_type=}",
+                f"{word.is_unexpected_break=}",
+                f"{word.is_missing_break=}",
+                f"{word.is_monotone=}",
+            )
+
 
 # endregion
 

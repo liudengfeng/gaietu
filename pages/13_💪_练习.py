@@ -13,7 +13,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
 
-from mypylib.azure_pronunciation_assessment import pronunciation_assessment_from_stream
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
     CEFR_LEVEL_TOPIC,
@@ -41,6 +40,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     count_non_none,
     load_mini_dict,
+    pronunciation_assessment_for,
     update_and_display_progress,
     end_and_save_learning_records,
     format_token_count,
@@ -241,11 +241,7 @@ def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
-def pronunciation_assessment_for(audio_info: dict, reference_text: str):
-    return pronunciation_assessment_from_stream(
-        audio_info, st.secrets, None, reference_text
-    )
+
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
