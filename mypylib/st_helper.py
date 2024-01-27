@@ -428,8 +428,8 @@ def get_mini_dict_doc(word):
 
 @st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址...")
 def select_word_image_urls(word: str):
-    mini_dict = load_mini_dict()
-    return mini_dict.get("image_urls", [])
+    mini_dict_doc = get_mini_dict_doc(word)
+    return mini_dict_doc.get("image_urls", [])
 
 
 # endregion
