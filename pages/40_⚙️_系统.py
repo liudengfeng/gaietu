@@ -1291,7 +1291,7 @@ elif menu == "词典管理":
             # 将列表转换为 JSON 格式
             data = json.dumps(docs)
 
-            container_name = "mini-dict"
+            container_name = "temp"
             connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
             blob_service_client = BlobServiceClient.from_connection_string(connect_str)
             container_client = blob_service_client.get_container_client(container_name)
