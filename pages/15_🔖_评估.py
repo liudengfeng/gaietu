@@ -49,7 +49,7 @@ if menu and menu.endswith("发音评估"):
         format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
         placeholder="请选择CEFR等级",
     )
-    scenario_category = st.selectbox(
+    scenario_category = st.sidebar.selectbox(
         "场景类别",
         CEFR_LEVEL_TOPIC[difficulty],
         # index=None,
