@@ -216,7 +216,7 @@ def get_highest_cefr_level(word, cefr=None):
 #     return total_words, dict(levels)
 
 
-def count_words_and_get_levels(text, percentage=False):
+def count_words_and_get_levels(text, percentage=False, exclude_persons=False):
     """
     统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
 
@@ -231,7 +231,7 @@ def count_words_and_get_levels(text, percentage=False):
     >>> count_words_and_get_levels("Hello world! This is a test.")
     (5, {'未定义': 5})
     """
-    level_words = get_cefr_vocabulary_list([text])
+    level_words = get_cefr_vocabulary_list([text], exclude_persons)
     # 初始化字典
     levels = defaultdict(int)
     # 遍历分级词汇列表
@@ -382,7 +382,7 @@ def estimate_cefr_level(text):
     return highest_cefr_level
 
 
-def get_cefr_vocabulary_list(texts):
+def get_cefr_vocabulary_list(texts, exclude_persons=False):
     model_name = "en_core_web_sm"
     nlp = spacy.load(model_name)
     # lemmatizer = nlp.get_pipe("lemmatizer")
@@ -395,16 +395,19 @@ def get_cefr_vocabulary_list(texts):
     cefr_vocabulary = {}
     for text in texts:
         doc = nlp(text)
-        for token in doc:
-            if not token.is_punct:
-                lemma = token.lemma_
-                cefr_level = get_lowest_cefr_level(lemma, cefr)
-                if cefr_level is None:
-                    cefr_level = estimate_cefr_level(lemma)
+        for ent in doc.ents:
+            if ent.label_ == "PERSON" and exclude_persons:
+                continue
+            for token in ent:
+                if not token.is_punct:
+                    lemma = token.lemma_
+                    cefr_level = get_lowest_cefr_level(lemma, cefr)
                     if cefr_level is None:
-                        cefr_level = "未分级"
-                if cefr_level not in cefr_vocabulary:
-                    cefr_vocabulary[cefr_level] = set()
-                cefr_vocabulary[cefr_level].add(lemma)
+                        cefr_level = estimate_cefr_level(lemma)
+                        if cefr_level is None:
+                            cefr_level = "未分级"
+                    if cefr_level not in cefr_vocabulary:
+                        cefr_vocabulary[cefr_level] = set()
+                    cefr_vocabulary[cefr_level].add(lemma)
 
     return cefr_vocabulary

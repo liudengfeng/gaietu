@@ -150,7 +150,7 @@ AI_TIPS = {
 
 
 def display_text_word_count_summary(container, text):
-    total_words, level_dict = count_words_and_get_levels(text, True)
+    total_words, level_dict = count_words_and_get_levels(text, True, True)
     container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
@@ -290,7 +290,7 @@ def get_and_combine_audio_data():
 
 def autoplay_audio_and_display_article(container):
     container.empty()
-    content_cols = container.columns(2)    
+    content_cols = container.columns(2)
     article = st.session_state["reading-article"]
     audio_data_list = []
     durations = []
