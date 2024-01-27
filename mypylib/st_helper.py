@@ -5,11 +5,13 @@ import time
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from typing import List
+
 import azure.cognitiveservices.speech as speechsdk
 import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 import vertexai
+from annotated_text import annotated_text, annotation
 from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
@@ -440,6 +442,27 @@ def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     return pronunciation_assessment_from_stream(
         audio_info, st.secrets, None, reference_text
     )
+
+
+def pronunciation_assessment_word_format(word):
+    error_type = word.error_type
+    if error_type is None:
+        return word.word
+    if error_type == "Mispronunciation":
+        accuracy_score = round(word.accuracy_score)
+        return annotation(word.word, label=str(accuracy_score), background="yellow")
+    if error_type == "Omission":
+        return annotation(f"[{word.word}]", background="#2a2923b7")
+    if error_type == "Insertion":
+        return annotation(word.word, background="#8B0000", border="1px dashed #8B0000")
+    return word.word
+
+
+def view_word_assessment(words):
+    res = []
+    for word in words:
+        res.append(pronunciation_assessment_word_format(word))
+    annotated_text(*res)
 
 
 # endregion

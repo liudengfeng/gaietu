@@ -13,6 +13,7 @@ from mypylib.st_helper import (
     format_token_count,
     on_page_to,
     pronunciation_assessment_for,
+    view_word_assessment,
 )
 
 # region 配置
@@ -117,6 +118,7 @@ if menu and menu.endswith("发音评估"):
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
         reference_text = st.session_state["pa-text"]
+        reference_text = re.sub("\n\s*\n*", "\n", reference_text)
         reference_text = reference_text.replace("**", "")
         reference_text = re.sub(r"^\w+:\s", "", reference_text)
         start = datetime.now(pytz.UTC)
@@ -126,15 +128,19 @@ if menu and menu.endswith("发音评估"):
         )
 
         # 临时测试显示评估结果
-        for word in st.session_state["pa-assessment"]["recognized_words"]:
-            st.write(
-                f"{word.word=}",
-                f"{word.accuracy_score=}",
-                f"{word.error_type=}",
-                f"{word.is_unexpected_break=}",
-                f"{word.is_missing_break=}",
-                f"{word.is_monotone=}",
-            )
+        # for word in st.session_state["pa-assessment"]["recognized_words"]:
+        #     st.write(
+        #         f"{word.word=}",
+        #         f"{word.accuracy_score=}",
+        #         f"{word.error_type=}",
+        #         f"{word.is_unexpected_break=}",
+        #         f"{word.is_missing_break=}",
+        #         f"{word.is_monotone=}",
+        #     )
+
+        words = st.session_state["pa-assessment"]["recognized_words"]
+        with content_cols[1]:
+            view_word_assessment(words)
 
 
 # endregion
