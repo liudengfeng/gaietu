@@ -452,7 +452,7 @@ def pronunciation_assessment_word_format(word):
         accuracy_score = round(word.accuracy_score)
         return annotation(word.word, label=str(accuracy_score), background="yellow")
     if error_type == "Omission":
-        return annotation(f"[{word.word}]", background="#2a2923b7")
+        return annotation(f"[{word.word}]", background="#4a4943b7")
     if error_type == "Insertion":
         return annotation(word.word, background="#8B0000", border="1px dashed #8B0000")
     return f"{word.word} "
