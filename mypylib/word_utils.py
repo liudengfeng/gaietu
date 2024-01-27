@@ -354,34 +354,6 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     return img_byte_arr
 
 
-def estimate_cefr_level(text):
-    model_name = "en_core_web_sm"
-    nlp = spacy.load(model_name)
-
-    fp = os.path.join(
-        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-    )
-    with open(fp, "r", encoding="utf-8") as f:
-        cefr = json.load(f)
-    cefr_levels = {"A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6}
-    words = text.split(" ")
-    highest_cefr_level = None
-    for word in words:
-        doc = nlp(word)
-        for token in doc:
-            if not token.is_punct:
-                lemma = token.lemma_.lower()
-                cefr_level = get_highest_cefr_level(lemma, cefr)
-                # 在比较时使用映射的数值
-                if cefr_level is not None and (
-                    highest_cefr_level is None
-                    or cefr_levels[cefr_level] > cefr_levels[highest_cefr_level]
-                ):
-                    highest_cefr_level = cefr_level
-
-    return highest_cefr_level
-
-
 def get_cefr_vocabulary_list(texts, exclude_persons=False):
     model_name = "en_core_web_sm"
     nlp = spacy.load(model_name)
@@ -395,18 +367,17 @@ def get_cefr_vocabulary_list(texts, exclude_persons=False):
     for text in texts:
         doc = nlp(text)
         persons = {ent.text for ent in doc.ents if ent.label_ == "PERSON"}
-        for token in doc:
-            if not token.is_punct and (
-                not exclude_persons or token.text not in persons
-            ):
-                lemma = token.lemma_
-                cefr_level = get_lowest_cefr_level(lemma, cefr)
-                if cefr_level is None:
-                    cefr_level = estimate_cefr_level(lemma)
+        for sent in doc.sents:
+            for token in sent:
+                if not token.is_punct and (
+                    not exclude_persons or token.text not in persons
+                ):
+                    lemma = token.lemma_
+                    cefr_level = get_lowest_cefr_level(lemma, cefr)
                     if cefr_level is None:
                         cefr_level = "未分级"
-                if cefr_level not in cefr_vocabulary:
-                    cefr_vocabulary[cefr_level] = set()
-                cefr_vocabulary[cefr_level].add(lemma)
+                    if cefr_level not in cefr_vocabulary:
+                        cefr_vocabulary[cefr_level] = set()
+                    cefr_vocabulary[cefr_level].add(lemma)
 
     return cefr_vocabulary

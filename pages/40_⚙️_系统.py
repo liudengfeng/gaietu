@@ -9,10 +9,11 @@ import re
 import time
 from pathlib import Path
 from typing import List
-
+from urllib.parse import quote
 import pandas as pd
 import pytz
 import streamlit as st
+from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore
 from vertexai.preview.generative_models import GenerationConfig, Image, Part
 
@@ -36,7 +37,6 @@ from mypylib.st_helper import (
     update_and_display_progress,
 )
 from mypylib.word_utils import (
-    estimate_cefr_level,
     get_lowest_cefr_level,
     get_unique_words,
     get_word_image_urls,
@@ -1032,7 +1032,7 @@ elif menu == "处理反馈":
 
 
 elif menu == "词典管理":
-    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片", "简版类别", "更新分级"]
+    dict_items = ["词典管理", "图片网址", "查漏补缺", "挑选照片", "简版类别", "导出简版"]
     dict_tabs = st.tabs(dict_items)
 
     MINI_DICT_COLUMN_CONFIG = {
@@ -1223,28 +1223,29 @@ elif menu == "词典管理":
 
     # endregion
 
-    # region 更新分级
+    with dict_tabs[dict_items.index("导出简版")]:
+        st.subheader("导出简版存储到微软 blob", divider="rainbow", anchor=False)
+        if st.button("执行", key="export-mini-dict-btn", help="✨ 导出简版存储到微软 blob"):
+            db = st.session_state.dbi.db
+            mini_dict = db.collection("mini_dict").stream()
+            # 将其字典导入到微软blob
+            container_name = "mini-dict"
+            connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
+            blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+            container_client = blob_service_client.get_container_client(container_name)
+            # 创建一个进度条
+            progress_bar = st.progress(0)
+            n = 26000
+            for i, doc in enumerate(mini_dict):
+                update_and_display_progress(i + 1, n, progress_bar, doc.id)
+                # 将文档转换为字典
+                data = doc.to_dict()
+                # 将其添加到 blob 中
+                blob_name = quote(f"{doc.id}.json")
+                blob_client = blob_service_client.get_blob_client(container_name, blob_name)
+                blob_client.upload_blob(json.dumps(data), overwrite=True)
 
-    with dict_tabs[dict_items.index("更新分级")]:
-        st.subheader("对简版词典单词分级更新", divider="rainbow", anchor=False)
-        if st.button("更新", help="✨ 打印未分级的单词"):
-            words = st.session_state.dbi.find_docs_with_empty_level()
-            n = len(words)
-            st.write(f"待处理的文档数量：{n}")
-            bar = st.progress(0)
-            # d = {}
-            for i, word in enumerate(words):
-                d = {}
-                level = estimate_cefr_level(word)
-                d[word] = level
-                progress = (i + 1) / n
-                bar.progress(min(progress, 1.0), text=f"({i+1}/{n}) {word} 🎆 {level}")
-                # if len(d) >= 500:
-                #     st.session_state.dbi.batch_update_levels(d)
-                #     d = {}
-                st.session_state.dbi.update_level(d)
 
-    # endregion
 # endregion
 
 # # region 转移数据库
