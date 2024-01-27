@@ -40,6 +40,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
+    load_mini_dict,
     update_and_display_progress,
     end_and_save_learning_records,
     format_token_count,
@@ -151,7 +152,8 @@ AI_TIPS = {
 
 @st.cache_data(ttl=60 * 60 * 24)
 def count_words_and_get_levels_for(text):
-    return count_words_and_get_levels(text, True, True)
+    mini_dict = load_mini_dict()
+    return count_words_and_get_levels(text, mini_dict, True, True)
 
 
 def display_text_word_count_summary(container, text):

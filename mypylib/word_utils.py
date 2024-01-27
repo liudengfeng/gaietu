@@ -9,7 +9,7 @@ import string
 from collections import defaultdict
 from io import BytesIO
 from pathlib import Path
-from typing import Union
+from typing import List, Union
 import subprocess
 import requests
 from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
@@ -26,29 +26,6 @@ def get_word_cefr_map(name, fp):
     assert name in ("us", "uk"), "只支持`US、UK`二种发音。"
     with open(os.path.join(fp, f"{name}_cefr.json"), "r") as f:
         return json.load(f)
-
-
-def get_unique_words(
-    word_file_path: str, include_phrases: bool, cate: str = "all"
-) -> list:
-    # 加载 JSON 文件
-    with open(word_file_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    # 合并所有的单词并去除重复的单词
-    unique_words = set()
-    for c, word_list in data.items():
-        if cate != "all" and cate not in c:
-            continue
-        for word in word_list:
-            # 根据 include_phrases 参数决定是否添加单词
-            if include_phrases or " " not in word:
-                unique_words.add(word)
-
-    # 将结果转换为列表
-    unique_words = list(unique_words)
-
-    return unique_words
 
 
 def remove_trailing_punctuation(s: str) -> str:
@@ -118,120 +95,22 @@ def gtts_autoplay_elem(text: str, lang: str, tld: str):
         """
 
 
-def get_lowest_cefr_level(word, cefr=None):
-    """
-    Get the lowest CEFR level of a given word.
+def get_mini_dict():
+    fp = os.path.join(CURRENT_CWD, "resource", "dictionary", "mini_dict.json")
+    with open(fp, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-    Parameters:
-    word (str): The word to check the CEFR level for.
-    cefr (dict, optional): The CEFR dictionary. If None, the dictionary will be loaded from the file.
 
-    Returns:
-    str or None: The lowest CEFR level of the word, or None if the word is not found in the CEFR dictionary.
-    """
-    levels = ["A1", "A2", "B1", "B2", "C1", "C2"]
-    if cefr is None:
-        fp = os.path.join(
-            CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-        )
-        with open(fp, "r", encoding="utf-8") as f:
-            cefr = json.load(f)
-    for level in levels:
-        level_flag = f"1-CEFR-{level}"
-        if word in cefr[level_flag]:
-            return level
+def get_cefr_level(word, mini_dict):
+    if word in mini_dict:
+        return mini_dict[word]["level"]
     return None
 
 
-def get_highest_cefr_level(word, cefr=None):
-    """
-    Get the highest CEFR level of a given word.
-
-    Parameters:
-    word (str): The word to check the CEFR level for.
-    cefr (dict, optional): The CEFR dictionary. If None, the dictionary will be loaded from the file.
-
-    Returns:
-    str or None: The highest CEFR level of the word, or None if the word is not found in the CEFR dictionary.
-    """
-    levels = ["C2", "C1", "B2", "B1", "A2", "A1"]
-    if cefr is None:
-        fp = os.path.join(
-            CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-        )
-        with open(fp, "r", encoding="utf-8") as f:
-            cefr = json.load(f)
-    for level in levels:
-        level_flag = f"1-CEFR-{level}"
-        if word in cefr[level_flag]:
-            return level
-    return None
-
-
-# def count_words_and_get_levels(text, percentage=False):
-#     """
-#     统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
-
-#     参数：
-#     text (str)：要处理的文本。
-#     percentage (bool)：是否将结果转换为百分比形式。
-
-#     返回值：
-#     tuple：包含两个元素的元组，第一个元素是文本中的单词数量，第二个元素是一个字典，包含每个等级的单词数量。
-
-#     示例：
-#     >>> count_words_and_get_levels("Hello world! This is a test.")
-#     (5, {'未定义': 5})
-#     """
-
-#     # 移除所有标点符号并转换为小写
-#     text = re.sub(r"[^\w\s]", "", text).lower()
-
-#     # 获取所有唯一的单词
-#     words = set(text.split())
-
-#     # 初始化字典
-#     levels = defaultdict(int)
-
-#     # 遍历所有的单词
-#     for word in words:
-#         # 获取单词的最低 CEFR 等级
-#         level = get_lowest_cefr_level(word)
-
-#         # 如果单词没有 CEFR 等级，将等级设置为 "未定义"
-#         if level is None:
-#             level = "未分级"
-
-#         # 将等级添加到字典中
-#         levels[level] += 1
-
-#     total_words = len(words)
-#     if percentage:
-#         for level in levels:
-#             levels[
-#                 level
-#             ] = f"{levels[level]} ({levels[level] / total_words * 100:.2f}%)"
-
-#     # 返回总字数和字典
-#     return total_words, dict(levels)
-
-
-def count_words_and_get_levels(text, percentage=False, exclude_persons=False):
-    """
-    统计文本中的单词数量并获取每个单词的最低 CEFR 等级。
-
-    参数：
-    text (str)：要处理的文本。
-    percentage (bool)：是否将结果转换为百分比形式。
-
-    返回值：
-    tuple：包含两个元素的元组，第一个元素是文本中的单词数量，第二个元素是一个字典，包含每个等级的单词数量。
-
-    示例：
-    >>> count_words_and_get_levels("Hello world! This is a test.")
-    (5, {'未定义': 5})
-    """
-    level_words = get_cefr_vocabulary_list([text], exclude_persons)
+def count_words_and_get_levels(
+    text, mini_dict, percentage=False, exclude_persons=False
+):
+    level_words = get_cefr_vocabulary_list([text], mini_dict, exclude_persons)
     # 初始化字典
     levels = defaultdict(int)
     # 遍历分级词汇列表
@@ -249,28 +128,6 @@ def count_words_and_get_levels(text, percentage=False, exclude_persons=False):
 
     # 返回总字数和字典
     return total_words, dict(levels)
-
-
-def sample_words(level, n):
-    """
-    Generate a random sample of words from a specific CEFR level.
-
-    Args:
-        level (str): The CEFR level of the words. Must be one of ["A1", "A2", "B1", "B2", "C1", "C2"].
-        n (int): The number of words to sample.
-
-    Returns:
-        list: A list of randomly sampled words from the specified CEFR level.
-    """
-    levels = ["A1", "A2", "B1", "B2", "C1", "C2"]
-    assert level in levels, f"level must be one of {levels}"
-    fp = os.path.join(
-        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-    )
-    with open(fp, "r") as f:
-        cefr = json.load(f)
-    level_flag = f"1-CEFR-{level}"
-    return random.sample(cefr[level_flag], n)
 
 
 def get_or_create_and_return_audio_data(word: str, style: str, secrets: dict):
@@ -354,30 +211,24 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     return img_byte_arr
 
 
-def get_cefr_vocabulary_list(texts, exclude_persons=False):
+def get_cefr_vocabulary_list(texts: List[str], mini_dict: dict, exclude_persons=False):
+    assert isinstance(texts, list), "texts must be a list of strings"
     model_name = "en_core_web_sm"
     nlp = spacy.load(model_name)
-    fp = os.path.join(
-        CURRENT_CWD, "resource", "dictionary", "word_lists_by_edition_grade.json"
-    )
-    with open(fp, "r", encoding="utf-8") as f:
-        cefr = json.load(f)
-
     cefr_vocabulary = {}
     for text in texts:
         doc = nlp(text)
-        persons = {ent.text for ent in doc.ents if ent.label_ == "PERSON"}
-        for sent in doc.sents:
-            for token in sent:
-                if not token.is_punct and (
-                    not exclude_persons or token.text not in persons
-                ):
-                    lemma = token.lemma_
-                    cefr_level = get_lowest_cefr_level(lemma, cefr)
-                    if cefr_level is None:
-                        cefr_level = "未分级"
-                    if cefr_level not in cefr_vocabulary:
-                        cefr_vocabulary[cefr_level] = set()
-                    cefr_vocabulary[cefr_level].add(lemma)
+        if exclude_persons:
+            tokens = [token for token in doc if token.ent_type_ != "PERSON"]
+        else:
+            tokens = doc
+        lemmatized_words = [token.lemma_ for token in tokens if token.is_alpha]
+        for lemma in lemmatized_words:
+            cefr_level = get_cefr_level(lemma, mini_dict)
+            if cefr_level is None:
+                cefr_level = "未分级"
+            if cefr_level not in cefr_vocabulary:
+                cefr_vocabulary[cefr_level] = set()
+            cefr_vocabulary[cefr_level].add(lemma)
 
     return cefr_vocabulary

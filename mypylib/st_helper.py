@@ -33,6 +33,7 @@ from .google_cloud_configuration import (
 )
 from .word_utils import (
     audio_autoplay_elem,
+    get_mini_dict,
     get_word_image_urls,
     load_image_bytes_from_url,
 )
@@ -413,88 +414,22 @@ def get_synthesis_speech(text, voice):
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
+@st.cache_resource
+def load_mini_dict():
+    return get_mini_dict()
+
+
 @st.cache_resource(show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
 def get_mini_dict_doc(word):
-    db = st.session_state.dbi.db
-    collection = db.collection("mini_dict")
     w = word.replace("/", " or ")
-    # 从 Firestore 获取数据
-    doc = collection.document(w).get()
-
-    if doc.exists:
-        return doc.to_dict()
-    else:
-        return {}
-
-
-def get_and_save_word_image_urls(word: str):
-    image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
-    # 保存 image_urls 到数据库
-    st.session_state.dbi.db.collection("mini_dict").document(word).set(
-        {"image_urls": image_urls}, merge=True
-    )
-
-
-def select_word_image_indices(word: str):
-    # 查找 image_urls
-    image_urls = get_mini_dict_doc(word).get("image_urls", [])
-    model = load_vertex_model("gemini-pro-vision")
-    if len(image_urls) == 0:
-        image_urls = get_word_image_urls(word, st.secrets["SERPER_KEY"])
-
-    images = []
-    n = len(image_urls)
-    for i, url in enumerate(image_urls):
-        try:
-            image_bytes = load_image_bytes_from_url(url)
-            images.append(Image.from_bytes(image_bytes))
-        except Exception as e:
-            logger.error(f"加载单词{word}第{i+1}张图片时出错:{str(e)}")
-            continue
-
-    # 生成 image_indices
-    image_indices = select_best_images_for_word(
-        "gemini-pro-vision", model, word, images
-    )
-
-    # 检查 indices 是否为列表且列表中的每个元素是否都是整数
-    if not isinstance(image_indices, list) or not all(
-        isinstance(i, int) for i in image_indices
-    ):
-        msg = f"{word} 序号必须是一个列表，且列表中的每个元素都必须是整数，但是得到的类型是 {type(image_indices)} 或 {[(type(i), i) for i in image_indices]}"
-        logger.error(msg)
-        # 使用默认值
-        image_indices = list(range(n))[:4]
-    else:
-        # 剔除不合格的序号
-        image_indices = [i for i in image_indices if i < n]
-
-    # 如果清单为空，则触发异常
-    if not image_indices:
-        image_indices = list(range(n))[:4]
-
-    st.session_state.dbi.update_image_indices(word, image_indices)
-
-    return image_indices
+    mini_dict = load_mini_dict()
+    return mini_dict.get(w, {})
 
 
 @st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址...")
 def select_word_image_urls(word: str):
-    word_info = get_mini_dict_doc(word)
-    image_indices = word_info.get("image_indices", [])
-    if image_indices:
-        return [word_info["image_urls"][i] for i in image_indices][:4]
-    else:
-        return random.sample(word_info["image_urls"], 4)
-    # TODO：恢复
-    image_indices = select_word_image_indices(word)
-    db = st.session_state.dbi.db
-    collection = db.collection("mini_dict")
-    w = word.replace("/", " or ")
-    # 从 Firestore 获取数据
-    doc = collection.document(w).get()
-    urls = doc.to_dict()["image_urls"]
-    return [urls[i] for i in image_indices]
+    mini_dict = load_mini_dict()
+    return mini_dict.get("image_urls", [])
 
 
 # endregion
