@@ -101,19 +101,22 @@ if menu and menu.endswith("发音评估"):
     # 左侧显示发音评估文本
     # 右侧显示评估内容
     content_cols = st.columns(2)
-    if "pa_text" in st.session_state:
-        st.session_state["pa_text"] = ""
+
+    if "pa-text" not in st.session_state:
+        st.session_state["pa-text"] = ""
+    if "pa-assessment" not in st.session_state:
+        st.session_state["pa-assessment"] = {}
 
     if pa_refresh_btn:
-        st.session_state["pa_text"] = generate_pronunciation_assessment_text_for(
+        st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
 
-    content_cols[0].markdown(st.session_state["pa_text"], unsafe_allow_html=True)
+    content_cols[0].markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
-        reference_text = st.session_state["pa_text"]
+        reference_text = st.session_state["pa-text"]
         reference_text = reference_text.replace("**", "")
         reference_text = re.sub(r"^\w+:\s", "", reference_text)
         start = datetime.now(pytz.UTC)
