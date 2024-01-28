@@ -469,7 +469,7 @@ def pronunciation_assessment_word_format(word):
         return annotation(f"{word.word}", background="#f2f2f2")
     if word.is_monotone:
         return annotation(
-            f"{word.word}", color="white", background="rgba(128, 0, 128, 200)"
+            f"{word.word}", color="white", background="rgba(128, 0, 128, 100)"
         )
     return f"{word.word}"
 
@@ -492,7 +492,7 @@ def view_pronunciation_assessment_legend():
     annotated_text(annotation("word 4", "意外中断", background="#FFC0CB"))
     annotated_text(annotation("word 5", "缺少停顿", background="#f2f2f2"))
     annotated_text(
-        annotation("word 6", "单调", color="white", background="rgba(128, 0, 128, 200)")
+        annotation("word 6", "单调", color="white", background="rgba(128, 0, 128, 100)")
     )
 
 
