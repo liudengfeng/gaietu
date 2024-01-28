@@ -114,7 +114,7 @@ if menu and menu.endswith("发音评估"):
     pa_container = content_cols[1].container(border=True)
     legend_container = content_cols[2].container(border=True)
 
-    legend_container.markdown("#### 图例")
+    legend_container.markdown("##### 图例")
     with legend_container:
         view_pronunciation_assessment_legend()
 
@@ -128,7 +128,7 @@ if menu and menu.endswith("发音评估"):
             scenario_category, difficulty
         )
 
-    pa_text_container.markdown("#### 发音评估文本")
+    pa_text_container.markdown("##### 发音评估文本")
     pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
@@ -152,7 +152,7 @@ if menu and menu.endswith("发音评估"):
         text = st.session_state["pa-text"].replace("**", "")
         adjusted = adjust_display_by_reference_text(text, words)
         # end = datetime.now(pytz.UTC)
-        pa_container.markdown("#### 发音评估报告")
+        pa_container.markdown("##### 发音评估报告")
         with pa_container:
             view_word_assessment(adjusted)
 
