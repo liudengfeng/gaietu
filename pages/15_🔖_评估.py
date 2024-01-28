@@ -130,7 +130,10 @@ if menu and menu.endswith("发音评估"):
             reference_text,
         )
         words = st.session_state["pa-assessment"]["recognized_words"]
-        adjusted = adjust_display_by_reference_text(st.session_state["pa-text"], words)
+
+        # 去掉 ** 加黑标记
+        text = st.session_state["pa-text"].replace("**", "")
+        adjusted = adjust_display_by_reference_text(text, words)
         # end = datetime.now(pytz.UTC)
         with content_cols[1]:
             view_word_assessment(adjusted)
