@@ -6,6 +6,7 @@ from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_t
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
 from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
 from streamlit_mic_recorder import mic_recorder
+from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
     check_access,
@@ -72,6 +73,24 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
     adjusted = adjust_display_by_reference_text(text, words)
     with container:
         view_word_assessment(adjusted)
+
+
+def view_radar(score_key):
+    # 雷达图
+    item_maps_tab1 = {
+        "pronunciation_score": "发音总评分",
+        "accuracy_score": "准确性评分",
+        "completeness_score": "完整性评分",
+        "fluency_score": "流畅性评分",
+        "prosody_score": "韵律分数",
+    }
+    data_tb1 = {
+        key: st.session_state.get(score_key, {})
+        .get("pronunciation_result", {})
+        .get(key, 0)
+        for key in item_maps_tab1.keys()
+    }
+    gen_radar(data_tb1, item_maps_tab1, 320)
 
 
 # endregion
@@ -166,6 +185,9 @@ if menu and menu.endswith("发音评估"):
         "pa-text",
         "pa-assessment",
     )
+
+    with st.expander("查看发音评估雷达图", expanded=False):
+        view_radar("pa-assessment")
 
 # endregion
 
