@@ -39,6 +39,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
+    display_pronunciation_result,
     load_mini_dict,
     pronunciation_assessment_for,
     update_and_display_progress,
@@ -163,23 +164,7 @@ def display_text_word_count_summary(container, text):
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
 
 
-def display_pronunciation_result(container, key):
-    """
-    Display the pronunciation result in the specified container.
 
-    Parameters:
-    container (object): The container to display the result.
-    key (str): The key to access the pronunciation result in the session state.
-
-    Returns:
-    None
-    """
-    if key not in st.session_state or st.session_state[key] is None:
-        return
-    result = st.session_state[key].get("pronunciation_result", None)
-    if result is None:
-        return
-    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
 
 
 # endregion

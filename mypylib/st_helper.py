@@ -444,6 +444,25 @@ def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     )
 
 
+def display_pronunciation_result(container, key):
+    """
+    Display the pronunciation result in the specified container.
+
+    Parameters:
+    container (object): The container to display the result.
+    key (str): The key to access the pronunciation result in the session state.
+
+    Returns:
+    None
+    """
+    if key not in st.session_state or st.session_state[key] is None:
+        return
+    result = st.session_state[key].get("pronunciation_result", None)
+    if result is None:
+        return
+    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
+
+
 def process_dialogue_text(reference_text):
     # 去掉加黑等标注
     reference_text = reference_text.replace("**", "")

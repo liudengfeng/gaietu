@@ -11,6 +11,7 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
+    display_pronunciation_result,
     format_token_count,
     on_page_to,
     process_dialogue_text,
@@ -82,7 +83,13 @@ if menu and menu.endswith("发音评估"):
         key="scenario_category",
         placeholder="请选择场景类别",
     )
+
+    st.divider()
+    pa_report_container = st.container()
+    st.divider()
+
     pa_cols = st.columns(8)
+
     pa_refresh_btn = pa_cols[0].button(
         "刷新[:arrows_counterclockwise:]",
         key="refresh_pronunciation_assessment_text",
@@ -129,6 +136,12 @@ if menu and menu.endswith("发音评估"):
             audio_info,
             reference_text,
         )
+
+        display_pronunciation_result(
+            pa_report_container,
+            "pa-assessment",
+        )
+
         words = st.session_state["pa-assessment"]["recognized_words"]
 
         # 去掉 ** 加黑标记
