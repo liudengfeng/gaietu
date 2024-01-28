@@ -458,9 +458,9 @@ def pronunciation_assessment_word_format(word):
     error_type = word.error_type
     if error_type == "Mispronunciation":
         accuracy_score = round(word.accuracy_score)
-        return annotation(word.word, label=str(accuracy_score), background="#d4d938cb")
+        return annotation(word.word, label=str(accuracy_score), background="#d5d507ce")
     if error_type == "Omission":
-        return annotation(f"[{word.word}]", background="#4a4943b7")
+        return annotation(f"[{word.word}]", color="white", background="#4a4943b7")
     if error_type == "Insertion":
         return annotation(word.word, border="2px dashed red")
     if word.is_unexpected_break:
@@ -486,8 +486,8 @@ def view_word_assessment(words):
 
 
 def view_pronunciation_assessment_legend():
-    annotated_text(annotation("word 1", "发音错误", background="#d4d938cb"))
-    annotated_text(annotation("[word 2]", "遗漏", background="#4a4943b7"))
+    annotated_text(annotation("word 1", "发音错误", background="#d5d507ce"))
+    annotated_text(annotation("[word 2]", "遗漏", color="white", background="#4a4943b7"))
     annotated_text(annotation("word 3", "插入内容", border="2px dashed red"))
     annotated_text(annotation("word 4", "意外中断", background="#FFC0CB"))
     annotated_text(annotation("word 5", "缺少停顿", background="#f2f2f2"))
