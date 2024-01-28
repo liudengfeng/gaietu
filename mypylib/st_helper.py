@@ -525,10 +525,12 @@ def view_pronunciation_assessment_legend():
     st.markdown(
         """<div style="background-color:#d5d507ce; width:20px; height:20px;">word 1</div>""",
         help="✨ 发音错误",
+        unsafe_allow_html=True,
     )
     st.markdown(
         """<div style="background-color:#4a4943b7; width:20px; height:20px;">[word 2]</div>""",
         help="✨ 遗漏",
+        unsafe_allow_html=True,
     )
 
 
