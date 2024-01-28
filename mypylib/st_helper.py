@@ -466,11 +466,13 @@ def pronunciation_assessment_word_format(word):
     if error_type == "Insertion":
         return annotation(word.word, border="2px dashed red")
     if word.is_unexpected_break:
-        return annotation(f"[{word.word}]", background="#FFC0CB")
+        return annotation(f"{word.word}", background="#FFC0CB")
     if word.is_missing_break:
-        return annotation(f"[{word.word}]", background="#f2f2f2")
+        return annotation(f"{word.word}", background="#f2f2f2")
     if word.is_monotone:
-        return annotation(f"[{word.word}]", color="white", background="rgba(128, 0, 128, 200)")
+        return annotation(
+            f"{word.word}", color="white", background="rgba(128, 0, 128, 200)"
+        )
     return f"{word.word}"
 
 
