@@ -62,6 +62,16 @@ def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
     )
 
 
+def display_pronunciation_assessment_words(pa_container, text_key, assessment_key):
+    # 去掉 ** 加黑标记
+    text = st.session_state[text_key].replace("**", "")
+    words = st.session_state[assessment_key]["recognized_words"]
+    adjusted = adjust_display_by_reference_text(text, words)
+    pa_container.markdown("##### 发音评估报告")
+    with pa_container:
+        view_word_assessment(adjusted)
+
+
 # endregion
 
 # region 发音评估
@@ -141,18 +151,24 @@ if menu and menu.endswith("发音评估"):
             reference_text,
         )
 
-        words = st.session_state["pa-assessment"]["recognized_words"]
+        # words = st.session_state["pa-assessment"]["recognized_words"]
 
-        # 去掉 ** 加黑标记
-        text = st.session_state["pa-text"].replace("**", "")
-        adjusted = adjust_display_by_reference_text(text, words)
-        # end = datetime.now(pytz.UTC)
-        pa_container.markdown("##### 发音评估报告")
-        with pa_container:
-            view_word_assessment(adjusted)
+        # # 去掉 ** 加黑标记
+        # text = st.session_state["pa-text"].replace("**", "")
+        # adjusted = adjust_display_by_reference_text(text, words)
+        # # end = datetime.now(pytz.UTC)
+        # pa_container.markdown("##### 发音评估报告")
+        # with pa_container:
+        #     view_word_assessment(adjusted)
 
     display_pronunciation_result(
         pa_report_container,
+        "pa-assessment",
+    )
+
+    display_pronunciation_assessment_words(
+        pa_report_container,
+        "pa-text",
         "pa-assessment",
     )
 
