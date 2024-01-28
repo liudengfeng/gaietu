@@ -141,11 +141,6 @@ if menu and menu.endswith("发音评估"):
             reference_text,
         )
 
-        display_pronunciation_result(
-            pa_report_container,
-            "pa-assessment",
-        )
-
         words = st.session_state["pa-assessment"]["recognized_words"]
 
         # 去掉 ** 加黑标记
@@ -156,6 +151,10 @@ if menu and menu.endswith("发音评估"):
         with pa_container:
             view_word_assessment(adjusted)
 
+    display_pronunciation_result(
+        pa_report_container,
+        "pa-assessment",
+    )
 
 # endregion
 
