@@ -33,7 +33,8 @@ IMAGE_DIR: Path = CURRENT_CWD / "resource/multimodal"
 st.set_page_config(
     page_title="人工智能",
     page_icon=":gemini:",
-    layout="wide",
+    # layout="wide",
+    layout="centered",
 )
 check_access(False)
 on_page_to("AI")
