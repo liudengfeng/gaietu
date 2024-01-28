@@ -130,7 +130,7 @@ if menu and menu.endswith("发音评估"):
         )
     pa_pro_btn = pa_cols[2].button(
         "评估[🔖]",
-        disabled=not audio_info,
+        disabled=not st.session_state[audio_session_output_key],
         key="pa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
