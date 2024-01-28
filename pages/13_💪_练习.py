@@ -164,9 +164,6 @@ def display_text_word_count_summary(container, text):
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
 
 
-
-
-
 # endregion
 
 
@@ -224,9 +221,6 @@ def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
 def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
-
-
-
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
