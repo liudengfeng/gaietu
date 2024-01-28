@@ -465,7 +465,6 @@ def pronunciation_assessment_word_format(word):
         return annotation(f"[{word.word}]", background="#4a4943b7")
     if error_type == "Insertion":
         return annotation(word.word, border="2px dashed red")
-        # return annotation(word.word, background="#FF0000", border="2px dashed red")
     return f"{word.word}"
 
 
