@@ -119,6 +119,9 @@ if menu and menu.endswith("发音评估"):
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
         reference_text = process_dialogue_text(st.session_state["pa-text"])
+        
+        st.write(reference_text)
+        
         start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
