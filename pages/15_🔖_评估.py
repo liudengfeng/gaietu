@@ -147,8 +147,8 @@ if menu and menu.endswith("发音评估"):
     pa_words_container = content_cols[1].container(border=True)
     legend_container = content_cols[2].container(border=True)
 
-    # legend_container.markdown("##### 图例")
     with legend_container:
+        st.markdown("##### 图例")
         view_pronunciation_assessment_legend()
 
     if "pa-text" not in st.session_state:
