@@ -65,7 +65,7 @@ def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
 def display_pronunciation_assessment_words(pa_container, text_key, assessment_key):
     # 去掉 ** 加黑标记
     text = st.session_state[text_key].replace("**", "")
-    words = st.session_state[assessment_key]["recognized_words"]
+    words = st.session_state[assessment_key].get("recognized_words", [])
     adjusted = adjust_display_by_reference_text(text, words)
     pa_container.markdown("##### 发音评估报告")
     with pa_container:
