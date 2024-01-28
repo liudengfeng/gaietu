@@ -16,13 +16,14 @@ from vertexai.preview.generative_models import (
     ResponseBlockedError,
 )
 
-from mypylib.google_ai_prompts import (
+from .constants import from_chinese_to_english_topic
+from .google_ai_prompts import (
     MULTIPLE_CHOICE_QUESTION,
     READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
     READING_COMPREHENSION_LOGIC_QUESTION,
     SINGLE_CHOICE_QUESTION,
 )
-from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
+from .google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
 MAX_CALLS = 10
 PER_SECONDS = 60
@@ -486,19 +487,20 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 
 
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
-请根据以下指示，生成一段英语对话：
-- 语言：地道的英语，偏向口语化
-- 级别：CEFR {level}
-- 场景：{scenario}
-- 文本内容：应符合上述场景
-- 词汇选择：应符合CEFR的英语级别
-- 字数：应在100到200字之间
-- 输出格式：只包含对话或旁白。旁白应用括号标记，并且必须单独成行。
-- 语言规范：输出内容应全为英语，避免英汉混杂或在旁白中使用汉语。
+"Please generate an English dialogue according to the following instructions:
+- Language: Authentic English, leaning towards colloquial
+- Level: CEFR {level}
+- Scenario: {scenario}
+- Text content: Should be consistent with the above scenario
+- Vocabulary: Should be consistent with the CEFR English level
+- Word count: Should be between 100 and 200 words
+- Output format: Should only contain dialogue or narration. Narration should be marked with parentheses and must be on a separate line.
+- Language norms: The output content should be entirely in English, avoiding mixing English and Chinese or using Chinese in the narration."
 """
 
 
-def generate_pronunciation_assessment_text(model, scenario, level):
+def generate_pronunciation_assessment_text(model, cn_scenario, level):
+    scenario = from_chinese_to_english_topic(level, cn_scenario)
     prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(scenario=scenario, level=level)
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(

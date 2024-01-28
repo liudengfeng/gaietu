@@ -558,7 +558,8 @@ CEFR_LEVEL_TOPIC = {
         "简单介绍自己的家庭和同事，描述他们的外表和性格",
         "对穿着进行基本的讨论，可以问服装店客服一些简单的问题",
         "讨论喜爱的食物，可以自行叫外卖",
-        "谈论每日的日常活动，跟朋友和同时安排见面或会议" "讨论天气状况，根据天气预报提出活动建议",
+        "谈论每日的日常活动，跟朋友和同时安排见面或会议",
+        "讨论天气状况，根据天气预报提出活动建议",
         "很浅显的讨论自己的身体状况，向医生描述常见的病状",
         "描述自己家的位置，可以给与简单的方向指示",
         "谈论自己的爱好和兴趣，为朋友和同事计划有趣的活动",
@@ -628,3 +629,94 @@ CEFR_LEVEL_TOPIC = {
         "讨论做不同话题研究所需要用到的技术和技巧",
     ],
 }
+
+CEFR_LEVEL_EN_TOPIC = {
+    "A1": [
+        "Make simple self-introductions and greetings",
+        "Talk about where you and others come from, make simple descriptions of cities",
+        "Introduce your family and colleagues simply, describe their appearance and personality",
+        "Have basic discussions about clothing, ask simple questions to clothing store customer service",
+        "Discuss favorite foods, can order takeout on your own",
+        "Talk about daily activities, arrange meetings or meetings with friends and colleagues",
+        "Discuss weather conditions, suggest activities based on weather forecasts",
+        "Discuss your physical condition very simply, describe common symptoms to the doctor",
+        "Describe the location of your home, can give simple direction instructions",
+        "Talk about your hobbies and interests, plan interesting activities for friends and colleagues",
+        "Complete basic transactions at the hotel on your own, including check-in and check-out",
+        "Discuss some commonly used products, can purchase and return items on your own",
+    ],
+    "A2": [
+        "Evaluate colleagues' performance in the workplace",
+        "Recall activities you have participated in the past, including weekend activities and interesting stories",
+        "Describe your past life, can recount important life events",
+        "Entertain others when staying at home or visiting friends' homes",
+        "Discuss your holiday plans and tell friends and colleagues about your holiday activities",
+        "Discuss the natural world, travel in your own country, observe animals in the natural world",
+        "Discuss your favorite movies, can choose movies and go to see them with friends",
+        "Discuss costumes and your favorite clothes",
+        "Have preliminary discussions at work, including attending meetings on familiar topics",
+        "Describe an accident or accident, seek help from a doctor and get a prescription",
+        "Engage in simple business socializing, welcome guests and participate in social activities",
+        "Understand and write simple business plans in your own professional field",
+        "Discuss and explain the rules of the game",
+    ],
+    "B1": [
+        "Discuss personal and professional visions and dreams",
+        "Arrange or participate in an interview related to your field of work",
+        "Explore your TV watching habits and favorite programs",
+        "Describe your educational background and your related plans for the future",
+        "Talk about your favorite music, fashion trends and plan a night to listen to live music",
+        "Discuss how to maintain a healthy lifestyle, give or get advice on healthy habits",
+        "Talk about relationships with friends and dating, including meeting people you know on social media",
+        "Go to a restaurant, order independently, have polite conversations during dinner and pay for yourself",
+        "Negotiate in your area of expertise with help",
+        "Discuss safety issues in the work environment, report injuries and explain rules and terms",
+        "Respond correctly to unreasonable demands and behaviors and explain appropriate polite behaviors",
+    ],
+    "B2": [
+        "Participate in meetings in your professional field with some help at certain points",
+        "Discuss topics related to cultural beliefs and gender etiquette",
+        "Talk about your personal finances and can give financial advice to friends and colleagues",
+        "Talk about personal life and work style, including a description of your work life",
+        "Explain your educational background, experiences, strengths, weaknesses, and discuss your career",
+        "Talk about mental thoughts and how you improve efficiency at work",
+        "Talk about your favorite readings and can make reading recommendations",
+        "Use appropriate words in social situations, including praise and expression of sympathy",
+        "Discuss leadership qualities and talk about the leaders you admire",
+        "Handle relatively complex and awkward situations in social and work situations",
+        "Discuss general political situations and the behavior of political figures",
+    ],
+    "C1": [
+        "Discuss the details of success, including how to organize and build a vibrant successful team",
+        "Have in-depth discussions around your favorite paintings and buildings",
+        "Discuss social issues, possible solutions, and the role a company plays",
+        "Participate in discussions on the maintenance and preservation of cultural relics, and the protection of residences",
+        "Talk about events and topics in the news, and how they affect people and businesses",
+        "Talk about crises in life, including changing jobs and doing dangerous sports",
+        "Compare different education systems and schools",
+        "Discuss different types of humor, including subtle sarcasm",
+        "Understand various communication styles, including direct, indirect, formal and informal",
+        "Discuss topics related to your quality of life, including work-life balance and home environment",
+        "Understand and discuss topics such as race, civil unrest, etc.",
+    ],
+    "C2": [
+        "Discuss topics related to science and technology, including robots and new innovations",
+        "Talk about celebrities, celebrity anecdotes and their gossip",
+        "Use different techniques in your speeches and writings to increase innovation",
+        "Discuss economic plans, understand personal financial situation and can give advice",
+        "Talk about stress in life and the lives of friends and colleagues",
+        "Discuss the techniques and skills needed to do research on different topics",
+    ],
+}
+
+
+def from_chinese_to_english_topic(level, chinese_topic):
+    # 在 CEFR_LEVEL_TOPIC 中找到对应级别的中文主题列表
+    chinese_topics = CEFR_LEVEL_TOPIC[level]
+    # 在中文主题列表中找到中文主题的索引
+    topic_index = chinese_topics.index(chinese_topic)
+    # 在 CEFR_LEVEL_EN_TOPIC 中找到对应级别的英语主题列表
+    english_topics = CEFR_LEVEL_EN_TOPIC[level]
+    # 使用索引找到对应的英语主题
+    english_topic = english_topics[topic_index]
+    return english_topic
