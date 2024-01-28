@@ -450,7 +450,7 @@ def process_dialogue_text(reference_text):
     # 去掉对话者名字
     reference_text = re.sub(r"^\w+(\s\w+)*:\s", "", reference_text, flags=re.MULTILINE)
     # 去掉空行
-    reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
+    # reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
     return reference_text.strip()
 
 
