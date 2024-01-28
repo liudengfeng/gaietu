@@ -112,8 +112,9 @@ if menu and menu.endswith("发音评估"):
     content_cols = st.columns([4, 4, 2])
     pa_text_container = content_cols[0].container(border=True)
     pa_container = content_cols[1].container(border=True)
+    legend_container = content_cols[2].container(border=True)
 
-    with content_cols[2]:
+    with legend_container:
         view_pronunciation_assessment_legend()
 
     if "pa-text" not in st.session_state:
