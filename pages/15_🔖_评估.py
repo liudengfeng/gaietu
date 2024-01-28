@@ -124,18 +124,6 @@ if menu and menu.endswith("发音评估"):
             audio_info,
             reference_text,
         )
-
-        # 临时测试显示评估结果
-        for word in st.session_state["pa-assessment"]["recognized_words"]:
-            st.write(
-                f"{word.word=}",
-                f"{word.accuracy_score=}",
-                f"{word.error_type=}",
-                f"{word.is_unexpected_break=}",
-                f"{word.is_missing_break=}",
-                f"{word.is_monotone=}",
-            )
-
         words = st.session_state["pa-assessment"]["recognized_words"]
         with content_cols[1]:
             view_word_assessment(words)

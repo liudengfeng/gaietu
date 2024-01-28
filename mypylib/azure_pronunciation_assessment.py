@@ -210,6 +210,10 @@ class _PronunciationAssessmentResultV2(speechsdk.PronunciationAssessmentResult):
         return self._words
 
 
+def is_punctuation_or_newline(s):
+    return s in string.punctuation or s == "\n"
+
+
 def adjust_recognized_words_and_scores(
     reference_text,
     recognized_words,
@@ -246,11 +250,14 @@ def adjust_recognized_words_and_scores(
                     final_words.append(word)
             if tag in ["delete", "replace"]:
                 for word_text in reference_words[i1:i2]:
+                    error_type = "Omission"
+                    if is_punctuation_or_newline(word_text):
+                        error_type = "Punctuation"
                     word = _PronunciationAssessmentWordResultV2(
                         {
                             "Word": word_text,
                             "PronunciationAssessment": {
-                                "ErrorType": "Omission",
+                                "ErrorType": error_type,
                             },
                         }
                     )
@@ -465,6 +472,9 @@ def _pronunciation_assessment(
             scores[key] * weight for key, weight in weights.items()
         )
         for word in final_words:
+            # 标点符号不考虑
+            if word.error_type == "Punctuation":
+                continue
             error_counts[word.error_type] += 1
             # logger.debug(f"{word.word=}\t{word.Feedback=}")
             if word.is_unexpected_break:
