@@ -125,6 +125,9 @@ if menu and menu.endswith("发音评估"):
             reference_text,
         )
         words = st.session_state["pa-assessment"]["recognized_words"]
+        # 简单显示单词的word文本 error_type
+        for w in words:
+            st.write(f"{w.word} {w.error_type}")
         with content_cols[1]:
             view_word_assessment(words)
 

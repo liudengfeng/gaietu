@@ -456,8 +456,6 @@ def process_dialogue_text(reference_text):
 
 def pronunciation_assessment_word_format(word):
     error_type = word.error_type
-    if error_type is None:
-        return f"{word.word}"
     if error_type == "Mispronunciation":
         accuracy_score = round(word.accuracy_score)
         return annotation(word.word, label=str(accuracy_score), background="yellow")
