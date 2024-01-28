@@ -487,7 +487,7 @@ def view_word_assessment(words):
 
 def view_pronunciation_assessment_legend():
     annotated_text(annotation("word 1", "发音错误", background="yellow"))
-    annotated_text(annotation("word 2", "遗漏", background="#4a4943b7"))
+    annotated_text(annotation("[word 2]", "遗漏", background="#4a4943b7"))
     annotated_text(annotation("word 3", "插入内容", border="2px dashed red"))
     annotated_text(annotation("word 4", "意外中断", background="#FFC0CB"))
     annotated_text(annotation("word 5", "缺少停顿", background="#f2f2f2"))
