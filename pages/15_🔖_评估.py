@@ -66,8 +66,10 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
     # 去掉 ** 加黑标记
     text = st.session_state[text_key].replace("**", "")
     words = st.session_state[assessment_key].get("recognized_words", [])
-    adjusted = adjust_display_by_reference_text(text, words)
     container.markdown("##### 发音评估报告")
+    if len(words) == 0:
+        return
+    adjusted = adjust_display_by_reference_text(text, words)
     with container:
         view_word_assessment(adjusted)
 
