@@ -470,7 +470,7 @@ def pronunciation_assessment_word_format(word):
     if word.is_missing_break:
         return annotation(f"[{word.word}]", background="#f2f2f2")
     if word.is_monotone:
-        return annotation(f"[{word.word}]", background="#800080")
+        return annotation(f"[{word.word}]", background="rgba(128, 0, 128, 200)")
     return f"{word.word}"
 
 
