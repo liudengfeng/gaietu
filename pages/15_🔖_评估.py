@@ -104,7 +104,7 @@ if menu and menu.endswith("发音评估"):
     )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
-    content_cols = st.columns([3, 3, 1])
+    content_cols = st.columns([4, 4, 2])
     with content_cols[2]:
         view_pronunciation_assessment_legend()
 
