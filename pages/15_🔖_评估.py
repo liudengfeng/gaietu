@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import datetime, timedelta
 import pytz
 import re
+from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
 from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
 from streamlit_mic_recorder import mic_recorder
@@ -120,20 +121,16 @@ if menu and menu.endswith("发音评估"):
         # 去掉发言者的名字
         reference_text = process_dialogue_text(st.session_state["pa-text"])
 
-        st.write("=" * 60)
-        st.write(reference_text)
-
         start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
         )
         words = st.session_state["pa-assessment"]["recognized_words"]
-        # # 简单显示单词的word文本 error_type
-        # for w in words:
-        #     st.write(f"{w.word} {w.error_type}")
+        adjusted = adjust_display_by_reference_text(st.session_state["pa-text"], words)
+        # end = datetime.now(pytz.UTC)
         with content_cols[1]:
-            view_word_assessment(words)
+            view_word_assessment(adjusted)
 
 
 # endregion

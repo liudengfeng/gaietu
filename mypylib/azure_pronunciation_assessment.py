@@ -210,10 +210,6 @@ class _PronunciationAssessmentResultV2(speechsdk.PronunciationAssessmentResult):
         return self._words
 
 
-def is_punctuation_or_newline(s):
-    return s in string.punctuation or s == "\n"
-
-
 def adjust_recognized_words_and_scores(
     reference_text,
     recognized_words,
@@ -251,9 +247,6 @@ def adjust_recognized_words_and_scores(
             if tag in ["delete", "replace"]:
                 for word_text in reference_words[i1:i2]:
                     error_type = "Omission"
-                    if is_punctuation_or_newline(word_text):
-                        error_type = "Punctuation"
-                        logger.info(f"punctuation: {word_text}")
                     word = _PronunciationAssessmentWordResultV2(
                         {
                             "Word": word_text,
@@ -525,3 +518,23 @@ def pronunciation_assessment_from_wavfile(
         reference_text=reference_text,
         language=language,
     )
+
+
+def adjust_display_by_reference_text(reference_text: str, recognized_words: list):
+    # 将参考文本和识别的单词列表分割成单词
+    reference_text = reference_text.lower().split()
+    recognized_words = [word.word.lower() for word in recognized_words]
+
+    # 使用difflib.SequenceMatcher来比较这两个单词列表
+    diff = difflib.SequenceMatcher(None, reference_text, recognized_words)
+
+    # 创建一个空列表来存储最终的单词列表
+    final_words = []
+    for tag, i1, i2, j1, j2 in diff.get_opcodes():
+        if tag == "delete":
+            final_words += reference_text[i1:i2]
+        elif tag == "equal":
+            final_words += recognized_words[j1:j2]
+
+    # 返回最终的单词列表
+    return final_words

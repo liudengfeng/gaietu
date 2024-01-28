@@ -450,7 +450,7 @@ def process_dialogue_text(reference_text):
     # 去掉对话者名字
     reference_text = re.sub(r"^\w+(\s\w+)*:\s", "", reference_text, flags=re.MULTILINE)
     # 去掉空行
-    # reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
+    reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
     return reference_text.strip()
 
 
@@ -477,7 +477,10 @@ def pronunciation_assessment_word_format(word):
 def view_word_assessment(words):
     res = []
     for word in words:
-        res.append(pronunciation_assessment_word_format(word))
+        if isinstance(word, str):
+            res.append(word)
+        else:
+            res.append(pronunciation_assessment_word_format(word))
         res.append(" ")
     annotated_text(*res)
 
