@@ -444,6 +444,16 @@ def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     )
 
 
+def process_dialogue_text(reference_text):
+    # 去掉加黑等标注
+    reference_text = reference_text.replace("**", "")
+    # 去掉对话者名字
+    reference_text = re.sub(r"^\w+(\s\w+)*:\s", "", reference_text, flags=re.MULTILINE)
+    # 去掉空行
+    reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
+    return reference_text.strip()
+
+
 def pronunciation_assessment_word_format(word):
     error_type = word.error_type
     if error_type is None:
