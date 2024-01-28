@@ -109,8 +109,9 @@ if menu and menu.endswith("发音评估"):
     )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
-    st.divider()
     content_cols = st.columns([4, 4, 2])
+    pa_text_container = content_cols[0].container(border=True)
+    pa_container = content_cols[1].container(border=True)
 
     with content_cols[2]:
         view_pronunciation_assessment_legend()
@@ -125,7 +126,7 @@ if menu and menu.endswith("发音评估"):
             scenario_category, difficulty
         )
 
-    content_cols[0].markdown(st.session_state["pa-text"], unsafe_allow_html=True)
+    pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
@@ -148,7 +149,7 @@ if menu and menu.endswith("发音评估"):
         text = st.session_state["pa-text"].replace("**", "")
         adjusted = adjust_display_by_reference_text(text, words)
         # end = datetime.now(pytz.UTC)
-        with content_cols[1]:
+        with pa_container:
             view_word_assessment(adjusted)
 
 
