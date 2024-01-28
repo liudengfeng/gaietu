@@ -485,6 +485,11 @@ def view_word_assessment(words):
     annotated_text(*res)
 
 
+def view_pronunciation_assessment_legend():
+    annotated_text(annotation("mispronunciation", "发音错误", label=str(32), background="yellow"))
+    annotated_text(annotation("omission", "遗漏",  background="#4a4943b7"))
+
+
 # endregion
 
 # region 学习记录

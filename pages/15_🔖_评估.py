@@ -15,6 +15,7 @@ from mypylib.st_helper import (
     on_page_to,
     process_dialogue_text,
     pronunciation_assessment_for,
+    view_pronunciation_assessment_legend,
     view_word_assessment,
 )
 
@@ -103,7 +104,9 @@ if menu and menu.endswith("发音评估"):
     )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
-    content_cols = st.columns(2)
+    content_cols = st.columns([3, 3, 1])
+    with content_cols[2]:
+        view_pronunciation_assessment_legend()
 
     if "pa-text" not in st.session_state:
         st.session_state["pa-text"] = ""
