@@ -67,7 +67,7 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
     # 去掉 ** 加黑标记
     text = st.session_state[text_key].replace("**", "")
     words = st.session_state[assessment_key].get("recognized_words", [])
-    container.markdown("##### 发音评估报告")
+    container.markdown("##### 评估结果")
     if len(words) == 0:
         return
     adjusted = adjust_display_by_reference_text(text, words)
@@ -75,22 +75,15 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
         view_word_assessment(adjusted)
 
 
-def view_radar(score_key):
+def view_radar(score_key, item_maps):
     # 雷达图
-    item_maps_tab1 = {
-        "pronunciation_score": "发音总评分",
-        "accuracy_score": "准确性评分",
-        "completeness_score": "完整性评分",
-        "fluency_score": "流畅性评分",
-        "prosody_score": "韵律分数",
-    }
     data_tb1 = {
         key: st.session_state.get(score_key, {})
         .get("pronunciation_result", {})
         .get(key, 0)
-        for key in item_maps_tab1.keys()
+        for key in item_maps.keys()
     }
-    gen_radar(data_tb1, item_maps_tab1, 320)
+    gen_radar(data_tb1, item_maps, 320)
 
 
 # endregion
@@ -162,7 +155,7 @@ if menu and menu.endswith("发音评估"):
             scenario_category, difficulty
         )
 
-    pa_text_container.markdown("##### 发音评估文本")
+    pa_text_container.markdown("##### 评估文本")
     pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
@@ -187,7 +180,14 @@ if menu and menu.endswith("发音评估"):
     )
 
     with st.expander("查看发音评估雷达图", expanded=False):
-        view_radar("pa-assessment")
+        item_maps = {
+            "pronunciation_score": "发音总评分",
+            "accuracy_score": "准确性评分",
+            "completeness_score": "完整性评分",
+            "fluency_score": "流畅性评分",
+            "prosody_score": "韵律分数",
+        }
+        view_radar("pa-assessment", item_maps)
 
 # endregion
 
