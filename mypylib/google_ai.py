@@ -487,14 +487,16 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 
 
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
-"Please generate an English dialogue according to the following instructions:
+"Please generate an English personal statement according to the following instructions:
 - Language: Authentic English, leaning towards colloquial
 - Level: CEFR {level}
-- Scenario: {scenario}
-- Text content: Should be consistent with the above scenario
+- Scenario or Task: {scenario}. 
+- The scenario or task can sometimes be broad, such as 'briefly introduce your family and colleagues, describe their appearance and personality'. The personal statement should elaborate on these details in a customized manner.
+- Personal Information: You may reasonably fabricate personal information for the purpose of the statement. Avoid using placeholders such as '[your name]'.
+- Text content: Should be a personal statement consistent with the above scenario or task
 - Vocabulary: Should be consistent with the CEFR English level
 - Word count: Should be between 100 and 200 words
-- Output format: Should only contain dialogue or narration. Narration should be marked with parentheses and must be on a separate line.
+- Output format: Should be a personal statement. Any narration should be marked with parentheses and must be on a separate line.
 - Language norms: The output content should be entirely in English, avoiding mixing English and Chinese or using Chinese in the narration."
 """
 
