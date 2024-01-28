@@ -457,9 +457,9 @@ def display_pronunciation_result(container, key):
     """
     if key not in st.session_state or st.session_state[key] is None:
         return
-    result = st.session_state[key].get("pronunciation_result", None)
-    if result is None:
-        return
+    result = st.session_state[key].get("pronunciation_result", {})
+    # if result is None:
+    #     return
     view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
 
 
