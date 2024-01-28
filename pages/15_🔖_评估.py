@@ -88,6 +88,9 @@ if menu and menu.endswith("发音评估"):
         placeholder="请选择CEFR等级",
     )
     st.subheader("发音评估", divider="rainbow", anchor="发音评估")
+    st.markdown(
+        "在选择了 CEFR 等级和发音评估的场景类别之后，点击 '刷新[🔄]' 按钮来生成用于发音评估的文本。然后，点击 '录音[⏸️]' 按钮，按照生成的文本进行朗读。完成朗读后，点击 '评估[🔖]' 按钮，系统将对你的发音进行评估，并生成发音评估报告。"
+    )
     scenario_category = st.selectbox(
         "选择场景类别",
         CEFR_LEVEL_TOPIC[difficulty],
