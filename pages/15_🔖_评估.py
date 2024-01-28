@@ -134,9 +134,15 @@ if menu and menu.endswith("发音评估"):
         key="pa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
+    play_btn = pa_cols[3].button(
+        "回放[▶️]",
+        disabled=not st.session_state.get(audio_session_output_key, None),
+        key="pa-play-btn",
+        help="✨ 点击按钮，播放您的跟读录音。",
+    )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
-    content_cols = st.columns([4, 4, 2])
+    content_cols = st.columns([5, 5, 2])
     pa_text_container = content_cols[0].container(border=True)
     pa_words_container = content_cols[1].container(border=True)
     legend_container = content_cols[2].container(border=True)
