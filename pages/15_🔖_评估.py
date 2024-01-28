@@ -77,13 +77,13 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
 
 def view_radar(score_key, item_maps):
     # 雷达图
-    data_tb1 = {
+    data_tb = {
         key: st.session_state.get(score_key, {})
         .get("pronunciation_result", {})
         .get(key, 0)
         for key in item_maps.keys()
     }
-    gen_radar(data_tb1, item_maps, 320)
+    gen_radar(data_tb, item_maps, 320)
 
 
 # endregion
