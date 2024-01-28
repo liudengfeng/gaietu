@@ -84,9 +84,7 @@ if menu and menu.endswith("发音评估"):
         placeholder="请选择场景类别",
     )
 
-    st.divider()
-    pa_report_container = st.container()
-    st.divider()
+    pa_report_container = st.container(border=True)
 
     pa_cols = st.columns(8)
 
