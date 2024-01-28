@@ -520,20 +520,22 @@ def pronunciation_assessment_from_wavfile(
     )
 
 
-def adjust_display_by_reference_text(reference_text: str, recognized_words: list):
+def adjust_display_by_reference_text(
+    reference_text: str, recognized_words: List[_PronunciationAssessmentWordResultV2]
+):
     # 使用正则表达式将参考文本分割成单词，同时保留换行符和标点符号
-    reference_text = re.findall(r"\b\w+\b|\n|\S", reference_text.lower())
-    recognized_words = [word.lower() for word in recognized_words]
+    reference = re.findall(r"\b\w+\b|\n|\S", reference_text.lower())
+    words = [w.word.lower() for w in recognized_words]
 
     # 使用difflib.SequenceMatcher来比较这两个单词列表
-    diff = difflib.SequenceMatcher(None, reference_text, recognized_words)
+    diff = difflib.SequenceMatcher(None, reference, words)
 
     # 创建一个空列表来存储最终的单词列表
     final_words = []
     # 将引用文本中存在而识别文本不存在的部分添加进来
     for tag, i1, i2, j1, j2 in diff.get_opcodes():
         if tag in ["delete", "replace"]:
-            for word_text in reference_text[i1:i2]:
+            for word_text in reference[i1:i2]:
                 final_words.append(word_text)
         if tag == "equal":
             final_words += recognized_words[j1:j2]
