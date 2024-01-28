@@ -511,27 +511,13 @@ def view_word_assessment(words):
     annotated_text(*res)
 
 
-# def view_pronunciation_assessment_legend():
-#     annotated_text(annotation("word 1", "发音错误", background="#d5d507ce"))
-#     annotated_text(annotation("[word 2]", "遗漏", color="white", background="#4a4943b7"))
-#     annotated_text(annotation("word 3", "插入内容", border="2px dashed red"))
-#     annotated_text(annotation("word 4", "意外中断", background="#FFC0CB"))
-#     annotated_text(annotation("word 5", "缺少停顿", background="#f2f2f2"))
-#     annotated_text(annotation("word 6", "单调", color="white", background="#ac1882ce"))
-
-
 def view_pronunciation_assessment_legend():
-    st.markdown("##### 图例")
-    st.markdown(
-        """<div style="background-color:#d5d507ce; width:20px; height:20px;">word 1</div>""",
-        help="✨ 发音错误",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        """<div style="background-color:#4a4943b7; width:20px; height:20px;">[word 2]</div>""",
-        help="✨ 遗漏",
-        unsafe_allow_html=True,
-    )
+    annotated_text(annotation("W1", "发音错误", background="#d5d507ce"))
+    annotated_text(annotation("[W2]", "遗漏", color="white", background="#4a4943b7"))
+    annotated_text(annotation("W3", "插入内容", border="2px dashed red"))
+    annotated_text(annotation("W4", "意外中断", background="#FFC0CB"))
+    annotated_text(annotation("W5", "缺少停顿", background="#f2f2f2"))
+    annotated_text(annotation("W6", "单调", color="white", background="#ac1882ce"))
 
 
 # endregion
