@@ -253,6 +253,7 @@ def adjust_recognized_words_and_scores(
                     error_type = "Omission"
                     if is_punctuation_or_newline(word_text):
                         error_type = "Punctuation"
+                        logger.info(f"punctuation: {word_text}")
                     word = _PronunciationAssessmentWordResultV2(
                         {
                             "Word": word_text,
