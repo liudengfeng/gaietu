@@ -139,8 +139,7 @@ def view_radar(score_key, item_maps):
     gen_radar(data_tb, item_maps, 320)
 
 
-def play_and_record_text(voice_style, difficulty, selected_scenario):
-    text = st.session_state["pa-text"]
+def play_synthesized_audio(text, voice_style, difficulty, selected_scenario):
     if not text:
         return
     style = voice_style[0]
@@ -254,7 +253,8 @@ if menu and menu.endswith("发音评估"):
         "收听[:headphones:]",
         key="pa-replay",
         help="✨ 点击按钮，收听文本的合成语音。",
-        disabled=st.session_state["pa-current-text"] == "",
+        disabled=st.session_state["pa-current-text"] == ""
+        or st.session_state["pa-idx"] == -1,
     )
     audio_key = "pa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
@@ -337,8 +337,8 @@ if menu and menu.endswith("发音评估"):
         )
 
     if synthetic_audio_replay_button:
-        idx = st.session_state["pa-idx"]
-        play_and_record_text(
+        play_synthesized_audio(
+            st.session_state["pa-current-text"],
             voice_style,
             difficulty,
             scenario_category,
