@@ -191,31 +191,31 @@ if menu and menu.endswith("发音评估"):
         key="refresh_pronunciation_assessment_text",
         help="点击按钮，生成发音评估文本",
     )
+    replay_btn = pa_cols[1].button(
+        "收听[:headphones:]",
+        key="pa-replay",
+        help="✨ 点击按钮，收听文本的合成语音。",
+        disabled=not st.session_state["pa-text"],
+    )
     audio_key = "pa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
-    with pa_cols[1]:
+    with pa_cols[2]:
         audio_info = mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
             key=audio_key,
         )
-    pa_pro_btn = pa_cols[2].button(
+    pa_pro_btn = pa_cols[3].button(
         "评估[🔖]",
         disabled=not audio_info,
         key="pa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
-    play_btn = pa_cols[3].button(
+    play_btn = pa_cols[4].button(
         "回放[▶️]",
         disabled=not audio_info,
         key="pa-play-btn",
         help="✨ 点击按钮，播放您的跟读录音。",
-    )
-    replay_btn = pa_cols[4].button(
-        "收听[:headphones:]",
-        key="pa-replay",
-        help="✨ 点击按钮，收听合成音频样例。",
-        disabled=not st.session_state["pa-text"],
     )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
@@ -232,6 +232,7 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
+        st.rerun()
 
     pa_text_container.markdown("##### 评估文本")
     if st.session_state["pa-text"]:
