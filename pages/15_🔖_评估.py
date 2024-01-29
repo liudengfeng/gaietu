@@ -72,12 +72,23 @@ if "pa-learning-times" not in st.session_state:
 if "pa-text" not in st.session_state:
     st.session_state["pa-text"] = ""
 
+if "pa-idx" not in st.session_state:
+    st.session_state["pa-idx"] = -1
+
 if "pa-assessment" not in st.session_state:
     st.session_state["pa-assessment"] = {}
 
 # endregion
 
 # region 函数
+
+
+def on_prev_btn_click(key):
+    st.session_state[key] -= 1
+
+
+def on_next_btn_click(key):
+    st.session_state[key] += 1
 
 
 def create_learning_record(
@@ -143,19 +154,19 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
     process_learning_record(record, "pa-learning-times")
 
 
-def display_assessment_text(pa_text_container):
+def display_assessment_text(pa_text_container, full_text=False):
     with pa_text_container:
         text = st.session_state["pa-text"]
         words = text.split()
         st.markdown(f"##### 评估文本[单词总数：{len(words)}]")
         if text:
-            st.markdown(text, unsafe_allow_html=True)
-            # words = st.session_state["pa-assessment"].get("recognized_words", [])
-            # aligned_text = left_paragraph_aligned_text(text, words)
-            # # aligned_text 是一个段落列表
-            # for paragraph in aligned_text:
-            #     st.markdown(paragraph, unsafe_allow_html=True)
-            #     # st.markdown("&nbsp;", unsafe_allow_html=True)
+            if full_text:
+                st.markdown(text, unsafe_allow_html=True)
+            else:
+                paragraphs = text.splitlines()
+                idx = st.session_state["pa-idx"]
+                if idx != -1:
+                    st.markdown(paragraphs[idx], unsafe_allow_html=True)
 
 
 # endregion
@@ -207,7 +218,24 @@ if menu and menu.endswith("发音评估"):
         key="refresh_pronunciation_assessment_text",
         help="点击按钮，生成发音评估文本",
     )
-    replay_btn = pa_cols[1].button(
+    prev_btn = pa_cols[1].button(
+        "上一[:leftwards_arrow_with_hook:]",
+        key="ra-prev",
+        help="✨ 点击按钮，切换到文章上一段落。",
+        on_click=on_prev_btn_click,
+        args=("pa-idx",),
+        disabled=st.session_state["pa-idx"] <= 0,
+    )
+    next_btn = pa_cols[2].button(
+        "下一[:arrow_right_hook:]",
+        key="ra-next",
+        help="✨ 点击按钮，切换到下一段落。",
+        on_click=on_next_btn_click,
+        args=("pa-idx",),
+        disabled=st.session_state["pa-idx"]
+        == len(st.session_state["pa-text"].splitlines()) - 1,
+    )
+    replay_btn = pa_cols[3].button(
         "收听[:headphones:]",
         key="pa-replay",
         help="✨ 点击按钮，收听文本的合成语音。",
@@ -215,19 +243,19 @@ if menu and menu.endswith("发音评估"):
     )
     audio_key = "pa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
-    with pa_cols[2]:
+    with pa_cols[4]:
         audio_info = mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
             key=audio_key,
         )
-    pa_pro_btn = pa_cols[3].button(
+    pa_pro_btn = pa_cols[5].button(
         "评估[🔖]",
         disabled=not audio_info,
         key="pa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
-    play_btn = pa_cols[4].button(
+    play_btn = pa_cols[6].button(
         "回放[▶️]",
         disabled=not audio_info,
         key="pa-play-btn",
@@ -250,17 +278,29 @@ if menu and menu.endswith("发音评估"):
         )
         st.rerun()
 
-    display_assessment_text(pa_text_container)
+    if next_btn or prev_btn:
+        display_assessment_text(pa_text_container, False)
+    else:
+        display_assessment_text(pa_text_container, True)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
         reference_text = process_dialogue_text(st.session_state["pa-text"])
 
-        start = datetime.now(pytz.UTC)
+        # start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
         )
+
+        # # TODO:管理待处理任务列表
+        # # 创建一个空的待处理任务列表
+        # tasks = []
+        # # 遍历发音评估结果
+        # for word in st.session_state["pa-assessment"].get("recognized_words", []):
+        #     # 如果单词的发音错误，将它添加到待处理任务列表中
+        #     if word.get("error_type") == "Mispronunciation":
+        #         tasks.append(word.word)
 
     if play_btn and audio_info and st.session_state["pa-assessment"]:
         autoplay_audio_and_display_text(
