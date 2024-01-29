@@ -503,7 +503,7 @@ PRONUNCIATION_ASSESSMENT_TEMPLATE = """
 
 def generate_pronunciation_assessment_text(model, ability, level):
     scenario = from_chinese_to_english_topic(level, ability)
-    prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(scenario=scenario, level=level)
+    prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(ability=scenario, level=level)
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
