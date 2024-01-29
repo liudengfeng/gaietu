@@ -21,7 +21,7 @@ from mypylib.st_helper import (
     display_pronunciation_result,
     format_token_count,
     get_synthesis_speech,
-    left_paragraph_aligned_text,
+    # left_paragraph_aligned_text,
     on_page_to,
     process_dialogue_text,
     process_learning_record,
@@ -157,7 +157,8 @@ def play_synthesized_audio(text, voice_style, difficulty, selected_scenario):
     # 记录学习时长
     word_count = len(re.findall(r"\b\w+\b", text))
     record = create_learning_record("发音评估", difficulty, selected_scenario, word_count)
-    process_learning_record(record, "pa-learning-times")
+    record.duration = result["audio_duration"].total_seconds()
+    st.session_state.dbi.add_record_to_cache(record)
 
 
 def display_assessment_text(pa_text_container):
