@@ -163,7 +163,7 @@ def display_assessment_text(pa_text_container, full_text=False):
                 words = text.split()
                 title = f"评估全文[单词总数：{len(words)}]"
             else:
-                paragraphs = text.splitlines()
+                paragraphs = [line for line in text.splitlines() if line.strip()]
                 idx = st.session_state["pa-idx"]
                 if idx != -1:
                     words = paragraphs[idx].split()
@@ -291,10 +291,10 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-idx"] = -1
         st.rerun()
 
-    if next_btn or prev_btn:
-        display_assessment_text(pa_text_container, False)
-    else:
+    if st.session_state["pa-idx"] == -1:
         display_assessment_text(pa_text_container, True)
+    else:
+        display_assessment_text(pa_text_container, False)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
