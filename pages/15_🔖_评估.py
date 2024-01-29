@@ -154,27 +154,26 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
     process_learning_record(record, "pa-learning-times")
 
 
-def display_assessment_text(pa_text_container, full_text=False):
+def display_assessment_text(pa_text_container):
     with pa_text_container:
         text = st.session_state["pa-text"]
         title = "评估文本"
         if text:
             paragraphs = [line for line in text.splitlines() if line.strip()]
             words = []
-            idx = -1
-            if full_text:
+            idx = st.session_state["pa-idx"]
+            if idx == -1:
                 words = text.split()
                 title = f"评估全文[单词总数：{len(words)}]"
-            elif st.session_state["pa-idx"] != -1:
-                idx = st.session_state["pa-idx"]
+            else:
                 words = paragraphs[idx].split()
                 title = f"评估段落[单词总数：{len(words)}]"
 
             st.markdown(f"##### {title}")
 
-            if full_text:
+            if idx == -1:
                 st.markdown(text, unsafe_allow_html=True)
-            elif idx != -1:
+            else:
                 st.markdown(paragraphs[idx], unsafe_allow_html=True)
         else:
             st.markdown(f"##### {title}")
@@ -235,7 +234,7 @@ if menu and menu.endswith("发音评估"):
         help="✨ 点击按钮，切换到文章上一段落。",
         on_click=on_prev_btn_click,
         args=("pa-idx",),
-        disabled=st.session_state["pa-idx"] <= 0,
+        disabled=st.session_state["pa-idx"] < 0,
     )
     next_btn = pa_cols[2].button(
         "下一[:arrow_right_hook:]",
@@ -290,10 +289,7 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-idx"] = -1
         st.rerun()
 
-    if st.session_state["pa-idx"] == -1:
-        display_assessment_text(pa_text_container, True)
-    else:
-        display_assessment_text(pa_text_container, False)
+    display_assessment_text(pa_text_container)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
