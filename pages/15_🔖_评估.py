@@ -156,7 +156,9 @@ def play_synthesized_audio(text, voice_style, difficulty, selected_scenario):
 
     # 记录学习时长
     word_count = len(re.findall(r"\b\w+\b", text))
-    record = create_learning_record("发音评估", difficulty, selected_scenario, word_count)
+    record = create_learning_record(
+        "发音评估", difficulty, selected_scenario, word_count
+    )
     record.duration = result["audio_duration"].total_seconds()
     st.session_state.dbi.add_record_to_cache(record)
 
@@ -282,8 +284,8 @@ if menu and menu.endswith("发音评估"):
         help="✨ 点击按钮，播放您的跟读录音。",
     )
     # 左侧显示发音评估文本
-    # 右侧显示评估内容
-    content_cols = st.columns([6, 6, 2])
+    # 右侧显示评估内容6
+    content_cols = st.columns([7, 7, 2])
     pa_text_container = content_cols[0].container(border=True)
     pa_words_container = content_cols[1].container(border=True)
     legend_container = content_cols[2].container(border=True)
