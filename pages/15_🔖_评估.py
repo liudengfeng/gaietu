@@ -580,7 +580,7 @@ if menu and menu.endswith("口语能力"):
     )
 
     display_pronunciation_assessment_words(
-        pa_words_container,
+        oa_words_container,
         "pa-current-text",
         "pa-assessment-dict",
     )
