@@ -159,26 +159,25 @@ def display_assessment_text(pa_text_container, full_text=False):
         text = st.session_state["pa-text"]
         title = "评估文本"
         if text:
+            paragraphs = [line for line in text.splitlines() if line.strip()]
+            words = []
+            idx = -1
             if full_text:
                 words = text.split()
                 title = f"评估全文[单词总数：{len(words)}]"
-            else:
-                paragraphs = [line for line in text.splitlines() if line.strip()]
+            elif st.session_state["pa-idx"] != -1:
                 idx = st.session_state["pa-idx"]
-                if idx != -1:
-                    words = paragraphs[idx].split()
-                    title = f"评估段落[单词总数：{len(words)}]"
+                words = paragraphs[idx].split()
+                title = f"评估段落[单词总数：{len(words)}]"
 
-        st.markdown(f"##### {title}")
+            st.markdown(f"##### {title}")
 
-        if text:
             if full_text:
                 st.markdown(text, unsafe_allow_html=True)
-            else:
-                paragraphs = text.splitlines()
-                idx = st.session_state["pa-idx"]
-                if idx != -1:
-                    st.markdown(paragraphs[idx], unsafe_allow_html=True)
+            elif idx != -1:
+                st.markdown(paragraphs[idx], unsafe_allow_html=True)
+        else:
+            st.markdown(f"##### {title}")
 
 
 # endregion
