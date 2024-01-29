@@ -372,7 +372,7 @@ if menu and menu.endswith("发音评估"):
         # 开始至当前的平均值
         with radar_cols[1]:
             st.markdown("开始至当前的平均值")
-            data = {"pronunciation_result": {}}
+            data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
             idx = st.session_state["pa-idx"]
             # 计算截至当前的平均值
             for i in range(idx + 1):
