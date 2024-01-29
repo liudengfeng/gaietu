@@ -1,11 +1,14 @@
-import streamlit as st
-from datetime import datetime, timedelta
-import pytz
+import json
 import re
-from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
-from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC
-from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
+from datetime import datetime, timedelta
+
+import pytz
+import streamlit as st
 from streamlit_mic_recorder import mic_recorder
+
+from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
+from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
+from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -50,6 +53,12 @@ sidebar_status.markdown(
 
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
+
+if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
+    with open(VOICES_FP, "r", encoding="utf-8") as f:
+        voices = json.load(f)["en-US"]
+    st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
+    st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
 # endregion
 

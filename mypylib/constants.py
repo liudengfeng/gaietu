@@ -1,3 +1,8 @@
+from pathlib import Path
+
+CURRENT_CWD: Path = Path(__file__).parent.parent
+VOICES_FP = CURRENT_CWD / "resource/voices.json"
+
 LANGUAGES = ["en-US", "zh-CN", "fr-FR", "ja-JP", "en-GB"]
 
 LAN_MAPS = {

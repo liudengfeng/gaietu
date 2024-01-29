@@ -12,14 +12,13 @@ from PIL import Image
 
 from mypylib.auth_utils import is_valid_phone_number
 from mypylib.azure_speech import speech_synthesis_get_available_voices
-from mypylib.constants import LANGUAGES
+from mypylib.constants import LANGUAGES, VOICES_FP
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
-from mypylib.st_helper import (
+from mypylib.st_helper import (  # save_and_clear_all_learning_records,
     check_and_force_logout,
     get_firestore_client,
     on_page_to,
-    # save_and_clear_all_learning_records,
     setup_logger,
 )
 
@@ -30,7 +29,7 @@ setup_logger(logger)
 CURRENT_CWD: Path = Path(__file__).parent
 LOGO_DIR: Path = CURRENT_CWD / "resource/logo"
 
-VOICES_FP = CURRENT_CWD / "resource/voices.json"
+# VOICES_FP = CURRENT_CWD / "resource/voices.json"
 
 st.set_page_config(
     page_title="主页",
