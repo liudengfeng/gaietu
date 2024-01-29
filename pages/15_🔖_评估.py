@@ -100,6 +100,21 @@ if menu and menu.endswith("发音评估"):
         format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
         placeholder="请选择CEFR等级",
     )
+
+    voice_gender = st.sidebar.radio("选择合成声音的性别", ("男性", "女性"))
+
+    if voice_gender == "男性":
+        voice_style_options = st.session_state["m_voices"]
+    else:
+        voice_style_options = st.session_state["fm_voices"]
+
+    voice_style = st.sidebar.selectbox(
+        "合成声音风格",
+        voice_style_options,
+        help="✨ 选择您喜欢的语音风格",
+        format_func=lambda x: f"{x[2]}",  # type: ignore
+    )
+
     st.subheader("发音评估", divider="rainbow", anchor="发音评估")
     st.markdown(
         "在选择了 CEFR 等级和发音评估的场景类别之后，点击 '刷新[🔄]' 按钮来生成用于发音评估的文本。然后，点击 '录音[⏸️]' 按钮，按照生成的文本进行朗读。完成朗读后，点击 '评估[🔖]' 按钮，系统将对你的发音进行评估，并生成发音评估报告。"
