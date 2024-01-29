@@ -371,27 +371,27 @@ if menu and menu.endswith("发音评估"):
             view_radar(st.session_state["pa-assessment"], item_maps)
 
         # 开始至当前的平均值
-        with radar_cols[1]:
-            st.markdown("开始至当前的平均值")
-            data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
-            idx = st.session_state["pa-idx"]
+        # with radar_cols[1]:
+        #     st.markdown("开始至当前的平均值")
+        #     data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
+        #     idx = st.session_state["pa-idx"]
 
-            # 计算截至当前的平均值
-            for i in range(idx + 1):
-                assessment = st.session_state["pa-assessment-dict"].get(i, {})
-                for key in item_maps.keys():
-                    data["pronunciation_result"][key] = data[
-                        "pronunciation_result"
-                    ].get(key, 0) + assessment.get("pronunciation_result", {}).get(
-                        key, 0
-                    )
+        #     # 计算截至当前的平均值
+        #     for i in range(idx + 1):
+        #         assessment = st.session_state["pa-assessment-dict"].get(i, {})
+        #         for key in item_maps.keys():
+        #             data["pronunciation_result"][key] = data[
+        #                 "pronunciation_result"
+        #             ].get(key, 0) + assessment.get("pronunciation_result", {}).get(
+        #                 key, 0
+        #             )
 
-            # 计算平均值
-            if idx >= 0:
-                for key in item_maps.keys():
-                    data["pronunciation_result"][key] /= idx + 1
+        #     # 计算平均值
+        #     if idx >= 0:
+        #         for key in item_maps.keys():
+        #             data["pronunciation_result"][key] /= idx + 1
 
-            view_radar(data, item_maps)
+        #     view_radar(data, item_maps)
 
 # endregion
 
