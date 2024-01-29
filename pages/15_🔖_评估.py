@@ -4,10 +4,12 @@ from datetime import datetime, timedelta
 
 import pytz
 import streamlit as st
+import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
 
 from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
+from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
@@ -18,12 +20,15 @@ from mypylib.st_helper import (
     configure_google_apis,
     display_pronunciation_result,
     format_token_count,
+    get_synthesis_speech,
     on_page_to,
     process_dialogue_text,
+    process_learning_record,
     pronunciation_assessment_for,
     view_pronunciation_assessment_legend,
     view_word_assessment,
 )
+from mypylib.word_utils import audio_autoplay_elem
 
 # region 配置
 
@@ -66,6 +71,21 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
 # region 函数
 
 
+def create_learning_record(
+    project,
+    difficulty,
+    selected_scenario,
+    words,
+):
+    record = LearningTime(
+        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+        project=project,
+        content=f"{difficulty}-{selected_scenario}",
+        word_count=words,
+    )
+    return record
+
+
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成发音评估文本，请稍候...")
 def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
     return generate_pronunciation_assessment_text(
@@ -94,6 +114,24 @@ def view_radar(score_key, item_maps):
         for key in item_maps.keys()
     }
     gen_radar(data_tb, item_maps, 320)
+
+
+def play_and_record_text(voice_style, difficulty, selected_scenario):
+    text = st.session_state["pa-text"]
+    if not text:
+        return
+    style = voice_style[0]
+
+    with st.spinner(f"使用 Azure 将文本合成语音..."):
+        result = get_synthesis_speech(text, style)
+
+    audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
+    components.html(audio_html)
+
+    # 记录学习时长
+    word_count = len(re.findall(r"\b\w+\b", text))
+    record = create_learning_record("发音评估", difficulty, selected_scenario, word_count)
+    process_learning_record(record, "pa-times")
 
 
 # endregion
@@ -209,6 +247,12 @@ if menu and menu.endswith("发音评估"):
             replay_text_placeholder,
             audio_info["bytes"],
             st.session_state["pa-assessment"]["recognized_words"],
+        )
+    if replay_btn:
+        play_and_record_text(
+            voice_style,
+            difficulty,
+            scenario_category,
         )
 
     display_pronunciation_result(
