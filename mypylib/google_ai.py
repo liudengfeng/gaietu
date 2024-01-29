@@ -487,13 +487,13 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 
 
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
-"Please generate an English personal statement according to the following instructions:
-- Language: Authentic English, leaning towards colloquial
-- Level: CEFR {level}
-- Scenario or Task: {scenario}. 
-- The scenario or task can sometimes be broad, such as 'briefly introduce your family and colleagues, describe their appearance and personality'. The personal statement should elaborate on these details in a customized manner.
+"Please prepare a personal statement as an English speaking test candidate according to the following instructions:
+- Language: Authentic English, leaning towards colloquial.
+- Level: CEFR {level}.
+- Ability Requirements: {ability}. 
+- The description of abilities may be quite broad, you just need to elaborate on related details to demonstrate your capabilities.
 - Personal Information: You may reasonably fabricate personal information for the purpose of the statement. Avoid using placeholders such as '[your name]'.
-- Text content: Should be a personal statement consistent with the above scenario or task
+- Text content: The statement should be consistent with the above scenario or task and should match your English proficiency level.
 - Vocabulary: Should be consistent with the CEFR English level
 - Word count: Should be between 100 and 200 words
 - Output format: Should be a personal statement. Any narration should be marked with parentheses and must be on a separate line.
@@ -501,8 +501,8 @@ PRONUNCIATION_ASSESSMENT_TEMPLATE = """
 """
 
 
-def generate_pronunciation_assessment_text(model, cn_scenario, level):
-    scenario = from_chinese_to_english_topic(level, cn_scenario)
+def generate_pronunciation_assessment_text(model, ability, level):
+    scenario = from_chinese_to_english_topic(level, ability)
     prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(scenario=scenario, level=level)
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
