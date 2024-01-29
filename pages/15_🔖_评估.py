@@ -231,7 +231,7 @@ if menu and menu.endswith("发音评估"):
     prev_btn = pa_cols[1].button(
         "上一[:leftwards_arrow_with_hook:]",
         key="ra-prev",
-        help="✨ 点击按钮，切换到文章上一段落。",
+        help="✨ 点击按钮，切换到上一段落。",
         on_click=on_prev_btn_click,
         args=("pa-idx",),
         disabled=st.session_state["pa-idx"] < 0,

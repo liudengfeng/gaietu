@@ -1396,7 +1396,7 @@ if menu is not None and menu.endswith("阅读练习"):
         prev_btn = ra_btn_cols[2].button(
             "上一[:leftwards_arrow_with_hook:]",
             key="ra-prev",
-            help="✨ 点击按钮，切换到文章上一段落。",
+            help="✨ 点击按钮，切换到上一段落。",
             on_click=on_prev_btn_click,
             args=("reading-exercise-idx",),
             disabled=st.session_state["reading-exercise-idx"] <= 0,
