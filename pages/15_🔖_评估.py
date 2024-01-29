@@ -152,7 +152,7 @@ def display_assessment_text(pa_text_container):
             # aligned_text 是一个段落列表
             for paragraph in aligned_text:
                 st.markdown(paragraph, unsafe_allow_html=True)
-                st.markdown("&nbsp;", unsafe_allow_html=True)
+                # st.markdown("&nbsp;", unsafe_allow_html=True)
 
 
 # endregion
