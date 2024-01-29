@@ -165,6 +165,12 @@ if menu and menu.endswith("发音评估"):
         key="pa-play-btn",
         help="✨ 点击按钮，播放您的跟读录音。",
     )
+    replay_btn = pa_cols[4].button(
+        "收听[:headphones:]",
+        key="pa-replay",
+        help="✨ 点击按钮，收听合成音频样例。",
+        disabled=not st.session_state["pa-text"],
+    )
     # 左侧显示发音评估文本
     # 右侧显示评估内容
     content_cols = st.columns([6, 6, 2])
