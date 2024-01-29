@@ -131,7 +131,7 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
     # 记录学习时长
     word_count = len(re.findall(r"\b\w+\b", text))
     record = create_learning_record("发音评估", difficulty, selected_scenario, word_count)
-    process_learning_record(record, "pa-times")
+    process_learning_record(record, "pa-learning-times")
 
 
 # endregion
@@ -220,8 +220,12 @@ if menu and menu.endswith("发音评估"):
         st.markdown("##### 图例")
         view_pronunciation_assessment_legend()
 
+    if "pa-learning-times" not in st.session_state:
+        st.session_state["pa-learning-times"] = 0
+
     if "pa-text" not in st.session_state:
         st.session_state["pa-text"] = ""
+
     if "pa-assessment" not in st.session_state:
         st.session_state["pa-assessment"] = {}
 
