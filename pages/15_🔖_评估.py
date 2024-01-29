@@ -10,7 +10,11 @@ from streamlit_mic_recorder import mic_recorder
 from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
 from mypylib.db_model import LearningTime
-from mypylib.google_ai import generate_pronunciation_assessment_text, load_vertex_model
+from mypylib.google_ai import (
+    generate_oral_ability_topics,
+    generate_pronunciation_assessment_text,
+    load_vertex_model,
+)
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
@@ -66,6 +70,10 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
     st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
+# endregion
+
+# region 发音评估会话
+
 if "pa-learning-times" not in st.session_state:
     st.session_state["pa-learning-times"] = 0
 
@@ -85,6 +93,16 @@ if "pa-assessment" not in st.session_state:
 # 以序号为键，每段落的发音评估结果为值的字典
 if "pa-assessment-dict" not in st.session_state:
     st.session_state["pa-assessment-dict"] = {}
+
+# endregion
+
+# region 口语评估会话
+
+if "oa-sample-text" not in st.session_state:
+    st.session_state["oa-sample-text"] = ""
+
+if "oa-topic-options" not in st.session_state:
+    st.session_state["oa-topic-options"] = []
 
 # endregion
 
@@ -189,7 +207,20 @@ def display_assessment_text(pa_text_container):
 
 # endregion
 
-# region 发音评估
+# region 口语能力函数
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语讨论话题清单，请稍候...")
+def generate_oral_ability_topics_for(difficulty, scenario_category):
+    text = generate_oral_ability_topics(
+        st.session_state["text_model"], scenario_category, difficulty, 5
+    )
+    return [line for line in text.splitlines() if line.strip()]
+
+
+# endregion
+
+# region 发音评估页面
 
 if menu and menu.endswith("发音评估"):
     difficulty = st.sidebar.selectbox(
@@ -398,10 +429,197 @@ if menu and menu.endswith("发音评估"):
 
 # endregion
 
+
 # region 口语评估
 
 if menu and menu.endswith("口语能力"):
-    pass
+    difficulty = st.sidebar.selectbox(
+        "CEFR等级",
+        list(CEFR_LEVEL_MAPS.keys()),
+        key="listening-difficulty",
+        index=0,
+        format_func=lambda x: f"{x}({CEFR_LEVEL_MAPS[x]})",
+        placeholder="请选择CEFR等级",
+    )
+
+    voice_gender = st.sidebar.radio("选择合成声音的性别", ("男性", "女性"), index=0)
+
+    if voice_gender == "男性":
+        voice_style_options = st.session_state["m_voices"]
+    else:
+        voice_style_options = st.session_state["fm_voices"]
+
+    voice_style = st.sidebar.selectbox(
+        "合成声音风格",
+        voice_style_options,
+        help="✨ 选择您喜欢的语音风格",
+        format_func=lambda x: f"{x[2]}",  # type: ignore
+    )
+
+    st.subheader("口语能力评估", divider="rainbow", anchor="口语能力评估")
+    st.markdown(
+        "在选择了 CEFR 等级和评估的场景类别之后，点击 '刷新[🔄]' 按钮，生成讨论话题清单。然后，选择话题清单，点击 '录音[⏸️]'或 '上传' 按钮，录制或上传关于此主题的讨论。准备就绪后，，点击 '评估[🔖]' 按钮，系统将对你的口语能力进行评估，并生成评估报告。"
+    )
+    oa_btn_cols = st.columns(2)
+
+    scenario_category = oa_btn_cols[0].selectbox(
+        "选择场景类别",
+        CEFR_LEVEL_TOPIC[difficulty],
+        index=0,
+        key="scenario_category",
+        placeholder="请选择场景类别",
+    )
+
+    oa_topic = oa_btn_cols[1].selectbox(
+        "选择讨论话题",
+        st.session_state["oa-topic-options"],
+        index=0,
+        key="oa-topic",
+        placeholder="请选择讨论话题",
+    )
+
+    oa_report_container = st.container(border=True)
+    replay_text_placeholder = st.empty()
+    oa_cols = st.columns(8)
+
+    oa_refresh_btn = oa_cols[0].button(
+        "刷新[:arrows_counterclockwise:]",
+        key="refresh-oa-text",
+        help="点击按钮，生成讨论主题清单。",
+    )
+
+    audio_key = "oa-mic-recorder"
+    audio_session_output_key = f"{audio_key}-output"
+    with oa_cols[1]:
+        oa_audio_info = mic_recorder(
+            start_prompt="录音[⏸️]",
+            stop_prompt="停止[🔴]",
+            key=audio_key,
+        )
+
+    oa_pro_btn = pa_cols[2].button(
+        "评估[🔖]",
+        disabled=not oa_audio_info,
+        key="oa-evaluation-btn",
+        help="✨ 点击按钮，开始发音评估。",
+    )
+
+    audio_playback_button = pa_cols[3].button(
+        "回放[▶️]",
+        disabled=not oa_audio_info,
+        key="oa-play-btn",
+        help="✨ 点击按钮，播放您的主题讨论录音。",
+    )
+
+    sample_button = pa_cols[4].button(
+        "样本[:page_facing_up:]",
+        key="oa-replay",
+        help="✨ 点击按钮，生成话题讨论示例。",
+        disabled=not st.session_state["oa-topic-options"],
+    )
+    synthetic_audio_replay_button = pa_cols[5].button(
+        "收听[:headphones:]",
+        key="oa-replay",
+        help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
+        disabled=st.session_state["oa-sample-text"] == "",
+    )
+
+    content_cols = st.columns([16, 2])
+    oa_words_container = content_cols[0].container(border=True)
+    oa_legend_container = content_cols[1].container(border=True)
+
+    with oa_legend_container:
+        st.markdown("##### 图例")
+        view_pronunciation_assessment_legend()
+
+    if oa_refresh_btn:
+        st.session_state["oa-topic-options"] = generate_oral_ability_topics_for(
+            difficulty, scenario_category
+        )
+        st.rerun()
+
+    display_assessment_text(pa_text_container)
+
+    if oa_pro_btn and oa_audio_info is not None:
+
+        reference_text = process_dialogue_text(st.session_state["pa-current-text"])
+
+        st.session_state["pa-assessment"] = pronunciation_assessment_for(
+            oa_audio_info,
+            reference_text,
+        )
+        st.session_state["pa-assessment-dict"][idx] = st.session_state["pa-assessment"]
+
+        # # TODO:管理待处理任务列表
+        # # 创建一个空的待处理任务列表
+        # tasks = []
+        # # 遍历发音评估结果
+        # for word in st.session_state["pa-assessment"].get("recognized_words", []):
+        #     # 如果单词的发音错误，将它添加到待处理任务列表中
+        #     if word.get("error_type") == "Mispronunciation":
+        #         tasks.append(word.word)
+
+    if audio_playback_button and oa_audio_info and st.session_state["pa-assessment"]:
+        autoplay_audio_and_display_text(
+            replay_text_placeholder,
+            oa_audio_info["bytes"],
+            st.session_state["pa-assessment"]["recognized_words"],
+        )
+
+    if synthetic_audio_replay_button:
+        play_synthesized_audio(
+            st.session_state["pa-current-text"],
+            voice_style,
+            difficulty,
+            scenario_category,
+        )
+
+    display_pronunciation_result(
+        oa_report_container,
+        "pa-assessment",
+    )
+
+    display_pronunciation_assessment_words(
+        pa_words_container,
+        "pa-current-text",
+        "pa-assessment-dict",
+    )
+
+    with st.expander("查看发音评估雷达图", expanded=False):
+        radar_cols = st.columns(2)
+        item_maps = {
+            "pronunciation_score": "发音总评分",
+            "accuracy_score": "准确性评分",
+            "completeness_score": "完整性评分",
+            "fluency_score": "流畅性评分",
+            "prosody_score": "韵律分数",
+        }
+        with radar_cols[0]:
+            st.markdown("当前段落的发音评估结果")
+            view_radar(st.session_state["pa-assessment"], item_maps)
+
+        # 开始至当前的平均值
+        with radar_cols[1]:
+            st.markdown("开始至当前段落的平均值")
+            data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
+            idx = st.session_state["pa-idx"]
+
+            # 计算截至当前的平均值
+            for i in range(idx + 1):
+                assessment = st.session_state["pa-assessment-dict"].get(i, {})
+                for key in item_maps.keys():
+                    data["pronunciation_result"][key] = data[
+                        "pronunciation_result"
+                    ].get(key, 0) + assessment.get("pronunciation_result", {}).get(
+                        key, 0
+                    )
+
+            # 计算平均值
+            if idx >= 0:
+                for key in item_maps.keys():
+                    data["pronunciation_result"][key] /= idx + 1
+
+            view_radar(data, item_maps)
 
 # endregion
 
