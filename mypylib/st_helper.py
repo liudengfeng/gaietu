@@ -540,11 +540,11 @@ def left_paragraph_aligned_text(text1, words):
         str: 处理后的文本。
     """
 
-    if len(words) == 0:
-        return text1
-
     # 将文本1分割成段落
     paragraphs1 = text1.split("\n\n")
+    
+    if len(words) == 0:
+        return paragraphs1
 
     # 处理单词
     res = []
