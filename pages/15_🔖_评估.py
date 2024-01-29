@@ -9,6 +9,7 @@ from streamlit_mic_recorder import mic_recorder
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     TOEKN_HELP_INFO,
+    autoplay_audio_and_display_text,
     check_access,
     check_and_force_logout,
     configure_google_apis,
@@ -112,7 +113,7 @@ if menu and menu.endswith("发音评估"):
     )
 
     pa_report_container = st.container(border=True)
-
+    replay_text_placeholder = st.empty()
     pa_cols = st.columns(8)
 
     pa_refresh_btn = pa_cols[0].button(
@@ -160,7 +161,6 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
-
     pa_text_container.markdown("##### 评估文本")
     pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
@@ -172,6 +172,13 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
+        )
+
+    if play_btn and audio_info and st.session_state["pa-assessment"]:
+        autoplay_audio_and_display_text(
+            replay_text_placeholder,
+            audio_info["bytes"],
+            st.session_state["pa-assessment"]["recognized_words"],
         )
 
     display_pronunciation_result(
