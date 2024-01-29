@@ -143,14 +143,16 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
 
 
 def display_assessment_text(pa_text_container):
-    pa_text_container.markdown("##### 评估文本")
-    if st.session_state["pa-text"]:
-        text = st.session_state["pa-text"]
-        words = st.session_state["pa-assessment"].get("recognized_words", [])
-        # aligned_text 是一个段落列表
-        for paragraph in aligned_text:
-            pa_text_container.markdown(paragraph, unsafe_allow_html=True)
-            pa_text_container.markdown("&nbsp;", unsafe_allow_html=True)
+    with pa_text_container:
+        st.markdown("##### 评估文本")
+        if st.session_state["pa-text"]:
+            text = st.session_state["pa-text"]
+            words = st.session_state["pa-assessment"].get("recognized_words", [])
+            aligned_text = left_paragraph_aligned_text(text, words)
+            # aligned_text 是一个段落列表
+            for paragraph in aligned_text:
+                st.markdown(paragraph, unsafe_allow_html=True)
+                st.markdown("&nbsp;", unsafe_allow_html=True)
 
 
 # endregion
@@ -245,12 +247,7 @@ if menu and menu.endswith("发音评估"):
         )
         st.rerun()
 
-    pa_text_container.markdown("##### 评估文本")
-    if st.session_state["pa-text"]:
-        text = st.session_state["pa-text"]
-        words = st.session_state["pa-assessment"].get("recognized_words", [])
-        aligned_text = left_paragraph_aligned_text(text, words)
-        pa_text_container.markdown(aligned_text, unsafe_allow_html=True)
+    display_assessment_text(pa_text_container)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
