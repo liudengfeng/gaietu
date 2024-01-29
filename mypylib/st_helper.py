@@ -513,11 +513,11 @@ def view_word_assessment(words):
 
 def view_pronunciation_assessment_legend():
     annotated_text(annotation("W1", "发音错误", background="#d5d507ce"))
-    annotated_text(annotation("[W2]", "遗漏", color="white", background="#4a4943b7"))
+    annotated_text(annotation("[W2]", "遗漏单词", color="white", background="#4a4943b7"))
     annotated_text(annotation("W3", "插入内容", border="2px dashed red"))
     annotated_text(annotation("W4", "意外中断", background="#FFC0CB"))
     annotated_text(annotation("W5", "缺少停顿", background="#f2f2f2"))
-    annotated_text(annotation("W6", "单调", color="white", background="#ac1882ce"))
+    annotated_text(annotation("W6", "发音单调", color="white", background="#ac1882ce"))
 
 
 # endregion
