@@ -460,9 +460,9 @@ if menu and menu.endswith("口语能力"):
     st.markdown(
         "在选择了 CEFR 等级和评估的场景类别之后，点击 '刷新[🔄]' 按钮，生成讨论话题清单。然后，选择话题清单，点击 '录音[⏸️]'或 '上传' 按钮，录制或上传关于此主题的讨论。准备就绪后，，点击 '评估[🔖]' 按钮，系统将对你的口语能力进行评估，并生成评估报告。"
     )
-    oa_btn_cols = st.columns(2)
+    oa_selectbox_cols = st.columns(2)
 
-    scenario_category = oa_btn_cols[0].selectbox(
+    scenario_category = oa_selectbox_cols[0].selectbox(
         "选择场景类别",
         CEFR_LEVEL_TOPIC[difficulty],
         index=0,
@@ -470,7 +470,7 @@ if menu and menu.endswith("口语能力"):
         placeholder="请选择场景类别",
     )
 
-    oa_topic = oa_btn_cols[1].selectbox(
+    oa_topic = oa_selectbox_cols[1].selectbox(
         "选择讨论话题",
         st.session_state["oa-topic-options"],
         index=0,
@@ -480,9 +480,9 @@ if menu and menu.endswith("口语能力"):
 
     oa_report_container = st.container(border=True)
     replay_text_placeholder = st.empty()
-    oa_cols = st.columns(8)
+    oa_btn_cols = st.columns(8)
 
-    oa_refresh_btn = oa_cols[0].button(
+    oa_refresh_btn = oa_btn_cols[0].button(
         "刷新[:arrows_counterclockwise:]",
         key="refresh-oa-text",
         help="点击按钮，生成讨论主题清单。",
@@ -490,34 +490,34 @@ if menu and menu.endswith("口语能力"):
 
     audio_key = "oa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
-    with oa_cols[1]:
+    with oa_btn_cols[1]:
         oa_audio_info = mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
             key=audio_key,
         )
 
-    oa_pro_btn = pa_cols[2].button(
+    oa_pro_btn = oa_btn_cols[2].button(
         "评估[🔖]",
         disabled=not oa_audio_info,
         key="oa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
 
-    audio_playback_button = pa_cols[3].button(
+    audio_playback_button = oa_btn_cols[3].button(
         "回放[▶️]",
         disabled=not oa_audio_info,
         key="oa-play-btn",
         help="✨ 点击按钮，播放您的主题讨论录音。",
     )
 
-    sample_button = pa_cols[4].button(
+    sample_button = oa_btn_cols[4].button(
         "样本[:page_facing_up:]",
         key="oa-replay",
         help="✨ 点击按钮，生成话题讨论示例。",
         disabled=not st.session_state["oa-topic-options"],
     )
-    synthetic_audio_replay_button = pa_cols[5].button(
+    synthetic_audio_replay_button = oa_btn_cols[5].button(
         "收听[:headphones:]",
         key="oa-replay",
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
