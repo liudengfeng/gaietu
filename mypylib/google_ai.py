@@ -487,7 +487,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
 
 
 PRONUNCIATION_ASSESSMENT_TEMPLATE = """
-"Please prepare a personal statement as an English speaking test candidate according to the following instructions:
+Please prepare a personal statement as an English speaking test candidate according to the following instructions:
 - Language: Authentic English, leaning towards colloquial.
 - Level: CEFR {level}.
 - Ability Requirements: {ability}. 

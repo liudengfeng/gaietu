@@ -527,7 +527,7 @@ def _word_to_text(word):
         return f"{word.word} | {accuracy_score}"
     return f"{word.word}"
 
-
+# TODO:废弃或使用 单词数量调整
 def left_paragraph_aligned_text(text1, words):
     """
     将文本1的每个段落首行与words首行对齐（为文本1补齐空行）。

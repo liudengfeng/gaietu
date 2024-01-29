@@ -147,12 +147,13 @@ def display_assessment_text(pa_text_container):
         st.markdown("##### 评估文本")
         if st.session_state["pa-text"]:
             text = st.session_state["pa-text"]
-            words = st.session_state["pa-assessment"].get("recognized_words", [])
-            aligned_text = left_paragraph_aligned_text(text, words)
-            # aligned_text 是一个段落列表
-            for paragraph in aligned_text:
-                st.markdown(paragraph, unsafe_allow_html=True)
-                # st.markdown("&nbsp;", unsafe_allow_html=True)
+            st.markdown(text, unsafe_allow_html=True)
+            # words = st.session_state["pa-assessment"].get("recognized_words", [])
+            # aligned_text = left_paragraph_aligned_text(text, words)
+            # # aligned_text 是一个段落列表
+            # for paragraph in aligned_text:
+            #     st.markdown(paragraph, unsafe_allow_html=True)
+            #     # st.markdown("&nbsp;", unsafe_allow_html=True)
 
 
 # endregion
