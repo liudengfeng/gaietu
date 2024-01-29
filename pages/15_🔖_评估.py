@@ -74,6 +74,7 @@ if "pa-text" not in st.session_state:
 
 if "pa-assessment" not in st.session_state:
     st.session_state["pa-assessment"] = {}
+
 # endregion
 
 # region 函数
@@ -144,9 +145,10 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
 
 def display_assessment_text(pa_text_container):
     with pa_text_container:
-        st.markdown("##### 评估文本")
-        if st.session_state["pa-text"]:
-            text = st.session_state["pa-text"]
+        text = st.session_state["pa-text"]
+        words = text.split()
+        st.markdown(f"##### 评估文本[单词总数：{len(words)}]")
+        if text:
             st.markdown(text, unsafe_allow_html=True)
             # words = st.session_state["pa-assessment"].get("recognized_words", [])
             # aligned_text = left_paragraph_aligned_text(text, words)
