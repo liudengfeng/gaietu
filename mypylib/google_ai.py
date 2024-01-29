@@ -495,7 +495,7 @@ Please prepare a personal statement as an English speaking test candidate accord
 - Personal Information: You may reasonably fabricate personal information for the purpose of the statement. Avoid using placeholders such as '[your name]'.
 - Text content: The statement should be consistent with the above scenario or task and should match your English proficiency level.
 - Vocabulary: Should be consistent with the CEFR English level
-- Word count: Should be between 100 and 200 words
+- Word count: The generated text should strictly adhere to the word count limit of between 100 and 200 words. 
 - Output format: Should be a personal statement. Any narration should be marked with parentheses and must be on a separate line.
 - Language norms: The output content should be entirely in English, avoiding mixing English and Chinese or using Chinese in the narration."
 """
