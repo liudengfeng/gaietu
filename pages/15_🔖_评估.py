@@ -65,6 +65,14 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
     st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
+if "pa-learning-times" not in st.session_state:
+    st.session_state["pa-learning-times"] = 0
+
+if "pa-text" not in st.session_state:
+    st.session_state["pa-text"] = ""
+
+if "pa-assessment" not in st.session_state:
+    st.session_state["pa-assessment"] = {}
 # endregion
 
 
@@ -220,19 +228,11 @@ if menu and menu.endswith("发音评估"):
         st.markdown("##### 图例")
         view_pronunciation_assessment_legend()
 
-    if "pa-learning-times" not in st.session_state:
-        st.session_state["pa-learning-times"] = 0
-
-    if "pa-text" not in st.session_state:
-        st.session_state["pa-text"] = ""
-
-    if "pa-assessment" not in st.session_state:
-        st.session_state["pa-assessment"] = {}
-
     if pa_refresh_btn:
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
+
     pa_text_container.markdown("##### 评估文本")
     pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
@@ -252,6 +252,7 @@ if menu and menu.endswith("发音评估"):
             audio_info["bytes"],
             st.session_state["pa-assessment"]["recognized_words"],
         )
+
     if replay_btn:
         play_and_record_text(
             voice_style,
