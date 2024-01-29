@@ -157,8 +157,20 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
 def display_assessment_text(pa_text_container, full_text=False):
     with pa_text_container:
         text = st.session_state["pa-text"]
-        words = text.split()
-        st.markdown(f"##### 评估文本[单词总数：{len(words)}]")
+        title = "评估文本"
+        if text:
+            if full_text:
+                words = text.split()
+                title = f"评估全文[单词总数：{len(words)}]"
+            else:
+                paragraphs = text.splitlines()
+                idx = st.session_state["pa-idx"]
+                if idx != -1:
+                    words = paragraphs[idx].split()
+                    title = f"评估段落[单词总数：{len(words)}]"
+
+        st.markdown(f"##### {title}")
+
         if text:
             if full_text:
                 st.markdown(text, unsafe_allow_html=True)
