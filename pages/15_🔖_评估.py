@@ -234,7 +234,8 @@ if menu and menu.endswith("发音评估"):
         )
 
     pa_text_container.markdown("##### 评估文本")
-    pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
+    if st.session_state["pa-text"]:
+        pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
