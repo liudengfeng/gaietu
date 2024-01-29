@@ -374,6 +374,9 @@ if menu and menu.endswith("发音评估"):
             st.markdown("开始至当前的平均值")
             data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
             idx = st.session_state["pa-idx"]
+            
+            st.write(st.session_state["pa-assessment-dict"])
+            
             # 计算截至当前的平均值
             for i in range(idx + 1):
                 assessment = st.session_state["pa-assessment-dict"].get(i, {})
@@ -382,7 +385,6 @@ if menu and menu.endswith("发音评估"):
                         "pronunciation_result"
                     ].get(key, 0) + assessment.get(key, 0)
 
-            st.write(data)
             # 计算平均值
             if idx >= 0:
                 for key in item_maps.keys():
