@@ -383,8 +383,9 @@ if menu and menu.endswith("发音评估"):
                     ].get(key, 0) + assessment.get(key, 0)
 
             # 计算平均值
-            for key in item_maps.keys():
-                data["pronunciation_result"][key] /= idx + 1
+            if idx >= 0:
+                for key in item_maps.keys():
+                    data["pronunciation_result"][key] /= idx + 1
 
             view_radar(data, item_maps)
 
