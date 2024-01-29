@@ -21,6 +21,7 @@ from mypylib.st_helper import (
     display_pronunciation_result,
     format_token_count,
     get_synthesis_speech,
+    left_paragraph_aligned_text,
     on_page_to,
     process_dialogue_text,
     process_learning_record,
@@ -236,7 +237,10 @@ if menu and menu.endswith("发音评估"):
 
     pa_text_container.markdown("##### 评估文本")
     if st.session_state["pa-text"]:
-        pa_text_container.markdown(st.session_state["pa-text"], unsafe_allow_html=True)
+        text = st.session_state["pa-text"]
+        words = st.session_state["pa-assessment"].get("recognized_words", [])
+        aligned_text = left_paragraph_aligned_text(text, words)
+        pa_text_container.markdown(aligned_text, unsafe_allow_html=True)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字

@@ -510,6 +510,71 @@ def view_word_assessment(words):
     annotated_text(*res)
 
 
+def _word_to_text(word):
+    error_type = word.error_type
+    accuracy_score = round(word.accuracy_score)
+    if error_type == "Mispronunciation":
+        return f"{word.word} | {accuracy_score}"
+    if error_type == "Omission":
+        return f"[{word.word}]"
+    if error_type == "Insertion":
+        return f"{word.word}"
+    if word.is_unexpected_break:
+        return f"{word.word} | {accuracy_score}"
+    if word.is_missing_break:
+        return f"{word.word} | {accuracy_score}"
+    if word.is_monotone:
+        return f"{word.word} | {accuracy_score}"
+    return f"{word.word}"
+
+
+def left_paragraph_aligned_text(text1, words):
+    """
+    将文本1的每个段落首行与words首行对齐（为文本1补齐空行）。
+
+    Args:
+        text1 (str): 原始文本。
+        words (list): 要插入文本中的单词列表。
+
+    Returns:
+        str: 处理后的文本。
+    """
+
+    if len(words) == 0:
+        return text1
+
+    # 将文本1分割成段落
+    paragraphs1 = text1.split("\n\n")
+
+    # 处理单词
+    res = []
+    for word in words:
+        if isinstance(word, str):
+            res.append(word)
+        else:
+            res.append(_word_to_text(word))
+        res.append(" ")
+    text2 = "".join(res)
+
+    # 将文本2分割成段落
+    paragraphs2 = text2.split("\n\n")
+
+    # 计算每个段落的行数
+    lines1 = [len(p.split("\n")) for p in paragraphs1]
+    lines2 = [len(p.split("\n")) for p in paragraphs2]
+
+    # 添加空白行
+    for i in range(min(len(lines1), len(lines2))):
+        diff = lines2[i] - lines1[i]
+        if diff > 0:
+            paragraphs1[i] += "\n" * diff
+
+    # 将段落重新组合成文本
+    text1 = "\n\n".join(paragraphs1)
+
+    return text1
+
+
 def view_pronunciation_assessment_legend():
     annotated_text(annotation("W1", "发音错误", background="#d5d507ce"))
     annotated_text(annotation("[W2]", "遗漏单词", color="white", background="#4a4943b7"))
