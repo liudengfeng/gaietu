@@ -166,10 +166,10 @@ def display_assessment_text(pa_text_container):
             words = []
             if idx == -1:
                 words = st.session_state["pa-text"].split()
-                title = f"评估全文[单词总数：{len(words)}]"
+                title = f"评估全文（单词：{len(words)}）"
             else:
                 words = st.session_state["pa-current-text"].split()
-                title = f"评估段落[单词总数：{len(words)}]"
+                title = f"评估段落（单词：{len(words)}）"
 
             st.markdown(f"##### {title}")
 
