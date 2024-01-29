@@ -546,8 +546,6 @@ def left_paragraph_aligned_text(text1, words):
     # 将文本1分割成段落
     paragraphs1 = text1.split("\n\n")
 
-    logger.info(f"paragraphs1: {paragraphs1}")
-
     # 处理单词
     res = []
     for word in words:
@@ -575,10 +573,7 @@ def left_paragraph_aligned_text(text1, words):
         if diff > 0:
             paragraphs1[i] += "\n" * diff
 
-    # 将段落重新组合成文本
-    text1 = "\n\n".join(paragraphs1)
-
-    return text1
+    return paragraphs1
 
 
 def view_pronunciation_assessment_legend():
