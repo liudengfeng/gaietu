@@ -538,7 +538,7 @@ if menu and menu.endswith("口语能力"):
         )
         st.rerun()
 
-    display_assessment_text(pa_text_container)
+    # display_assessment_text(oa_text_container)
 
     if oa_pro_btn and oa_audio_info is not None:
 
