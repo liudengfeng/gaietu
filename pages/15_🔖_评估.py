@@ -69,11 +69,14 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
 if "pa-learning-times" not in st.session_state:
     st.session_state["pa-learning-times"] = 0
 
+if "pa-idx" not in st.session_state:
+    st.session_state["pa-idx"] = -1
+
 if "pa-text" not in st.session_state:
     st.session_state["pa-text"] = ""
 
-if "pa-idx" not in st.session_state:
-    st.session_state["pa-idx"] = -1
+if "pa-current-text" not in st.session_state:
+    st.session_state["pa-current-text"] = ""
 
 if "pa-assessment" not in st.session_state:
     st.session_state["pa-assessment"] = {}
@@ -156,17 +159,16 @@ def play_and_record_text(voice_style, difficulty, selected_scenario):
 
 def display_assessment_text(pa_text_container):
     with pa_text_container:
-        text = st.session_state["pa-text"]
         title = "评估文本"
+        text = st.session_state["pa-text"]
         if text:
-            paragraphs = [line for line in text.splitlines() if line.strip()]
-            words = []
             idx = st.session_state["pa-idx"]
+            words = []
             if idx == -1:
-                words = text.split()
+                words = st.session_state["pa-text"].split()
                 title = f"评估全文[单词总数：{len(words)}]"
             else:
-                words = paragraphs[idx].split()
+                words = st.session_state["pa-current-text"].split()
                 title = f"评估段落[单词总数：{len(words)}]"
 
             st.markdown(f"##### {title}")
@@ -174,7 +176,7 @@ def display_assessment_text(pa_text_container):
             if idx == -1:
                 st.markdown(text, unsafe_allow_html=True)
             else:
-                st.markdown(paragraphs[idx], unsafe_allow_html=True)
+                st.markdown(st.session_state["pa-current-text"], unsafe_allow_html=True)
         else:
             st.markdown(f"##### {title}")
 
@@ -248,11 +250,11 @@ if menu and menu.endswith("发音评估"):
         )
         - 1,
     )
-    replay_btn = pa_cols[3].button(
+    synthetic_audio_replay_button = pa_cols[3].button(
         "收听[:headphones:]",
         key="pa-replay",
         help="✨ 点击按钮，收听文本的合成语音。",
-        disabled=not st.session_state["pa-text"],
+        disabled=st.session_state["pa-current-text"] == "",
     )
     audio_key = "pa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
@@ -264,13 +266,13 @@ if menu and menu.endswith("发音评估"):
         )
     pa_pro_btn = pa_cols[5].button(
         "评估[🔖]",
-        disabled=not audio_info,
+        disabled=not audio_info or st.session_state["pa-current-text"] == "",
         key="pa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
-    play_btn = pa_cols[6].button(
+    audio_playback_button = pa_cols[6].button(
         "回放[▶️]",
-        disabled=not audio_info,
+        disabled=not audio_info or st.session_state["pa-current-text"] == "",
         key="pa-play-btn",
         help="✨ 点击按钮，播放您的跟读录音。",
     )
@@ -290,13 +292,27 @@ if menu and menu.endswith("发音评估"):
             scenario_category, difficulty
         )
         st.session_state["pa-idx"] = -1
+        st.session_state["pa-current-text"] = ""
         st.rerun()
+
+    if prev_btn or next_btn:
+        text = st.session_state["pa-text"]
+        paragraphs = [line for line in text.splitlines() if line.strip()]
+        st.session_state["pa-current-text"] = paragraphs[st.session_state["pa-idx"]]
 
     display_assessment_text(pa_text_container)
 
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
-        reference_text = process_dialogue_text(st.session_state["pa-text"])
+        idx = st.session_state["pa-idx"]
+        if idx != -1:
+            text = st.session_state["pa-text"]
+            paragraphs = [line for line in text.splitlines() if line.strip()]
+        else:
+            st.error("评估全文不可行，请选择段落进行评估。")
+            st.stop()
+
+        reference_text = process_dialogue_text(paragraphs[idx])
 
         # start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
@@ -313,14 +329,15 @@ if menu and menu.endswith("发音评估"):
         #     if word.get("error_type") == "Mispronunciation":
         #         tasks.append(word.word)
 
-    if play_btn and audio_info and st.session_state["pa-assessment"]:
+    if audio_playback_button and audio_info and st.session_state["pa-assessment"]:
         autoplay_audio_and_display_text(
             replay_text_placeholder,
             audio_info["bytes"],
             st.session_state["pa-assessment"]["recognized_words"],
         )
 
-    if replay_btn:
+    if synthetic_audio_replay_button:
+        idx = st.session_state["pa-idx"]
         play_and_record_text(
             voice_style,
             difficulty,
