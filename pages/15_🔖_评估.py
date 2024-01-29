@@ -243,7 +243,10 @@ if menu and menu.endswith("发音评估"):
         on_click=on_next_btn_click,
         args=("pa-idx",),
         disabled=st.session_state["pa-idx"]
-        == len(st.session_state["pa-text"].splitlines()) - 1,
+        == len(
+            [line for line in st.session_state["pa-text"].splitlines() if line.strip()]
+        )
+        - 1,
     )
     replay_btn = pa_cols[3].button(
         "收听[:headphones:]",
