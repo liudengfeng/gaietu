@@ -288,6 +288,7 @@ if menu and menu.endswith("发音评估"):
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
             scenario_category, difficulty
         )
+        st.session_state["pa-idx"] = -1
         st.rerun()
 
     if next_btn or prev_btn:
