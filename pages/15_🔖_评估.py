@@ -101,7 +101,7 @@ if menu and menu.endswith("发音评估"):
         placeholder="请选择CEFR等级",
     )
 
-    voice_gender = st.sidebar.radio("选择合成声音的性别", ("男性", "女性"))
+    voice_gender = st.sidebar.radio("选择合成声音的性别", ("男性", "女性"), index=0)
 
     if voice_gender == "男性":
         voice_style_options = st.session_state["m_voices"]
