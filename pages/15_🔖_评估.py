@@ -354,7 +354,7 @@ if menu and menu.endswith("发音评估"):
     display_pronunciation_assessment_words(
         pa_words_container,
         "pa-current-text",
-        "pa-assessment",
+        "pa-assessment-dict",
     )
 
     with st.expander("查看发音评估雷达图", expanded=False):
