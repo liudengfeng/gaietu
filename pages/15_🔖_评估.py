@@ -78,8 +78,13 @@ if "pa-text" not in st.session_state:
 if "pa-current-text" not in st.session_state:
     st.session_state["pa-current-text"] = ""
 
+# 当前段落的发音评估结果
 if "pa-assessment" not in st.session_state:
     st.session_state["pa-assessment"] = {}
+
+# 以序号为键，每段落的发音评估结果为值的字典
+if "pa-assessment-dict" not in st.session_state:
+    st.session_state["pa-assessment-dict"] = {}
 
 # endregion
 
@@ -128,12 +133,10 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
         view_word_assessment(adjusted)
 
 
-def view_radar(score_key, item_maps):
+def view_radar(score_dict, item_maps):
     # 雷达图
     data_tb = {
-        key: st.session_state.get(score_key, {})
-        .get("pronunciation_result", {})
-        .get(key, 0)
+        key: score_dict.get("pronunciation_result", {}).get(key, 0)
         for key in item_maps.keys()
     }
     gen_radar(data_tb, item_maps, 320)
@@ -293,6 +296,7 @@ if menu and menu.endswith("发音评估"):
         )
         st.session_state["pa-idx"] = -1
         st.session_state["pa-current-text"] = ""
+        st.session_state["pa-assessment-dict"] = {}
         st.rerun()
 
     if prev_btn or next_btn:
@@ -310,10 +314,12 @@ if menu and menu.endswith("发音评估"):
             st.stop()
 
         reference_text = process_dialogue_text(st.session_state["pa-current-text"])
+
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
         )
+        st.session_state["pa-assessment-dict"][idx] = st.session_state["pa-assessment"]
 
         # # TODO:管理待处理任务列表
         # # 创建一个空的待处理任务列表
@@ -351,6 +357,7 @@ if menu and menu.endswith("发音评估"):
     )
 
     with st.expander("查看发音评估雷达图", expanded=False):
+        radar_cols = st.columns(2)
         item_maps = {
             "pronunciation_score": "发音总评分",
             "accuracy_score": "准确性评分",
@@ -358,7 +365,28 @@ if menu and menu.endswith("发音评估"):
             "fluency_score": "流畅性评分",
             "prosody_score": "韵律分数",
         }
-        view_radar("pa-assessment", item_maps)
+        with radar_cols[0]:
+            st.markdown("当前段落的发音评估结果")
+            view_radar(st.session_state["pa-assessment"], item_maps)
+
+        # 开始至当前的平均值
+        with radar_cols[1]:
+            st.markdown("开始至当前的平均值")
+            data = {"pronunciation_result": {}}
+            idx = st.session_state["pa-idx"]
+            # 计算截至当前的平均值
+            for i in range(idx + 1):
+                assessment = st.session_state["pa-assessment-dict"].get(i, {})
+                for key in item_maps.keys():
+                    data["pronunciation_result"][key] = data[
+                        "pronunciation_result"
+                    ].get(key, 0) + assessment.get(key, 0)
+
+            # 计算平均值
+            for key in item_maps.keys():
+                data["pronunciation_result"][key] /= idx + 1
+
+            view_radar(data, item_maps)
 
 # endregion
 
