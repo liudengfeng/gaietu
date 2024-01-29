@@ -305,16 +305,11 @@ if menu and menu.endswith("发音评估"):
     if pa_pro_btn and audio_info is not None:
         # 去掉发言者的名字
         idx = st.session_state["pa-idx"]
-        if idx != -1:
-            text = st.session_state["pa-text"]
-            paragraphs = [line for line in text.splitlines() if line.strip()]
-        else:
-            st.error("评估全文不可行，请选择段落进行评估。")
+        if idx == -1:
+            st.error("不允许全文评估。请选择段落进行评估。")
             st.stop()
 
-        reference_text = process_dialogue_text(paragraphs[idx])
-
-        # start = datetime.now(pytz.UTC)
+        reference_text = process_dialogue_text(st.session_state["pa-current-text"])
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
@@ -351,7 +346,7 @@ if menu and menu.endswith("发音评估"):
 
     display_pronunciation_assessment_words(
         pa_words_container,
-        "pa-text",
+        "pa-current-text",
         "pa-assessment",
     )
 
