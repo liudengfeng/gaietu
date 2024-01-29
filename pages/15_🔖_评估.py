@@ -382,6 +382,7 @@ if menu and menu.endswith("发音评估"):
                         "pronunciation_result"
                     ].get(key, 0) + assessment.get(key, 0)
 
+            st.write(data)
             # 计算平均值
             if idx >= 0:
                 for key in item_maps.keys():
