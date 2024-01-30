@@ -519,7 +519,7 @@ def generate_pronunciation_assessment_text(model, ability, level):
     )
 
 
-ORAL_ABILITY_TEMPLATE = """
+ORAL_ABILITY_TOPIC_TEMPLATE = """
 As an English oral ability examiner, provide 5 topics for students to choose from to assess whether they meet the following ability requirements:
 - Level: CEFR {level}.
 - Ability Requirements: {ability}.
@@ -534,13 +534,41 @@ As an English oral ability examiner, provide 5 topics for students to choose fro
 
 def generate_oral_ability_topics(model, ability, level, number):
     scenario = from_chinese_to_english_topic(level, ability)
-    prompt = ORAL_ABILITY_TEMPLATE.format(number=number, ability=scenario, level=level)
+    prompt = ORAL_ABILITY_TOPIC_TEMPLATE.format(
+        number=number, ability=scenario, level=level
+    )
     contents = [Part.from_text(prompt)]
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
     )
     return parse_generated_content_and_update_token(
         "口语能力话题",
+        "gemini-pro",
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=lambda x: x,
+    )
+
+
+ORAL_ABILITY_STATEMENT_TEMPLATE = """
+As an examinee, you are required to make a statement on a given topic according to the following requirements:
+- Level: CEFR {level}.
+- Topic: {topic}.
+- Word count: The statement should be within 100 to 200 words.
+- Vocabulary and ability: Your statement should use vocabulary and demonstrate abilities that match the CEFR {level} level (slightly higher is also acceptable).
+"""
+
+
+def generate_oral_statement_template(model, topic, level):
+    prompt = ORAL_ABILITY_STATEMENT_TEMPLATE.format(topic=topic, level=level)
+    contents = [Part.from_text(prompt)]
+    generation_config = GenerationConfig(
+        max_output_tokens=256, temperature=0.5, top_p=1.0
+    )
+    return parse_generated_content_and_update_token(
+        "口语陈述模板",
         "gemini-pro",
         model.generate_content,
         contents,

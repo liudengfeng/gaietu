@@ -15,6 +15,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_oral_ability_topics,
+    generate_oral_statement_template,
     generate_pronunciation_assessment_text,
     load_vertex_model,
 )
@@ -246,6 +247,13 @@ def generate_oral_ability_topics_for(difficulty, scenario_category):
         st.session_state["text_model"], scenario_category, difficulty, 5
     )
     return [line for line in text.splitlines() if line.strip()]
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语话题样例，请稍候...")
+def generate_oral_statement_template_for(topic, difficulty):
+    return generate_oral_statement_template(
+        st.session_state["text_model"], topic, difficulty
+    )
 
 
 # endregion
@@ -630,6 +638,16 @@ if menu and menu.endswith("口语能力"):
         #     if word.get("error_type") == "Mispronunciation":
         #         tasks.append(word.word)
 
+    if sample_button:
+        if not oa_topic:
+            status_placeholder.error("请先选择话题。")
+            st.stop()
+
+        st.session_state["oa-sample-text"] = generate_oral_statement_template_for(
+            oa_topic, difficulty
+        )
+        st.rerun()
+
     if audio_playback_button and st.session_state["oa-assessment"]:
         if not st.session_state[audio_session_output_key]:
             status_placeholder.error("请先录制音频或上传音频文件。")
@@ -648,10 +666,10 @@ if menu and menu.endswith("口语能力"):
 
     if synthetic_audio_replay_button:
         play_synthesized_audio(
-            st.session_state["pa-current-text"],
+            st.session_state["oa-sample-text"],
             voice_style,
             difficulty,
-            scenario_category,
+            oa_topic,
         )
 
     display_assessment_score(
