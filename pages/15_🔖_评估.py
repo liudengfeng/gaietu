@@ -609,6 +609,8 @@ if menu and menu.endswith("口语能力"):
             oa_topic,
         )
 
+        st.write(st.session_state["oa-assessment"])
+
         # # TODO:管理待处理任务列表
         # # 创建一个空的待处理任务列表
         # tasks = []
