@@ -6,16 +6,20 @@ import os
 import random
 import re
 import string
+import subprocess
+import tempfile
+import wave
 from collections import defaultdict
 from io import BytesIO
 from pathlib import Path
 from typing import List, Union
-import subprocess
+
 import requests
+import spacy
 from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
 from gtts import gTTS
 from PIL import Image
-import spacy
+from pydub import AudioSegment
 
 from .azure_speech import synthesize_speech_to_file
 
@@ -38,9 +42,7 @@ def remove_trailing_punctuation(s: str) -> str:
     Returns:
         str: The input string with trailing punctuation removed.
     """
-    chinese_punctuation = (
-        "！？｡。＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏."
-    )
+    chinese_punctuation = "！？｡。＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏."
     all_punctuation = string.punctuation + chinese_punctuation
     return s.rstrip(all_punctuation)
 
@@ -83,18 +85,6 @@ def audio_autoplay_elem(data: Union[bytes, str], fmt="mp3"):
                 """
 
 
-def gtts_autoplay_elem(text: str, lang: str, tld: str):
-    tts = gTTS(text, lang=lang, tld=tld)
-    io = BytesIO()
-    tts.write_to_fp(io)
-    b64 = base64.b64encode(io.getvalue()).decode()
-    return f"""\
-        <audio controls autoplay>
-            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-        </audio>
-        """
-
-
 def get_mini_dict():
     fp = os.path.join(CURRENT_CWD, "resource", "dictionary", "mini_dict.json")
     with open(fp, "r", encoding="utf-8") as f:
@@ -122,9 +112,9 @@ def count_words_and_get_levels(
 
     if percentage:
         for level in levels:
-            levels[
-                level
-            ] = f"{levels[level]} ({levels[level] / total_words * 100:.2f}%)"
+            levels[level] = (
+                f"{levels[level]} ({levels[level] / total_words * 100:.2f}%)"
+            )
 
     # 返回总字数和字典
     return total_words, dict(levels)
