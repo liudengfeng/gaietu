@@ -49,24 +49,6 @@ def get_word_durations(
     return durations
 
 
-def get_syllable_durations_and_offsets(
-    recognized_words,
-) -> Iterator[Tuple[str, float, float, float]]:
-    accumulated_text = ""
-    for w in recognized_words:
-        word_text = ""
-        if not hasattr(w, "syllables"):
-            # yield accumulated_text, 0, 0, w.accuracy_score
-            continue
-        for s in w.syllables:
-            word_text += " " if s.grapheme is None else s.grapheme + " "
-            duration_in_seconds = s.duration / 10000000
-            offset_in_seconds = s.offset / 10000000
-            yield accumulated_text + word_text, duration_in_seconds, offset_in_seconds, s.accuracy_score
-        accumulated_text += w.word + " "
-        yield accumulated_text, duration_in_seconds, offset_in_seconds, w.accuracy_score
-
-
 def read_wave_header(file_path):
     with wave.open(file_path, "rb") as audio_file:
         framerate = audio_file.getframerate()
@@ -157,6 +139,24 @@ class _PronunciationAssessmentWordResultV2(speechsdk.PronunciationAssessmentWord
             return "Monotone" in self._feedback["Prosody"]["Intonation"]["ErrorTypes"]
         except:
             return False
+
+
+def get_syllable_durations_and_offsets(
+    recognized_words: List[_PronunciationAssessmentWordResultV2],
+) -> Iterator[Tuple[str, float, float, float]]:
+    accumulated_text = ""
+    for w in recognized_words:
+        word_text = ""
+        if not hasattr(w, "syllables"):
+            # yield accumulated_text, 0, 0, w.accuracy_score
+            continue
+        for s in w.syllables:
+            word_text += " " if s.grapheme is None else s.grapheme + " "
+            duration_in_seconds = s.duration / 10000000
+            offset_in_seconds = s.offset / 10000000
+            yield accumulated_text + word_text, duration_in_seconds, offset_in_seconds, s.accuracy_score
+        accumulated_text += w.word + " "
+        yield accumulated_text, duration_in_seconds, offset_in_seconds, w.accuracy_score
 
 
 class _PronunciationAssessmentResultV2(speechsdk.PronunciationAssessmentResult):
@@ -429,7 +429,12 @@ def _pronunciation_assessment(
             "grammar_score": content_result.grammar_score,
             "vocabulary_score": content_result.vocabulary_score,
             "topic_score": content_result.topic_score,
-            "content_score": (content_result.grammar_score + content_result.vocabulary_score + content_result.topic_score) / 3
+            "content_score": (
+                content_result.grammar_score
+                + content_result.vocabulary_score
+                + content_result.topic_score
+            )
+            / 3,
         }
 
     # Calculate the average scores
