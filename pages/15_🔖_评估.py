@@ -578,7 +578,7 @@ if menu and menu.endswith("口语能力"):
         disabled=st.session_state["oa-sample-text"] == "",
     )
     
-    example_button = oa_btn_cols[6].button(
+    example_button = oa_btn_cols[7].button(
         "案例[:headphones:]",
         key="oa-example",
         help="✨ 点击按钮，查看样例口语评估。",
