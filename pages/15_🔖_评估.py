@@ -7,7 +7,10 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
 
-from mypylib.azure_pronunciation_assessment import adjust_display_by_reference_text
+from mypylib.azure_pronunciation_assessment import (
+    adjust_display_by_reference_text,
+    read_audio_file,
+)
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
@@ -36,6 +39,7 @@ from mypylib.st_helper import (
     view_pronunciation_assessment_legend,
     view_word_assessment,
 )
+from mypylib.utils import calculate_audio_duration
 from mypylib.word_utils import audio_autoplay_elem
 
 # region 配置
@@ -581,11 +585,28 @@ if menu and menu.endswith("口语能力"):
     if oa_pro_btn and oa_audio_info is not None or audio_media_file is not None:
         # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
         if oa_audio_info is not None and audio_media_file is not None:
-            st.info("请注意，只能选择录制音频或上传音频文件中的一种方式进行评估。如果需要删除已经录制的音频，可以点击`删除[🗑️]`按钮。如果需要移除已上传的音频文件，可以在文件尾部点击`❌`标志。")
+            st.info(
+                "请注意，只能选择录制音频或上传音频文件中的一种方式进行评估。如果需要删除已经录制的音频，可以点击`删除[🗑️]`按钮。如果需要移除已上传的音频文件，可以在文件尾部点击`❌`标志。"
+            )
+            st.stop()
+
+        # 判断是使用录制的音频还是上传的音频文件
+        if audio_media_file is not None:
+            audio = read_audio_file(audio_media_file)
+        else:
+            audio = oa_audio_info
+
+        audio["audio_duration"] = calculate_audio_duration(
+            audio["bytes"], audio["sample_rate"], audio["sample_width"]
+        )
+        
+        # 判断时长是否超过 15 秒
+        if audio["audio_duration"] < timedelta(seconds=15):
+            st.error("录制的音频时长不能少于 15 秒。")
             st.stop()
 
         st.session_state["oa-assessment"] = oral_ability_assessment_for(
-            oa_audio_info,
+            audio,
             oa_topic,
         )
 
