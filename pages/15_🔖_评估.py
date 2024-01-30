@@ -11,7 +11,7 @@ from mypylib.azure_pronunciation_assessment import (
     adjust_display_by_reference_text,
     read_audio_file,
 )
-from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP
+from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP, ORAL_FP
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_oral_ability_topics,
@@ -577,6 +577,12 @@ if menu and menu.endswith("口语能力"):
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
         disabled=st.session_state["oa-sample-text"] == "",
     )
+    
+    example_button = oa_btn_cols[6].button(
+        "案例[:headphones:]",
+        key="oa-example",
+        help="✨ 点击按钮，查看样例口语评估。",
+    )
 
     tab0_col1, tab0_col2 = st.columns(2)
     audio_media_file = tab0_col1.file_uploader(
@@ -682,7 +688,14 @@ if menu and menu.endswith("口语能力"):
             difficulty,
             oa_topic,
         )
-
+    
+    if example_button:
+        audio = read_audio_file(ORAL_FP)
+        st.session_state["oa-assessment"] = oral_ability_assessment_for(
+            audio,
+            "Describe someone you met recently and would like to know more",
+        )    
+    
     display_assessment_score(
         oa_report_container,
         ORAL_ABILITY_SCORE_BADGE_MAPS,
