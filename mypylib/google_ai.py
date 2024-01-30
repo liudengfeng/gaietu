@@ -173,8 +173,9 @@ def display_generated_content_and_update_token(
     # TODO
     count_tokens(model_name, contents, "输入")
     for c in contents:
-        if c.mime_type.startswith("text"):
-            logger.info(f"提示词长度：{get_length_in_bytes(c.text)}")
+        logger.info(f"type: {type(c)}")
+        # if c.mime_type.startswith("text"):
+        #     logger.info(f"提示词长度：{get_length_in_bytes(c.text)}")
 
     calculate_input_cost_from_parts(contents)
 
