@@ -54,7 +54,6 @@ googleapis-common-protos==1.62.0
 grpc-google-iam-v1==0.13.0
 grpcio==1.60.0
 grpcio-status==1.60.0
-gTTS==2.5.0
 idna==3.6
 importlib-metadata==7.0.1
 ipykernel==6.29.0

@@ -6,9 +6,6 @@ import os
 import random
 import re
 import string
-import subprocess
-import tempfile
-import wave
 from collections import defaultdict
 from io import BytesIO
 from pathlib import Path
@@ -17,7 +14,6 @@ from typing import List, Union
 import requests
 import spacy
 from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
-from gtts import gTTS
 from PIL import Image
 from pydub import AudioSegment
 
