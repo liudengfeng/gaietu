@@ -632,17 +632,18 @@ if menu and menu.endswith("口语能力"):
         #     if word.get("error_type") == "Mispronunciation":
         #         tasks.append(word.word)
 
-    if audio_playback_button and st.session_state["pa-assessment"]:
+    if audio_playback_button and st.session_state["oa-assessment"]:
         if not st.session_state[audio_session_output_key]:
             st.error("请先录制音频或上传音频文件。")
-        if not st.session_state["pa-assessment"]:
+        
+        if not st.session_state["oa-assessment"]:
             st.error("请先进行发音评估。")
 
         oa_audio_info = st.session_state[audio_session_output_key]
         autoplay_audio_and_display_text(
             replay_text_placeholder,
             oa_audio_info["bytes"],
-            st.session_state["pa-assessment"]["recognized_words"],
+            st.session_state["oa-assessment"]["recognized_words"],
         )
 
     if synthetic_audio_replay_button:
