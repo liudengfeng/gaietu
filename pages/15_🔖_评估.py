@@ -226,7 +226,7 @@ def display_assessment_text(pa_text_container):
 
 
 def delete_recorded_audio(audio_obj, audio_key):
-    del st.session_state[audio_key]
+    st.session_state[audio_key] = None
     if audio_obj:
         audio_obj.clear()  # 删除所有元素
 
