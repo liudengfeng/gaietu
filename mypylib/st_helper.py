@@ -342,18 +342,18 @@ def autoplay_audio_and_display_text(
     start_time = time.perf_counter()
     for (
         accumulated_text,
-        _,
+        duration,
         offset,
         _,
     ) in get_syllable_durations_and_offsets(words):
         # 更新文本
         elem.markdown(accumulated_text + "▌")
         # 暂停一会儿，以便我们可以看到文本的动态更新
-        sleep_duration = offset - previous_offset
-        time.sleep(sleep_duration)
+        # sleep_duration = offset - previous_offset
+        time.sleep(duration)
         # while time.perf_counter() - start_time < offset:
         #     time.sleep(0.001)  # 暂停的时间等于当前偏移量和上一次偏移量的差值
-        previous_offset = offset
+        # previous_offset = offset
     elem.markdown(accumulated_text)
     # st.rerun()
 
