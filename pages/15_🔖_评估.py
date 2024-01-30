@@ -27,7 +27,7 @@ from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    display_pronunciation_result,
+    display_assessment_score,
     format_token_count,
     get_synthesis_speech,
     # left_paragraph_aligned_text,
@@ -401,8 +401,8 @@ if menu and menu.endswith("发音评估"):
             scenario_category,
         )
 
-    display_pronunciation_result(
-        pa_report_container, "pa-assessment", PRONUNCIATION_SCORE_BADGE_MAPS
+    display_assessment_score(
+        pa_report_container, PRONUNCIATION_SCORE_BADGE_MAPS, "pa-assessment"
     )
 
     display_pronunciation_assessment_words(
@@ -609,8 +609,6 @@ if menu and menu.endswith("口语能力"):
             oa_topic,
         )
 
-        st.write(st.session_state["oa-assessment"])
-
         # # TODO:管理待处理任务列表
         # # 创建一个空的待处理任务列表
         # tasks = []
@@ -641,8 +639,11 @@ if menu and menu.endswith("口语能力"):
             scenario_category,
         )
 
-    display_pronunciation_result(
-        oa_report_container, "oa-assessment", ORAL_ABILITY_SCORE_BADGE_MAPS
+    display_assessment_score(
+        oa_report_container,
+        ORAL_ABILITY_SCORE_BADGE_MAPS,
+        "oa-assessment",
+        "content_result",
     )
 
     display_pronunciation_assessment_words(

@@ -488,22 +488,21 @@ def oral_ability_assessment_for(audio_info: dict, topic: str):
     return pronunciation_assessment_from_stream(audio_info, st.secrets, topic)
 
 
-def display_pronunciation_result(container, key, maps):
+def display_assessment_score(
+    container, maps, assessment_key, score_key="pronunciation_result"
+):
     """
-    Display the pronunciation result in the specified container.
+    Display the assessment score for a given assessment key.
 
     Parameters:
-    container (object): The container to display the result.
-    key (str): The key to access the pronunciation result in the session state.
-
-    Returns:
-    None
+    container (object): The container object to display the score.
+    maps (dict): A dictionary containing mappings for the score.
+    assessment_key (str): The key to retrieve the assessment from st.session_state.
+    score_key (str, optional): The key to retrieve the score from the assessment. Defaults to "pronunciation_result".
     """
-    if key not in st.session_state or st.session_state[key] is None:
+    if assessment_key not in st.session_state or not st.session_state[assessment_key]:
         return
-    result = st.session_state[key].get("pronunciation_result", {})
-    # if result is None:
-    #     return
+    result = st.session_state[assessment_key].get(score_key, {})
     view_md_badges(container, result, maps, 0)
 
 

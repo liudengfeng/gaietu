@@ -39,7 +39,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
-    display_pronunciation_result,
+    display_assessment_score,
     load_mini_dict,
     pronunciation_assessment_for,
     update_and_display_progress,
@@ -956,10 +956,10 @@ if menu is not None and menu.endswith("听说练习"):
                 reference_text,
             )
 
-            display_pronunciation_result(
+            display_assessment_score(
                 pronunciation_evaluation_container,
+                PRONUNCIATION_SCORE_BADGE_MAPS,
                 "listening-pronunciation-assessment",
-                PRONUNCIATION_SCORE_BADGE_MAPS
             )
 
             # 添加成绩记录
