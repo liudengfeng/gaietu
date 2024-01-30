@@ -106,6 +106,9 @@ if "oa-sample-text" not in st.session_state:
 if "oa-topic-options" not in st.session_state:
     st.session_state["oa-topic-options"] = []
 
+if "oa-assessment" not in st.session_state:
+    st.session_state["oa-assessment"] = {}
+
 # endregion
 
 # region 函数
@@ -434,7 +437,6 @@ if menu and menu.endswith("发音评估"):
             view_radar(data, item_maps)
 
 # endregion
-
 
 # region 口语评估
 
