@@ -29,7 +29,18 @@ setup_logger(logger)
 CURRENT_CWD: Path = Path(__file__).parent
 LOGO_DIR: Path = CURRENT_CWD / "resource/logo"
 
-# VOICES_FP = CURRENT_CWD / "resource/voices.json"
+st.markdown(
+    """
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "ksb29xet0e");
+    </script>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.set_page_config(
     page_title="主页",
@@ -84,7 +95,9 @@ login_btn = s_cols[0].button(
 )
 
 logout_btn = s_cols[1].button(
-    "退出", help="✨ 在公共场所使用本产品时，请在离开前退出登录，以保护您的隐私和安全。", disabled=not is_logged_in
+    "退出",
+    help="✨ 在公共场所使用本产品时，请在离开前退出登录，以保护您的隐私和安全。",
+    disabled=not is_logged_in,
 )
 
 
@@ -207,7 +220,9 @@ if not is_logged_in:
         sub_btn = st.form_submit_button(label="登录")
         if sub_btn:
             if not is_valid_phone_number(phone_number):
-                sidebar_status.error(f"请输入有效的手机号码。您输入的号码是：{phone_number}")
+                sidebar_status.error(
+                    f"请输入有效的手机号码。您输入的号码是：{phone_number}"
+                )
                 st.stop()
             else:
                 info = st.session_state.dbi.login(
