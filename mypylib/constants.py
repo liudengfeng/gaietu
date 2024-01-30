@@ -3,7 +3,7 @@ from pathlib import Path
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VOICES_FP = CURRENT_CWD / "resource/voices.json"
 # ORAL_FP = CURRENT_CWD / "resource/examples/Lauren_audio.wav"
-ORAL_FP = CURRENT_CWD / "resource/examples/favorite_animal.wav"
+ORAL_FP = CURRENT_CWD / "resource/examples/elephant.wav"
 
 LANGUAGES = ["en-US", "zh-CN", "fr-FR", "ja-JP", "en-GB"]
 
