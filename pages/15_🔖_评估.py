@@ -17,6 +17,8 @@ from mypylib.google_ai import (
 )
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
+    ORAL_ABILITY_SCORE_BADGE_MAPS,
+    PRONUNCIATION_SCORE_BADGE_MAPS,
     TOEKN_HELP_INFO,
     autoplay_audio_and_display_text,
     check_access,
@@ -386,8 +388,7 @@ if menu and menu.endswith("发音评估"):
         )
 
     display_pronunciation_result(
-        pa_report_container,
-        "pa-assessment",
+        pa_report_container, "pa-assessment", PRONUNCIATION_SCORE_BADGE_MAPS
     )
 
     display_pronunciation_assessment_words(
@@ -581,7 +582,8 @@ if menu and menu.endswith("口语能力"):
 
     display_pronunciation_result(
         oa_report_container,
-        "pa-assessment",
+        "oa-assessment",
+        ORAL_ABILITY_SCORE_BADGE_MAPS
     )
 
     display_pronunciation_assessment_words(
@@ -590,7 +592,7 @@ if menu and menu.endswith("口语能力"):
         "pa-assessment-dict",
     )
 
-    with st.expander("查看发音评估雷达图", expanded=False):
+    with st.expander("查看口语能力评估雷达图", expanded=False):
         radar_cols = st.columns(2)
         item_maps = {
             "pronunciation_score": "发音总评分",

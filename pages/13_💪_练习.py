@@ -959,6 +959,7 @@ if menu is not None and menu.endswith("听说练习"):
             display_pronunciation_result(
                 pronunciation_evaluation_container,
                 "listening-pronunciation-assessment",
+                PRONUNCIATION_SCORE_BADGE_MAPS
             )
 
             # 添加成绩记录

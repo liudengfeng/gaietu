@@ -46,7 +46,9 @@ from .word_utils import (
 logger = logging.getLogger("streamlit")
 
 
-TOEKN_HELP_INFO = "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
+TOEKN_HELP_INFO = (
+    "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
+)
 
 
 def setup_logger(logger, level="INFO"):
@@ -187,9 +189,9 @@ def configure_google_apis():
             st.session_state["current_token_count"] = 0
 
         if "total_token_count" not in st.session_state:
-            st.session_state[
-                "total_token_count"
-            ] = st.session_state.dbi.get_token_count()
+            st.session_state["total_token_count"] = (
+                st.session_state.dbi.get_token_count()
+            )
     else:
         st.warning("非云端环境，无法使用 Google AI", icon="⚠️")
 
@@ -391,7 +393,12 @@ PRONUNCIATION_SCORE_BADGE_MAPS = OrderedDict(
             "给定语音的流畅性。流畅性表示语音与母语说话人在单词间的停顿上有多接近。",
             "secondary",
         ),
-        "completeness_score": ("red", "完整性评分", "语音的完整性，按发音单词与输入引用文本的比率计算。", "danger"),
+        "completeness_score": (
+            "red",
+            "完整性评分",
+            "语音的完整性，按发音单词与输入引用文本的比率计算。",
+            "danger",
+        ),
         "prosody_score": (
             "rainbow",
             "韵律评分",
@@ -401,7 +408,34 @@ PRONUNCIATION_SCORE_BADGE_MAPS = OrderedDict(
     }
 )
 
-
+ORAL_ABILITY_SCORE_BADGE_MAPS = OrderedDict(
+    {
+        "content_score": (
+            "green",
+            "口语能力总评分",
+            "表示学生口语能力的总体分数。由词汇得分、语法得分和主题得分的简单平均得出。"
+            "success",
+        ),
+        "vocabulary_score": (
+            "rainbow",
+            "词汇分数",
+            "词汇运用能力的熟练程度是通过说话者有效地使用单词来评估的，即在特定语境中使用某单词以表达观点是否恰当。",
+            "warning",
+        ),
+        "grammar_score": (
+            "blue",
+            "语法分数",
+            "正确使用语法的熟练程度。语法错误是通过将适当的语法使用水平与词汇结合进行评估的。",
+            "secondary",
+        ),
+        "topic_score": (
+            "orange",
+            "主题分数",
+            "对主题的理解和参与程度，它提供有关说话人有效表达其思考和想法的能力以及参与主题的能力的见解。",
+            "danger",
+        )
+    }
+)
 # 判断是否为旁白
 def is_aside(text):
     return re.match(r"^\(.*\)$", text) is not None
@@ -423,14 +457,18 @@ def load_mini_dict():
     return get_mini_dict()
 
 
-@st.cache_resource(show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
+@st.cache_resource(
+    show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24
+)  # 缓存有效期为24小时
 def get_mini_dict_doc(word):
     w = word.replace("/", " or ")
     mini_dict = load_mini_dict()
     return mini_dict.get(w, {})
 
 
-@st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址...")
+@st.cache_data(
+    ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址..."
+)
 def select_word_image_urls(word: str):
     mini_dict_doc = get_mini_dict_doc(word)
     return mini_dict_doc.get("image_urls", [])
@@ -443,7 +481,7 @@ def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     )
 
 
-def display_pronunciation_result(container, key):
+def display_pronunciation_result(container, key, maps):
     """
     Display the pronunciation result in the specified container.
 
@@ -459,7 +497,7 @@ def display_pronunciation_result(container, key):
     result = st.session_state[key].get("pronunciation_result", {})
     # if result is None:
     #     return
-    view_md_badges(container, result, PRONUNCIATION_SCORE_BADGE_MAPS, 0)
+    view_md_badges(container, result, maps, 0)
 
 
 def process_dialogue_text(reference_text):
@@ -527,6 +565,7 @@ def _word_to_text(word):
         return f"{word.word} | {accuracy_score}"
     return f"{word.word}"
 
+
 # TODO:废弃或使用 单词数量调整
 def left_paragraph_aligned_text(text1, words):
     """
@@ -542,7 +581,7 @@ def left_paragraph_aligned_text(text1, words):
 
     # 将文本1分割成段落
     paragraphs1 = text1.split("\n\n")
-    
+
     if len(words) == 0:
         return paragraphs1
 

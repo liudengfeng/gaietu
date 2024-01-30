@@ -429,6 +429,7 @@ def _pronunciation_assessment(
             "grammar_score": content_result.grammar_score,
             "vocabulary_score": content_result.vocabulary_score,
             "topic_score": content_result.topic_score,
+            "content_score": (content_result.grammar_score + content_result.vocabulary_score + content_result.topic_score) / 3
         }
 
     # Calculate the average scores
