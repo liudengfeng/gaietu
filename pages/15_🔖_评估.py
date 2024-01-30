@@ -521,7 +521,6 @@ if menu and menu.endswith("口语能力"):
         st.session_state[audio_session_output_key] = mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
-            key=audio_key,
         )
 
     oa_del_btn = oa_btn_cols[2].button(
