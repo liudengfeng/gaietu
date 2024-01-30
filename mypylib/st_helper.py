@@ -342,13 +342,13 @@ def autoplay_audio_and_display_text(
     for i, (accumulated_text, duration, offset, _) in enumerate(
         get_syllable_durations_and_offsets(words)
     ):
-        # while time.perf_counter() - start_time < offset:
-        #     time.sleep(0.001)
         elem.markdown(accumulated_text + "▌")
-        if i == 0:
-            time.sleep(offset)
-        else:
-            time.sleep(duration)
+        while time.perf_counter() - start_time < offset:
+            time.sleep(0.001)
+        # if i == 0:
+        #     time.sleep(offset)
+        # else:
+        #     time.sleep(duration)
     elem.markdown(accumulated_text)
 
     # time.sleep(1)
