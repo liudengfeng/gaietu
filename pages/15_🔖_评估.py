@@ -78,6 +78,21 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     st.session_state["m_voices"] = [v for v in voices if v[1] == "Male"]
     st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
+PRONUNCIATION_ITEM_MAPS = {
+    "pronunciation_score": "发音总评分",
+    "accuracy_score": "准确性评分",
+    "completeness_score": "完整性评分",
+    "fluency_score": "流畅性评分",
+    "prosody_score": "韵律分数",
+}
+
+ORAL_ITEM_MAPS = {
+    "content_score": "口语能力",
+    "grammar_score": "语法分数",
+    "vocabulary_score": "词汇分数",
+    "topic_score": "主题分数",
+}
+
 # endregion
 
 # region 发音评估会话
@@ -177,11 +192,10 @@ def display_oral_pronunciation_assessment_results(container, assessment_key):
         view_word_assessment(words)
 
 
-def view_radar(score_dict, item_maps):
+def view_radar(score_dict, item_maps, result_key="pronunciation_result"):
     # 雷达图
     data_tb = {
-        key: score_dict.get("pronunciation_result", {}).get(key, 0)
-        for key in item_maps.keys()
+        key: score_dict.get(result_key, {}).get(key, 0) for key in item_maps.keys()
     }
     gen_radar(data_tb, item_maps, 320)
 
@@ -430,27 +444,24 @@ if menu and menu.endswith("发音评估"):
 
     with st.expander("查看发音评估雷达图", expanded=False):
         radar_cols = st.columns(2)
-        item_maps = {
-            "pronunciation_score": "发音总评分",
-            "accuracy_score": "准确性评分",
-            "completeness_score": "完整性评分",
-            "fluency_score": "流畅性评分",
-            "prosody_score": "韵律分数",
-        }
         with radar_cols[0]:
             st.markdown("当前段落的发音评估结果")
-            view_radar(st.session_state["pa-assessment"], item_maps)
+            view_radar(st.session_state["pa-assessment"], PRONUNCIATION_ITEM_MAPS)
 
         # 开始至当前的平均值
         with radar_cols[1]:
             st.markdown("开始至当前段落的平均值")
-            data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
+            data = {
+                "pronunciation_result": {
+                    key: 0.0 for key in PRONUNCIATION_ITEM_MAPS.keys()
+                }
+            }
             idx = st.session_state["pa-idx"]
 
             # 计算截至当前的平均值
             for i in range(idx + 1):
                 assessment = st.session_state["pa-assessment-dict"].get(i, {})
-                for key in item_maps.keys():
+                for key in PRONUNCIATION_ITEM_MAPS.keys():
                     data["pronunciation_result"][key] = data[
                         "pronunciation_result"
                     ].get(key, 0) + assessment.get("pronunciation_result", {}).get(
@@ -459,10 +470,10 @@ if menu and menu.endswith("发音评估"):
 
             # 计算平均值
             if idx >= 0:
-                for key in item_maps.keys():
+                for key in PRONUNCIATION_ITEM_MAPS.keys():
                     data["pronunciation_result"][key] /= idx + 1
 
-            view_radar(data, item_maps)
+            view_radar(data, PRONUNCIATION_ITEM_MAPS)
 
 # endregion
 
@@ -686,39 +697,17 @@ if menu and menu.endswith("口语能力"):
 
     with st.expander("查看口语能力评估雷达图", expanded=False):
         radar_cols = st.columns(2)
-        item_maps = {
-            "pronunciation_score": "发音总评分",
-            "accuracy_score": "准确性评分",
-            "completeness_score": "完整性评分",
-            "fluency_score": "流畅性评分",
-            "prosody_score": "韵律分数",
-        }
+
         with radar_cols[0]:
             st.markdown("口语能力")
-            view_radar(st.session_state["oa-assessment"], item_maps)
+            view_radar(
+                st.session_state["oa-assessment"], ORAL_ITEM_MAPS, "content_result"
+            )
 
         # 开始至当前的平均值
         with radar_cols[1]:
-            st.markdown("开始至当前段落的平均值")
-            data = {"pronunciation_result": {key: 0.0 for key in item_maps.keys()}}
-            idx = st.session_state["pa-idx"]
-
-            # 计算截至当前的平均值
-            for i in range(idx + 1):
-                assessment = st.session_state["pa-assessment-dict"].get(i, {})
-                for key in item_maps.keys():
-                    data["pronunciation_result"][key] = data[
-                        "pronunciation_result"
-                    ].get(key, 0) + assessment.get("pronunciation_result", {}).get(
-                        key, 0
-                    )
-
-            # 计算平均值
-            if idx >= 0:
-                for key in item_maps.keys():
-                    data["pronunciation_result"][key] /= idx + 1
-
-            view_radar(data, item_maps)
+            st.markdown("发音评估")
+            view_radar(st.session_state["oa-assessment"], PRONUNCIATION_ITEM_MAPS)
 
 # endregion
 
