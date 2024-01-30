@@ -1,7 +1,6 @@
 import logging
 import random
 import re
-import threading
 import time
 from collections import OrderedDict
 from datetime import datetime, timedelta
@@ -321,20 +320,6 @@ def view_md_badges(
         )
 
 
-def _autoplay_audio(audio_bytes: bytes):
-    auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
-    components.html(auto_html)
-
-
-def _display_assessment_words(elem, words):
-    start_time = time.perf_counter()
-    for accumulated_text, _, offset, _ in get_syllable_durations_and_offsets(words):
-        while time.perf_counter() - start_time < offset:
-            time.sleep(0.001)
-        elem.markdown(accumulated_text + "▌")
-    elem.markdown(accumulated_text)
-
-
 def autoplay_audio_and_display_text(
     elem, audio_bytes: bytes, words: List[speechsdk.PronunciationAssessmentWordResult]
 ):
@@ -350,25 +335,18 @@ def autoplay_audio_and_display_text(
         None
     """
 
-    # 创建并启动播放音频的线程
-    audio_thread = threading.Thread(target=_autoplay_audio, args=(audio_bytes,))
-    audio_thread.start()
-    # 创建并启动显示文本的线程
-    text_thread = threading.Thread(
-        target=_display_assessment_words,
-        args=(
-            elem,
-            words,
-        ),
-    )
-    text_thread.start()
+    auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
+    components.html(auto_html)
 
-    # 等待两个线程都完成
-    audio_thread.join()
-    text_thread.join()
+    start_time = time.perf_counter()
+    for accumulated_text, _, offset, _ in get_syllable_durations_and_offsets(words):
+        while time.perf_counter() - start_time < offset:
+            time.sleep(0.001)
+        elem.markdown(accumulated_text + "▌")
+    elem.markdown(accumulated_text)
 
-    time.sleep(1)
-    st.rerun()
+    # time.sleep(1)
+    # st.rerun()
 
 
 # endregion
