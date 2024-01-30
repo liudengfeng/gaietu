@@ -594,12 +594,13 @@ if menu and menu.endswith("口语能力"):
         else:
             audio = st.session_state[audio_session_output_key]
 
+        # 这里返回的是秒 float 类型
         audio["audio_duration"] = calculate_audio_duration(
             audio["bytes"], audio["sample_rate"], audio["sample_width"]
         )
 
         # 判断时长是否超过 15 秒
-        if audio["audio_duration"] < timedelta(seconds=15):
+        if audio["audio_duration"] < 15:
             st.error("录制的音频时长不能少于 15 秒。")
             st.stop()
 
