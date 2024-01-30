@@ -1,6 +1,7 @@
 import logging
 import random
 import re
+import threading
 import time
 from collections import OrderedDict
 from datetime import datetime, timedelta
@@ -320,6 +321,20 @@ def view_md_badges(
         )
 
 
+def _autoplay_audio(audio_bytes: bytes):
+    auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
+    components.html(auto_html)
+
+
+def _display_assessment_words(elem, words):
+    start_time = time.perf_counter()
+    for accumulated_text, _, offset, _ in get_syllable_durations_and_offsets(words):
+        while time.perf_counter() - start_time < offset:
+            time.sleep(0.001)
+        elem.markdown(accumulated_text + "▌")
+    elem.markdown(accumulated_text)
+
+
 def autoplay_audio_and_display_text(
     elem, audio_bytes: bytes, words: List[speechsdk.PronunciationAssessmentWordResult]
 ):
@@ -335,27 +350,23 @@ def autoplay_audio_and_display_text(
         None
     """
 
-    # 播放音频
-    auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
-    components.html(auto_html)
-    previous_offset = 0
-    start_time = time.perf_counter()
-    for (
-        accumulated_text,
-        duration,
-        offset,
-        _,
-    ) in get_syllable_durations_and_offsets(words):
-        logger.info(f"{accumulated_text=} {duration=} {offset=}")
-        # 更新文本
-        elem.markdown(accumulated_text + "▌")
-        # 暂停一会儿，以便我们可以看到文本的动态更新
-        # sleep_duration = offset - previous_offset
-        # time.sleep(duration)
-        while time.perf_counter() - start_time < offset:
-            time.sleep(0.001)  # 暂停的时间等于当前偏移量和上一次偏移量的差值
-        # previous_offset = offset
-    elem.markdown(accumulated_text)
+    # 创建并启动播放音频的线程
+    audio_thread = threading.Thread(target=_autoplay_audio, args=(audio_bytes,))
+    audio_thread.start()
+    # 创建并启动显示文本的线程
+    text_thread = threading.Thread(
+        target=_display_assessment_words,
+        args=(
+            elem,
+            words,
+        ),
+    )
+    text_thread.start()
+
+    # 等待两个线程都完成
+    audio_thread.join()
+    text_thread.join()
+
     time.sleep(1)
     st.rerun()
 
