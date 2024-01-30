@@ -225,10 +225,10 @@ def display_assessment_text(pa_text_container):
 # region 口语能力函数
 
 
-def delete_recorded_audio(audio_obj, audio_key):
-    st.session_state[audio_key] = None
-    if audio_obj:
-        audio_obj.clear()  # 删除所有元素
+# def delete_recorded_audio(audio_obj, audio_key):
+#     st.session_state[audio_key] = None
+#     if audio_obj:
+#         audio_obj.clear()  # 删除所有元素
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语讨论话题清单，请稍候...")
@@ -578,7 +578,8 @@ if menu and menu.endswith("口语能力"):
 
     if oa_del_btn:
         # 删除录制的音频
-        delete_recorded_audio(oa_audio_info, audio_session_output_key)
+        oa_audio_info = None
+        st.session_state[audio_session_output_key] = None
         st.rerun()
 
     # 临时测试
