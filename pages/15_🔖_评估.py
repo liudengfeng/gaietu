@@ -632,9 +632,11 @@ if menu and menu.endswith("口语能力"):
     if audio_playback_button and st.session_state["oa-assessment"]:
         if not st.session_state[audio_session_output_key]:
             st.error("请先录制音频或上传音频文件。")
+            st.stop()
 
         if not st.session_state["oa-assessment"]:
             st.error("请先进行发音评估。")
+            st.stop()
 
         oa_audio_info = st.session_state[audio_session_output_key]
         autoplay_audio_and_display_text(
