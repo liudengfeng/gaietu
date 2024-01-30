@@ -523,7 +523,7 @@ if menu and menu.endswith("口语能力"):
         "样本[:page_facing_up:]",
         key="oa-sample",
         help="✨ 点击按钮，让AI为您生成话题讨论示例。",
-        disabled=not st.session_state["oa-topic-options"],
+        disabled=not st.session_state["oa-topic-options"] or oa_topic is None,
     )
     synthetic_audio_replay_button = oa_btn_cols[5].button(
         "收听[:headphones:]",
@@ -531,7 +531,7 @@ if menu and menu.endswith("口语能力"):
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
         disabled=st.session_state["oa-sample-text"] == "",
     )
-    
+
     tab0_col1, tab0_col2 = st.columns(2)
     audio_media_file = tab0_col1.file_uploader(
         "上传录制的音频【点击`Browse files`按钮，从本地上传文件】",
@@ -540,7 +540,7 @@ if menu and menu.endswith("口语能力"):
         type=["mp3", "wav"],
         help="""时长超过 15 秒，文字篇幅在 50 个字词(推荐)和 3 个句子以上。""",
     )
-    
+
     content_cols = st.columns([16, 2])
     oa_words_container = content_cols[0].container(border=True)
     oa_legend_container = content_cols[1].container(border=True)
