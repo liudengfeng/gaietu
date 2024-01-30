@@ -508,7 +508,8 @@ if menu and menu.endswith("口语能力"):
     )
 
     audio_key = "oa-mic-recorder"
-    audio_session_output_key = f"{audio_key}-output"
+    # 此处是下划线
+    audio_session_output_key = f"{audio_key}_output"
     with oa_btn_cols[1]:
         mic_recorder(
             start_prompt="录音[⏸️]",
@@ -627,7 +628,7 @@ if menu and menu.endswith("口语能力"):
             st.error("请先录制音频或上传音频文件。")
         if not st.session_state["pa-assessment"]:
             st.error("请先进行发音评估。")
-        
+
         oa_audio_info = st.session_state[audio_session_output_key]
         autoplay_audio_and_display_text(
             replay_text_placeholder,
