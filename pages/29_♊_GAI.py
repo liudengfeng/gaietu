@@ -72,17 +72,6 @@ if "multimodal_examples" not in st.session_state:
 # region 聊天机器人辅助函数
 
 
-# def initialize_chat_session():
-#     model_name = "gemini-pro"
-#     model = load_vertex_model(model_name)
-#     history = []
-#     for user, ai in st.session_state["examples_pair"]:
-#         history.append({"role": "user", "parts": [user]})
-#         history.append({"role": "model", "parts": [ai]})
-#     st.session_state["chat_session"] = model.start_chat(history=history)
-#     st.session_state["chat_model"] = model
-
-
 def initialize_chat():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
@@ -91,7 +80,6 @@ def initialize_chat():
         history.append({"role": "user", "parts": [user]})
         history.append({"role": "model", "parts": [ai]})
     st.session_state["chat"] = model.start_chat(history=history)
-
 
 
 def add_chat_pairs():
@@ -180,6 +168,14 @@ def clear_prompt(key):
 # endregion
 
 # region 主页
+
+
+# TODO:临时
+def count_tokens(model_name, contents):
+    model = load_vertex_model(model_name)
+    token_count = model.count_tokens(contents)
+    logger.info(f"令牌：{token_count}")
+
 
 menu = st.sidebar.selectbox("菜单", options=["聊天机器人", "多模态AI", "示例教程"])
 st.sidebar.divider()
@@ -283,7 +279,9 @@ if menu == "聊天机器人":
     )
 
     if sidebar_col4.button(
-        ":arrows_counterclockwise:", key="reset_btn", help="✨ 重新设置上下文、示例，开始新的对话"
+        ":arrows_counterclockwise:",
+        key="reset_btn",
+        help="✨ 重新设置上下文、示例，开始新的对话",
     ):
         st.session_state["examples_pair"] = []
         initialize_chat()
@@ -300,6 +298,10 @@ if menu == "聊天机器人":
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
+    # TODO
+    logger.info(
+        f"令牌：{st.session_state.current_token_count} 累计：{st.session_state.total_token_count}"
+    )
     # endregion
 
     # region 认证及强制退出
@@ -307,7 +309,7 @@ if menu == "聊天机器人":
     check_and_force_logout(sidebar_status)
 
     # endregion
-    
+
     # region 主页面
     st.subheader(":robot_face: Gemini 聊天机器人")
     if "chat" not in st.session_state:
@@ -333,6 +335,7 @@ if menu == "聊天机器人":
         config = GenerationConfig(**config)
         with st.chat_message("assistant", avatar=AVATAR_MAPS["model"]):
             message_placeholder = st.empty()
+            # logger.info()
             display_generated_content_and_update_token(
                 "聊天机器人",
                 "gemini-pro",
@@ -342,7 +345,8 @@ if menu == "聊天机器人":
                 stream=True,
                 placeholder=message_placeholder,
             )
-    
+            count_tokens("gemini-pro", [Part.from_text(prompt)])
+
     # endregion
 
 # endregion
@@ -420,7 +424,9 @@ elif menu == "多模态AI":
     # endregion
 
     st.header(":rocket: :rainbow[通用多模态AI]", divider="rainbow", anchor=False)
-    st.markdown("""您可以向`Gemini`模型发送多模态提示信息。支持的模态包括文字、图片和视频。""")
+    st.markdown(
+        """您可以向`Gemini`模型发送多模态提示信息。支持的模态包括文字、图片和视频。"""
+    )
 
     items_emoji = ["1️⃣", "2️⃣"]
     items = ["背景指示", "运行模型"]
@@ -428,7 +434,9 @@ elif menu == "多模态AI":
     tabs = st.tabs(tab_items)
 
     with tabs[0]:
-        st.subheader(":clipboard: :blue[示例或背景（可选）]", divider="rainbow", anchor=False)
+        st.subheader(
+            ":clipboard: :blue[示例或背景（可选）]", divider="rainbow", anchor=False
+        )
         st.markdown(
             "输入案例可丰富模型响应内容。`Gemini`模型可以接受多个输入，以用作示例来了解您想要的输出。添加这些样本有助于模型识别模式，并将指定图片和响应之间的关系应用于新样本。这也称为少量样本学习。"
         )
@@ -624,8 +632,12 @@ elif menu == "示例教程":
         st.subheader(":blue[生成一个故事]", anchor=False)
 
         # Story premise
-        character_name = st.text_input("输入角色名称：", key="character_name", value="七七")
-        character_type = st.text_input("它是什么类型的角色？ ", key="character_type", value="狗")
+        character_name = st.text_input(
+            "输入角色名称：", key="character_name", value="七七"
+        )
+        character_type = st.text_input(
+            "它是什么类型的角色？ ", key="character_type", value="狗"
+        )
         character_persona = st.text_input(
             "这个角色有什么性格？",
             key="character_persona",
@@ -682,7 +694,9 @@ elif menu == "示例教程":
         if generate_t2t and prompt:
             # st.write(prompt)
             with st.spinner("使用 Gemini 生成您的故事..."):
-                first_tab1, first_tab2, first_tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
+                first_tab1, first_tab2, first_tab3 = st.tabs(
+                    ["模型响应", "提示词", "参数设置"]
+                )
                 with first_tab1:
                     placeholder = st.empty()
                     display_generated_content_and_update_token(
@@ -704,7 +718,9 @@ elif menu == "示例教程":
         st.write("使用 Gemini Pro - 仅有文本模型")
         st.subheader("生成您的营销活动")
 
-        product_name = st.text_input("产品名称是什么？", key="product_name", value="ZomZoo")
+        product_name = st.text_input(
+            "产品名称是什么？", key="product_name", value="ZomZoo"
+        )
         product_category = st.radio(
             "选择您的产品类别：",
             ["服装", "电子产品", "食品", "健康与美容", "家居与园艺"],
@@ -789,7 +805,9 @@ elif menu == "示例教程":
         }
         generate_t2t = st.button("生成我的活动", key="generate_campaign")
         if generate_t2t and prompt:
-            second_tab1, second_tab2, second_tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
+            second_tab1, second_tab2, second_tab3 = st.tabs(
+                ["模型响应", "提示词", "参数设置"]
+            )
             with st.spinner("使用 Gemini 生成您的营销活动..."):
                 with second_tab1:
                     placeholder = st.empty()
@@ -920,7 +938,9 @@ elif menu == "示例教程":
                 "https://storage.googleapis.com/" + stove_screen_uri.split("gs://")[1]
             )
 
-            st.write("Gemini 能够从屏幕上的视觉元素中提取信息，可以分析屏幕截图、图标和布局，以全面了解所描绘的场景。")
+            st.write(
+                "Gemini 能够从屏幕上的视觉元素中提取信息，可以分析屏幕截图、图标和布局，以全面了解所描绘的场景。"
+            )
             # cooking_what = st.radio("What are you cooking?",["Turkey","Pizza","Cake","Bread"],key="cooking_what",horizontal=True)
             stove_screen_img = Part.from_uri(stove_screen_uri, mime_type="image/jpeg")
             st.image(stove_screen_url, width=350, caption="烤箱的图像")
@@ -1040,7 +1060,9 @@ elif menu == "示例教程":
             """,
             ]
             tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
-            compare_img_description = st.button("生成推荐", key="compare_img_description")
+            compare_img_description = st.button(
+                "生成推荐", key="compare_img_description"
+            )
             with tab1:
                 if compare_img_description and content:
                     placeholder = st.empty()
@@ -1070,7 +1092,9 @@ elif menu == "示例教程":
             math_image_url = (
                 "https://storage.googleapis.com/" + math_image_uri.split("gs://")[1]
             )
-            st.write("Gemini 还可以识别数学公式和方程，并从中提取特定信息。 此功能对于生成数学问题的解释特别有用，如下所示。")
+            st.write(
+                "Gemini 还可以识别数学公式和方程，并从中提取特定信息。 此功能对于生成数学问题的解释特别有用，如下所示。"
+            )
             math_image_img = Part.from_uri(math_image_uri, mime_type="image/jpeg")
             st.image(math_image_url, width=350, caption="Image of a math equation")
             st.markdown(
@@ -1137,7 +1161,9 @@ elif menu == "示例教程":
 - 世界上还有哪些像这样的前 5 个地方？
                 """
                 tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
-                vide_desc_description = st.button("生成视频描述", key="vide_desc_description")
+                vide_desc_description = st.button(
+                    "生成视频描述", key="vide_desc_description"
+                )
                 with tab1:
                     if vide_desc_description and prompt:
                         placeholder = st.empty()
@@ -1177,7 +1203,9 @@ elif menu == "示例教程":
 以表格形式给出答案，问题和答案作为列。
                 """
                 tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
-                video_tags_description = st.button("生成标签", key="video_tags_description")
+                video_tags_description = st.button(
+                    "生成标签", key="video_tags_description"
+                )
                 with tab1:
                     if video_tags_description and prompt:
                         placeholder = st.empty()
@@ -1200,7 +1228,9 @@ elif menu == "示例教程":
                     st.write("默认参数")
 
         with video_highlights:
-            st.markdown("""下面是使用 Gemini 询问有关物体、人或上下文的问题的另一个示例，如下面有关 Pixel 8 的视频所示：""")
+            st.markdown(
+                """下面是使用 Gemini 询问有关物体、人或上下文的问题的另一个示例，如下面有关 Pixel 8 的视频所示："""
+            )
             video_highlights_uri = (
                 "gs://github-repo/img/gemini/multimodality_usecases_overview/pixel8.mp4"
             )
@@ -1542,7 +1572,9 @@ for tomorrow based on image 3.
             cols_7[1].text("-135")
             cols_7[0].text("序列中的第 4 项是什么？")
 
-            st.markdown("""模型的响应不正确。改进此问题的一些方法是，先让模型解析问题，然后再回答提示。""")
+            st.markdown(
+                """模型的响应不正确。改进此问题的一些方法是，先让模型解析问题，然后再回答提示。"""
+            )
             st.divider()
             cols_8 = st.columns(2)
             cols_8[0].markdown(":blue[更新后的提示]")
@@ -1600,7 +1632,9 @@ $$ b(4) = -405 $$
 然后，根据公式回答“数列中的第 4 个项是什么？”。"""
             )
 
-            st.markdown("""此模型回答是正确的 - 现在，为了简化回答，你可以要求模型逐步思考。""")
+            st.markdown(
+                """此模型回答是正确的 - 现在，为了简化回答，你可以要求模型逐步思考。"""
+            )
             st.divider()
             cols_9 = st.columns(2)
             cols_9[0].markdown(":blue[更新后的提示]")
@@ -1790,7 +1824,9 @@ $$ b(4) = -405 $$
                 PImage.open(IMAGE_DIR / "ocean.jpg"),
                 use_column_width=True,
             )
-            cols_14[0].markdown("""首先，请详细描述每张图片中的内容。这些图片有什么共同之处？""")
+            cols_14[0].markdown(
+                """首先，请详细描述每张图片中的内容。这些图片有什么共同之处？"""
+            )
             cols_14[1].markdown(
                 """
 第一张图片展示了一个人打包行李。第二张图片展示了购物中心内一个空旷的走廊。第三张图片展示了一卷卫生纸。第四张图片展示了暴风雨中的黑暗海浪。
@@ -1829,7 +1865,9 @@ $$ b(4) = -405 $$
                 PImage.open(IMAGE_DIR / "ocean.jpg"),
                 use_column_width=True,
             )
-            cols_15[0].markdown("""这些图片有什么共同之处？请参阅回复中图片中的内容。""")
+            cols_15[0].markdown(
+                """这些图片有什么共同之处？请参阅回复中图片中的内容。"""
+            )
             cols_15[1].markdown(
                 """
 所有图片都与旅行相关。第一张图片展示一个人打包行李箱，第二张图片显示购物中心里空旷的走廊，第三张图片显示一叠厕纸，第四张图片显示的是暴风雨中的海浪。
@@ -1931,7 +1969,9 @@ $$ b(4) = -405 $$
 谎言世界在等着您创作。
         """
             )
-            cols_17[0].text("你能为我写一首关于这张图片的描述性和戏剧性诗歌，并添加地点吗？")
+            cols_17[0].text(
+                "你能为我写一首关于这张图片的描述性和戏剧性诗歌，并添加地点吗？"
+            )
 
             st.divider()
 
@@ -1966,7 +2006,9 @@ $$ b(4) = -405 $$
 
             st.divider()
 
-            st.markdown("""另一种策略是让模型解释其推理。这有助于你缩小原因的哪一部分（如果有的话）。""")
+            st.markdown(
+                """另一种策略是让模型解释其推理。这有助于你缩小原因的哪一部分（如果有的话）。"""
+            )
 
             cols_19 = st.columns(2)
             cols_19[0].markdown("**提示**")

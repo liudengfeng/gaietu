@@ -37,6 +37,44 @@ QUESTION_TYPE_GUIDELINES = {
     "reading_comprehension_fill_in_the_blank": READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
 }
 
+# model.count_tokens(contents) -> total_tokens total_billable_characters
+
+
+def get_length_in_bytes(prompt):
+    prompt_without_spaces = prompt.replace(" ", "")
+    byte_string = prompt_without_spaces.encode("utf-8")
+    return len(byte_string)
+
+
+def calculate_gemini_pro_cost(
+    image_count, video_seconds, input_characters, output_characters
+):
+    image_cost = 0.0025 * image_count
+    video_cost = 0.002 * video_seconds
+    input_text_cost = 0.00025 * (input_characters / 1000)
+    output_text_cost = 0.0005 * (output_characters / 1000)
+
+    total_cost = image_cost + video_cost + input_text_cost + output_text_cost
+    # 暂时按照8倍计算
+    return total_cost * 8.0
+
+
+def calculate_input_cost_from_parts(parts: List[Part]):
+    image_count = 0
+    video_seconds = 0
+    input_characters = 0
+
+    for part in parts:
+        if part.mime_type.startswith("image"):
+            image_count += 1
+        elif part.mime_type.startswith("video"):
+            # 这里假设你有一个函数可以获取视频的时长
+            video_seconds += get_video_duration(part)
+        elif part.mime_type.startswith("text"):
+            input_characters += get_length_in_bytes(part.text)
+
+    return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
+
 
 def parse_json_string(s, prefix="```python", suffix="```"):
     # 删除换行符
