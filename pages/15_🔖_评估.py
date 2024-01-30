@@ -510,7 +510,7 @@ if menu and menu.endswith("口语能力"):
     audio_key = "oa-mic-recorder"
     audio_session_output_key = f"{audio_key}-output"
     with oa_btn_cols[1]:
-        oa_audio_info = mic_recorder(
+        mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
             key=audio_key,
@@ -525,14 +525,14 @@ if menu and menu.endswith("口语能力"):
 
     oa_pro_btn = oa_btn_cols[3].button(
         "评估[🔖]",
-        disabled=not oa_audio_info or not oa_topic,
+        disabled=not oa_topic,
         key="oa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
 
     audio_playback_button = oa_btn_cols[4].button(
         "回放[▶️]",
-        disabled=not oa_audio_info or not oa_topic,
+        disabled=not oa_topic,
         key="oa-play-btn",
         help="✨ 点击按钮，播放您的主题讨论录音。",
     )
@@ -541,9 +541,7 @@ if menu and menu.endswith("口语能力"):
         "样本[:page_facing_up:]",
         key="oa-sample",
         help="✨ 点击按钮，让AI为您生成话题讨论示例。",
-        disabled=not st.session_state["oa-topic-options"]
-        or not oa_audio_info
-        or not oa_topic,
+        disabled=not st.session_state["oa-topic-options"] or not oa_topic,
     )
 
     synthetic_audio_replay_button = oa_btn_cols[6].button(
@@ -578,17 +576,18 @@ if menu and menu.endswith("口语能力"):
 
     if oa_del_btn:
         # 删除录制的音频
-        oa_audio_info = None
         st.session_state[audio_session_output_key] = None
         st.rerun()
 
     # 临时测试
-    if oa_audio_info:
-        st.audio(oa_audio_info["bytes"], format="audio/wav")
+    if st.session_state.get(audio_session_output_key):
+        st.audio(
+            st.session_state[audio_session_output_key]["bytes"], format="audio/wav"
+        )
 
-    if oa_pro_btn and oa_audio_info is not None or audio_media_file is not None:
-        # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
-        if oa_audio_info is not None and audio_media_file is not None:
+    if oa_pro_btn:
+        if st.session_state[audio_session_output_key] is not None and audio_media_file:
+            # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
             st.info(
                 "请注意，只能选择录制音频或上传音频文件中的一种方式进行评估。如果需要删除已经录制的音频，可以点击`删除[🗑️]`按钮。如果需要移除已上传的音频文件，可以在文件尾部点击`❌`标志。"
             )
@@ -598,7 +597,7 @@ if menu and menu.endswith("口语能力"):
         if audio_media_file is not None:
             audio = read_audio_file(audio_media_file)
         else:
-            audio = oa_audio_info
+            audio = st.session_state[audio_session_output_key]
 
         audio["audio_duration"] = calculate_audio_duration(
             audio["bytes"], audio["sample_rate"], audio["sample_width"]
@@ -623,7 +622,13 @@ if menu and menu.endswith("口语能力"):
         #     if word.get("error_type") == "Mispronunciation":
         #         tasks.append(word.word)
 
-    if audio_playback_button and oa_audio_info and st.session_state["pa-assessment"]:
+    if audio_playback_button and st.session_state["pa-assessment"]:
+        if not st.session_state[audio_session_output_key]:
+            st.error("请先录制音频或上传音频文件。")
+        if not st.session_state["pa-assessment"]:
+            st.error("请先进行发音评估。")
+        
+        oa_audio_info = st.session_state[audio_session_output_key]
         autoplay_audio_and_display_text(
             replay_text_placeholder,
             oa_audio_info["bytes"],
