@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 import time
 from collections import deque
@@ -37,7 +38,20 @@ QUESTION_TYPE_GUIDELINES = {
     "reading_comprehension_fill_in_the_blank": READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
 }
 
+logger = logging.getLogger("streamlit")
+
+
+@st.cache_resource
+def load_vertex_model(model_name):
+    return GenerativeModel(model_name)
+
+
 # model.count_tokens(contents) -> total_tokens total_billable_characters
+# TODO:临时
+def count_tokens(model_name, contents, type_="输入"):
+    model = load_vertex_model(model_name)
+    token_count = model.count_tokens(contents)
+    logger.info(f"监控{type_}令牌：{token_count}")
 
 
 def get_length_in_bytes(prompt):
@@ -60,20 +74,24 @@ def calculate_gemini_pro_cost(
 
 
 def calculate_input_cost_from_parts(parts: List[Part]):
-    image_count = 0
-    video_seconds = 0
-    input_characters = 0
-
+    # 临时观察
     for part in parts:
-        if part.mime_type.startswith("image"):
-            image_count += 1
-        elif part.mime_type.startswith("video"):
-            # 这里假设你有一个函数可以获取视频的时长
-            video_seconds += get_video_duration(part)
-        elif part.mime_type.startswith("text"):
-            input_characters += get_length_in_bytes(part.text)
+        logger.info(part.raw_part.video_metadata)
 
-    return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
+    # image_count = 0
+    # video_seconds = 0
+    # input_characters = 0
+
+    # for part in parts:
+    #     if part.mime_type.startswith("image"):
+    #         image_count += 1
+    #     elif part.mime_type.startswith("video"):
+    #         # 这里假设你有一个函数可以获取视频的时长
+    #         video_seconds += get_video_duration(part)
+    #     elif part.mime_type.startswith("text"):
+    #         input_characters += get_length_in_bytes(part.text)
+
+    # return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
 
 
 def parse_json_string(s, prefix="```python", suffix="```"):
@@ -87,11 +105,6 @@ def parse_json_string(s, prefix="```python", suffix="```"):
     d = json.loads(s)
 
     return d
-
-
-@st.cache_resource
-def load_vertex_model(model_name):
-    return GenerativeModel(model_name)
 
 
 @st.cache_resource
@@ -156,6 +169,15 @@ def display_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
+
+    # TODO
+    count_tokens(model_name, contents, "输入")
+    for c in contents:
+        if c.mime_type.startswith("text"):
+            logger.info(f"提示词长度：{get_length_in_bytes(c.text)}")
+
+    calculate_input_cost_from_parts(contents)
+
     full_response = ""
     total_tokens = 0
     # 提取生成的内容
@@ -175,7 +197,9 @@ def display_generated_content_and_update_token(
         full_response = responses.text
         total_tokens += responses._raw_response.usage_metadata.total_token_count
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
-
+    
+    count_tokens(model_name, full_response, "模型响应")
+    
     placeholder.markdown(full_response)
 
     # 添加记录到数据库

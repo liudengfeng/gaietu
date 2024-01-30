@@ -170,13 +170,6 @@ def clear_prompt(key):
 # region 主页
 
 
-# TODO:临时
-def count_tokens(model_name, contents):
-    model = load_vertex_model(model_name)
-    token_count = model.count_tokens(contents)
-    logger.info(f"令牌：{token_count}")
-
-
 menu = st.sidebar.selectbox("菜单", options=["聊天机器人", "多模态AI", "示例教程"])
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
@@ -345,7 +338,7 @@ if menu == "聊天机器人":
                 stream=True,
                 placeholder=message_placeholder,
             )
-            count_tokens("gemini-pro", [Part.from_text(prompt)])
+            # count_tokens("gemini-pro", [Part.from_text(prompt)])
 
     # endregion
 
@@ -594,7 +587,7 @@ elif menu == "多模态AI":
             col1, col2 = response_container.columns([1, 1])
             view_example(contents, col1)
             generate_content_from_files_and_prompt(contents, col2.empty())
-            count_tokens("gemini-pro-vision", [p["part"] for p in contents])
+            # count_tokens("gemini-pro-vision", [p["part"] for p in contents])
 
 # endregion
 
