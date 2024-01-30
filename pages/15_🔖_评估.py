@@ -29,6 +29,7 @@ from mypylib.st_helper import (
     get_synthesis_speech,
     # left_paragraph_aligned_text,
     on_page_to,
+    oral_ability_assessment_for,
     process_dialogue_text,
     process_learning_record,
     pronunciation_assessment_for,
@@ -218,6 +219,16 @@ def display_assessment_text(pa_text_container):
 # endregion
 
 # region 口语能力函数
+
+
+def delete_recorded_audio(audio_obj, audio_key):
+    st.session_state[audio_key] = None
+    if isinstance(audio_obj, dict):
+        audio_obj.clear()  # 删除所有元素
+    elif isinstance(audio_obj, list):
+        del audio_obj[:]  # 删除所有元素
+    else:
+        raise TypeError("audio_obj must be a dict or a list")
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语讨论话题清单，请稍候...")
@@ -505,27 +516,35 @@ if menu and menu.endswith("口语能力"):
             key=audio_key,
         )
 
-    oa_pro_btn = oa_btn_cols[2].button(
+    oa_del_btn = oa_btn_cols[2].button(
+        "删除[🗑️]",
+        disabled=not oa_audio_info,
+        key="oa-delete-btn",
+        help="✨ 点击按钮，删除已经录制的音频。",
+    )
+
+    oa_pro_btn = oa_btn_cols[3].button(
         "评估[🔖]",
         disabled=not oa_audio_info,
         key="oa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
 
-    audio_playback_button = oa_btn_cols[3].button(
+    audio_playback_button = oa_btn_cols[4].button(
         "回放[▶️]",
         disabled=not oa_audio_info,
         key="oa-play-btn",
         help="✨ 点击按钮，播放您的主题讨论录音。",
     )
 
-    sample_button = oa_btn_cols[4].button(
+    sample_button = oa_btn_cols[5].button(
         "样本[:page_facing_up:]",
         key="oa-sample",
         help="✨ 点击按钮，让AI为您生成话题讨论示例。",
         disabled=not st.session_state["oa-topic-options"] or oa_topic is None,
     )
-    synthetic_audio_replay_button = oa_btn_cols[5].button(
+
+    synthetic_audio_replay_button = oa_btn_cols[6].button(
         "收听[:headphones:]",
         key="oa-replay",
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
@@ -555,17 +574,20 @@ if menu and menu.endswith("口语能力"):
         )
         st.rerun()
 
-    # display_assessment_text(oa_text_container)
+    if oa_del_btn:
+        # 删除录制的音频
+        delete_recorded_audio(oa_audio_info, audio_session_output_key)
 
-    if oa_pro_btn and oa_audio_info is not None:
+    if oa_pro_btn and oa_audio_info is not None or audio_media_file is not None:
+        # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
+        if oa_audio_info is not None and audio_media_file is not None:
+            st.info("请注意，只能选择录制音频或上传音频文件中的一种方式进行评估。如果需要删除已经录制的音频，可以点击`删除[🗑️]`按钮。如果需要移除已上传的音频文件，可以在文件尾部点击`❌`标志。")
+            st.stop()
 
-        reference_text = process_dialogue_text(st.session_state["pa-current-text"])
-
-        st.session_state["pa-assessment"] = pronunciation_assessment_for(
+        st.session_state["oa-assessment"] = oral_ability_assessment_for(
             oa_audio_info,
-            reference_text,
+            oa_topic,
         )
-        st.session_state["pa-assessment-dict"][idx] = st.session_state["pa-assessment"]
 
         # # TODO:管理待处理任务列表
         # # 创建一个空的待处理任务列表

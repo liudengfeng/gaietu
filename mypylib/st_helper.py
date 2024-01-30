@@ -433,9 +433,11 @@ ORAL_ABILITY_SCORE_BADGE_MAPS = OrderedDict(
             "主题分数",
             "对主题的理解和参与程度，它提供有关说话人有效表达其思考和想法的能力以及参与主题的能力的见解。",
             "danger",
-        )
+        ),
     }
 )
+
+
 # 判断是否为旁白
 def is_aside(text):
     return re.match(r"^\(.*\)$", text) is not None
@@ -479,6 +481,11 @@ def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     return pronunciation_assessment_from_stream(
         audio_info, st.secrets, None, reference_text
     )
+
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行口语能力评估，请稍候...")
+def oral_ability_assessment_for(audio_info: dict, topic: str):
+    return pronunciation_assessment_from_stream(audio_info, st.secrets, topic)
 
 
 def display_pronunciation_result(container, key, maps):
