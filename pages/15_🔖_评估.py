@@ -614,7 +614,7 @@ if menu and menu.endswith("口语能力"):
         # 判断时长是否超过 15 秒
         if audio["audio_duration"] < 15:
             st.error(
-                "录制的音频时长不能少于 15 秒。您的音频时长为：{audio['audio_duration']} 秒。"
+                f"录制的音频时长不能少于 15 秒。您的音频时长为：{audio['audio_duration']:.2f} 秒。"
             )
             st.stop()
 
