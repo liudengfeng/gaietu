@@ -520,10 +520,11 @@ def generate_pronunciation_assessment_text(model, ability, level):
 
 
 ORAL_ABILITY_TEMPLATE = """
-Please generate {number} discussion topics according to the following requirements:
+As an English oral ability examiner, provide 5 topics for students to choose from to assess whether they meet the following ability requirements:
 - Level: CEFR {level}.
 - Ability Requirements: {ability}.
-- Word count: The topic should be within 100 words.
+- Word count: Each topic should be within 30 words.
+- Each topic should not exceed three questions.
 - No need for detailed descriptions.
 - Language: Please use English, do not use Simplified Chinese.
 - Vocabulary: The vocabulary used must match the ability.
