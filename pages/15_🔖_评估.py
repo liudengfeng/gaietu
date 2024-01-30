@@ -167,6 +167,15 @@ def display_pronunciation_assessment_words(container, text_key, assessment_key):
         view_word_assessment(adjusted)
 
 
+def display_oral_pronunciation_assessment_results(container, assessment_key):
+    container.markdown("##### 评估结果")
+    words = st.session_state[assessment_key].get("recognized_words", [])
+    if len(words) == 0:
+        return
+    with container:
+        view_word_assessment(words)
+
+
 def view_radar(score_dict, item_maps):
     # 雷达图
     data_tb = {
@@ -646,10 +655,9 @@ if menu and menu.endswith("口语能力"):
         "content_result",
     )
 
-    display_pronunciation_assessment_words(
+    display_oral_pronunciation_assessment_results(
         oa_words_container,
-        "pa-current-text",
-        "pa-assessment-dict",
+        "oa-assessment",
     )
 
     with st.expander("查看口语能力评估雷达图", expanded=False):
