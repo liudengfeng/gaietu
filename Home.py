@@ -29,6 +29,12 @@ setup_logger(logger)
 CURRENT_CWD: Path = Path(__file__).parent
 LOGO_DIR: Path = CURRENT_CWD / "resource/logo"
 
+st.set_page_config(
+    page_title="主页",
+    page_icon="🏠",
+    layout="wide",
+)
+
 st.markdown(
     """
     <script type="text/javascript">
@@ -42,11 +48,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.set_page_config(
-    page_title="主页",
-    page_icon="🏠",
-    layout="wide",
-)
 
 on_page_to("Home")
 # save_and_clear_all_learning_records()
