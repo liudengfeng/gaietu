@@ -524,10 +524,11 @@ As an English oral ability examiner, provide 5 topics for students to choose fro
 - Level: CEFR {level}.
 - Ability Requirements: {ability}.
 - Word count: Each topic should be within 30 words.
+- Each topic should be a complete sentence, not a list of questions.
 - Each topic should not exceed three questions.
 - No need for detailed descriptions.
 - Language: Please use English, do not use Simplified Chinese.
-- Vocabulary: The vocabulary used must match the ability.
+- Vocabulary: The vocabulary used in each topic must match the ability level of the students.
 """
 
 
