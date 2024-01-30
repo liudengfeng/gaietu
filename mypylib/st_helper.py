@@ -344,7 +344,7 @@ def autoplay_audio_and_display_text(
         elem.markdown(accumulated_text + "▌")
         time.sleep(duration)
         while time.perf_counter() - start_time < offset:
-            time.sleep(0.0001)
+            time.sleep(0.01)
     elem.markdown(accumulated_text)
     # time.sleep(1)
     # st.rerun()
