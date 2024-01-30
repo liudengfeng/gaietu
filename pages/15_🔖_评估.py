@@ -578,13 +578,7 @@ if menu and menu.endswith("口语能力"):
     if oa_del_btn:
         # 删除录制的音频
         del st.session_state[audio_session_output_key]
-        st.stop()
-
-    # 临时测试
-    if st.session_state.get(audio_session_output_key):
-        st.audio(
-            st.session_state[audio_session_output_key]["bytes"], format="audio/wav"
-        )
+        st.rerun()
 
     if oa_pro_btn:
         if st.session_state[audio_session_output_key] is not None and audio_media_file:
