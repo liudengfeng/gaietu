@@ -346,6 +346,7 @@ def autoplay_audio_and_display_text(
         offset,
         _,
     ) in get_syllable_durations_and_offsets(words):
+        logger.info(f"{accumulated_text=} {duration=} {offset=}")
         # 更新文本
         elem.markdown(accumulated_text + "▌")
         # 暂停一会儿，以便我们可以看到文本的动态更新
