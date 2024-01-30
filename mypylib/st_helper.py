@@ -344,15 +344,15 @@ def autoplay_audio_and_display_text(
         get_syllable_durations_and_offsets(words)
     ):
         elem.markdown(accumulated_text + "▌")
-        # while time.perf_counter() - start_time < offset:
-        #     time.sleep(0.001)
+        while time.perf_counter() - start_time < offset:
+            time.sleep(0.001)
         # time.sleep(duration)
         
         # logger.info(f"{accumulated_text[-10:]} {duration} {offset}")
-        if i == 0:
-            time.sleep(offset)
-        else:
-            time.sleep(duration)
+        # if i == 0:
+        #     time.sleep(offset)
+        # else:
+        #     time.sleep(duration)
     elem.markdown(accumulated_text)
 
     # time.sleep(1)
