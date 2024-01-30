@@ -339,7 +339,7 @@ def autoplay_audio_and_display_text(
     components.html(auto_html)
 
     start_time = time.perf_counter()
-    for i, accumulated_text, duration, offset, _ in enumerate(
+    for i, (accumulated_text, duration, offset, _) in enumerate(
         get_syllable_durations_and_offsets(words)
     ):
         # while time.perf_counter() - start_time < offset:
