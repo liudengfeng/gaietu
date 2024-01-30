@@ -694,8 +694,8 @@ if menu and menu.endswith("口语能力"):
             "prosody_score": "韵律分数",
         }
         with radar_cols[0]:
-            st.markdown("当前段落的发音评估结果")
-            view_radar(st.session_state["pa-assessment"], item_maps)
+            st.markdown("口语能力")
+            view_radar(st.session_state["oa-assessment"], item_maps)
 
         # 开始至当前的平均值
         with radar_cols[1]:
