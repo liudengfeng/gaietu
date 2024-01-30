@@ -531,7 +531,16 @@ if menu and menu.endswith("口语能力"):
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
         disabled=st.session_state["oa-sample-text"] == "",
     )
-
+    
+    tab0_col1, tab0_col2 = st.columns(2)
+    audio_media_file = tab0_col1.file_uploader(
+        "上传录制的音频【点击`Browse files`按钮，从本地上传文件】",
+        accept_multiple_files=False,
+        key="oa_media_file_key",
+        type=["mp3", "wav"],
+        help="""时长超过 15 秒，文字篇幅在 50 个字词(推荐)和 3 个句子以上。""",
+    )
+    
     content_cols = st.columns([16, 2])
     oa_words_container = content_cols[0].container(border=True)
     oa_legend_container = content_cols[1].container(border=True)
@@ -583,9 +592,7 @@ if menu and menu.endswith("口语能力"):
         )
 
     display_pronunciation_result(
-        oa_report_container,
-        "oa-assessment",
-        ORAL_ABILITY_SCORE_BADGE_MAPS
+        oa_report_container, "oa-assessment", ORAL_ABILITY_SCORE_BADGE_MAPS
     )
 
     display_pronunciation_assessment_words(
