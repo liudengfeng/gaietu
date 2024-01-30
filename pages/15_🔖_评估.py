@@ -590,6 +590,9 @@ if menu and menu.endswith("口语能力"):
         st.rerun()
 
     if oa_pro_btn:
+        if not st.session_state[audio_session_output_key] and not audio_media_file:
+            st.error("请先录制音频或上传音频文件。")
+            st.stop()
         if st.session_state[audio_session_output_key] is not None and audio_media_file:
             # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
             st.info(
@@ -610,7 +613,9 @@ if menu and menu.endswith("口语能力"):
 
         # 判断时长是否超过 15 秒
         if audio["audio_duration"] < 15:
-            st.error("录制的音频时长不能少于 15 秒。您的音频时长为：{audio['audio_duration']} 秒。")
+            st.error(
+                "录制的音频时长不能少于 15 秒。您的音频时长为：{audio['audio_duration']} 秒。"
+            )
             st.stop()
 
         st.session_state["oa-assessment"] = oral_ability_assessment_for(
