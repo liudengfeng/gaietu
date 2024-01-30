@@ -109,6 +109,11 @@ if "oa-topic-options" not in st.session_state:
 # region 函数
 
 
+def on_scenario_category_changed():
+    # 类别更改后，清空话题选项
+    st.session_state["oa-topic-options"] = []
+
+
 def on_prev_btn_click(key):
     st.session_state[key] -= 1
 
@@ -465,14 +470,15 @@ if menu and menu.endswith("口语能力"):
         "选择场景类别",
         CEFR_LEVEL_TOPIC[difficulty],
         index=0,
-        key="scenario_category",
+        key="scenario-category",
         placeholder="请选择场景类别",
+        on_change=on_scenario_category_changed,
     )
 
     oa_topic = st.selectbox(
         "选择讨论话题",
         st.session_state["oa-topic-options"],
-        index=0,
+        # index=0,
         key="oa-topic",
         placeholder="请选择讨论话题",
     )
