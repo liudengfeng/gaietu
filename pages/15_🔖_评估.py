@@ -529,14 +529,14 @@ if menu and menu.endswith("口语能力"):
 
     oa_pro_btn = oa_btn_cols[3].button(
         "评估[🔖]",
-        disabled=not oa_audio_info,
+        disabled=not oa_audio_info or not oa_topic,
         key="oa-evaluation-btn",
         help="✨ 点击按钮，开始发音评估。",
     )
 
     audio_playback_button = oa_btn_cols[4].button(
         "回放[▶️]",
-        disabled=not oa_audio_info,
+        disabled=not oa_audio_info or not oa_topic,
         key="oa-play-btn",
         help="✨ 点击按钮，播放您的主题讨论录音。",
     )
@@ -545,7 +545,7 @@ if menu and menu.endswith("口语能力"):
         "样本[:page_facing_up:]",
         key="oa-sample",
         help="✨ 点击按钮，让AI为您生成话题讨论示例。",
-        disabled=not st.session_state["oa-topic-options"] or oa_topic is None,
+        disabled=not st.session_state["oa-topic-options"] or not oa_audio_info or not oa_topic,
     )
 
     synthetic_audio_replay_button = oa_btn_cols[6].button(
