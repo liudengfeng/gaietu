@@ -412,7 +412,7 @@ ORAL_ABILITY_SCORE_BADGE_MAPS = OrderedDict(
     {
         "content_score": (
             "green",
-            "口语能力总评分",
+            "口语能力",
             "表示学生口语能力的总体分数。由词汇得分、语法得分和主题得分的简单平均得出。"
             "success",
         ),
