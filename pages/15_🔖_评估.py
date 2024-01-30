@@ -226,13 +226,9 @@ def display_assessment_text(pa_text_container):
 
 
 def delete_recorded_audio(audio_obj, audio_key):
-    st.session_state[audio_key] = None
-    if isinstance(audio_obj, dict):
+    del st.session_state[audio_key]
+    if audio_obj:
         audio_obj.clear()  # 删除所有元素
-    elif isinstance(audio_obj, list):
-        del audio_obj[:]  # 删除所有元素
-    else:
-        raise TypeError("audio_obj must be a dict or a list")
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语讨论话题清单，请稍候...")
