@@ -589,11 +589,11 @@ if menu and menu.endswith("口语能力"):
 
     if oa_pro_btn:
         if not st.session_state[audio_session_output_key] and not audio_media_file:
-            st.error("请先录制音频或上传音频文件。")
+            status_placeholder.error("请先录制音频或上传音频文件。")
             st.stop()
         if st.session_state[audio_session_output_key] is not None and audio_media_file:
             # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
-            st.info(
+            status_placeholder.error(
                 "请注意，只能选择录制音频或上传音频文件中的一种方式进行评估。如果需要删除已经录制的音频，可以点击`删除[🗑️]`按钮。如果需要移除已上传的音频文件，可以在文件尾部点击`❌`标志。"
             )
             st.stop()
