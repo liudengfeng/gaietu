@@ -334,10 +334,8 @@ def autoplay_audio_and_display_text(
     Returns:
         None
     """
-    start_time = time.perf_counter()
     auto_html = audio_autoplay_elem(audio_bytes, fmt="wav")
     components.html(auto_html)
-    logger.info(f"音频播放时间：{time.perf_counter() - start_time}")
 
     start_time = time.perf_counter()
     for i, (accumulated_text, duration, offset, _) in enumerate(
@@ -346,15 +344,8 @@ def autoplay_audio_and_display_text(
         elem.markdown(accumulated_text + "▌")
         time.sleep(duration)
         while time.perf_counter() - start_time < offset:
-            time.sleep(0.001)
-        
-        # logger.info(f"{accumulated_text[-10:]} {duration} {offset}")
-        # if i == 0:
-        #     time.sleep(offset)
-        # else:
-        #     time.sleep(duration)
+            time.sleep(0.0001)
     elem.markdown(accumulated_text)
-
     # time.sleep(1)
     # st.rerun()
 
