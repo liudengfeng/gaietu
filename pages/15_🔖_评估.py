@@ -582,7 +582,11 @@ if menu and menu.endswith("口语能力"):
         # 删除录制的音频
         delete_recorded_audio(oa_audio_info, audio_session_output_key)
         st.rerun()
-
+    
+    # 临时测试
+    if oa_audio_info:
+        st.audio(oa_audio_info["bytes"], format="audio/wav")
+    
     if oa_pro_btn and oa_audio_info is not None or audio_media_file is not None:
         # 首先检查是否上传了音频文件同时录制了音频，如果是，则提示用户只能选择一种方式
         if oa_audio_info is not None and audio_media_file is not None:
