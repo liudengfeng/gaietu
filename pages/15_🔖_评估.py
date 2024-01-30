@@ -516,11 +516,9 @@ if menu and menu.endswith("口语能力"):
         help="点击按钮，生成讨论主题清单。",
     )
 
-    audio_key = "oa-mic-recorder"
-    # 此处是下划线
-    audio_session_output_key = f"{audio_key}_output"
+    audio_session_output_key = "oa-audio"
     with oa_btn_cols[1]:
-        mic_recorder(
+        st.session_state[audio_session_output_key] = mic_recorder(
             start_prompt="录音[⏸️]",
             stop_prompt="停止[🔴]",
             key=audio_key,
