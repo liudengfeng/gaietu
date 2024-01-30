@@ -316,7 +316,7 @@ if menu and menu.endswith("发音评估"):
         or st.session_state["pa-idx"] == -1,
     )
     audio_key = "pa-mic-recorder"
-    audio_session_output_key = f"{audio_key}-output"
+    audio_session_output_key = f"{audio_key}_output"
     with pa_cols[4]:
         audio_info = mic_recorder(
             start_prompt="录音[⏸️]",

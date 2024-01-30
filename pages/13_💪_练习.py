@@ -916,7 +916,7 @@ if menu is not None and menu.endswith("听说练习"):
         )
 
         audio_key = "listening-mic-recorder"
-        audio_session_output_key = f"{audio_key}-output"
+        audio_session_output_key = f"{audio_key}_output"
 
         with ls_btn_cols[6]:
             audio_info = mic_recorder(
