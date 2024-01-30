@@ -556,7 +556,7 @@ if menu and menu.endswith("口语能力"):
     sample_button = oa_btn_cols[5].button(
         "样本[:page_facing_up:]",
         key="oa-sample",
-        help="✨ 点击按钮，让AI为您生成话题讨论示例。",
+        help="✨ 点击按钮，让AI为您生成口语陈述样板。",
         disabled=not st.session_state["oa-topic-options"] or not oa_topic,
     )
 
