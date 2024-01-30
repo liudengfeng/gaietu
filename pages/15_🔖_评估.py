@@ -586,7 +586,7 @@ if menu and menu.endswith("口语能力"):
 
     if oa_del_btn:
         # 删除录制的音频
-        del st.session_state[audio_session_output_key]
+        st.session_state[audio_session_output_key] = None
         st.rerun()
 
     if oa_pro_btn:
@@ -635,7 +635,7 @@ if menu and menu.endswith("口语能力"):
     if audio_playback_button and st.session_state["oa-assessment"]:
         if not st.session_state[audio_session_output_key]:
             st.error("请先录制音频或上传音频文件。")
-        
+
         if not st.session_state["oa-assessment"]:
             st.error("请先进行发音评估。")
 
