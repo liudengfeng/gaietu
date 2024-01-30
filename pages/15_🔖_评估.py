@@ -518,7 +518,7 @@ if menu and menu.endswith("口语能力"):
 
     oa_del_btn = oa_btn_cols[2].button(
         "删除[🗑️]",
-        disabled=not oa_audio_info,
+        # disabled=not oa_audio_info,
         key="oa-delete-btn",
         help="✨ 点击按钮，删除已经录制的音频。",
     )
