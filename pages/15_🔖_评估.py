@@ -691,6 +691,7 @@ if menu and menu.endswith("口语能力"):
     
     if example_button:
         audio = read_audio_file(ORAL_FP)
+        st.session_state[audio_session_output_key] = audio
         st.session_state["oa-assessment"] = oral_ability_assessment_for(
             audio,
             "Describe someone you met recently and would like to know more",
