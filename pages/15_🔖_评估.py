@@ -460,9 +460,8 @@ if menu and menu.endswith("口语能力"):
     st.markdown(
         "在选择了 CEFR 等级和评估的场景类别之后，点击 '刷新[🔄]' 按钮，生成讨论话题清单。然后，选择话题清单，点击 '录音[⏸️]'或 '上传' 按钮，录制或上传关于此主题的讨论。准备就绪后，，点击 '评估[🔖]' 按钮，系统将对你的口语能力进行评估，并生成评估报告。"
     )
-    oa_selectbox_cols = st.columns(2)
 
-    scenario_category = oa_selectbox_cols[0].selectbox(
+    scenario_category = st.selectbox(
         "选择场景类别",
         CEFR_LEVEL_TOPIC[difficulty],
         index=0,
@@ -470,7 +469,7 @@ if menu and menu.endswith("口语能力"):
         placeholder="请选择场景类别",
     )
 
-    oa_topic = oa_selectbox_cols[1].selectbox(
+    oa_topic = st.selectbox(
         "选择讨论话题",
         st.session_state["oa-topic-options"],
         index=0,
