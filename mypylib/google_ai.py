@@ -238,7 +238,7 @@ def select_best_images_for_word(model_name, model, word, images: List[Part]):
         contents,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```python", "").replace("```", "")),
+        parser=lambda x: parse_json_string(x),
     )
 
 
