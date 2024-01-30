@@ -594,6 +594,7 @@ elif menu == "多模态AI":
             col1, col2 = response_container.columns([1, 1])
             view_example(contents, col1)
             generate_content_from_files_and_prompt(contents, col2.empty())
+            count_tokens("gemini-pro-vision", contents)
 
 # endregion
 
