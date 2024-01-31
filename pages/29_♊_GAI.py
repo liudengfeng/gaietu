@@ -218,7 +218,7 @@ if menu == "聊天机器人":
 :gemini: 模型：Gemini Pro            
     """
     )
-
+    st.sidebar.divider()
     st.sidebar.slider(
         "词元限制",
         key="max_output_tokens-chatbot",
@@ -382,13 +382,13 @@ if menu == "聊天机器人":
 
 elif menu == "多模态AI":
     # region 边栏
-    sidebar_cols = st.sidebar.columns(2)
     st.sidebar.markdown(
         """:rainbow[运行设置]\n
 :gemini: 模型：gemini-pro-vision            
     """
     )
-    sidebar_cols[0].slider(
+    st.sidebar.divider()
+    st.sidebar.slider(
         "词元限制",
         key="max_output_tokens",
         min_value=16,
@@ -398,7 +398,7 @@ elif menu == "多模态AI":
         help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为`4`个字符。默认值为`2048`""",
     )
     # 生成参数
-    sidebar_cols[1].slider(
+    st.sidebar.slider(
         "温度",
         min_value=0.00,
         max_value=1.0,
@@ -407,7 +407,7 @@ elif menu == "多模态AI":
         step=0.1,
         help="✨ `temperature`（温度）可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为`0`，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为`0.2`。",
     )
-    sidebar_cols[0].slider(
+    st.sidebar.slider(
         "Top K",
         key="top_k",
         min_value=1,
@@ -419,7 +419,7 @@ elif menu == "多模态AI":
 - 如果`Top-k`设为`3`，则表示系统将从`3`个概率最高的词元（通过温度确定）中选择下一个词元。
 - 多模态`Top-k`的默认值为`32`。""",
     )
-    sidebar_cols[1].slider(
+    st.sidebar.slider(
         "Top P",
         key="top_p",
         min_value=0.00,
