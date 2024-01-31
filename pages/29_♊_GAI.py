@@ -155,7 +155,7 @@ def process_files_and_prompt(uploaded_files, prompt):
 
 
 @st.cache_data
-def display_generated_content_for(model_name, config, stream, placeholder):
+def display_generated_content_for(model_name, config, stream, _placeholder):
     pass
     # model = load_vertex_model(model_name)
     # generation_config = GenerationConfig(
