@@ -648,15 +648,10 @@ elif menu == "多模态AI":
                 "top_k": st.session_state["top_k"],
                 "max_output_tokens": st.session_state["max_output_tokens"],
             }
-            content_dict_list = [{"uploaded_files": uploaded_files, "prompt": prompt}]
             with st.spinner(f"正在使用多模态生成..."):
-                display_generated_content_for(
-                    "多模态AI",
-                    "gemini-pro-vision",
-                    config,
-                    content_dict_list,
-                    stream=True,
-                    _placeholder=col2.empty(),
+                generate_content_from_files_and_prompt(
+                    contents,
+                    col2.empty(),
                 )
             sidebar_status.markdown(
                 f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
