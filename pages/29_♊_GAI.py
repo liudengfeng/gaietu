@@ -162,7 +162,7 @@ def display_generated_content_for(
         **config,
     )
     if "uploaded_files" in content_dict:
-        contents_info = to_contents_info(
+        contents_info = process_files_and_prompt(
             content_dict["uploaded_files"], content_dict["prompt"]
         )
     display_generated_content_and_update_token(
