@@ -39,30 +39,16 @@ actions = w_cols[2].container(border=True)
 
 w_btn_cols = st.columns(8)
 
-st.markdown("<u>word</u> ~~misspelled~~ grammar style", unsafe_allow_html=True)
-st.markdown(
-    "<u>需要关注的词语</u> ~~删除的词语~~ **强调的词语** *引用的词语* ***强烈强调的词语***",
-    unsafe_allow_html=True,
-)
-st.markdown(
-    """
-    <span style='color:red'><u>需要关注的词语</u></span>
-    <span style='color:blue'><s>删除的词语</s></span>
-    <span style='color:green'><strong>强调的词语</strong></span>
-    <span style='color:purple'><em>引用的词语</em></span>
-    <span style='color:orange'><strong><em>强烈强调的词语</em></strong></span>
-    <span style='color:brown;text-decoration: wavy underline'>波浪线</span>
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown(
-    """
-    <span style='color:red'><s>删除的词语</s></span>
-    <span style='color:blue'><u>需要关注的词语</u></span>
-    <span style='color:green;text-decoration: wavy underline'>可能的语法错误</span>
-    <span style='color:purple'><em>引用的词语</em></span>
-    <span style='color:orange'><strong><em>强烈强调的词语</em></strong></span>
-    """,
-    unsafe_allow_html=True,
-)
+
+# st.markdown(
+#     """
+#     <span style='color:red'><s>删除的词语</s></span>
+#     <span style='color:blue'><u>需要关注的词语</u></span>
+#     <span style='color:green;text-decoration: wavy underline'>可能的语法错误</span>
+#     <span style='color:purple'><em>引用的词语</em></span>
+#     <span style='color:orange'><strong><em>强烈强调的词语</em></strong></span>
+#     """,
+#     unsafe_allow_html=True,
+# )
+
 # endregion
