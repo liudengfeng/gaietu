@@ -689,7 +689,7 @@ elif menu == "示例教程":
     vision_model = load_vertex_model("gemini-pro-vision")
 
     with tabs[0]:
-        st.write("使用 Gemini Pro - 仅有文本模型")
+        st.write("使用 Gemini Pro - 文本模型")
         st.subheader(":blue[生成一个故事]", anchor=False)
 
         # Story premise
