@@ -40,5 +40,9 @@ actions = w_cols[2].container(border=True)
 w_btn_cols = st.columns(8)
 
 st.markdown("<u>word</u> ~~misspelled~~ grammar style", unsafe_allow_html=True)
+st.markdown(
+    "<u>需要关注的词语</u> ~~删除的词语~~ **强调的词语** *引用的词语* ***强烈强调的词语***",
+    unsafe_allow_html=True,
+)
 
 # endregion
