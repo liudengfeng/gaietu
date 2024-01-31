@@ -27,8 +27,6 @@ from .google_ai import (
     MAX_CALLS,
     PER_SECONDS,
     ModelRateLimiter,
-    load_vertex_model,
-    select_best_images_for_word,
 )
 from .google_cloud_configuration import (
     LOCATION,

@@ -21,7 +21,6 @@ from vertexai.preview.generative_models import GenerationConfig, Image, Part
 from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
-from mypylib.google_ai import load_vertex_model, select_best_images_for_word
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     check_access,
@@ -290,7 +289,9 @@ def get_feedbacks():
 
 # region 侧边栏
 
-menu = st.sidebar.selectbox("菜单", options=["支付管理", "处理反馈", "词典管理", "统计分析"])
+menu = st.sidebar.selectbox(
+    "菜单", options=["支付管理", "处理反馈", "词典管理", "统计分析"]
+)
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
 
@@ -337,7 +338,10 @@ if menu == "支付管理":
                 # on_change=compute_discount,
             )
             payment_method = cols[0].text_input(
-                "付款方式", key="payment_method", help="✨ 请输入付款方式", placeholder="必填。付款方式"
+                "付款方式",
+                key="payment_method",
+                help="✨ 请输入付款方式",
+                placeholder="必填。付款方式",
             )
             payment_id = cols[1].text_input(
                 "付款编号",
@@ -482,7 +486,9 @@ if menu == "支付管理":
                 value=datetime.datetime.now(tz).date(),
             )
             payment_3_cols[1].time_input(
-                "服务【开始时间】", key="expiry_time_start_time-1", value=datetime.time(0, 0, 0)
+                "服务【开始时间】",
+                key="expiry_time_start_time-1",
+                value=datetime.time(0, 0, 0),
             )
             payment_3_cols[2].date_input(
                 "服务【结束日期】",
@@ -534,20 +540,28 @@ if menu == "支付管理":
                 if t1:
                     kwargs.update(
                         {
-                            "purchase_type": None
-                            if st.session_state.get("purchase_type-1", None) == "ALL"
-                            else str_to_enum(
-                                st.session_state.get("purchase_type-1", None),
-                                PurchaseType,
+                            "purchase_type": (
+                                None
+                                if st.session_state.get("purchase_type-1", None)
+                                == "ALL"
+                                else str_to_enum(
+                                    st.session_state.get("purchase_type-1", None),
+                                    PurchaseType,
+                                )
                             ),
-                            "status": None
-                            if st.session_state.get("status-1", None) == "ALL"
-                            else str_to_enum(
-                                st.session_state.get("status-1", None), PaymentStatus
+                            "status": (
+                                None
+                                if st.session_state.get("status-1", None) == "ALL"
+                                else str_to_enum(
+                                    st.session_state.get("status-1", None),
+                                    PaymentStatus,
+                                )
                             ),
-                            "is_approved": None
-                            if st.session_state.get("is_approved-1", None) == "ALL"
-                            else st.session_state.get("is_approved-1", None),
+                            "is_approved": (
+                                None
+                                if st.session_state.get("is_approved-1", None) == "ALL"
+                                else st.session_state.get("is_approved-1", None)
+                            ),
                         }
                     )
 
@@ -589,8 +603,12 @@ if menu == "支付管理":
         placeholder = st.empty()
         status = st.empty()
         pay_cols = st.columns([1, 1, 8])
-        upd_btn = pay_cols[0].button("更新", key="upd_btn", help="✨ 更新数据库中选中的支付记录")
-        del_btn = pay_cols[1].button("删除", key="del_btn", help="✨ 在数据库中删除选中的支付记录")
+        upd_btn = pay_cols[0].button(
+            "更新", key="upd_btn", help="✨ 更新数据库中选中的支付记录"
+        )
+        del_btn = pay_cols[1].button(
+            "删除", key="del_btn", help="✨ 在数据库中删除选中的支付记录"
+        )
         # # st.divider()
         if df.empty:
             placeholder.info("没有记录")

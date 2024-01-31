@@ -358,62 +358,6 @@ def parse_generated_content_and_update_token(
     return parser(full_response)
 
 
-WORD_IMAGE_PROMPT_TEMPLATE = """
-Your task is to find the top 4 image IDs that best explain the meaning of a word in a step-by-step process:
-
-Step 1: Image IDs are numbered from 0 to n in the order of input.
-
-Step 2: Images are scored for their explanatory power, with a minimum of 0 and a maximum of 1.0, to form a scoring dictionary. The higher the score, the better the image can explain the meaning of the word.
-
-Step 3: For each image, each of the following conditions is analyzed to determine whether it is met. If met, 0.1 points are added for each item, and the scoring dictionary is updated.
-
-- Image clarity and readability are most important. Users should be able to easily understand the information conveyed by the image.
-- The image should accurately reflect the meaning of the word, avoiding misleading or confusing content.
-- The image should be vivid and imaginative, able to attract user attention and interest, thereby promoting understanding and memorization of the word.
-- The theme of the image should be relevant to the meaning of the word, helping users understand the specific meaning of the word.
-- The composition of the image should be reasonable, highlighting the key content of the word.
-
-Step 4: The scoring dictionary is analyzed to remove image IDs that contain pornographic, violent, or drug-related content or have a score of less than 0.6.
-
-Step 5: The top 4 image IDs with the highest scores are selected. If the number of images that meet the conditions is less than 4, we will select all the image IDs that meet the conditions.
-
-Output: A Python list format.
-
-word:{word}
-"""
-
-
-def select_best_images_for_word(model_name, model, word, images: List[Part]):
-    """
-    为给定的单词选择最佳解释单词含义的图片。
-
-    这个函数使用模型生成一个图片选择结果，然后返回最能解释给定单词含义的图片的序号列表。
-
-    Args:
-        word (str): 要解释的单词。
-        images (List[Part]): 图片列表，每个元素都是一个Part对象，代表一张图片。
-        model (GenerativeModel): 用于生成图片选择结果的模型。
-
-    Returns:
-        list: 以JSON格式输出的最佳图片序号列表。这些序号对应于输入的图片列表中的位置。如果没有合适的图片，则返回空列表。
-    """
-    prompt = WORD_IMAGE_PROMPT_TEMPLATE.format(word=word)
-    contents = [Part.from_text(prompt)] + images
-    generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.0, top_p=1, top_k=32
-    )
-    contents_info = to_contents_info(contents)
-    return parse_generated_content_and_update_token(
-        "挑选图片",
-        model_name,
-        model.generate_content,
-        contents_info,
-        generation_config,
-        stream=False,
-        parser=lambda x: parse_json_string(x),
-    )
-
-
 WORD_TEST_PROMPT_TEMPLATE = """
 As a professional English teacher, you have a thorough understanding of the CEFR English proficiency levels and a comprehensive knowledge of the vocabulary list for each level. You also understand the sequential relationship between numbers. Your task is to create a question to assess students' understanding of English vocabulary. Please follow the requirements below:
 - avoiding Chinglish or Chinese.
@@ -434,7 +378,7 @@ def generate_word_test(model_name, model, word, level):
     prompt = WORD_TEST_PROMPT_TEMPLATE.format(
         word=word, level=level, guidelines=SINGLE_CHOICE_QUESTION
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.1, top_p=1.0
     )
@@ -466,7 +410,7 @@ SCENARIO_TEMPLATE = """
 
 def generate_scenarios(model, subject):
     prompt = SCENARIO_TEMPLATE.format(subject)
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
@@ -512,7 +456,7 @@ def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
         plot=plot,
         difficulty=difficulty,
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.5, top_p=1.0
     )
@@ -535,7 +479,7 @@ ONE_SUMMARY_TEMPLATE = """使用中文简体一句话概要以下文本
 def summarize_in_one_sentence(model, text):
     # 使用模型的 summarize 方法来生成文本的一句话中文概要
     prompt = ONE_SUMMARY_TEMPLATE.format(text=text)
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.75, top_p=1.0
     )
@@ -571,7 +515,7 @@ def generate_listening_test(model, level, dialogue, number=5):
     prompt = LISTENING_TEST_TEMPLATE.format(
         level=level, dialogue=dialogue, number=number
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
@@ -608,7 +552,7 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
     prompt = READING_ARTICLE_TEMPLATE.format(
         genre=genre, content=content, plot=plot, level=level
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
@@ -649,7 +593,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
         article=article,
         guidelines=guidelines,
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
@@ -683,7 +627,7 @@ Please prepare a personal statement as an English speaking test candidate accord
 def generate_pronunciation_assessment_text(model, ability, level):
     scenario = from_chinese_to_english_topic(level, ability)
     prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(ability=scenario, level=level)
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
     )
@@ -717,7 +661,7 @@ def generate_oral_ability_topics(model, ability, level, number):
     prompt = ORAL_ABILITY_TOPIC_TEMPLATE.format(
         number=number, ability=scenario, level=level
     )
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
     )
@@ -744,7 +688,7 @@ As an examinee, you are required to make a statement on a given topic according 
 
 def generate_oral_statement_template(model, topic, level):
     prompt = ORAL_ABILITY_STATEMENT_TEMPLATE.format(topic=topic, level=level)
-    contents = [Part.from_text(prompt)]
+    contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=256, temperature=0.5, top_p=1.0
     )
