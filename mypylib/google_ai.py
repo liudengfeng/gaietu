@@ -54,9 +54,9 @@ def count_tokens(model_name, contents, type_="输入"):
     logger.info(f"监控{type_}令牌：{token_count}")
 
 
-def get_length_in_bytes(prompt):
-    prompt_without_spaces = prompt.replace(" ", "")
-    byte_string = prompt_without_spaces.encode("utf-8")
+def get_text_length_in_bytes(text):
+    text_without_spaces = text.replace(" ", "")
+    byte_string = text_without_spaces.encode("utf-8")
     return len(byte_string)
 
 
@@ -89,7 +89,7 @@ def calculate_input_cost_from_parts(parts: List[Part]):
     #         # 这里假设你有一个函数可以获取视频的时长
     #         video_seconds += get_video_duration(part)
     #     elif part.mime_type.startswith("text"):
-    #         input_characters += get_length_in_bytes(part.text)
+    #         input_characters += get_text_length_in_bytes(part.text)
 
     # return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
 
@@ -174,7 +174,7 @@ def display_generated_content_and_update_token(
     count_tokens(model_name, contents, "输入")
     for c in contents:
         try:
-            logger.info(f"输入内容：{c.text} 提示词长度：{get_length_in_bytes(c.text)}")
+            logger.info(f"输入内容：{c.text} 提示词长度：{get_text_length_in_bytes(c.text)}")
         except:
             pass
 
@@ -201,6 +201,7 @@ def display_generated_content_and_update_token(
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
 
     count_tokens(model_name, full_response, "模型响应")
+    logger.info(f"{get_text_length_in_bytes(full_response)=}")
     logger.info(f"total_tokens:{total_tokens}")
 
     placeholder.markdown(full_response)
