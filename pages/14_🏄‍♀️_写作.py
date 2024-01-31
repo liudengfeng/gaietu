@@ -86,7 +86,7 @@ text = w_cols[0].text_area(
 w_cols[1].markdown("<h5 style='color: green;'>AI建议</h5>", unsafe_allow_html=True)
 suggestions = w_cols[1].container(border=True)
 w_cols[2].markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
-ai_container = w_cols[2].container(border=True)
+ai_tip = w_cols[2].empty()
 
 w_btn_cols = st.columns(8)
 
@@ -97,7 +97,7 @@ if w_btn_cols[0].button(
 ):
     text = ""
     suggestions.empty()
-    ai_container.empty()
+    ai_tip.empty()
     initialize_writing_chat()
 
 # st.markdown(
@@ -130,7 +130,7 @@ if prompt := st.chat_input("从AI写作助教处获取支持"):
         contents_info,
         config,
         stream=True,
-        placeholder=ai_container,
+        placeholder=ai_tip,
     )
 
 # endregion
