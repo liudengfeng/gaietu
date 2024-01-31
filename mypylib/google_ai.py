@@ -88,9 +88,9 @@ def calculate_gemini_pro_cost(
     video_cost = 0.002 * video_seconds
     input_text_cost = 0.00025 * (input_characters / 1000)
     output_text_cost = 0.0005 * (output_characters / 1000)
-    logger.info(
-        f"{image_cost =:.6f},  {video_cost =:.6f},  {input_text_cost =:.6f},  {output_text_cost =:.6f}"
-    )
+    # logger.info(
+    #     f"{image_cost =:.6f},  {video_cost =:.6f},  {input_text_cost =:.6f},  {output_text_cost =:.6f}"
+    # )
     total_cost = image_cost + video_cost + input_text_cost + output_text_cost
 
     return total_cost * USD_TO_CNY_EXCHANGE_RATE
@@ -107,7 +107,7 @@ def _calculate_input_cost_from_parts(contents_info: List[dict]):
         elif content["mime_type"].startswith("video"):
             # 这里假设你有一个函数可以获取视频的时长
             video_seconds += content["duration"]
-            logger.info(f"{content['duration']=}")
+            # logger.info(f"{content['duration']=}")
         elif content["mime_type"].startswith("text"):
             input_characters += get_text_length_in_bytes(content["part"].text)
 
@@ -285,7 +285,7 @@ def display_generated_content_and_update_token(
 
     total_cost_1 = calculate_total_cost_by_rule(contents_info, full_response)
     total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
-    logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
+    # logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
     usage = {
         "item_name": item_name,
@@ -342,7 +342,7 @@ def parse_generated_content_and_update_token(
 
     total_cost_1 = calculate_total_cost_by_rule(contents_info, full_response)
     total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
-    logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
+    # logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
     usage = {
         "item_name": item_name,
