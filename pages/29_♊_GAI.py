@@ -165,6 +165,7 @@ def display_generated_content_for(
         contents_info = process_files_and_prompt(
             content_dict["uploaded_files"], content_dict["prompt"]
         )
+        logger.info(contents_info)
     display_generated_content_and_update_token(
         "多模态AI",
         model_name,
