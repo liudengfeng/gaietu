@@ -76,7 +76,7 @@ def calculate_gemini_pro_cost(
 def calculate_input_cost_from_parts(parts: List[Part]):
     # 临时观察
     for part in parts:
-        logger.info(part.raw_part.video_metadata)
+        logger.info(part.to_dict())
 
     # image_count = 0
     # video_seconds = 0
@@ -173,9 +173,10 @@ def display_generated_content_and_update_token(
     # TODO
     count_tokens(model_name, contents, "输入")
     for c in contents:
-        logger.info(f"type: {type(c)}")
-        # if c.mime_type.startswith("text"):
-        #     logger.info(f"提示词长度：{get_length_in_bytes(c.text)}")
+        try:
+            logger.info(f"输入内容：{c.text} 提示词长度：{get_length_in_bytes(c.text)}")
+        except:
+            pass
 
     calculate_input_cost_from_parts(contents)
 
@@ -198,9 +199,9 @@ def display_generated_content_and_update_token(
         full_response = responses.text
         total_tokens += responses._raw_response.usage_metadata.total_token_count
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
-    
+
     count_tokens(model_name, full_response, "模型响应")
-    
+
     placeholder.markdown(full_response)
 
     # 添加记录到数据库
