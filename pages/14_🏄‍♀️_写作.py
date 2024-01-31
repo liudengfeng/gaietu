@@ -77,20 +77,21 @@ st.markdown(
 
 # 布局
 w_cols = st.columns(3)
+HEIGHT = 500
 
 w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
 text = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
-    height=500,
+    height=HEIGHT,
     placeholder="在此输入您的作文",
     help="在此输入您的作文",
     label_visibility="collapsed",
 )
 w_cols[1].markdown("<h5 style='color: green;'>AI建议</h5>", unsafe_allow_html=True)
-suggestions = w_cols[1].container(border=True)
+suggestions = w_cols[1].container(border=True, height=HEIGHT)
 w_cols[2].markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
-ai_tip = w_cols[2].empty()
+ai_tip_container = w_cols[2].container(border=True, height=HEIGHT)
 
 w_btn_cols = st.columns(8)
 
@@ -101,7 +102,7 @@ if w_btn_cols[0].button(
 ):
     text = ""
     suggestions.empty()
-    ai_tip.empty()
+    ai_tip_container.empty()
     initialize_writing_chat()
 
 # st.markdown(
@@ -134,7 +135,7 @@ if prompt := st.chat_input("从AI写作助教处获取支持"):
         contents_info,
         config,
         stream=True,
-        placeholder=ai_tip,
+        placeholder=ai_tip_container.empty(),
     )
     update_sidebar_status(sidebar_status)
 
