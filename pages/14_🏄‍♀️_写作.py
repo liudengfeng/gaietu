@@ -36,4 +36,7 @@ w_cols = st.columns([4, 4, 2])
 text = w_cols[0].text_area("输入文本", max_chars=10000, height=500)
 suggestions = w_cols[1].container(border=True)
 actions = w_cols[2].container(border=True)
+
+w_btn_cols = st.columns(8)
+
 # endregion
