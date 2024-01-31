@@ -402,6 +402,10 @@ if menu == "聊天机器人":
                 stream=True,
                 placeholder=message_placeholder,
             )
+        sidebar_status.markdown(
+            f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
+            help=TOEKN_HELP_INFO,
+        )
 
     # endregion
 
@@ -1367,7 +1371,7 @@ elif menu == "示例教程":
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )
-                        placeholder.markdown(full_response)                            
+                        placeholder.markdown(full_response)
                 with tab2:
                     st.write("使用的提示词：")
                     st.write(prompt, "\n", "{video_data}")
@@ -1427,8 +1431,8 @@ elif menu == "示例教程":
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )
-                        placeholder.markdown(full_response)                    
-                
+                        placeholder.markdown(full_response)
+
                 with tab2:
                     st.write("使用的提示词：")
                     st.write(prompt, "\n", "{video_data}")
