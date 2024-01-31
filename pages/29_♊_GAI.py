@@ -12,7 +12,7 @@ from vertexai.preview.generative_models import GenerationConfig, Part
 
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
-    get_video_duration,
+    get_duration_from_url,
     load_vertex_model,
     to_contents_info,
 )
@@ -1177,10 +1177,7 @@ elif menu == "示例教程":
             if vide_desc_uri:
                 vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
                 st.video(video_desc_url)
-                st.write("字典", vide_desc_img._raw_part)
-                # st.write("字典", vide_desc_img.to_dict())
-                # st.write("视频时长", get_video_duration(vide_desc_img))
-
+                duation = get_duration_from_url(video_desc_url)
                 st.write("我们的期望：生成视频的描述")
                 prompt = """描述视频中发生的事情并回答以下问题：\n
 - 我在看什么？ \n
@@ -1194,7 +1191,15 @@ elif menu == "示例教程":
                 with tab1:
                     if vide_desc_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [Part.from_text(prompt), vide_desc_img]
+
+                        new_contents = [
+                            Part.from_text(prompt),
+                            {
+                                "part": vide_desc_img,
+                                "duration": duation,
+                                "mime_type": vide_desc_img.mime_type,
+                            },
+                        ]
                         contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
@@ -1222,6 +1227,7 @@ elif menu == "示例教程":
             if video_tags_url:
                 video_tags_img = Part.from_uri(video_tags_uri, mime_type="video/mp4")
                 st.video(video_tags_url)
+                duation = get_duration_from_url(video_tags_url)
                 st.write("我们的期望：为视频生成标签")
                 prompt = """仅使用视频回答以下问题：
 1. 视频里讲了什么？
@@ -1237,7 +1243,14 @@ elif menu == "示例教程":
                 with tab1:
                     if video_tags_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [Part.from_text(prompt), video_tags_img]
+                        new_contents = [
+                            Part.from_text(prompt),
+                            {
+                                "part": video_tags_img,
+                                "duration": duation,
+                                "mime_type": video_tags_img.mime_type,
+                            },
+                        ]
                         contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
@@ -1272,6 +1285,7 @@ elif menu == "示例教程":
                     video_highlights_uri, mime_type="video/mp4"
                 )
                 st.video(video_highlights_url)
+                duation = get_duration_from_url(video_highlights_url)
                 st.write("我们的期望：生成视频的亮点")
                 prompt = """仅使用视频回答以下问题：
 视频中的女孩是什么职业？
@@ -1286,7 +1300,15 @@ elif menu == "示例教程":
                 with tab1:
                     if video_highlights_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [Part.from_text(prompt), video_highlights_img]
+
+                        new_contents = [
+                            Part.from_text(prompt),
+                            {
+                                "part": video_highlights_img,
+                                "duration": duation,
+                                "mime_type": video_highlights_img.mime_type,
+                            },
+                        ]
                         with st.spinner("使用 Gemini 生成视频集锦..."):
                             display_generated_content_and_update_token(
                                 "演示：视频集锦",
@@ -1318,6 +1340,7 @@ elif menu == "示例教程":
                     video_geoloaction_uri, mime_type="video/mp4"
                 )
                 st.video(video_geoloaction_url)
+                duation = get_duration_from_url(video_geoloaction_url)
                 st.markdown(
                     """我们的期望：\n
 回答视频中的以下问题：
@@ -1343,7 +1366,15 @@ elif menu == "示例教程":
                 with tab1:
                     if video_geoloaction_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [Part.from_text(prompt), video_geoloaction_img]
+                        
+                        new_contents = [
+                            Part.from_text(prompt),
+                            {
+                                "part": video_geoloaction_img,
+                                "duration": duation,
+                                "mime_type": video_geoloaction_img.mime_type,
+                            },
+                        ]
                         with st.spinner("使用 Gemini 生成位置标签..."):
                             display_generated_content_and_update_token(
                                 "演示：视频位置标签",

@@ -5,7 +5,9 @@ import time
 from collections import deque
 from datetime import datetime
 from typing import Callable, List
-
+from moviepy.editor import VideoFileClip
+import tempfile
+import requests
 import pytz
 import streamlit as st
 import yaml
@@ -47,18 +49,30 @@ def load_vertex_model(model_name):
     return GenerativeModel(model_name)
 
 
-def get_video_duration(part):
-    # 获取 video_metadata 属性
-    video_metadata = part.video_metadata
+def download_file(url, local_filename):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
 
-    # 从 video_metadata 中获取视频的开始和结束偏移量
-    start_offset = video_metadata.start_offset.ToTimedelta()
-    end_offset = video_metadata.end_offset.ToTimedelta()
 
-    # 计算视频的时长
-    duration = end_offset - start_offset
+def get_video_duration(video_path):
+    clip = VideoFileClip(video_path)
+    duration = clip.duration  # 获取视频时长，单位为秒
+    return duration
 
-    return duration.total_seconds()
+
+def get_duration_from_url(url):
+    # 创建临时文件
+    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp_file:
+        # 下载视频文件
+        download_file(url, temp_file.name)
+
+        # 获取视频时长
+        duration = get_video_duration(temp_file.name)
+
+    return duration
 
 
 def get_text_length_in_bytes(text):
@@ -210,6 +224,8 @@ def to_contents_info(contents):
             contents_info.append({"part": Part.from_text(content), "mime_type": "text"})
         elif isinstance(content, Part):
             contents_info.append({"part": content, "mime_type": content.mime_type})
+        elif isinstance(content, dict):
+            contents_info.append(content)
         else:
             raise TypeError(f"不支持的内容类型：{type(content)}")
     return contents_info
