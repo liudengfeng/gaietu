@@ -164,9 +164,12 @@ def dict_to_part_info(d):
         }
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def display_generated_content_for(
-    item_name, model_name, config, content_dict_list: List[dict],
+    item_name,
+    model_name,
+    config,
+    content_dict_list: List[dict],
 ):
     # _placeholder 前缀 _ 表示不会缓存
     model = load_vertex_model(model_name)
@@ -760,7 +763,7 @@ elif menu == "示例教程":
                     content_dict_list = [{"text": prompt}]
                     item_name = "演示：生成故事"
                     with st.spinner(f"使用多模态完成任务：{item_name}..."):
-                        full_response=display_generated_content_for(
+                        full_response = display_generated_content_for(
                             item_name,
                             "gemini-pro",
                             config,
