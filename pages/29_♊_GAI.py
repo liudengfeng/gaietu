@@ -166,7 +166,7 @@ def dict_to_part_info(d):
         if key.startswith("image"):
             return {
                 "mime_type": key,
-                "part": Part.from_data(data=d[key], mime_type=key),
+                "part": Part.from_uri(d[key], mime_type=key),
                 "duration": None,
             }
 
