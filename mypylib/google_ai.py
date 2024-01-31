@@ -228,9 +228,6 @@ def display_generated_content_and_update_token(
         total_tokens += responses._raw_response.usage_metadata.total_token_count
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
 
-    logger.info(f"{get_text_length_in_bytes(full_response)=}")
-    logger.info(f"total_tokens:{total_tokens}")
-
     placeholder.markdown(full_response)
 
     # 添加记录到数据库
