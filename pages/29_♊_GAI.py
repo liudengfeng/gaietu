@@ -1,9 +1,11 @@
+import io
 import logging
 import mimetypes
 import time
 from pathlib import Path
 
 import streamlit as st
+from moviepy.editor import VideoFileClip
 from PIL import Image as PImage
 from vertexai.preview.generative_models import GenerationConfig, Part
 
@@ -114,7 +116,14 @@ def _process_media(uploaded_file):
     # 用文件扩展名称形成 MIME 类型
     mime_type = mimetypes.guess_type(uploaded_file.name)[0]
     p = Part.from_data(data=uploaded_file.getvalue(), mime_type=mime_type)  # type: ignore
-    return {"mime_type": mime_type, "part": p}
+
+    duration = None
+    if mime_type.startswith("video"):
+        video_file = io.BytesIO(uploaded_file.getvalue())
+        clip = VideoFileClip(video_file)
+        duration = clip.duration  # 获取视频时长，单位为秒
+
+    return {"mime_type": mime_type, "part": p, "duration": duration}
 
 
 def view_example(examples, container):
@@ -134,7 +143,7 @@ def process_files_and_prompt(uploaded_files, prompt):
     if uploaded_files is not None:
         for m in uploaded_files:
             contents.append(_process_media(m))
-    contents.append({"mime_type": "text", "part": Part.from_text(prompt)})
+    contents.append({"mime_type": "text", "part": Part.from_text(prompt), "duration": None})
     return contents
 
 
@@ -151,7 +160,8 @@ def generate_content_from_files_and_prompt(contents, placeholder):
         "多模态AI",
         model_name,
         model.generate_content,
-        [p["part"] for p in contents],
+        # [p["part"] for p in contents],
+        contents,
         generation_config,
         stream=True,
         placeholder=placeholder,
@@ -502,7 +512,7 @@ elif menu == "多模态AI":
                 st.stop()
             p = Part.from_text(ex_text)
             st.session_state.multimodal_examples.append(
-                {"mime_type": "text", "part": p}
+                {"mime_type": "text", "part": p, "duration": None}
             )
             view_example(st.session_state.multimodal_examples, examples_container)
 

@@ -26,6 +26,7 @@ from .google_ai_prompts import (
 )
 from .google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
+USD_TO_CNY_EXCHANGE_RATE = 8.0
 MAX_CALLS = 10
 PER_SECONDS = 60
 shanghai_tz = pytz.timezone("Asia/Shanghai")
@@ -46,14 +47,6 @@ def load_vertex_model(model_name):
     return GenerativeModel(model_name)
 
 
-# model.count_tokens(contents) -> total_tokens total_billable_characters
-# TODO:临时
-def count_tokens(model_name, contents, type_="输入"):
-    model = load_vertex_model(model_name)
-    token_count = model.count_tokens(contents)
-    logger.info(f"监控{type_}令牌：{token_count}")
-
-
 def get_text_length_in_bytes(text):
     text_without_spaces = text.replace(" ", "")
     byte_string = text_without_spaces.encode("utf-8")
@@ -70,28 +63,49 @@ def calculate_gemini_pro_cost(
 
     total_cost = image_cost + video_cost + input_text_cost + output_text_cost
     # 暂时按照8倍计算
-    return total_cost * 8.0
+    return total_cost * USD_TO_CNY_EXCHANGE_RATE
 
 
-def calculate_input_cost_from_parts(parts: List[Part]):
-    # 临时观察
-    for part in parts:
-        logger.info(part.to_dict())
+def _calculate_input_cost_from_parts(contents_info: List[dict]):
+    image_count = 0
+    video_seconds = 0
+    input_characters = 0
 
-    # image_count = 0
-    # video_seconds = 0
-    # input_characters = 0
+    for content in contents_info:
+        if content["mime_type"].startswith("image"):
+            image_count += 1
+        elif content["mime_type"].startswith("video"):
+            # 这里假设你有一个函数可以获取视频的时长
+            video_seconds += content["duration"]
+        elif content["mime_type"].startswith("text"):
+            input_characters += get_text_length_in_bytes(content.text)
 
-    # for part in parts:
-    #     if part.mime_type.startswith("image"):
-    #         image_count += 1
-    #     elif part.mime_type.startswith("video"):
-    #         # 这里假设你有一个函数可以获取视频的时长
-    #         video_seconds += get_video_duration(part)
-    #     elif part.mime_type.startswith("text"):
-    #         input_characters += get_text_length_in_bytes(part.text)
+    return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
 
-    # return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
+
+def _calculate_output_cost(text):
+    length_in_bytes = get_text_length_in_bytes(text)
+    return calculate_gemini_pro_cost(0, 0, 0, length_in_bytes)
+
+
+def calculate_total_cost(contents_info: List[dict], full_response):
+    input_cost = _calculate_input_cost_from_parts(contents_info)
+    output_cost = _calculate_output_cost(full_response)
+    total_cost = input_cost + output_cost
+    return total_cost
+
+
+def calculate_cost_use_model(model_name, contents, full_response):
+    # model.count_tokens(contents) -> total_tokens total_billable_characters
+    model = load_vertex_model(model_name)
+    input_token_count = model.count_tokens(contents)
+    output_token_count = model.count_tokens(full_response)
+    return calculate_gemini_pro_cost(
+        0,
+        0,
+        input_token_count.total_billable_characters,
+        output_token_count.total_billable_characters,
+    )
 
 
 def parse_json_string(s, prefix="```python", suffix="```"):
@@ -156,11 +170,12 @@ def display_generated_content_and_update_token(
     item_name: str,
     model_name: str,
     model_method: Callable,
-    contents: List[Part],
+    contents_info: List[dict],
     generation_config: GenerationConfig,
     stream: bool,
     placeholder,
 ):
+    contents = [p["part"] for p in contents_info]
     responses = st.session_state.rate_limiter.call_func(
         model_name,
         model_method,
@@ -169,14 +184,6 @@ def display_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
-
-    # TODO
-    count_tokens(model_name, contents, "输入")
-    for c in contents:
-        try:
-            logger.info(f"输入内容：{c.text} 提示词长度：{get_text_length_in_bytes(c.text)}")
-        except:
-            pass
 
     # calculate_input_cost_from_parts(contents)
 
@@ -200,7 +207,6 @@ def display_generated_content_and_update_token(
         total_tokens += responses._raw_response.usage_metadata.total_token_count
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
 
-    count_tokens(model_name, full_response, "模型响应")
     logger.info(f"{get_text_length_in_bytes(full_response)=}")
     logger.info(f"total_tokens:{total_tokens}")
 
@@ -211,6 +217,10 @@ def display_generated_content_and_update_token(
     # 修改会话中的令牌数
     st.session_state.current_token_count = total_tokens
     st.session_state.total_token_count += total_tokens
+
+    total_cost_1 = calculate_total_cost(contents_info, full_response)
+    total_cost_2 = calculate_cost_use_model(model_name, contents, full_response)
+    logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
 
 def parse_generated_content_and_update_token(
