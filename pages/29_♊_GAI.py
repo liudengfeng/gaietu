@@ -139,14 +139,14 @@ def view_example(examples, container):
 
 
 def process_files_and_prompt(uploaded_files, prompt):
-    contents = st.session_state.multimodal_examples.copy()
+    contents_info = st.session_state.multimodal_examples.copy()
     if uploaded_files is not None:
         for m in uploaded_files:
-            contents.append(_process_media(m))
-    contents.append(
+            contents_info.append(_process_media(m))
+    contents_info.append(
         {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
     )
-    return contents
+    return contents_info
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):

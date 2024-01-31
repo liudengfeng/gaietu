@@ -88,15 +88,35 @@ def _calculate_output_cost(text):
     return calculate_gemini_pro_cost(0, 0, 0, length_in_bytes)
 
 
-def calculate_total_cost(contents_info: List[dict], full_response):
+def calculate_total_cost_by_rule(contents_info: List[dict], full_response):
+    """
+    Calculate the total cost by rule based on the given contents information and full response.
+
+    Args:
+        contents_info (List[dict]): A list of dictionaries containing information about the contents.
+        full_response: The full response object.
+
+    Returns:
+        float: The total cost calculated based on the input and output costs.
+    """
     input_cost = _calculate_input_cost_from_parts(contents_info)
     output_cost = _calculate_output_cost(full_response)
     total_cost = input_cost + output_cost
     return total_cost
 
 
-def calculate_cost_use_model(model_name, contents, full_response):
-    # model.count_tokens(contents) -> total_tokens total_billable_characters
+def calculate_cost_by_model(model_name, contents, full_response):
+    """
+    Calculate the cost of using a specific model for text generation.
+
+    Args:
+        model_name (str): The name of the model to be used.
+        contents (str): The input text contents.
+        full_response (str): The generated full response.
+
+    Returns:
+        float: The cost of using the model for text generation.
+    """
     model = load_vertex_model(model_name)
     input_token_count = model.count_tokens(contents)
     output_token_count = model.count_tokens(full_response)
@@ -218,8 +238,8 @@ def display_generated_content_and_update_token(
     st.session_state.current_token_count = total_tokens
     st.session_state.total_token_count += total_tokens
 
-    total_cost_1 = calculate_total_cost(contents_info, full_response)
-    total_cost_2 = calculate_cost_use_model(model_name, contents, full_response)
+    total_cost_1 = calculate_total_cost_by_rule(contents_info, full_response)
+    total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
     logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
 
