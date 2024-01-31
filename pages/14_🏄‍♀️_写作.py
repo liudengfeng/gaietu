@@ -1,7 +1,7 @@
 import logging
 
 import streamlit as st
-from vertexai.preview.generative_models import GenerationConfig, Part
+from vertexai.preview.generative_models import GenerationConfig, Part, Content
 
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -49,12 +49,14 @@ def initialize_writing_chat():
     model = load_vertex_model(model_name)
     history = []
     history.append(
-        {
-            "role": "user",
-            "parts": [
-                "作为一名英语写作老师，你的角色不仅是指导，更是激发学生的创作潜力。你需要耐心地引导他们，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。"
-            ],
-        }
+        Content.from_dict(
+            {
+                "role": "user",
+                "parts": [
+                    "作为一名英语写作老师，你的角色不仅是指导，更是激发学生的创作潜力。你需要耐心地引导他们，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。"
+                ],
+            }
+        )
     )
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
