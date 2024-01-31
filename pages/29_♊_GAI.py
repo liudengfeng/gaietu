@@ -12,7 +12,9 @@ from vertexai.preview.generative_models import GenerationConfig, Part
 
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
+    get_video_duration,
     load_vertex_model,
+    to_contents_info,
 )
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
@@ -164,7 +166,6 @@ def generate_content_from_files_and_prompt(contents, placeholder):
         "多模态AI",
         model_name,
         model.generate_content,
-        # [p["part"] for p in contents],
         contents,
         generation_config,
         stream=True,
@@ -712,11 +713,13 @@ elif menu == "示例教程":
                 )
                 with first_tab1:
                     placeholder = st.empty()
+                    contents = [Part.from_text(prompt)]
+                    contents_info = to_contents_info(contents)
                     display_generated_content_and_update_token(
                         "演示：生成故事",
                         "gemini-pro",
                         text_model.generate_content,
-                        [Part.from_text(prompt)],
+                        contents_info,
                         GenerationConfig(**config),
                         stream=True,
                         placeholder=placeholder,
@@ -824,11 +827,13 @@ elif menu == "示例教程":
             with st.spinner("使用 Gemini 生成您的营销活动..."):
                 with second_tab1:
                     placeholder = st.empty()
+                    contents = [Part.from_text(prompt)]
+                    contents_info = to_contents_info(contents)
                     display_generated_content_and_update_token(
                         "演示：营销活动",
                         "gemini-pro",
                         text_model.generate_content,
-                        [Part.from_text(prompt)],
+                        contents_info,
                         GenerationConfig(**config),
                         stream=True,
                         placeholder=placeholder,
@@ -925,11 +930,12 @@ elif menu == "示例教程":
                             Part.from_text(item) if isinstance(item, str) else item
                             for item in content
                         ]
+                        contents_info = to_contents_info(new_contents)
                         display_generated_content_and_update_token(
                             "演示：家具推荐",
                             "gemini-pro-vision",
                             vision_model.generate_content,
-                            new_contents,
+                            contents_info,
                             GenerationConfig(
                                 **gemini_pro_vision_generation_config,
                             ),
@@ -970,11 +976,12 @@ elif menu == "示例教程":
                 if generate_instructions_description and prompt:
                     with st.spinner("使用 Gemini 生成指令..."):
                         new_contents = [stove_screen_img, Part.from_text(prompt)]
+                        contents_info = to_contents_info(new_contents)
                         display_generated_content_and_update_token(
                             "烤箱使用说明演示",
                             "gemini-pro-vision",
                             vision_model.generate_content,
-                            new_contents,
+                            contents_info,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
                             placeholder=placeholder,
@@ -1007,12 +1014,13 @@ elif menu == "示例教程":
                 if er_diag_img_description and prompt:
                     placeholder = st.empty()
                     new_contents = [er_diag_img, Part.from_text(prompt)]
+                    contents_info = to_contents_info(new_contents)
                     with st.spinner("生成..."):
                         display_generated_content_and_update_token(
                             "演示：ER 图",
                             "gemini-pro-vision",
                             vision_model.generate_content,
-                            new_contents,
+                            contents_info,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
                             placeholder=placeholder,
@@ -1083,12 +1091,13 @@ elif menu == "示例教程":
                         Part.from_text(item) if isinstance(item, str) else item
                         for item in content
                     ]
+                    contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成推荐..."):
                         display_generated_content_and_update_token(
                             "演示：眼镜推荐",
                             "gemini-pro-vision",
                             vision_model.generate_content,
-                            new_contents,
+                            contents_info,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
                             placeholder=placeholder,
@@ -1134,12 +1143,13 @@ elif menu == "示例教程":
                 if math_image_description and prompt:
                     placeholder = st.empty()
                     new_contents = [math_image_img, Part.from_text(prompt)]
+                    contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成公式答案..."):
                         display_generated_content_and_update_token(
                             "演示：数学推理",
                             "gemini-pro-vision",
                             vision_model.generate_content,
-                            new_contents,
+                            contents_info,
                             GenerationConfig(**gemini_pro_vision_generation_config),
                             stream=True,
                             placeholder=placeholder,
@@ -1167,6 +1177,9 @@ elif menu == "示例教程":
             if vide_desc_uri:
                 vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
                 st.video(video_desc_url)
+                
+                st.write("视频时长", get_video_duration(vide_desc_img))
+                
                 st.write("我们的期望：生成视频的描述")
                 prompt = """描述视频中发生的事情并回答以下问题：\n
 - 我在看什么？ \n
@@ -1181,12 +1194,13 @@ elif menu == "示例教程":
                     if vide_desc_description and prompt:
                         placeholder = st.empty()
                         new_contents = [Part.from_text(prompt), vide_desc_img]
+                        contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
                                 "演示：视频描述",
                                 "gemini-pro-vision",
                                 vision_model.generate_content,
-                                new_contents,
+                                contents_info,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
                                 placeholder=placeholder,
@@ -1223,12 +1237,13 @@ elif menu == "示例教程":
                     if video_tags_description and prompt:
                         placeholder = st.empty()
                         new_contents = [Part.from_text(prompt), video_tags_img]
+                        contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
                             display_generated_content_and_update_token(
                                 "演示：为视频生成标签",
                                 "gemini-pro-vision",
                                 vision_model.generate_content,
-                                new_contents,
+                                contents_info,
                                 GenerationConfig(**gemini_pro_vision_generation_config),
                                 stream=True,
                                 placeholder=placeholder,

@@ -47,6 +47,20 @@ def load_vertex_model(model_name):
     return GenerativeModel(model_name)
 
 
+def get_video_duration(part):
+    # 获取 video_metadata 属性
+    video_metadata = part.video_metadata
+
+    # 从 video_metadata 中获取视频的开始和结束偏移量
+    start_offset = video_metadata.start_offset.ToTimedelta()
+    end_offset = video_metadata.end_offset.ToTimedelta()
+
+    # 计算视频的时长
+    duration = end_offset - start_offset
+
+    return duration.total_seconds()
+
+
 def get_text_length_in_bytes(text):
     text_without_spaces = text.replace(" ", "")
     byte_string = text_without_spaces.encode("utf-8")
@@ -189,6 +203,18 @@ class ModelRateLimiter:
 #     st.session_state.user_name = fake.name()
 
 
+def to_contents_info(contents):
+    contents_info = []
+    for content in contents:
+        if isinstance(content, str):
+            contents_info.append({"part": Part.from_text(content), "mime_type": "text"})
+        elif isinstance(content, Part):
+            contents_info.append({"part": content, "mime_type": content.mime_type})
+        else:
+            raise TypeError(f"不支持的内容类型：{type(content)}")
+    return contents_info
+
+
 def display_generated_content_and_update_token(
     item_name: str,
     model_name: str,
@@ -249,9 +275,9 @@ def display_generated_content_and_update_token(
         "total_cost_google": total_cost_2,
         "total_tokens": total_tokens,
         "model_name": model_name,
-        "elapsed_time":result["elapsed_time"],
-        "timestamp": datetime.now(pytz.utc)
-    } 
+        "elapsed_time": result["elapsed_time"],
+        "timestamp": datetime.now(pytz.utc),
+    }
     st.session_state.dbi.add_usage_to_cache(usage)
     # 保存到数据库
 
@@ -299,18 +325,18 @@ def parse_generated_content_and_update_token(
     total_cost_1 = calculate_total_cost_by_rule(contents_info, full_response)
     total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
     logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
-    
+
     usage = {
         "item_name": item_name,
         "total_cost": total_cost_1,
         "total_cost_google": total_cost_2,
         "total_tokens": total_tokens,
         "model_name": model_name,
-        "elapsed_time":result["elapsed_time"],
-        "timestamp": datetime.now(pytz.utc)
-    } 
+        "elapsed_time": result["elapsed_time"],
+        "timestamp": datetime.now(pytz.utc),
+    }
     st.session_state.dbi.add_usage_to_cache(usage)
-    
+
     return parser(full_response)
 
 
@@ -358,11 +384,12 @@ def select_best_images_for_word(model_name, model, word, images: List[Part]):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.0, top_p=1, top_k=32
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "挑选图片",
         model_name,
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: parse_json_string(x),
@@ -393,11 +420,12 @@ def generate_word_test(model_name, model, word, level):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.1, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "单词理解考题",
         model_name,
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: json.loads(x),
@@ -424,11 +452,12 @@ def generate_scenarios(model, subject):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "生成场景",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: [line for line in x.strip().splitlines() if line],
@@ -469,11 +498,12 @@ def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.5, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "生成对话",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: [line for line in x.strip().splitlines() if line],
@@ -491,11 +521,12 @@ def summarize_in_one_sentence(model, text):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.75, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "一句话概述",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: x,
@@ -526,11 +557,12 @@ def generate_listening_test(model, level, dialogue, number=5):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "听力测试",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
@@ -562,11 +594,12 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.8, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "阅读理解文章",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: x,
@@ -602,11 +635,12 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
     generation_config = GenerationConfig(
         max_output_tokens=2048, temperature=0.2, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "阅读理解测试",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=parse_json_string,
@@ -635,11 +669,12 @@ def generate_pronunciation_assessment_text(model, ability, level):
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "发音评估材料",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: x,
@@ -668,11 +703,12 @@ def generate_oral_ability_topics(model, ability, level, number):
     generation_config = GenerationConfig(
         max_output_tokens=500, temperature=0.9, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "口语能力话题",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: x,
@@ -694,11 +730,12 @@ def generate_oral_statement_template(model, topic, level):
     generation_config = GenerationConfig(
         max_output_tokens=256, temperature=0.5, top_p=1.0
     )
+    contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
         "口语陈述模板",
         "gemini-pro",
         model.generate_content,
-        contents,
+        contents_info,
         generation_config,
         stream=False,
         parser=lambda x: x,
