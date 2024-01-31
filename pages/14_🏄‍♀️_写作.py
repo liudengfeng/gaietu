@@ -51,7 +51,7 @@ w_btn_cols = st.columns(8)
 #     unsafe_allow_html=True,
 # )
 
-if prompt := st.chat_input("输入提示以便开始对话"):
+if prompt := st.chat_input("从AI写作助教处获取支持"):
     st.write(f"您输入的提示是：{prompt}")
 
 # endregion
