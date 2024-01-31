@@ -632,7 +632,6 @@ elif menu == "多模态AI":
             display_generated_content_for(
                 "gemini-pro-vision",
                 config,
-                contents,
                 stream=True,
                 placeholder=col2.empty(),
             )
