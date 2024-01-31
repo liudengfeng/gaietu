@@ -990,7 +990,15 @@ elif menu == "示例教程":
                 placeholder = st.empty()
                 if generate_instructions_description and prompt:
                     with st.spinner("使用 Gemini 生成指令..."):
-                        new_contents = [stove_screen_img, Part.from_text(prompt)]
+                        contents = [stove_screen_img, prompt]
+                        new_contents = [
+                            (
+                                part_to_dict(item, mime_type="image/jpeg")
+                                if not isinstance(item, str)
+                                else item
+                            )
+                            for item in contents
+                        ]
                         contents_info = to_contents_info(new_contents)
                         display_generated_content_and_update_token(
                             "烤箱使用说明演示",
@@ -1028,7 +1036,15 @@ elif menu == "示例教程":
             with tab1:
                 if er_diag_img_description and prompt:
                     placeholder = st.empty()
-                    new_contents = [er_diag_img, Part.from_text(prompt)]
+                    contents = [er_diag_img, Part.from_text(prompt)]
+                    new_contents = [
+                        (
+                            part_to_dict(item, mime_type="image/jpeg")
+                            if not isinstance(item, str)
+                            else item
+                        )
+                        for item in contents
+                    ]
                     contents_info = to_contents_info(new_contents)
                     with st.spinner("生成..."):
                         display_generated_content_and_update_token(
@@ -1082,7 +1098,7 @@ elif menu == "示例教程":
                 caption=["眼镜类型 1", "眼镜类型 2"],
             )
             st.write(f"我们的期望：建议哪种眼镜类型更适合 {face_type} 脸型")
-            content = [
+            contents = [
                 f"""根据我的脸型，您为我推荐哪一款眼镜：{face_type}?
             我有一张 {face_type} 形状的脸。
             眼镜 1: """,
@@ -1100,11 +1116,15 @@ elif menu == "示例教程":
                 "生成推荐", key="compare_img_description"
             )
             with tab1:
-                if compare_img_description and content:
+                if compare_img_description and contents:
                     placeholder = st.empty()
                     new_contents = [
-                        Part.from_text(item) if isinstance(item, str) else item
-                        for item in content
+                        (
+                            part_to_dict(item, mime_type="image/jpeg")
+                            if not isinstance(item, str)
+                            else item
+                        )
+                        for item in contents
                     ]
                     contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成推荐..."):
@@ -1119,7 +1139,7 @@ elif menu == "示例教程":
                         )
             with tab2:
                 st.write("使用的提示词：")
-                st.text(content)
+                st.text(contents)
             with tab3:
                 st.write("使用的参数：")
                 st.write(gemini_pro_vision_generation_config)
@@ -1157,7 +1177,15 @@ elif menu == "示例教程":
             with tab1:
                 if math_image_description and prompt:
                     placeholder = st.empty()
-                    new_contents = [math_image_img, Part.from_text(prompt)]
+                    contents = [math_image_img, Part.from_text(prompt)]
+                    new_contents = [
+                        (
+                            part_to_dict(item, mime_type="image/jpeg")
+                            if not isinstance(item, str)
+                            else item
+                        )
+                        for item in contents
+                    ]
                     contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成公式答案..."):
                         display_generated_content_and_update_token(
@@ -1206,14 +1234,11 @@ elif menu == "示例教程":
                 with tab1:
                     if vide_desc_description and prompt:
                         placeholder = st.empty()
-
                         new_contents = [
-                            Part.from_text(prompt),
-                            {
-                                "part": vide_desc_img,
-                                "duration": duation,
-                                "mime_type": "video/mp4",
-                            },
+                            prompt,
+                            part_to_dict(
+                                vide_desc_img, mime_type="video/mp4", duration=duation
+                            ),
                         ]
                         contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
@@ -1259,12 +1284,10 @@ elif menu == "示例教程":
                     if video_tags_description and prompt:
                         placeholder = st.empty()
                         new_contents = [
-                            Part.from_text(prompt),
-                            {
-                                "part": video_tags_img,
-                                "duration": duation,
-                                "mime_type": "video/mp4",
-                            },
+                            prompt,
+                            part_to_dict(
+                                video_tags_img, mime_type="video/mp4", duration=duation
+                            ),
                         ]
                         contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
@@ -1317,12 +1340,10 @@ elif menu == "示例教程":
                         placeholder = st.empty()
 
                         new_contents = [
-                            Part.from_text(prompt),
-                            {
-                                "part": video_highlights_img,
-                                "duration": duation,
-                                "mime_type": "video/mp4",
-                            },
+                            prompt,
+                            part_to_dict(
+                                video_highlights_img, mime_type="video/mp4", duration=duation
+                            ),
                         ]
                         with st.spinner("使用 Gemini 生成视频集锦..."):
                             display_generated_content_and_update_token(
@@ -1381,14 +1402,11 @@ elif menu == "示例教程":
                 with tab1:
                     if video_geoloaction_description and prompt:
                         placeholder = st.empty()
-
                         new_contents = [
-                            Part.from_text(prompt),
-                            {
-                                "part": video_geoloaction_img,
-                                "duration": duation,
-                                "mime_type": "video/mp4",
-                            },
+                            prompt,
+                            part_to_dict(
+                                video_geoloaction_img, mime_type="video/mp4", duration=duation
+                            ),
                         ]
                         with st.spinner("使用 Gemini 生成位置标签..."):
                             display_generated_content_and_update_token(
