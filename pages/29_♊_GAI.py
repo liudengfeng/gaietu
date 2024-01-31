@@ -143,7 +143,9 @@ def process_files_and_prompt(uploaded_files, prompt):
     if uploaded_files is not None:
         for m in uploaded_files:
             contents.append(_process_media(m))
-    contents.append({"mime_type": "text", "part": Part.from_text(prompt), "duration": None})
+    contents.append(
+        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+    )
     return contents
 
 
@@ -338,17 +340,16 @@ if menu == "聊天机器人":
         config = GenerationConfig(**config)
         with st.chat_message("assistant", avatar=AVATAR_MAPS["model"]):
             message_placeholder = st.empty()
-            # logger.info()
+            contents_info = [{"mime_type": "text", "part": Part.from_text(prompt), "duration": None}]
             display_generated_content_and_update_token(
                 "聊天机器人",
                 "gemini-pro",
                 st.session_state.chat.send_message,
-                [Part.from_text(prompt)],
+                contents_info,
                 config,
                 stream=True,
                 placeholder=message_placeholder,
             )
-            # count_tokens("gemini-pro", [Part.from_text(prompt)])
 
     # endregion
 
