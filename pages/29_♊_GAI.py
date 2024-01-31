@@ -587,7 +587,10 @@ elif menu == "多模态AI":
             col1, col2 = response_container.columns([1, 1])
             view_example(contents, col1)
             generate_content_from_files_and_prompt(contents, col2.empty())
-            st.rerun()
+            sidebar_status.markdown(
+                f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
+                help=TOEKN_HELP_INFO,
+            )
 
 # endregion
 
