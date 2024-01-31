@@ -762,13 +762,12 @@ elif menu == "示例教程":
                     placeholder = st.empty()
                     content_dict_list = [{"text": prompt}]
                     item_name = "演示：生成故事"
-                    with st.spinner(f"使用多模态完成任务：{item_name}..."):
-                        full_response = cached_generated_content_for(
-                            item_name,
-                            "gemini-pro",
-                            config,
-                            content_dict_list,
-                        )
+                    full_response = cached_generated_content_for(
+                        item_name,
+                        "gemini-pro",
+                        config,
+                        content_dict_list,
+                    )
                     placeholder.markdown(full_response)
                 with first_tab2:
                     st.text(prompt)
@@ -873,22 +872,15 @@ elif menu == "示例教程":
             with st.spinner("使用 Gemini 生成您的营销活动..."):
                 with second_tab1:
                     placeholder = st.empty()
-                    contents_info = [
-                        {
-                            "part": Part.from_text(prompt),
-                            "duration": None,
-                            "mime_type": "text",
-                        },
-                    ]
-                    display_generated_content_and_update_token(
-                        "演示：营销活动",
+                    content_dict_list = [{"text": prompt}]
+                    item_name = "演示：营销活动"
+                    full_response = cached_generated_content_for(
+                        item_name,
                         "gemini-pro",
-                        text_model.generate_content,
-                        contents_info,
-                        GenerationConfig(**config),
-                        stream=True,
-                        placeholder=placeholder,
+                        config,
+                        content_dict_list,
                     )
+                    placeholder.markdown(full_response)
                 with second_tab2:
                     st.text(prompt)
                 with second_tab3:
