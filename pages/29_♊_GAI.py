@@ -1178,6 +1178,7 @@ elif menu == "示例教程":
                 vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
                 st.video(video_desc_url)
                 duation = get_duration_from_url(video_desc_url)
+                st.write(f"视频时长：{duation}")
                 st.write("我们的期望：生成视频的描述")
                 prompt = """描述视频中发生的事情并回答以下问题：\n
 - 我在看什么？ \n
@@ -1366,7 +1367,7 @@ elif menu == "示例教程":
                 with tab1:
                     if video_geoloaction_description and prompt:
                         placeholder = st.empty()
-                        
+
                         new_contents = [
                             Part.from_text(prompt),
                             {
