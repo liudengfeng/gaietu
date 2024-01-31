@@ -773,14 +773,16 @@ elif menu == "示例教程":
                         },
                     ]
                     content_dict_list = [{"text": prompt}]
-                    display_generated_content_for(
-                        "演示：生成故事",
-                        "gemini-pro",
-                        config,
-                        content_dict_list,
-                        stream=True,
-                        _placeholder=placeholder,
-                    )
+                    item_name = "演示：生成故事"
+                    with st.spinner(f"使用多模态完成任务：{item_name}..."):
+                        display_generated_content_for(
+                            item_name,
+                            "gemini-pro",
+                            config,
+                            content_dict_list,
+                            stream=True,
+                            _placeholder=placeholder,
+                        )
                 with first_tab2:
                     st.text(prompt)
                 with first_tab3:
