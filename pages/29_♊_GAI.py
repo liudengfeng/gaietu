@@ -960,7 +960,7 @@ elif menu == "示例教程":
             with tab2:
                 st.write("使用的提示词：")
                 st.text(content)
-            with tab2:
+            with tab3:
                 st.write("使用的参数：")
                 st.write(None)
 
