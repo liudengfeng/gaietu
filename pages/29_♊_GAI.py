@@ -154,19 +154,33 @@ def process_files_and_prompt(uploaded_files, prompt):
     return contents_info
 
 
+def dict_to_part_info(d):
+    if "text" in d:
+        return {
+            "mime_type": "text",
+            "part": Part.from_text(d["text"]),
+            "duration": None,
+        }
+
+
 @st.cache_data
 def display_generated_content_for(
-    item_name, model_name, config, content_dict: List[dict], stream, _placeholder
+    item_name, model_name, config, content_dict_list: List[dict], stream, _placeholder
 ):
     # _placeholder 前缀 _ 表示不会缓存
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         **config,
     )
-    if len(content_dict) == 1 and "uploaded_files" in content_dict[0]:
+    if len(content_dict_list) == 1 and "uploaded_files" in content_dict_list[0]:
         contents_info = process_files_and_prompt(
-            content_dict[0]["uploaded_files"], content_dict[0]["prompt"]
+            content_dict_list[0]["uploaded_files"], content_dict_list[0]["prompt"]
         )
+    else:
+        contents_info = []
+        for d in content_dict_list:
+            contents_info.append(dict_to_part_info(d))
+
     display_generated_content_and_update_token(
         item_name,
         model_name,
@@ -634,12 +648,12 @@ elif menu == "多模态AI":
                 "top_k": st.session_state["top_k"],
                 "max_output_tokens": st.session_state["max_output_tokens"],
             }
-            contents_dict = {"uploaded_files": uploaded_files, "prompt": prompt}
+            content_dict_list = [{"uploaded_files": uploaded_files, "prompt": prompt}]
             display_generated_content_for(
                 "多模态AI",
                 "gemini-pro-vision",
                 config,
-                [contents_dict],
+                content_dict_list,
                 stream=True,
                 _placeholder=col2.empty(),
             )
@@ -755,18 +769,17 @@ elif menu == "示例教程":
                     contents_info = [
                         {
                             "part": Part.from_text(prompt),
-                            "duration": None,
                             "mime_type": "text",
                         },
                     ]
-                    display_generated_content_and_update_token(
+                    content_dict_list = [{"text": prompt}]
+                    display_generated_content_for(
                         "演示：生成故事",
                         "gemini-pro",
-                        text_model.generate_content,
-                        contents_info,
-                        GenerationConfig(**config),
+                        config,
+                        content_dict_list,
                         stream=True,
-                        placeholder=placeholder,
+                        _placeholder=placeholder,
                     )
                 with first_tab2:
                     st.text(prompt)
