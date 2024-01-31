@@ -14,6 +14,7 @@ from mypylib.google_ai import (
     display_generated_content_and_update_token,
     get_duration_from_url,
     load_vertex_model,
+    part_to_dict,
     to_contents_info,
 )
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
@@ -937,7 +938,11 @@ elif menu == "示例教程":
                     placeholder = st.empty()
                     with st.spinner("使用 Gemini 生成推荐..."):
                         new_contents = [
-                            Part.from_text(item) if isinstance(item, str) else item
+                            (
+                                part_to_dict(item, mime_type="image/jpeg")
+                                if not isinstance(item, str)
+                                else item
+                            )
                             for item in content
                         ]
                         contents_info = to_contents_info(new_contents)

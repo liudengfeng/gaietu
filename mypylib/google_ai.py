@@ -217,13 +217,15 @@ class ModelRateLimiter:
 #     st.session_state.user_name = fake.name()
 
 
+def part_to_dict(part: Part, mime_type: str, duration=None):
+    return {"part": part, "mime_type": mime_type, "duration": duration}
+
+
 def to_contents_info(contents):
     contents_info = []
     for content in contents:
         if isinstance(content, str):
             contents_info.append({"part": Part.from_text(content), "mime_type": "text"})
-        elif isinstance(content, Part):
-            contents_info.append({"part": content, "mime_type": content.mime_type})
         elif isinstance(content, dict):
             contents_info.append(content)
         else:
