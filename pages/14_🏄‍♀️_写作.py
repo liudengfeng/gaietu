@@ -1,12 +1,18 @@
 import logging
 
+import streamlit as st
+from vertexai.preview.generative_models import GenerationConfig, Part
+
+from mypylib.google_ai import (
+    display_generated_content_and_update_token,
+    load_vertex_model,
+)
 from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
     configure_google_apis,
     setup_logger,
 )
-import streamlit as st
 
 # region 配置
 
@@ -34,6 +40,27 @@ check_and_force_logout(sidebar_status)
 
 # endregion
 
+
+# region 函数
+
+
+def initialize_writing_chat():
+    model_name = "gemini-pro"
+    model = load_vertex_model(model_name)
+    history = []
+    history.append(
+        {
+            "role": "user",
+            "parts": [
+                "作为一名英语写作老师，你的角色不仅是指导，更是激发学生的创作潜力。你需要耐心地引导他们，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。"
+            ],
+        }
+    )
+    st.session_state["writing-chat"] = model.start_chat(history=history)
+
+
+# endregion
+
 # region 主体
 
 st.subheader("写作练习", divider="rainbow", anchor="写作练习")
@@ -52,7 +79,7 @@ text = w_cols[0].text_area(
 )
 w_cols[1].markdown("<h5 style='color: green;'>AI建议</h5>", unsafe_allow_html=True)
 suggestions = w_cols[1].container(border=True)
-w_cols[2].markdown("<h5 style='color: red;'>AI写作助教</h5>", unsafe_allow_html=True)
+w_cols[2].markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
 ai_container = w_cols[2].container(border=True)
 
 w_btn_cols = st.columns(8)
@@ -69,7 +96,26 @@ w_btn_cols = st.columns(8)
 #     unsafe_allow_html=True,
 # )
 
+Assistant_Configuration = {
+    "temperature": 0.2,
+    "top_p": 1.0,
+    "top_k": 32,
+    "max_output_tokens": 1024,
+}
+config = GenerationConfig(**Assistant_Configuration)
+
 if prompt := st.chat_input("从AI写作助教处获取支持"):
-    st.write(f"您输入的提示是：{prompt}")
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+    ]
+    display_generated_content_and_update_token(
+        "AI写作助教",
+        "gemini-pro",
+        st.session_state.chat.send_message,
+        contents_info,
+        config,
+        stream=True,
+        placeholder=ai_container,
+    )
 
 # endregion
