@@ -115,7 +115,7 @@ if prompt := st.chat_input("从AI写作助教处获取支持"):
     display_generated_content_and_update_token(
         "AI写作助教",
         "gemini-pro",
-        st.session_state.chat.send_message,
+        st.session_state["writing-chat"].send_message,
         contents_info,
         config,
         stream=True,
