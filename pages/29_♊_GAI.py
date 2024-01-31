@@ -1197,7 +1197,7 @@ elif menu == "示例教程":
                             {
                                 "part": vide_desc_img,
                                 "duration": duation,
-                                "mime_type": vide_desc_img.mime_type,
+                                "mime_type": "video/mp4",
                             },
                         ]
                         contents_info = to_contents_info(new_contents)
@@ -1248,7 +1248,7 @@ elif menu == "示例教程":
                             {
                                 "part": video_tags_img,
                                 "duration": duation,
-                                "mime_type": video_tags_img.mime_type,
+                                "mime_type": "video/mp4",
                             },
                         ]
                         contents_info = to_contents_info(new_contents)
@@ -1306,7 +1306,7 @@ elif menu == "示例教程":
                             {
                                 "part": video_highlights_img,
                                 "duration": duation,
-                                "mime_type": video_highlights_img.mime_type,
+                                "mime_type": "video/mp4",
                             },
                         ]
                         with st.spinner("使用 Gemini 生成视频集锦..."):
@@ -1372,7 +1372,7 @@ elif menu == "示例教程":
                             {
                                 "part": video_geoloaction_img,
                                 "duration": duation,
-                                "mime_type": video_geoloaction_img.mime_type,
+                                "mime_type": "video/mp4",
                             },
                         ]
                         with st.spinner("使用 Gemini 生成位置标签..."):
