@@ -162,6 +162,13 @@ def dict_to_part_info(d):
             "part": Part.from_text(d["text"]),
             "duration": None,
         }
+    for key in d:
+        if key.startswith("image"):
+            return {
+                "mime_type": key,
+                "part": Part.from_data(data=d[key], mime_type=key),
+                "duration": None,
+            }
 
 
 @st.cache_data(show_spinner=False)
@@ -961,6 +968,24 @@ elif menu == "示例教程":
                 "只推荐所提供的房间，不推荐其他房间。 以表格形式提供您的建议，并以椅子名称和理由为标题列。",
             ]
 
+            content_dict_list = [
+                {"text": "考虑以下椅子："},
+                {"text": "椅子 1:"},
+                {"image/jpeg": chair_1_image_uri},
+                {"text": "椅子 2:"},
+                chair_2_image,
+                {"text": "椅子 3:"},
+                chair_3_image,
+                {"text": "以及"},
+                {"text": "椅子 4:"},
+                chair_4_image,
+                {"text": "\n" "对于每把椅子，请解释为什么它适合或不适合以下房间："},
+                room_image,
+                {
+                    "text": "只推荐所提供的房间，不推荐其他房间。 以表格形式提供您的建议，并以椅子名称和理由为标题列。"
+                },
+            ]
+
             tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
             generate_image_description = st.button(
                 "生成推荐", key="generate_image_description"
@@ -969,26 +994,15 @@ elif menu == "示例教程":
                 if generate_image_description and content:
                     placeholder = st.empty()
                     with st.spinner("使用 Gemini 生成推荐..."):
-                        new_contents = [
-                            (
-                                part_to_dict(item, mime_type="image/jpeg")
-                                if not isinstance(item, str)
-                                else item
-                            )
-                            for item in content
-                        ]
-                        contents_info = to_contents_info(new_contents)
-                        display_generated_content_and_update_token(
-                            "演示：家具推荐",
+
+                        item_name = "演示：家具推荐"
+                        full_response = cached_generated_content_for(
+                            item_name,
                             "gemini-pro-vision",
-                            vision_model.generate_content,
-                            contents_info,
-                            GenerationConfig(
-                                **gemini_pro_vision_generation_config,
-                            ),
-                            stream=True,
-                            placeholder=placeholder,
+                            gemini_pro_vision_generation_config,
+                            content_dict_list,
                         )
+                        placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(content)
