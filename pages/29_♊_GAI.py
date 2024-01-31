@@ -1,6 +1,7 @@
 import io
 import logging
 import mimetypes
+import tempfile
 import time
 from pathlib import Path
 
@@ -119,9 +120,11 @@ def _process_media(uploaded_file):
 
     duration = None
     if mime_type.startswith("video"):
-        video_file = io.BytesIO(uploaded_file.getvalue())
-        clip = VideoFileClip(video_file)
-        duration = clip.duration  # 获取视频时长，单位为秒
+        with tempfile.NamedTemporaryFile(suffix=".mp4") as temp_video_file:
+            temp_video_file.write(uploaded_file.getvalue())
+            temp_video_file.flush()
+            clip = VideoFileClip(temp_video_file.name)
+            duration = clip.duration  # 获取视频时长，单位为秒
 
     return {"mime_type": mime_type, "part": p, "duration": duration}
 
@@ -340,7 +343,9 @@ if menu == "聊天机器人":
         config = GenerationConfig(**config)
         with st.chat_message("assistant", avatar=AVATAR_MAPS["model"]):
             message_placeholder = st.empty()
-            contents_info = [{"mime_type": "text", "part": Part.from_text(prompt), "duration": None}]
+            contents_info = [
+                {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+            ]
             display_generated_content_and_update_token(
                 "聊天机器人",
                 "gemini-pro",
