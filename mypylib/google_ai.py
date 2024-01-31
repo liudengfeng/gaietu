@@ -243,7 +243,6 @@ def display_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
-    elapsed_time = time.time() - start_time  # 计算用时
 
     full_response = ""
     total_tokens = 0
@@ -266,6 +265,7 @@ def display_generated_content_and_update_token(
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
 
     placeholder.markdown(full_response)
+    elapsed_time = time.time() - start_time  # 计算用时
 
     # 添加记录到数据库
     st.session_state.dbi.add_token_record(item_name, total_tokens)
@@ -309,7 +309,7 @@ def parse_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
-    elapsed_time = time.time() - start_time  # 计算用时
+
     full_response = ""
     total_tokens = 0
     # 提取生成的内容
@@ -325,6 +325,7 @@ def parse_generated_content_and_update_token(
         full_response = responses.text
         total_tokens += responses._raw_response.usage_metadata.total_token_count
 
+    elapsed_time = time.time() - start_time  # 计算用时
     # 添加记录到数据库
     st.session_state.dbi.add_token_record(item_name, total_tokens)
     # 修改会话中的令牌数

@@ -18,7 +18,6 @@ st.set_page_config(
 )
 
 check_access(False)
-# save_and_clear_all_learning_records()
 configure_google_apis()
 
 # endregion
