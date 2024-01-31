@@ -170,18 +170,18 @@ class ModelRateLimiter:
                 return False
 
     def call_func(self, model_name, func, *args, **kwargs):
-        # start_time = time.time()  # 记录开始时间
+        start_time = time.time()  # 记录开始时间
         while not self._allow_call(model_name):
             time.sleep(0.2)
         result = func(*args, **kwargs)
-        # end_time = time.time()  # 记录结束时间
-        # elapsed_time = end_time - start_time  # 计算用时
+        end_time = time.time()  # 记录结束时间
+        elapsed_time = end_time - start_time  # 计算用时
         # now = datetime.now(pytz.utc).astimezone(shanghai_tz)  # 获取当前时间并转换为上海时区
         # current_time = now.strftime("%Y-%m-%d %H:%M:%S")  # 获取当前时间并转换为字符串格式
         # self.records[model_name] = self.records.get(model_name, []) + [
         #     f"{current_time}: {elapsed_time:.2f}s"
         # ]  # 记录用时
-        return result
+        return {"result": result, "elapsed_time": elapsed_time}
 
 
 # if "user_name" not in st.session_state:
@@ -199,7 +199,7 @@ def display_generated_content_and_update_token(
     placeholder,
 ):
     contents = [p["part"] for p in contents_info]
-    responses = st.session_state.rate_limiter.call_func(
+    result = st.session_state.rate_limiter.call_func(
         model_name,
         model_method,
         contents,
@@ -207,6 +207,7 @@ def display_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
+    responses = result["result"]
 
     # calculate_input_cost_from_parts(contents)
 
@@ -242,17 +243,30 @@ def display_generated_content_and_update_token(
     total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
     logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
+    usage = {
+        "item_name": item_name,
+        "total_cost": total_cost_1,
+        "total_cost_google": total_cost_2,
+        "total_tokens": total_tokens,
+        "model_name": model_name,
+        "elapsed_time":result["elapsed_time"],
+        "timestamp": datetime.now(pytz.utc)
+    } 
+    st.session_state.dbi.add_usage_to_cache(usage)
+    # 保存到数据库
+
 
 def parse_generated_content_and_update_token(
     item_name: str,
     model_name: str,
     model_method: Callable,
-    contents: List[Part],
+    contents_info: List[dict],
     generation_config: GenerationConfig,
     stream: bool,
     parser: Callable,
 ):
-    responses = st.session_state.rate_limiter.call_func(
+    contents = [p["part"] for p in contents_info]
+    result = st.session_state.rate_limiter.call_func(
         model_name,
         model_method,
         contents,
@@ -260,6 +274,7 @@ def parse_generated_content_and_update_token(
         safety_settings=DEFAULT_SAFETY_SETTINGS,
         stream=stream,
     )
+    responses = result["result"]
     full_response = ""
     total_tokens = 0
     # 提取生成的内容
@@ -280,6 +295,22 @@ def parse_generated_content_and_update_token(
     # 修改会话中的令牌数
     st.session_state.current_token_count = total_tokens
     st.session_state.total_token_count += total_tokens
+
+    total_cost_1 = calculate_total_cost_by_rule(contents_info, full_response)
+    total_cost_2 = calculate_cost_by_model(model_name, contents, full_response)
+    logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
+    
+    usage = {
+        "item_name": item_name,
+        "total_cost": total_cost_1,
+        "total_cost_google": total_cost_2,
+        "total_tokens": total_tokens,
+        "model_name": model_name,
+        "elapsed_time":result["elapsed_time"],
+        "timestamp": datetime.now(pytz.utc)
+    } 
+    st.session_state.dbi.add_usage_to_cache(usage)
+    
     return parser(full_response)
 
 

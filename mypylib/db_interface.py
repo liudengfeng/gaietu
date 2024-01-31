@@ -42,7 +42,6 @@ class DbInterface:
     def __init__(self, firestore_client):
         self.faker = Faker("zh_CN")
         self.db = firestore_client
-        # self.cache = TTLCache(maxsize=1000, ttl=86400)  # 24 hours cache
         self.cache = {
             "user_info": {},
             "personal_vocabulary": {
@@ -368,7 +367,9 @@ class DbInterface:
         # 检查所有的值是否有效
         invalid_keys = [key for key, value in query_dict.items() if value is None]
         if invalid_keys:
-            raise ValueError(f"在查询支付记录时传入的键值对参数 {', '.join(invalid_keys)} 无效。")
+            raise ValueError(
+                f"在查询支付记录时传入的键值对参数 {', '.join(invalid_keys)} 无效。"
+            )
 
         query = self.db.collection("payments")
         for key in [
@@ -835,5 +836,36 @@ class DbInterface:
 
         # 创建一个新的文档并设置其内容
         collection.document().set(results_dict)
+
+    # endregion
+
+    # region 使用及费用记录
+
+    def add_usage_to_cache(self, usage: dict):
+        # 定义缓存
+        if "usage_cache" not in self.cache:
+            self.cache["usage_cache"] = []
+            self.cache["usage_last_save_time"] = time.time()
+
+        self.cache["usage_cache"].append(usage)
+
+        # 如果缓存数量超过限制或者时间超过限制，将缓存中的 usage 对象保存到数据库
+        if (
+            len(self.cache["usage_cache"]) > CACHE_TRIGGER_SIZE
+            or time.time() - self.cache["usage_last_save_time"] > MAX_TIME_INTERVAL
+        ):
+            self.save_usage(self.cache["usage_cache"])
+            self.cache["usage_cache"] = []
+            self.cache["usage_last_save_time"] = time.time()
+
+    def save_usage(self, usage_list: List[dict]):
+        phone_number = self.cache["user_info"]["phone_number"]
+        batch = self.db.batch()
+
+        for usage in usage_list:
+            doc_ref = self.db.collection("usages").document(phone_number)
+            batch.set(doc_ref, {"usages": firestore.ArrayUnion(usage)}, merge=True)
+
+        batch.commit()
 
     # endregion
