@@ -5,6 +5,7 @@ import time
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import List, Union
+import threading
 
 # from cachetools import TTLCache
 from faker import Faker
@@ -51,6 +52,11 @@ class DbInterface:
                 "to_delete": [],
             },
         }
+        self.start_timer()
+
+    def start_timer(self):
+        self.timer = threading.Timer(600, self.save_cache)
+        self.timer.start()
 
     def cache_user_login_info(self, user, session_id):
         phone_number = user.phone_number
@@ -858,7 +864,9 @@ class DbInterface:
             self.cache["usage_cache"] = []
             self.cache["usage_last_save_time"] = time.time()
 
-    def save_usage(self, usage_list: List[dict]):
+    def save_usage(self, usage_list):
+        if len(usage_list) == 0:
+            return
         phone_number = self.cache["user_info"]["phone_number"]
         batch = self.db.batch()
 
@@ -866,5 +874,12 @@ class DbInterface:
         batch.set(doc_ref, {"usages": firestore.ArrayUnion(usage_list)}, merge=True)
 
         batch.commit()
+
+    def save_cache(self):
+        if "usage_cache" in self.cache and self.cache["usage_cache"]:
+            self.save_usage(self.cache["usage_cache"])
+            self.cache["usage_cache"] = []
+            self.cache["usage_last_save_time"] = time.time()
+        self.start_timer()
 
     # endregion
