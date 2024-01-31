@@ -47,17 +47,16 @@ check_and_force_logout(sidebar_status)
 def initialize_writing_chat():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
-    history = []
-    history.append(
-        Content.from_dict(
-            {
-                "role": "user",
-                "parts": {
-                    "text": "作为一名英语写作老师，你的角色不仅是指导，更是激发学生的创作潜力。你需要耐心地引导他们，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。"
-                },
-            }
-        )
-    )
+    history = [
+        Content(
+            role="user",
+            parts=[
+                Part.from_text(
+                    "作为一名英语写作老师，你的角色不仅是指导，更是激发学生的创作潜力。你需要耐心地引导他们，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。"
+                )
+            ],
+        ),
+    ]
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
 
