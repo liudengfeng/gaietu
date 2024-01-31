@@ -130,15 +130,14 @@ def _process_media(uploaded_file):
 
 
 def view_example(examples, container):
-    cols = container.columns(2)
     for i, p in enumerate(examples):
         mime_type = p["mime_type"]
         if mime_type.startswith("text"):
-            cols[i % 2].markdown(p["part"].text)
+            container.markdown(p["part"].text)
         elif mime_type.startswith("image"):
-            cols[i % 2].image(p["part"].inline_data.data, width=300)
+            container.image(p["part"].inline_data.data, width=300)
         elif mime_type.startswith("video"):
-            cols[i % 2].video(p["part"].inline_data.data)
+            container.video(p["part"].inline_data.data)
 
 
 def process_files_and_prompt(uploaded_files, prompt):
