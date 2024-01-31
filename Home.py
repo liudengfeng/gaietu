@@ -35,19 +35,6 @@ st.set_page_config(
     layout="wide",
 )
 
-st.markdown(
-    """
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "ksb29xet0e");
-    </script>
-    """,
-    unsafe_allow_html=True,
-)
-
 
 on_page_to("Home")
 # save_and_clear_all_learning_records()
