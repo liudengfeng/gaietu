@@ -973,14 +973,14 @@ elif menu == "示例教程":
                 {"text": "椅子 1:"},
                 {"image/jpeg": chair_1_image_uri},
                 {"text": "椅子 2:"},
-                chair_2_image,
+                {"image/jpeg": chair_2_image_uri},
                 {"text": "椅子 3:"},
-                chair_3_image,
+                {"image/jpeg": chair_3_image_uri},
                 {"text": "以及"},
                 {"text": "椅子 4:"},
-                chair_4_image,
+                {"image/jpeg": chair_4_image_uri},
                 {"text": "\n" "对于每把椅子，请解释为什么它适合或不适合以下房间："},
-                room_image,
+                {"image/jpeg": room_image_uri},
                 {
                     "text": "只推荐所提供的房间，不推荐其他房间。 以表格形式提供您的建议，并以椅子名称和理由为标题列。"
                 },
@@ -994,7 +994,6 @@ elif menu == "示例教程":
                 if generate_image_description and content:
                     placeholder = st.empty()
                     with st.spinner("使用 Gemini 生成推荐..."):
-
                         item_name = "演示：家具推荐"
                         full_response = cached_generated_content_for(
                             item_name,
