@@ -12,6 +12,7 @@ from mypylib.st_helper import (
     check_and_force_logout,
     configure_google_apis,
     setup_logger,
+    update_sidebar_status,
 )
 
 # region 配置
@@ -73,7 +74,10 @@ st.subheader("写作练习", divider="rainbow", anchor="写作练习")
 st.markdown(
     "本写作练习旨在全面提升您的写作技巧和能力。我们提供多种场景的写作练习，以帮助您在各种实际情境中提升写作技巧。AI辅助功能将在您的写作过程中提供语法、词汇、主题和风格的评估或修正，甚至在需要时提供创作灵感。这是一个全面提升您的写作能力的过程，旨在让您在各种写作场景中都能自如应对。"
 )
-w_cols = st.columns([4, 4, 2])
+
+# 布局
+w_cols = st.columns(3)
+
 w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
 text = w_cols[0].text_area(
     "您的作文",
@@ -132,5 +136,6 @@ if prompt := st.chat_input("从AI写作助教处获取支持"):
         stream=True,
         placeholder=ai_tip,
     )
+    update_sidebar_status(sidebar_status)
 
 # endregion
