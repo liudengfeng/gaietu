@@ -165,7 +165,7 @@ def display_generated_content_for(
     )
     if len(content_dict) == 1 and "uploaded_files" in content_dict[0]:
         contents_info = process_files_and_prompt(
-            content_dict["uploaded_files"], content_dict["prompt"]
+            content_dict[0]["uploaded_files"], content_dict[0]["prompt"]
         )
     display_generated_content_and_update_token(
         item_name,
