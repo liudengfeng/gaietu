@@ -56,6 +56,7 @@ def initialize_writing_chat():
                 )
             ],
         ),
+        Content(role="model", parts=[Part.from_text("好的。")]),
     ]
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
