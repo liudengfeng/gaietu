@@ -55,5 +55,14 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
+st.markdown(
+    """
+    <span style='color:red'><s>删除的词语</s></span>
+    <span style='color:blue'><u>需要关注的词语</u></span>
+    <span style='color:green;text-decoration: wavy underline'>可能的语法错误</span>
+    <span style='color:purple'><em>引用的词语</em></span>
+    <span style='color:orange'><strong><em>强烈强调的词语</em></strong></span>
+    """,
+    unsafe_allow_html=True,
+)
 # endregion
