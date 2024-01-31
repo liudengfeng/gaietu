@@ -80,6 +80,7 @@ def initialize_chat():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
     history = []
+    # TODO:修改添加历史方式
     for user, ai in st.session_state["examples_pair"]:
         history.append({"role": "user", "parts": [user]})
         history.append({"role": "model", "parts": [ai]})
