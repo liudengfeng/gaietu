@@ -41,7 +41,7 @@ st.markdown(
     "本写作练习旨在全面提升您的写作技巧和能力。我们提供多种场景的写作练习，以帮助您在各种实际情境中提升写作技巧。AI辅助功能将在您的写作过程中提供语法、词汇、主题和风格的评估或修正，甚至在需要时提供创作灵感。这是一个全面提升您的写作能力的过程，旨在让您在各种写作场景中都能自如应对。"
 )
 w_cols = st.columns([4, 4, 2])
-w_cols[0].markdown("### 您的作文")
+w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
 text = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
@@ -50,9 +50,9 @@ text = w_cols[0].text_area(
     help="在此输入您的作文",
     label_visibility="collapsed",
 )
-w_cols[1].markdown("### AI建议")
+w_cols[1].markdown("<h5 style='color: green;'>AI建议</h5>", unsafe_allow_html=True)
 suggestions = w_cols[1].container(border=True)
-w_cols[2].markdown("### AI写作助教")
+w_cols[2].markdown("<h5 style='color: red;'>AI写作助教</h5>", unsafe_allow_html=True)
 ai_container = w_cols[2].container(border=True)
 
 w_btn_cols = st.columns(8)
