@@ -29,8 +29,11 @@ configure_google_apis()
 # region 主体
 
 st.subheader("写作练习", divider="rainbow", anchor="写作练习")
+st.markdown(
+    "本写作练习旨在全面提升你的写作技巧和能力。我们提供多种场景的写作练习，以帮助你在各种实际情境中提升写作技巧。AI辅助功能将在你的写作过程中提供语法、词汇、主题和风格的评估或修正，甚至在需要时提供创作灵感。这是一个全面提升你的写作能力的过程，旨在让你在各种写作场景中都能自如应对。"
+)
 w_cols = st.columns([4, 4, 2])
-text = w_cols[0].text_area("输入文本", max_chars=10000, height=400)
+text = w_cols[0].text_area("输入文本", max_chars=10000, height=500)
 suggestions = w_cols[1].container(border=True)
 actions = w_cols[2].container(border=True)
 # endregion
