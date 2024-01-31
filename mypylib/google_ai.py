@@ -178,7 +178,7 @@ def display_generated_content_and_update_token(
         except:
             pass
 
-    calculate_input_cost_from_parts(contents)
+    # calculate_input_cost_from_parts(contents)
 
     full_response = ""
     total_tokens = 0
