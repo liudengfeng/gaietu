@@ -154,21 +154,26 @@ def process_files_and_prompt(uploaded_files, prompt):
 
 
 @st.cache_data
-def display_generated_content_for(model_name, config, stream, _placeholder):
-    pass
-    # model = load_vertex_model(model_name)
-    # generation_config = GenerationConfig(
-    #     **config,
-    # )
-    # display_generated_content_and_update_token(
-    #     "多模态AI",
-    #     model_name,
-    #     model.generate_content,
-    #     contents,
-    #     generation_config,
-    #     stream=stream,
-    #     placeholder=placeholder,
-    # )
+def display_generated_content_for(
+    model_name, config, content_dict: dict, stream, _placeholder
+):
+    model = load_vertex_model(model_name)
+    generation_config = GenerationConfig(
+        **config,
+    )
+    if "uploaded_files" in content_dict:
+        contents_info = to_contents_info(
+            content_dict["uploaded_files"], content_dict["prompt"]
+        )
+    display_generated_content_and_update_token(
+        "多模态AI",
+        model_name,
+        model.generate_content,
+        contents_info,
+        generation_config,
+        stream=stream,
+        placeholder=_placeholder,
+    )
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
@@ -628,9 +633,11 @@ elif menu == "多模态AI":
                 "max_output_tokens": st.session_state["max_output_tokens"],
             }
             # generate_content_from_files_and_prompt(contents, col2.empty())
+            contents_dict = {"uploaded_files": uploaded_files, "prompt": prompt}
             display_generated_content_for(
                 "gemini-pro-vision",
                 config,
+                contents_dict,
                 stream=True,
                 _placeholder=col2.empty(),
             )
