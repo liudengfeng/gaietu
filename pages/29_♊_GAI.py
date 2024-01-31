@@ -633,7 +633,7 @@ elif menu == "多模态AI":
                 "gemini-pro-vision",
                 config,
                 stream=True,
-                placeholder=col2.empty(),
+                _placeholder=col2.empty(),
             )
             sidebar_status.markdown(
                 f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
