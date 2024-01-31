@@ -169,6 +169,13 @@ def dict_to_part_info(d):
                 "part": Part.from_uri(d[key], mime_type=key),
                 "duration": None,
             }
+    for key in d:
+        if key.startswith("video"):
+            return {
+                "mime_type": key,
+                "part": Part.from_uri(d[key], mime_type=key),
+                "duration": d["duration"],
+            }
 
 
 @st.cache_data(show_spinner=False)
@@ -1043,7 +1050,7 @@ elif menu == "示例教程":
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
-                        placeholder.markdown(full_response)
+                    placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(prompt + "\n" + "input_image")
@@ -1069,16 +1076,17 @@ elif menu == "示例教程":
             tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
             er_diag_img_description = st.button("生成！", key="er_diag_img_description")
             with tab1:
-                content_dict_list = {"image/jpeg": er_diag_uri, "text": prompt}
+                content_dict_list = [{"image/jpeg": er_diag_uri}, {"text": prompt}]
                 if er_diag_img_description and prompt:
                     placeholder = st.empty()
-                    item_name = "演示：ER 图"
-                    full_response = cached_generated_content_for(
-                        item_name,
-                        "gemini-pro-vision",
-                        gemini_pro_vision_generation_config,
-                        content_dict_list,
-                    )
+                    with st.spinner("使用 Gemini 演示：ER 图..."):
+                        item_name = "演示：ER 图"
+                        full_response = cached_generated_content_for(
+                            item_name,
+                            "gemini-pro-vision",
+                            gemini_pro_vision_generation_config,
+                            content_dict_list,
+                        )
                     placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
@@ -1135,6 +1143,19 @@ elif menu == "示例教程":
             根据我的脸型提供您的建议，并以 {output_type} 格式对每个脸型进行推理。
             """,
             ]
+            content_dict_list = [
+                {"text": f"""根据我的脸型，您为我推荐哪一款眼镜：{face_type}?"""},
+                {"text": f"""我有一张 {face_type} 形状的脸。"""},
+                {"image/jpeg": compare_img_1_uri},
+                {"text": """眼镜 2:"""},
+                {"image/jpeg": compare_img_2_uri},
+                {
+                    "text": f"""
+            解释一下你是如何做出这个决定的。
+            根据我的脸型提供您的建议，并以 {output_type} 格式对每个脸型进行推理。
+            """
+                },
+            ]
             tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
             compare_img_description = st.button(
                 "生成推荐", key="compare_img_description"
@@ -1142,25 +1163,15 @@ elif menu == "示例教程":
             with tab1:
                 if compare_img_description and contents:
                     placeholder = st.empty()
-                    new_contents = [
-                        (
-                            part_to_dict(item, mime_type="image/jpeg")
-                            if not isinstance(item, str)
-                            else item
-                        )
-                        for item in contents
-                    ]
-                    contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成推荐..."):
-                        display_generated_content_and_update_token(
-                            "演示：眼镜推荐",
+                        item_name = "演示：眼镜推荐"
+                        full_response = cached_generated_content_for(
+                            item_name,
                             "gemini-pro-vision",
-                            vision_model.generate_content,
-                            contents_info,
-                            GenerationConfig(**gemini_pro_vision_generation_config),
-                            stream=True,
-                            placeholder=placeholder,
+                            gemini_pro_vision_generation_config,
+                            content_dict_list,
                         )
+                    placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(contents)
@@ -1201,26 +1212,19 @@ elif menu == "示例教程":
             with tab1:
                 if math_image_description and prompt:
                     placeholder = st.empty()
-                    contents = [math_image_img, Part.from_text(prompt)]
-                    new_contents = [
-                        (
-                            part_to_dict(item, mime_type="image/jpeg")
-                            if not isinstance(item, str)
-                            else item
-                        )
-                        for item in contents
+                    content_dict_list = [
+                        {"image/jpeg": math_image_uri},
+                        {"text": prompt},
                     ]
-                    contents_info = to_contents_info(new_contents)
                     with st.spinner("使用 Gemini 生成公式答案..."):
-                        display_generated_content_and_update_token(
-                            "演示：数学推理",
+                        item_name = "演示：眼镜推荐"
+                        full_response = cached_generated_content_for(
+                            item_name,
                             "gemini-pro-vision",
-                            vision_model.generate_content,
-                            contents_info,
-                            GenerationConfig(**gemini_pro_vision_generation_config),
-                            stream=True,
-                            placeholder=placeholder,
+                            gemini_pro_vision_generation_config,
+                            content_dict_list,
                         )
+                    placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(content)
@@ -1258,23 +1262,19 @@ elif menu == "示例教程":
                 with tab1:
                     if vide_desc_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [
-                            prompt,
-                            part_to_dict(
-                                vide_desc_img, mime_type="video/mp4", duration=duation
-                            ),
+                        content_dict_list = [
+                            {"text": prompt},
+                            {"video/mp4": vide_desc_uri, "duration": duation},
                         ]
-                        contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
-                            display_generated_content_and_update_token(
-                                "演示：视频描述",
+                            item_name = "演示：视频描述"
+                            full_response = cached_generated_content_for(
+                                item_name,
                                 "gemini-pro-vision",
-                                vision_model.generate_content,
-                                contents_info,
-                                GenerationConfig(**gemini_pro_vision_generation_config),
-                                stream=True,
-                                placeholder=placeholder,
+                                gemini_pro_vision_generation_config,
+                                content_dict_list,
                             )
+                        placeholder.markdown(full_response)
                 with tab2:
                     st.write("使用的提示词：")
                     st.markdown(prompt + "\n" + "{video_data}")
@@ -1307,23 +1307,20 @@ elif menu == "示例教程":
                 with tab1:
                     if video_tags_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [
-                            prompt,
-                            part_to_dict(
-                                video_tags_img, mime_type="video/mp4", duration=duation
-                            ),
+                        content_dict_list = [
+                            {"text": prompt},
+                            {"video/mp4": video_tags_uri, "duration": duation},
                         ]
-                        contents_info = to_contents_info(new_contents)
                         with st.spinner("使用 Gemini 生成视频描述..."):
-                            display_generated_content_and_update_token(
-                                "演示：为视频生成标签",
+                            item_name = "演示：为视频生成标签"
+                            full_response = cached_generated_content_for(
+                                item_name,
                                 "gemini-pro-vision",
-                                vision_model.generate_content,
-                                contents_info,
-                                GenerationConfig(**gemini_pro_vision_generation_config),
-                                stream=True,
-                                placeholder=placeholder,
+                                gemini_pro_vision_generation_config,
+                                content_dict_list,
                             )
+                        placeholder.markdown(full_response)
+
                 with tab2:
                     st.write("使用的提示词：")
                     st.write(prompt, "\n", "{video_data}")
@@ -1362,25 +1359,19 @@ elif menu == "示例教程":
                 with tab1:
                     if video_highlights_description and prompt:
                         placeholder = st.empty()
-
-                        new_contents = [
-                            prompt,
-                            part_to_dict(
-                                video_highlights_img,
-                                mime_type="video/mp4",
-                                duration=duation,
-                            ),
+                        content_dict_list = [
+                            {"text": prompt},
+                            {"video/mp4": video_highlights_uri, "duration": duation},
                         ]
                         with st.spinner("使用 Gemini 生成视频集锦..."):
-                            display_generated_content_and_update_token(
-                                "演示：视频集锦",
+                            item_name = "演示：视频集锦"
+                            full_response = cached_generated_content_for(
+                                item_name,
                                 "gemini-pro-vision",
-                                vision_model.generate_content,
-                                new_contents,
-                                GenerationConfig(**gemini_pro_vision_generation_config),
-                                stream=True,
-                                placeholder=placeholder,
+                                gemini_pro_vision_generation_config,
+                                content_dict_list,
                             )
+                        placeholder.markdown(full_response)                            
                 with tab2:
                     st.write("使用的提示词：")
                     st.write(prompt, "\n", "{video_data}")
@@ -1428,24 +1419,20 @@ elif menu == "示例教程":
                 with tab1:
                     if video_geoloaction_description and prompt:
                         placeholder = st.empty()
-                        new_contents = [
-                            prompt,
-                            part_to_dict(
-                                video_geoloaction_img,
-                                mime_type="video/mp4",
-                                duration=duation,
-                            ),
+                        content_dict_list = [
+                            {"text": prompt},
+                            {"video/mp4": video_geoloaction_uri, "duration": duation},
                         ]
                         with st.spinner("使用 Gemini 生成位置标签..."):
-                            display_generated_content_and_update_token(
-                                "演示：视频位置标签",
+                            item_name = "演示：视频位置标签"
+                            full_response = cached_generated_content_for(
+                                item_name,
                                 "gemini-pro-vision",
-                                vision_model.generate_content,
-                                new_contents,
-                                GenerationConfig(**gemini_pro_vision_generation_config),
-                                stream=True,
-                                placeholder=placeholder,
+                                gemini_pro_vision_generation_config,
+                                content_dict_list,
                             )
+                        placeholder.markdown(full_response)                    
+                
                 with tab2:
                     st.write("使用的提示词：")
                     st.write(prompt, "\n", "{video_data}")
