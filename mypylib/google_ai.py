@@ -78,7 +78,7 @@ def _calculate_input_cost_from_parts(contents_info: List[dict]):
             # 这里假设你有一个函数可以获取视频的时长
             video_seconds += content["duration"]
         elif content["mime_type"].startswith("text"):
-            input_characters += get_text_length_in_bytes(content.text)
+            input_characters += get_text_length_in_bytes(content["part"].text)
 
     return calculate_gemini_pro_cost(image_count, video_seconds, input_characters, 0)
 
