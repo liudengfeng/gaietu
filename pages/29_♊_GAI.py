@@ -713,8 +713,13 @@ elif menu == "示例教程":
                 )
                 with first_tab1:
                     placeholder = st.empty()
-                    contents = [Part.from_text(prompt)]
-                    contents_info = to_contents_info(contents)
+                    contents_info = [
+                        {
+                            "part": Part.from_text(prompt),
+                            "duration": None,
+                            "mime_type": "text",
+                        },
+                    ]
                     display_generated_content_and_update_token(
                         "演示：生成故事",
                         "gemini-pro",
@@ -827,8 +832,13 @@ elif menu == "示例教程":
             with st.spinner("使用 Gemini 生成您的营销活动..."):
                 with second_tab1:
                     placeholder = st.empty()
-                    contents = [Part.from_text(prompt)]
-                    contents_info = to_contents_info(contents)
+                    contents_info = [
+                        {
+                            "part": Part.from_text(prompt),
+                            "duration": None,
+                            "mime_type": "text",
+                        },
+                    ]
                     display_generated_content_and_update_token(
                         "演示：营销活动",
                         "gemini-pro",
