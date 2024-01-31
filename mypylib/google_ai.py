@@ -77,6 +77,7 @@ def _calculate_input_cost_from_parts(contents_info: List[dict]):
         elif content["mime_type"].startswith("video"):
             # 这里假设你有一个函数可以获取视频的时长
             video_seconds += content["duration"]
+            logger.info(f"{content['duration']=}")
         elif content["mime_type"].startswith("text"):
             input_characters += get_text_length_in_bytes(content["part"].text)
 
