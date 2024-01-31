@@ -1,6 +1,11 @@
 import logging
 
-from mypylib.st_helper import check_access, configure_google_apis, setup_logger
+from mypylib.st_helper import (
+    check_access,
+    check_and_force_logout,
+    configure_google_apis,
+    setup_logger,
+)
 import streamlit as st
 
 # region 配置
@@ -19,6 +24,9 @@ st.set_page_config(
 
 check_access(False)
 configure_google_apis()
+
+sidebar_status = st.sidebar.empty()
+check_and_force_logout(sidebar_status)
 
 # endregion
 
