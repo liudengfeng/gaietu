@@ -1033,7 +1033,7 @@ elif menu == "示例教程":
             )
             with tab1:
                 placeholder = st.empty()
-                content_dict_list = [{"image/jpeg": stove_screen_uri}]
+                content_dict_list = [{"image/jpeg": stove_screen_uri}, {"text": prompt}]
                 if generate_instructions_description and prompt:
                     with st.spinner("使用 Gemini 生成指令..."):
                         item_name = "烤箱使用说明演示"
@@ -1043,7 +1043,7 @@ elif menu == "示例教程":
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
-                        placeholder.markdown(full_response)                        
+                        placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(prompt + "\n" + "input_image")
@@ -1069,28 +1069,17 @@ elif menu == "示例教程":
             tab1, tab2, tab3 = st.tabs(["模型响应", "提示词", "参数设置"])
             er_diag_img_description = st.button("生成！", key="er_diag_img_description")
             with tab1:
+                content_dict_list = {"image/jpeg": er_diag_uri, "text": prompt}
                 if er_diag_img_description and prompt:
                     placeholder = st.empty()
-                    contents = [er_diag_img, Part.from_text(prompt)]
-                    new_contents = [
-                        (
-                            part_to_dict(item, mime_type="image/jpeg")
-                            if not isinstance(item, str)
-                            else item
-                        )
-                        for item in contents
-                    ]
-                    contents_info = to_contents_info(new_contents)
-                    with st.spinner("生成..."):
-                        display_generated_content_and_update_token(
-                            "演示：ER 图",
-                            "gemini-pro-vision",
-                            vision_model.generate_content,
-                            contents_info,
-                            GenerationConfig(**gemini_pro_vision_generation_config),
-                            stream=True,
-                            placeholder=placeholder,
-                        )
+                    item_name = "演示：ER 图"
+                    full_response = cached_generated_content_for(
+                        item_name,
+                        "gemini-pro-vision",
+                        gemini_pro_vision_generation_config,
+                        content_dict_list,
+                    )
+                    placeholder.markdown(full_response)
             with tab2:
                 st.write("使用的提示词：")
                 st.text(prompt + "\n" + "input_image")
