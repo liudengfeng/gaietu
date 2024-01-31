@@ -201,6 +201,7 @@ def display_generated_content_and_update_token(
         # st.write(f"responses 令牌数：{responses._raw_response.usage_metadata}")
 
     count_tokens(model_name, full_response, "模型响应")
+    logger.info(f"total_tokens:{total_tokens}")
 
     placeholder.markdown(full_response)
 
