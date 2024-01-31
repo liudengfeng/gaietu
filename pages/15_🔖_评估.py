@@ -23,20 +23,17 @@ from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     ORAL_ABILITY_SCORE_BADGE_MAPS,
     PRONUNCIATION_SCORE_BADGE_MAPS,
-    TOEKN_HELP_INFO,
     autoplay_audio_and_display_text,
     check_access,
     check_and_force_logout,
     configure_google_apis,
     display_assessment_score,
-    format_token_count,
     get_synthesis_speech,
-    # left_paragraph_aligned_text,
     on_page_to,
     oral_ability_assessment_for,
     process_dialogue_text,
-    process_learning_record,
     pronunciation_assessment_for,
+    update_sidebar_status,
     view_pronunciation_assessment_legend,
     view_word_assessment,
 )
@@ -63,11 +60,7 @@ menu = st.sidebar.selectbox("菜单", menu_opts, help="选择你要练习的项�
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
-
-sidebar_status.markdown(
-    f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-    help=TOEKN_HELP_INFO,
-)
+update_sidebar_status(sidebar_status)
 
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")
@@ -580,7 +573,7 @@ if menu and menu.endswith("口语能力"):
         help="✨ 点击按钮，收听话题讨论示例文本的合成语音。",
         disabled=st.session_state["oa-sample-text"] == "",
     )
-    
+
     example_button = oa_btn_cols[7].button(
         "案例[:headphones:]",
         key="oa-example",
@@ -691,18 +684,18 @@ if menu and menu.endswith("口语能力"):
             difficulty,
             oa_topic,
         )
-    
+
     if example_button:
         audio = read_audio_file(ORAL_FP)
         # st.session_state["oa-assessment"] = oral_ability_assessment_for(
         #     audio,
         #     "Describe someone you met recently and would like to know more",
-        # )    
+        # )
         st.session_state["oa-assessment"] = oral_ability_assessment_for(
             audio,
             "Describe your favorite animal",
-        )    
-    
+        )
+
     display_assessment_score(
         oa_report_container,
         ORAL_ABILITY_SCORE_BADGE_MAPS,

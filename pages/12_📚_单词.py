@@ -17,13 +17,11 @@ from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
-    TOEKN_HELP_INFO,
     check_access,
     check_and_force_logout,
     configure_google_apis,
     count_non_none,
     end_and_save_learning_records,
-    format_token_count,
     get_mini_dict_doc,
     get_synthesis_speech,
     is_answer_correct,
@@ -32,6 +30,7 @@ from mypylib.st_helper import (
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
+    update_sidebar_status,
 )
 from mypylib.word_utils import (
     audio_autoplay_elem,
@@ -1247,10 +1246,7 @@ elif menu and menu.endswith("看图猜词"):
 # region 词意测试
 
 elif menu and menu.endswith("词意测试"):
-    sidebar_status.markdown(
-        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-        help=TOEKN_HELP_INFO,
-    )
+    update_sidebar_status(sidebar_status)
     # region 边栏
     level = st.sidebar.selectbox(
         "CEFR分级",

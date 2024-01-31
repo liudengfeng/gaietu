@@ -48,6 +48,8 @@ TOEKN_HELP_INFO = (
     "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
 )
 
+# region 通用函数
+
 
 def setup_logger(logger, level="INFO"):
     # 设置日志的时间戳为 Asia/Shanghai 时区
@@ -90,6 +92,11 @@ def is_answer_correct(user_answer, standard_answer):
     return user_answer == standard_answer
 
 
+# endregion
+
+# region 用户相关
+
+
 def check_and_force_logout(status):
     """
     检查并强制退出用户重复登录。
@@ -118,6 +125,27 @@ def check_and_force_logout(status):
                 st.stop()
 
 
+def check_access(is_admin_page):
+    if "dbi" not in st.session_state:
+        st.session_state["dbi"] = DbInterface(get_firestore_client())
+
+    if not st.session_state.dbi.is_logged_in():
+        st.error("您尚未登录。请点击屏幕左侧的 `Home` 菜单进行登录。")
+        st.stop()
+
+    if (
+        is_admin_page
+        and st.session_state.dbi.cache.get("user_info", {}).get("user_role") != "管理员"
+    ):
+        st.error("您没有权限访问此页面。此页面仅供系统管理员使用。")
+        st.stop()
+
+
+# endregion
+
+# region Google
+
+
 @st.cache_resource
 def get_translation_client():
     service_account_info = get_google_service_account_info(st.secrets)
@@ -134,38 +162,6 @@ def get_firestore_client():
     credentials = Credentials.from_service_account_info(service_account_info)
     # 使用凭据初始化客户端
     return firestore.Client(credentials=credentials, project=PROJECT_ID)
-
-
-@st.cache_resource
-def get_blob_service_client():
-    # container_name = "word-images"
-    connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
-    # 创建 BlobServiceClient 对象
-    return BlobServiceClient.from_connection_string(connect_str)
-
-
-@st.cache_resource
-def get_blob_container_client(container_name):
-    # 创建 BlobServiceClient 对象
-    blob_service_client = get_blob_service_client()
-    # 获取 ContainerClient 对象
-    return blob_service_client.get_container_client(container_name)
-
-
-def check_access(is_admin_page):
-    if "dbi" not in st.session_state:
-        st.session_state["dbi"] = DbInterface(get_firestore_client())
-
-    if not st.session_state.dbi.is_logged_in():
-        st.error("您尚未登录。请点击屏幕左侧的 `Home` 菜单进行登录。")
-        st.stop()
-
-    if (
-        is_admin_page
-        and st.session_state.dbi.cache.get("user_info", {}).get("user_role") != "管理员"
-    ):
-        st.error("您没有权限访问此页面。此页面仅供系统管理员使用。")
-        st.stop()
 
 
 def configure_google_apis():
@@ -236,6 +232,28 @@ def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = 
 def translate_text(text: str, target_language_code, is_list: bool = False):
     return google_translate(text, target_language_code, is_list)
 
+
+# endregion
+
+
+# region Azure
+@st.cache_resource
+def get_blob_service_client():
+    # container_name = "word-images"
+    connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
+    # 创建 BlobServiceClient 对象
+    return BlobServiceClient.from_connection_string(connect_str)
+
+
+@st.cache_resource
+def get_blob_container_client(container_name):
+    # 创建 BlobServiceClient 对象
+    blob_service_client = get_blob_service_client()
+    # 获取 ContainerClient 对象
+    return blob_service_client.get_container_client(container_name)
+
+
+# endregion
 
 # region 播放显示
 
@@ -346,6 +364,13 @@ def autoplay_audio_and_display_text(
     elem.markdown(accumulated_text)
     # time.sleep(1)
     # st.rerun()
+
+
+def update_sidebar_status(sidebar_status):
+    sidebar_status.markdown(
+        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
+        help=TOEKN_HELP_INFO,
+    )
 
 
 # endregion

@@ -16,18 +16,15 @@ from mypylib.google_ai import (
     get_duration_from_url,
     load_vertex_model,
     parse_generated_content_and_update_token,
-    part_to_dict,
-    to_contents_info,
 )
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
-    TOEKN_HELP_INFO,
     check_access,
     check_and_force_logout,
     configure_google_apis,
-    format_token_count,
     on_page_to,
     setup_logger,
+    update_sidebar_status,
 )
 
 # region 页面设置
@@ -352,11 +349,7 @@ if menu == "聊天机器人":
         for his in st.session_state.chat.history[:num]:
             st.write(f"**{his.role}**：{his.parts[0].text}")
 
-    # sidebar_status = st.sidebar.empty()
-    sidebar_status.markdown(
-        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-        help=TOEKN_HELP_INFO,
-    )
+    update_sidebar_status(sidebar_status)
     # endregion
 
     # region 认证及强制退出
@@ -402,10 +395,7 @@ if menu == "聊天机器人":
                 stream=True,
                 placeholder=message_placeholder,
             )
-        sidebar_status.markdown(
-            f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-            help=TOEKN_HELP_INFO,
-        )
+        update_sidebar_status(sidebar_status)
 
     # endregion
 
@@ -470,10 +460,7 @@ elif menu == "多模态AI":
         help="✨ 停止序列是一连串字符（包括空格），如果模型中出现停止序列，则会停止生成回复。该序列不包含在回复中。您最多可以添加五个停止序列。",
     )
     # sidebar_status = st.sidebar.empty()
-    sidebar_status.markdown(
-        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-        help=TOEKN_HELP_INFO,
-    )
+    update_sidebar_status(sidebar_status)
 
     # endregion
 
@@ -665,10 +652,7 @@ elif menu == "多模态AI":
                     contents,
                     col2.empty(),
                 )
-            sidebar_status.markdown(
-                f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-                help=TOEKN_HELP_INFO,
-            )
+            update_sidebar_status(sidebar_status)
 
 # endregion
 
@@ -677,10 +661,7 @@ elif menu == "多模态AI":
 elif menu == "示例教程":
     # region 边栏
     # sidebar_status = st.sidebar.empty()
-    sidebar_status.markdown(
-        f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-        help=TOEKN_HELP_INFO,
-    )
+    update_sidebar_status(sidebar_status)
     # endregion
 
     # region 主页

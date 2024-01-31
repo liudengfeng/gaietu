@@ -32,7 +32,6 @@ from mypylib.google_ai import (
 )
 from mypylib.st_helper import (
     PRONUNCIATION_SCORE_BADGE_MAPS,
-    TOEKN_HELP_INFO,
     WORD_COUNT_BADGE_MAPS,
     autoplay_audio_and_display_text,
     check_access,
@@ -44,7 +43,6 @@ from mypylib.st_helper import (
     pronunciation_assessment_for,
     update_and_display_progress,
     end_and_save_learning_records,
-    format_token_count,
     get_synthesis_speech,
     is_answer_correct,
     is_aside,
@@ -52,6 +50,7 @@ from mypylib.st_helper import (
     process_learning_record,
     setup_logger,
     translate_text,
+    update_sidebar_status,
     view_md_badges,
 )
 from mypylib.utils import combine_audio_data
@@ -92,7 +91,11 @@ def on_menu_changed():
 
 
 menu = st.sidebar.radio(
-    "菜单", menu_opts, key="menu-radio", help="✨ 请选择您要进行的练习项目", on_change=on_menu_changed
+    "菜单",
+    menu_opts,
+    key="menu-radio",
+    help="✨ 请选择您要进行的练习项目",
+    on_change=on_menu_changed,
 )
 
 st.sidebar.divider()
@@ -402,7 +405,9 @@ def play_and_record_dialogue(
 
     # 记录学习时长
     word_count = len(sentence.split())
-    record = create_learning_record("听说练习", difficulty, selected_scenario, word_count)
+    record = create_learning_record(
+        "听说练习", difficulty, selected_scenario, word_count
+    )
     process_learning_record(record, "listening-learning-times")
 
 
@@ -677,10 +682,7 @@ if "listening-pronunciation-assessment" not in st.session_state:
 
 # region 通用
 
-sidebar_status.markdown(
-    f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
-    help=TOEKN_HELP_INFO,
-)
+update_sidebar_status(sidebar_status)
 
 if "stage" not in st.session_state:
     st.session_state["stage"] = 0
@@ -717,7 +719,13 @@ if menu is not None and menu.endswith("听说练习"):
     with listening_tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
         st.markdown("依次执行以下步骤，生成听说练习模拟场景。")
-        steps = ["1. CEFR等级", "2. 场景类别", "3. 选择场景", "4. 添加情节", "5. 预览场景"]
+        steps = [
+            "1. CEFR等级",
+            "2. 场景类别",
+            "3. 选择场景",
+            "4. 添加情节",
+            "5. 预览场景",
+        ]
         sub_tabs = st.tabs(steps)
         scenario_category = None
         selected_scenario = None
@@ -758,7 +766,9 @@ if menu is not None and menu.endswith("听说练习"):
                 icon="🚨",
             )
             if st.session_state.stage == 2 or scenario_category is not None:
-                if st.button("刷新[:arrows_counterclockwise:]", key="generate-scenarios"):
+                if st.button(
+                    "刷新[:arrows_counterclockwise:]", key="generate-scenarios"
+                ):
                     st.session_state["scenario-list"] = generate_scenarios_for(
                         scenario_category
                     )
@@ -776,7 +786,10 @@ if menu is not None and menu.endswith("听说练习"):
                 )
 
         with sub_tabs[3]:
-            st.info("第四步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
+            st.info(
+                "第四步：可选。可在文本框内添加一些有趣的情节以丰富听力练习材料。如果您想跳过这一步，可以选择'跳过'。",
+                icon="🚨",
+            )
             ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 4
@@ -849,7 +862,10 @@ if menu is not None and menu.endswith("听说练习"):
 您可以通过反复播放和跟读每条对话样例来提升您的听力和口语技能。点击 '全文[🎞️]' 可以一次性收听整个对话。另外，您可以通过点击左侧的按钮调整合成语音的风格，以更好地适应您的听力习惯。      
 """
         )
-        st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
+        st.warning(
+            "请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。",
+            icon="🚨",
+        )
         with st.expander("✨ 跟读录音提示", expanded=False):
             st.markdown(
                 """\
@@ -949,11 +965,11 @@ if menu is not None and menu.endswith("听说练习"):
             reference_text = reference_text.replace("**", "")
             reference_text = re.sub(r"^\w+:\s", "", reference_text)
             start = datetime.now(pytz.UTC)
-            st.session_state[
-                "listening-pronunciation-assessment"
-            ] = pronunciation_assessment_for(
-                audio_info,
-                reference_text,
+            st.session_state["listening-pronunciation-assessment"] = (
+                pronunciation_assessment_for(
+                    audio_info,
+                    reference_text,
+                )
             )
 
             display_assessment_score(
@@ -1077,12 +1093,16 @@ if menu is not None and menu.endswith("听说练习"):
 
         cols = st.columns(2)
         update_and_display_progress(
-            st.session_state["listening-test-idx"] + 1
-            if st.session_state["listening-test-idx"] != -1
-            else 0,
-            len(st.session_state["listening-test"])
-            if len(st.session_state["listening-test"]) != 0
-            else 1,
+            (
+                st.session_state["listening-test-idx"] + 1
+                if st.session_state["listening-test-idx"] != -1
+                else 0
+            ),
+            (
+                len(st.session_state["listening-test"])
+                if len(st.session_state["listening-test"]) != 0
+                else 1
+            ),
             cols[0].empty(),
         )
 
@@ -1219,8 +1239,28 @@ if menu is not None and menu.endswith("阅读练习"):
 
     # region "配置场景"
 
-    GENRES = ["记叙文", "说明文", "议论文", "应用文", "新闻报道", "人物传记", "艺术评论", "科研报告"]
-    CONTENTS = ["社会", "文化", "科技", "经济", "历史", "政治", "艺术", "自然", "体育", "教育"]
+    GENRES = [
+        "记叙文",
+        "说明文",
+        "议论文",
+        "应用文",
+        "新闻报道",
+        "人物传记",
+        "艺术评论",
+        "科研报告",
+    ]
+    CONTENTS = [
+        "社会",
+        "文化",
+        "科技",
+        "经济",
+        "历史",
+        "政治",
+        "艺术",
+        "自然",
+        "体育",
+        "教育",
+    ]
 
     GENRES_EN = [
         "Narrative",
@@ -1294,7 +1334,10 @@ if menu is not None and menu.endswith("阅读练习"):
                 )
 
         with sub_tabs[2]:
-            st.info("第三步：可选。可在文本框内添加一些有趣的情节以丰富练习材料。如果您想跳过这一步，可以选择'跳过'。", icon="🚨")
+            st.info(
+                "第三步：可选。可在文本框内添加一些有趣的情节以丰富练习材料。如果您想跳过这一步，可以选择'跳过'。",
+                icon="🚨",
+            )
             ignore = st.toggle("跳过", key="add_interesting_plot", value=True)
             if ignore:
                 st.session_state.stage = 3
@@ -1372,7 +1415,10 @@ if menu is not None and menu.endswith("阅读练习"):
 您可以通过反复阅读和理解文章来提升您的阅读理解技能。点击`全文`可以一次性阅读整篇文章。另外，您可以通过点击左侧的按钮调整合成语音风格，以更好地适应您的听力习惯。
 """
         )
-        st.warning("请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。", icon="🚨")
+        st.warning(
+            "请注意，练习过程中会使用喇叭播放音频。为了避免音量过大或过小影响您的体验，请提前调整到适合的音量。",
+            icon="🚨",
+        )
         if len(st.session_state["reading-article"]) == 0:
             st.warning("请先配置阅读材料")
             st.stop()
@@ -1495,12 +1541,16 @@ if menu is not None and menu.endswith("阅读练习"):
 
         cols = st.columns(2)
         update_and_display_progress(
-            st.session_state["reading-test-idx"] + 1
-            if st.session_state["reading-test-idx"] != -1
-            else 0,
-            len(st.session_state["reading-test"])
-            if len(st.session_state["reading-test"]) != 0
-            else 1,
+            (
+                st.session_state["reading-test-idx"] + 1
+                if st.session_state["reading-test-idx"] != -1
+                else 0
+            ),
+            (
+                len(st.session_state["reading-test"])
+                if len(st.session_state["reading-test"]) != 0
+                else 1
+            ),
             cols[0].empty(),
         )
 
