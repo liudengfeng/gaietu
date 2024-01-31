@@ -1494,7 +1494,7 @@ elif menu and menu.endswith("词库管理"):
                 word = base_lib_df.iloc[idx]["单词"]  # type: ignore
                 to_add.append(word)
             st.session_state.dbi.add_words_to_personal_dictionary(to_add)
-            logger.info(f"已添加到个人词库中：{to_add}。")
+            # logger.info(f"已添加到个人词库中：{to_add}。")
 
     if del_lib_btn:
         if del_lib_btn and st.session_state.get("my_word_lib", {}).get(
@@ -1507,7 +1507,7 @@ elif menu and menu.endswith("词库管理"):
                 word = lib_df.iloc[idx]["单词"]  # type: ignore
                 to_del.append(word)
             st.session_state.dbi.remove_words_from_personal_dictionary(to_del)
-            logger.info(f"从个人词库中已经删除：{to_del}。")
+            # logger.info(f"从个人词库中已经删除：{to_del}。")
 
     if view_lib_btn:
         df = get_my_word_lib()

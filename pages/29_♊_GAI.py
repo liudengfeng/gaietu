@@ -357,10 +357,6 @@ if menu == "聊天机器人":
         f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
         help=TOEKN_HELP_INFO,
     )
-    # TODO
-    logger.info(
-        f"令牌：{st.session_state.current_token_count} 累计：{st.session_state.total_token_count}"
-    )
     # endregion
 
     # region 认证及强制退出

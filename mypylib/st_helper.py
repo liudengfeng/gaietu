@@ -600,10 +600,6 @@ def left_paragraph_aligned_text(text1, words):
     lines1 = [len(p.split("\n")) for p in paragraphs1]
     lines2 = [len(p.split("\n")) for p in paragraphs2]
 
-    # 观察二者数量差异
-    logger.info(f"lines1: {len(lines1)=}")
-    logger.info(f"lines2: {len(lines2)=}")
-
     # 添加空白行
     for i in range(min(len(lines1), len(lines2))):
         diff = lines2[i] - lines1[i]
