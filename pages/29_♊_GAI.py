@@ -15,6 +15,7 @@ from mypylib.google_ai import (
     display_generated_content_and_update_token,
     get_duration_from_url,
     load_vertex_model,
+    parse_generated_content_and_update_token,
     part_to_dict,
     to_contents_info,
 )
@@ -165,30 +166,24 @@ def dict_to_part_info(d):
 
 @st.cache_data
 def display_generated_content_for(
-    item_name, model_name, config, content_dict_list: List[dict], stream, _placeholder
+    item_name, model_name, config, content_dict_list: List[dict],
 ):
     # _placeholder 前缀 _ 表示不会缓存
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         **config,
     )
-    if len(content_dict_list) == 1 and "uploaded_files" in content_dict_list[0]:
-        contents_info = process_files_and_prompt(
-            content_dict_list[0]["uploaded_files"], content_dict_list[0]["prompt"]
-        )
-    else:
-        contents_info = []
-        for d in content_dict_list:
-            contents_info.append(dict_to_part_info(d))
-
-    display_generated_content_and_update_token(
+    contents_info = []
+    for d in content_dict_list:
+        contents_info.append(dict_to_part_info(d))
+    return parse_generated_content_and_update_token(
         item_name,
         model_name,
         model.generate_content,
         contents_info,
         generation_config,
-        stream=stream,
-        placeholder=_placeholder,
+        stream=False,
+        parser=lambda x: x,
     )
 
 
@@ -648,7 +643,7 @@ elif menu == "多模态AI":
                 "top_k": st.session_state["top_k"],
                 "max_output_tokens": st.session_state["max_output_tokens"],
             }
-            with st.spinner(f"正在使用多模态生成..."):
+            with st.spinner(f"正在运行多模态模型..."):
                 generate_content_from_files_and_prompt(
                     contents,
                     col2.empty(),
@@ -762,23 +757,16 @@ elif menu == "示例教程":
                 )
                 with first_tab1:
                     placeholder = st.empty()
-                    contents_info = [
-                        {
-                            "part": Part.from_text(prompt),
-                            "mime_type": "text",
-                        },
-                    ]
                     content_dict_list = [{"text": prompt}]
                     item_name = "演示：生成故事"
                     with st.spinner(f"使用多模态完成任务：{item_name}..."):
-                        display_generated_content_for(
+                        full_response=display_generated_content_for(
                             item_name,
                             "gemini-pro",
                             config,
                             content_dict_list,
-                            stream=True,
-                            _placeholder=placeholder,
                         )
+                    placeholder.markdown(full_response)
                 with first_tab2:
                     st.text(prompt)
                 with first_tab3:
