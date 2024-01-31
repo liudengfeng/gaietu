@@ -4,6 +4,7 @@ import mimetypes
 import tempfile
 import time
 from pathlib import Path
+from typing import List
 
 import streamlit as st
 from moviepy.editor import VideoFileClip
@@ -155,19 +156,19 @@ def process_files_and_prompt(uploaded_files, prompt):
 
 @st.cache_data
 def display_generated_content_for(
-    model_name, config, content_dict: dict, stream, _placeholder
+    item_name, model_name, config, content_dict: List[dict], stream, _placeholder
 ):
+    # _placeholder 前缀 _ 表示不会缓存
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         **config,
     )
-    if "uploaded_files" in content_dict:
+    if len(content_dict) == 1 and "uploaded_files" in content_dict[0]:
         contents_info = process_files_and_prompt(
             content_dict["uploaded_files"], content_dict["prompt"]
         )
-        logger.info(contents_info)
     display_generated_content_and_update_token(
-        "多模态AI",
+        item_name,
         model_name,
         model.generate_content,
         contents_info,
@@ -633,12 +634,12 @@ elif menu == "多模态AI":
                 "top_k": st.session_state["top_k"],
                 "max_output_tokens": st.session_state["max_output_tokens"],
             }
-            # generate_content_from_files_and_prompt(contents, col2.empty())
             contents_dict = {"uploaded_files": uploaded_files, "prompt": prompt}
             display_generated_content_for(
+                "多模态AI",
                 "gemini-pro-vision",
                 config,
-                contents_dict,
+                [contents_dict],
                 stream=True,
                 _placeholder=col2.empty(),
             )
