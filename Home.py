@@ -285,7 +285,7 @@ st.markdown(
 
 **Gaietu**是一款功能强大的英语学习app，它使用最新AI技术和微软发音评估技术，可以帮助你快速提升英语水平。
 
-LinGoo，让你学好英语，so easy！
+**Gaietu**，让你学好英语，so easy！
 """,
     unsafe_allow_html=True,
 )
