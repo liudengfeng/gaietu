@@ -90,6 +90,15 @@ ai_container = w_cols[2].container(border=True)
 
 w_btn_cols = st.columns(8)
 
+if w_btn_cols[0].button(
+    "刷新[:arrows_counterclockwise:]",
+    key="refresh",
+    help="✨ 点击按钮，开始新一轮练习。",
+):
+    text = ""
+    suggestions.empty()
+    ai_container.empty()
+    initialize_writing_chat()
 
 # st.markdown(
 #     """
