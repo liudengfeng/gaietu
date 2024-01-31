@@ -1177,11 +1177,10 @@ elif menu == "示例教程":
             if vide_desc_uri:
                 vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
                 st.video(video_desc_url)
-                
-                st.write("字典", dir(vide_desc_img))
+                st.write("字典", vide_desc_img._raw_part)
                 # st.write("字典", vide_desc_img.to_dict())
                 # st.write("视频时长", get_video_duration(vide_desc_img))
-                
+
                 st.write("我们的期望：生成视频的描述")
                 prompt = """描述视频中发生的事情并回答以下问题：\n
 - 我在看什么？ \n
