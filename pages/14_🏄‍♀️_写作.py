@@ -39,6 +39,6 @@ actions = w_cols[2].container(border=True)
 
 w_btn_cols = st.columns(8)
 
-st.markdown("<u>word</u> ~~misspelled~~ grammar style")
+st.markdown("<u>word</u> ~~misspelled~~ grammar style", unsafe_allow_html=True)
 
 # endregion
