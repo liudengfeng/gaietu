@@ -27,7 +27,6 @@ cryptography==41.0.7
 cycler==0.12.1
 cymem==2.0.8
 debugpy==1.8.0
-decorator==5.1.1
 dnspython==2.4.2
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl#sha256=86cc141f63942d4b2c5fcee06630fd6f904788d2f0ab005cce45aadb8fb73889
 executing==2.0.1
@@ -56,9 +55,6 @@ grpcio==1.60.0
 grpcio-status==1.60.0
 idna==3.6
 importlib-metadata==7.0.1
-ipykernel==6.29.0
-ipython==8.20.0
-ipywidgets==8.1.1
 isodate==0.6.1
 jedi==0.19.1
 jieba==0.42.1
@@ -156,7 +152,6 @@ wcwidth==0.2.13
 weasel==0.3.4
 Werkzeug==3.0.1
 wheel==0.42.0
-widgetsnbextension==4.0.9
 zhon==2.0.2
 zipp==3.17.0
 st-annotated-text==4.0.1
