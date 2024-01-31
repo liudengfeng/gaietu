@@ -862,9 +862,8 @@ class DbInterface:
         phone_number = self.cache["user_info"]["phone_number"]
         batch = self.db.batch()
 
-        for usage in usage_list:
-            doc_ref = self.db.collection("usages").document(phone_number)
-            batch.set(doc_ref, {"usages": firestore.ArrayUnion(usage)}, merge=True)
+        doc_ref = self.db.collection("usages").document(phone_number)
+        batch.set(doc_ref, {"usages": firestore.ArrayUnion(usage_list)}, merge=True)
 
         batch.commit()
 
