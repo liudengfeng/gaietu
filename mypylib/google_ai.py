@@ -60,9 +60,11 @@ def calculate_gemini_pro_cost(
     video_cost = 0.002 * video_seconds
     input_text_cost = 0.00025 * (input_characters / 1000)
     output_text_cost = 0.0005 * (output_characters / 1000)
-
+    logger.info(
+        f"{image_cost=:.4f}, {video_cost=:.4f}, {input_text_cost=:.4f}, {output_text_cost=:.4f}"
+    )
     total_cost = image_cost + video_cost + input_text_cost + output_text_cost
-    # 暂时按照8倍计算
+
     return total_cost * USD_TO_CNY_EXCHANGE_RATE
 
 
