@@ -154,6 +154,20 @@ def process_files_and_prompt(uploaded_files, prompt):
     return contents_info
 
 
+@st.cache_data
+def display_generated_content_for(model_name, config, contents, stream, placeholder):
+    model = load_vertex_model(model_name)
+    display_generated_content_and_update_token(
+        "多模态AI",
+        model_name,
+        model.generate_content,
+        contents,
+        config,
+        stream=stream,
+        placeholder=placeholder,
+    )
+
+
 def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
@@ -604,7 +618,14 @@ elif menu == "多模态AI":
             response_container.empty()
             col1, col2 = response_container.columns([1, 1])
             view_example(contents, col1)
-            generate_content_from_files_and_prompt(contents, col2.empty())
+            generation_config = GenerationConfig(
+                temperature=st.session_state["temperature"],
+                top_p=st.session_state["top_p"],
+                top_k=st.session_state["top_k"],
+                max_output_tokens=st.session_state["max_output_tokens"],
+            )
+            # generate_content_from_files_and_prompt(contents, col2.empty())
+            display_generated_content_for("gemini-pro-vision", generation_config, contents, stream=True, placeholder=col2.empty())
             sidebar_status.markdown(
                 f"""令牌：{st.session_state.current_token_count} 累计：{format_token_count(st.session_state.total_token_count)}""",
                 help=TOEKN_HELP_INFO,
@@ -1342,7 +1363,9 @@ elif menu == "示例教程":
                         new_contents = [
                             prompt,
                             part_to_dict(
-                                video_highlights_img, mime_type="video/mp4", duration=duation
+                                video_highlights_img,
+                                mime_type="video/mp4",
+                                duration=duation,
                             ),
                         ]
                         with st.spinner("使用 Gemini 生成视频集锦..."):
@@ -1405,7 +1428,9 @@ elif menu == "示例教程":
                         new_contents = [
                             prompt,
                             part_to_dict(
-                                video_geoloaction_img, mime_type="video/mp4", duration=duation
+                                video_geoloaction_img,
+                                mime_type="video/mp4",
+                                duration=duation,
                             ),
                         ]
                         with st.spinner("使用 Gemini 生成位置标签..."):
