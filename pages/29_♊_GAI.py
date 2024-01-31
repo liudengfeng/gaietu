@@ -550,6 +550,7 @@ elif menu == "多模态AI":
             max_chars=12288,
             height=300,
         )
+        status = st.empty()
         tab0_btn_cols = st.columns([1, 1, 1, 7])
         # help="模型可以接受多个输入，以用作示例来了解您想要的输出。添加这些样本有助于模型识别模式，并将指定图片和响应之间的关系应用于新样本。这也称为少量样本学习。示例之间，添加'<>'符号用于分隔。"
         cls_btn = tab0_btn_cols[0].button(
@@ -578,9 +579,9 @@ elif menu == "多模态AI":
 
         if submitted:
             if uploaded_files is None or len(uploaded_files) == 0:  # type: ignore
-                st.warning("您是否忘记了上传图片或视频？")
+                status.warning("您是否忘记了上传图片或视频？")
             if not prompt:
-                st.error("请添加提示词")
+                status.error("请添加提示词")
                 st.stop()
             contents = process_files_and_prompt(uploaded_files, prompt)
             response_container.empty()
