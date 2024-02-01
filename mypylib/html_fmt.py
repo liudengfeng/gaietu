@@ -2,9 +2,12 @@ import difflib
 import streamlit as st
 
 
-def view_error_counts_legend(session_state_key: str):
+def view_error_counts_legend(session_state_key: str, idx=-1):
+    if idx:
+        d = st.session_state[session_state_key].get(idx, {}).get("error_counts", {})
+    else:
+        d = st.session_state[session_state_key].get("error_counts", {})
     st.markdown("##### 图例")
-    d = st.session_state[session_state_key].get("error_counts", {})
     n1 = d.get("Mispronunciation", 0)
     st.markdown(
         f"<span style='color: black; background-color: #F5F5DC; margin-right: 10px;'>{n1}</span> <span>发音错误</span>",

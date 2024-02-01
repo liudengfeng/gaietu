@@ -371,9 +371,10 @@ if menu and menu.endswith("发音评估"):
     legend_container = content_cols[2].container(border=True)
 
     with legend_container:
-        # st.markdown("##### 图例")
-        # view_pronunciation_assessment_legend()
-        view_error_counts_legend("pa-assessment")
+        if st.session_state["pa-idx"] == -1:
+            view_error_counts_legend("pa-assessment-dict")
+        else:
+            view_error_counts_legend("pa-assessment-dict", st.session_state["pa-idx"])
 
     if pa_refresh_btn:
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
@@ -598,7 +599,7 @@ if menu and menu.endswith("口语能力"):
     with oa_legend_container:
         # st.markdown("##### 图例")
         # view_pronunciation_assessment_legend()
-        view_error_counts_legend("pa-assessment")
+        view_error_counts_legend("oa-assessment")
 
     if oa_refresh_btn:
         st.session_state["oa-topic-options"] = generate_oral_ability_topics_for(
