@@ -25,7 +25,7 @@ setup_logger(logger)
 
 st.set_page_config(
     page_title="写作练习",
-    page_icon=":muscle:",
+    page_icon="🏄‍♀️",
     layout="wide",
 )
 
