@@ -143,6 +143,7 @@ def check_grammar(paragraph):
 def display_grammar_errors(original, corrected, explanation):
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
+    explanation = explanation.replace("'", "&#39;").replace('"', "&quot;")
 
     result = []
     for i in range(len(diff)):
