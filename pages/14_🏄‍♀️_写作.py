@@ -106,63 +106,28 @@ def check_grammar(paragraph):
     )
 
 
-# def display_grammar_errors(original, corrected, explanations):
-#     diff = difflib.ndiff(original.split(), corrected.split())
-#     diff = list(diff)  # 生成列表
-
-#     result = []
-#     explanation_index = 0
-#     for i in range(len(diff)):
-#         explanation = (
-#             explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
-#             if explanation_index < len(explanations)
-#             else "No explanation available"
-#         )
-#         if diff[i][0] == "-":
-#             result.append(
-#                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
-#             )
-#             if i + 1 < len(diff) and diff[i + 1][0] == "+":
-#                 result.append(
-#                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
-#                 )
-#                 i += 1  # 跳过下一个元素
-#             explanation_index += 1
-#         elif diff[i][0] == "+":
-#             if i == 0 or diff[i - 1][0] != "-":
-#                 result.append(
-#                     f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
-#                 )
-#                 explanation_index += 1
-#         else:
-#             result.append(f"<span>{diff[i][2:]}</span>")
-
-#     return " ".join(result)
-
-
 def display_grammar_errors(original, corrected, explanation):
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
-    explanation = explanation.replace("'", "&#39;").replace('"', "&quot;")
 
     result = []
     for i in range(len(diff)):
         if diff[i][0] == "-":
             result.append(
-                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
+                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
             )
             if i + 1 < len(diff) and diff[i + 1][0] == "+":
                 result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
                 )
                 i += 1  # 跳过下一个元素
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
                 result.append(
-                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
+                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
                 )
         else:
-            result.append(f"<span>{diff[i][2:]}</span>")
+            result.append(f"<span>{diff[i][2:].lstrip()}</span>")
 
     return " ".join(result)
 
@@ -211,40 +176,6 @@ if w_btn_cols[0].button(
     initialize_writing_chat()
 
 
-# test_cases = [
-#     {
-#         "original": "I want to be a baseball player.",
-#         "corrected": "I want to become a baseball player.",
-#         "explanations": [
-#             "Use 'become' instead of 'be' to indicate a change in status or condition."
-#         ],
-#     },
-#     {
-#         "original": "I want to a baseball player.",
-#         "corrected": "I want to be a baseball player.",
-#         "explanations": ["Missing verb 'be' in the sentence."],
-#     },
-#     {
-#         "original": "I want to be be a baseball player.",
-#         "corrected": "I want to be a baseball player.",
-#         "explanations": ["Extra verb 'be' in the sentence."],
-#     },
-#     {
-#         "original": "I has a baseball.",
-#         "corrected": "I have a baseball.",
-#         "explanations": ["Use 'have' instead of 'has' after 'I'."],
-#     },
-# ]
-# test_cases.append(
-#     {
-#         "original": "I has a baseball in my home.",
-#         "corrected": "I have a baseball at my home.",
-#         "explanations": [
-#             "Use 'have' instead of 'has' after 'I'.",
-#             "Use 'at' instead of 'in' when referring to a location.",
-#         ],
-#     }
-# )
 test_cases = [
     {
         "original": "I has a baseball.",
