@@ -103,39 +103,6 @@ def check_grammar(paragraph):
     )
 
 
-def display_grammar_errors(original, corrected, explanations):
-    diff = difflib.ndiff(original.split(), corrected.split())
-    diff = list(diff)  # 生成列表
-
-    result = []
-    explanation_index = 0
-    for i in range(len(diff)):
-        explanation = (
-            explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
-            if explanation_index < len(explanations)
-            else "No explanation available"
-        )
-        if diff[i][0] == "-":
-            result.append(
-                f"<del style='color:red;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</del>"
-            )
-            if i + 1 < len(diff) and diff[i + 1][0] == "+":
-                result.append(
-                    f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>[{diff[i + 1][2:]}]</ins>"
-                )
-                i += 1
-            explanation_index += 1
-        elif diff[i][0] == "+":
-            result.append(
-                f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</ins>"
-            )
-            explanation_index += 1
-        else:
-            result.append(f"<span>{diff[i][2:]}</span>")
-
-    return " ".join(result)
-
-
 # endregion
 
 # region 主体
@@ -178,6 +145,41 @@ if w_btn_cols[0].button(
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
+
+
+def display_grammar_errors(original, corrected, explanations):
+    diff = difflib.ndiff(original.split(), corrected.split())
+    diff = list(diff)  # 生成列表
+
+    result = []
+    explanation_index = 0
+    for i in range(len(diff)):
+        explanation = (
+            explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
+            if explanation_index < len(explanations)
+            else "No explanation available"
+        )
+        if diff[i][0] == "-":
+            result.append(
+                f"<del style='color:red;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</del>"
+            )
+            if i + 1 < len(diff) and diff[i + 1][0] == "+":
+                result.append(
+                    f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>[{diff[i + 1][2:]}]</ins>"
+                )
+                i += 1  # 跳过下一个元素
+            explanation_index += 1
+        elif diff[i][0] == "+":
+            if i > 0 and diff[i - 1][0] != "-":
+                result.append(
+                    f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</ins>"
+                )
+            explanation_index += 1
+        else:
+            result.append(f"<span>{diff[i][2:]}</span>")
+
+    return " ".join(result)
+
 
 test_cases = [
     {
