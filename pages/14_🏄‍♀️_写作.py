@@ -1,6 +1,6 @@
 import difflib
 import logging
-
+import spacy
 import streamlit as st
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
 
@@ -106,18 +106,46 @@ def check_grammar(paragraph):
     )
 
 
-def display_grammar_errors(original, corrected, explanations):
+# def display_grammar_errors(original, corrected, explanations):
+#     diff = difflib.ndiff(original.split(), corrected.split())
+#     diff = list(diff)  # 生成列表
+
+#     result = []
+#     explanation_index = 0
+#     for i in range(len(diff)):
+#         explanation = (
+#             explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
+#             if explanation_index < len(explanations)
+#             else "No explanation available"
+#         )
+#         if diff[i][0] == "-":
+#             result.append(
+#                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
+#             )
+#             if i + 1 < len(diff) and diff[i + 1][0] == "+":
+#                 result.append(
+#                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
+#                 )
+#                 i += 1  # 跳过下一个元素
+#             explanation_index += 1
+#         elif diff[i][0] == "+":
+#             if i == 0 or diff[i - 1][0] != "-":
+#                 result.append(
+#                     f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
+#                 )
+#                 explanation_index += 1
+#         else:
+#             result.append(f"<span>{diff[i][2:]}</span>")
+
+#     return " ".join(result)
+
+
+def display_grammar_errors(original, corrected, explanation):
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
 
     result = []
-    explanation_index = 0
     for i in range(len(diff)):
-        explanation = (
-            explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
-            if explanation_index < len(explanations)
-            else "No explanation available"
-        )
         if diff[i][0] == "-":
             result.append(
                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
@@ -127,13 +155,11 @@ def display_grammar_errors(original, corrected, explanations):
                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
                 )
                 i += 1  # 跳过下一个元素
-            explanation_index += 1
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
                 result.append(
                     f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
                 )
-                explanation_index += 1
         else:
             result.append(f"<span>{diff[i][2:]}</span>")
 
@@ -218,22 +244,63 @@ if w_btn_cols[0].button(
 #         ],
 #     }
 # )
+test_cases = [
+    {
+        "original": "I has a baseball.",
+        "corrected": "I have a baseball.",
+        "explanation": "Use 'have' instead of 'has' after 'I'.",
+    },
+    {
+        "original": "I has a baseball in my home.",
+        "corrected": "I have a baseball at my home.",
+        "explanation": "Use 'have' instead of 'has' after 'I'. Use 'at' instead of 'in' when referring to a location.",
+    },
+    {
+        "original": "She don't like apples.",
+        "corrected": "She doesn't like apples.",
+        "explanation": "Use 'doesn't' instead of 'don't' after 'She'.",
+    },
+    {
+        "original": "He can plays the guitar.",
+        "corrected": "He can play the guitar.",
+        "explanation": "Use 'play' instead of 'plays' after 'can'.",
+    },
+    {
+        "original": "They enjoys playing football.",
+        "corrected": "They enjoy playing football.",
+        "explanation": "Use 'enjoy' instead of 'enjoys' after 'They'.",
+    },
+]
+
 
 if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     suggestions.empty()
-    paragraphs = text.split("\n")
-    for paragraph in paragraphs:
-        result = check_grammar(paragraph)
-        suggestions.write(result)
+    for test_case in test_cases:
+        suggestions.markdown(
+            display_grammar_errors(
+                test_case["original"], test_case["corrected"], test_case["explanation"]
+            ),
+            unsafe_allow_html=True,
+        )
+
+    # nlp = spacy.load("en_core_web_sm")
+    # paragraphs = text.split("\n")
+    # paragraphs_check = []
+    # for paragraph in paragraphs:
+    #     paragraphs_check.append(check_grammar(paragraph))
     # html = ""
-    # for check in result:
-    #     html += display_grammar_errors(
-    #         check["original"], check["corrected"], check["explanations"]
-    #     )
-    # suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
-    update_sidebar_status(sidebar_status)
+    # for paragraph, check in zip(paragraphs, paragraphs_check):
+    #     sentences = paragraph.split(".")
+    #     doc = nlp(paragraph)
+    #     sentences = list(doc.sents)
+    #     for original, check_dict in zip(sentences, check):
+    #         html += display_grammar_errors(
+    #             original, check_dict["corrected"], check_dict["explanation"]
+    #         )
+    # # suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
+    # update_sidebar_status(sidebar_status)
 
 
 Assistant_Configuration = {
