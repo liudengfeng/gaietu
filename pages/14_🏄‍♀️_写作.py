@@ -267,9 +267,19 @@ test_cases = [
         "explanation": "Use 'play' instead of 'plays' after 'can'.",
     },
     {
+        "original": "He can play play the guitar.",
+        "corrected": "He can play the guitar.",
+        "explanation": "Remove the extra 'play' before 'play'.",
+    },
+    {
         "original": "They enjoys playing football.",
         "corrected": "They enjoy playing football.",
         "explanation": "Use 'enjoy' instead of 'enjoys' after 'They'.",
+    },
+    {
+        "original": "They enjoy football.",
+        "corrected": "They enjoy playing football.",
+        "explanation": "Add 'playing' before 'football' to indicate the action.",
     },
 ]
 
