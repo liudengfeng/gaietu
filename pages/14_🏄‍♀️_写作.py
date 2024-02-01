@@ -79,7 +79,7 @@ GRAMMAR_CHECK_CONFIG = (
 
 
 def check_grammar(paragraph):
-    prompt = paragraph + f"{paragraph} \n" + GRAMMAR_CHECK_TEMPLATE
+    prompt = f"{paragraph} \n" + GRAMMAR_CHECK_TEMPLATE
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
