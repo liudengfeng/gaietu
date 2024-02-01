@@ -76,7 +76,7 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 You are an English grammar expert, please strictly check the grammar of each sentence. \
-"If a sentence is grammatically correct, represent it with an empty dictionary '{}'. Otherwise, represent the check result with a dictionary with 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys."\
+If a sentence is grammatically correct, represent it with an empty list '[]'. Otherwise, represent the check result with a list of dictionaries, each containing 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys.\
 All check results form a list. Output in JSON format."""
 
 GRAMMAR_CHECK_CONFIG = (
@@ -101,6 +101,40 @@ def check_grammar(paragraph):
         stream=False,
         # parser=parse_json_string,
     )
+
+
+def display_grammar_errors(original, corrected, explanations):
+    diff = difflib.ndiff(original.split(), corrected.split())
+    diff = list(diff)  # 生成列表
+
+    result = []
+    explanation_index = 0
+    for i in range(len(diff)):
+        explanation = (
+            explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
+            if explanation_index < len(explanations)
+            else "No explanation available"
+        )
+        if diff[i][0] == "-":
+            result.append(
+                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
+            )
+            if i + 1 < len(diff) and diff[i + 1][0] == "+":
+                result.append(
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
+                )
+                i += 1  # 跳过下一个元素
+            explanation_index += 1
+        elif diff[i][0] == "+":
+            if i == 0 or diff[i - 1][0] != "-":
+                result.append(
+                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
+                )
+                explanation_index += 1
+        else:
+            result.append(f"<span>{diff[i][2:]}</span>")
+
+    return " ".join(result)
 
 
 # endregion
@@ -147,74 +181,40 @@ if w_btn_cols[0].button(
     initialize_writing_chat()
 
 
-def display_grammar_errors(original, corrected, explanations):
-    diff = difflib.ndiff(original.split(), corrected.split())
-    diff = list(diff)  # 生成列表
-
-    result = []
-    explanation_index = 0
-    for i in range(len(diff)):
-        explanation = (
-            explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
-            if explanation_index < len(explanations)
-            else "No explanation available"
-        )
-        if diff[i][0] == "-":
-            result.append(
-                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
-            )
-            if i + 1 < len(diff) and diff[i + 1][0] == "+":
-                result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
-                )
-                i += 1  # 跳过下一个元素
-            explanation_index += 1
-        elif diff[i][0] == "+":
-            if i == 0 or diff[i - 1][0] != "-":
-                result.append(
-                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
-                )
-                explanation_index += 1
-        else:
-            result.append(f"<span>{diff[i][2:]}</span>")
-
-    return " ".join(result)
-
-
-test_cases = [
-    {
-        "original": "I want to be a baseball player.",
-        "corrected": "I want to become a baseball player.",
-        "explanations": [
-            "Use 'become' instead of 'be' to indicate a change in status or condition."
-        ],
-    },
-    {
-        "original": "I want to a baseball player.",
-        "corrected": "I want to be a baseball player.",
-        "explanations": ["Missing verb 'be' in the sentence."],
-    },
-    {
-        "original": "I want to be be a baseball player.",
-        "corrected": "I want to be a baseball player.",
-        "explanations": ["Extra verb 'be' in the sentence."],
-    },
-    {
-        "original": "I has a baseball.",
-        "corrected": "I have a baseball.",
-        "explanations": ["Use 'have' instead of 'has' after 'I'."],
-    },
-]
-test_cases.append(
-    {
-        "original": "I has a baseball in my home.",
-        "corrected": "I have a baseball at my home.",
-        "explanations": [
-            "Use 'have' instead of 'has' after 'I'.",
-            "Use 'at' instead of 'in' when referring to a location.",
-        ],
-    }
-)
+# test_cases = [
+#     {
+#         "original": "I want to be a baseball player.",
+#         "corrected": "I want to become a baseball player.",
+#         "explanations": [
+#             "Use 'become' instead of 'be' to indicate a change in status or condition."
+#         ],
+#     },
+#     {
+#         "original": "I want to a baseball player.",
+#         "corrected": "I want to be a baseball player.",
+#         "explanations": ["Missing verb 'be' in the sentence."],
+#     },
+#     {
+#         "original": "I want to be be a baseball player.",
+#         "corrected": "I want to be a baseball player.",
+#         "explanations": ["Extra verb 'be' in the sentence."],
+#     },
+#     {
+#         "original": "I has a baseball.",
+#         "corrected": "I have a baseball.",
+#         "explanations": ["Use 'have' instead of 'has' after 'I'."],
+#     },
+# ]
+# test_cases.append(
+#     {
+#         "original": "I has a baseball in my home.",
+#         "corrected": "I have a baseball at my home.",
+#         "explanations": [
+#             "Use 'have' instead of 'has' after 'I'.",
+#             "Use 'at' instead of 'in' when referring to a location.",
+#         ],
+#     }
+# )
 
 if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
