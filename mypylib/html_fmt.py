@@ -2,6 +2,9 @@ import difflib
 
 
 def display_grammar_errors(original, corrected, explanations):
+    if not explanations:  # 如果解释列表为空
+        return " ".join(f"<span>{word}</span>" for word in corrected.split())
+
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
 

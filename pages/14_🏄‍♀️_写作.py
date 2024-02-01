@@ -170,8 +170,11 @@ if w_btn_cols[1].button(
         assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
         for span, check_dict in zip(sentences, paragraphs_check):
             original = span.text
+            # check_dict 可能为空 {}
             html += display_grammar_errors(
-                original, check_dict["corrected"], check_dict["explanations"]
+                original,
+                check_dict.get("corrected", original),
+                check_dict.get("explanations", []),
             )
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
