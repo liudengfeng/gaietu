@@ -200,10 +200,10 @@ if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     suggestions.empty()
-    paragraphs = text.split("\n")
-    for paragraph in paragraphs:
-        result = check_grammar(paragraph)
-        suggestions.write(result)
+    # paragraphs = text.split("\n")
+    # for paragraph in paragraphs:
+    #     result = check_grammar(paragraph)
+    #     suggestions.write(result)
     html = ""
     for check in test_cases:
         html += display_grammar_errors(
