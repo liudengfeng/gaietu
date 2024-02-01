@@ -9,11 +9,18 @@ def display_grammar_errors(original, corrected, explanations):
     diff = list(diff)  # 生成列表
 
     result = []
+    explanations_copy = explanations.copy()  # 创建副本
+
     for i in range(len(diff)):
         if diff[i][0] == "-":
-            explanation = (
-                explanations.pop(0).replace("'", "&#39;").replace('"', "&quot;")
-            )
+            if explanations_copy:  # 检查副本是否为空
+                explanation = (
+                    explanations_copy.pop(0)
+                    .replace("'", "&#39;")
+                    .replace('"', "&quot;")
+                )
+            else:
+                explanation = "No explanation available"  # 提供一个默认的解释
             result.append(
                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
             )
