@@ -106,33 +106,6 @@ def check_grammar(paragraph):
     )
 
 
-# def display_grammar_errors(original, corrected, explanation):
-#     diff = difflib.ndiff(original.split(), corrected.split())
-#     diff = list(diff)  # 生成列表
-#     explanation = explanation.replace("'", "&#39;").replace('"', "&quot;")
-
-#     result = []
-#     for i in range(len(diff)):
-#         if diff[i][0] == "-":
-#             result.append(
-#                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
-#             )
-#             if i + 1 < len(diff) and diff[i + 1][0] == "+":
-#                 result.append(
-#                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
-#                 )
-#                 i += 1  # 跳过下一个元素
-#         elif diff[i][0] == "+":
-#             if i == 0 or diff[i - 1][0] != "-":
-#                 result.append(
-#                     f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
-#                 )
-#         else:
-#             result.append(f"<span>{diff[i][2:].lstrip()}</span>")
-
-#     return " ".join(result)
-
-
 def display_grammar_errors(original, corrected, explanation):
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
@@ -146,13 +119,13 @@ def display_grammar_errors(original, corrected, explanation):
             )
             if i + 1 < len(diff) and diff[i + 1][0] == "+":
                 result.append(
-                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
                 )
                 i += 1  # 跳过下一个元素
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
                 result.append(
-                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
                 )
         else:
             result.append(f"<span>{diff[i][2:].lstrip()}</span>")
