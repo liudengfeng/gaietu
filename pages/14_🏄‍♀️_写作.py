@@ -76,8 +76,11 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 You are an expert in English grammar, please strictly check the grammar of each sentence in the following text.\
-If a sentence is grammatically correct, represent it with an empty list '{}'. Otherwise, each grammatical error in the sentence should be represented with a dictionary containing 'corrected' (the corrected sentence) and 'explanations' (the explanation of the corrections) keys. If a sentence has multiple errors, there will still be only one corrected result. Therefore, the result of the grammar check for a sentence should be a dictionary, which includes the corrected result and a list of explanations for the corrections.\
-These dictionaries form a list. Output in JSON format.\
+Grammar Checking Process:
+If a sentence has grammatical errors, it will be corrected and explanations will be provided. \
+The check result of a sentence is a dictionary, which includes two keys: 'corrected' represents the corrected sentence, and 'explanations' is a list of explanations (strings) for each correction.\
+If a sentence is grammatically correct, represent it with an empty list '{}';\
+All sentence check results form a list. Output in JSON format.\
 
 text:
 """
