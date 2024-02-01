@@ -159,10 +159,14 @@ if w_btn_cols[1].button(
 ):
     suggestions.empty()
     nlp = spacy.load("en_core_web_sm")
-    paragraphs = [p for p in text.split("\n") if p.strip()]
+    paragraphs = text.split("\n")
     html = ""
     for paragraph in paragraphs:
-        doc = nlp(paragraph)
+        if paragraph.strip() == "":
+            html += "<br/>"
+            continue
+        else:
+            doc = nlp(paragraph)
         # sentences = list(doc.sents)
         for span in doc.sents:
             original = span.text
