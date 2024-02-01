@@ -72,7 +72,7 @@ def initialize_writing_chat():
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
 
-GRAMMAR_CHECK_TEMPLATE = "Check the grammar of each sentence. If a sentence is error-free, represent it with '{}'. Otherwise, represent the result with a dictionary with 'corrected' and 'explanation' keys. Compile the check results of each sentence into a list. Output in JSON format."
+GRAMMAR_CHECK_TEMPLATE = "Check the grammar of each sentence. If a sentence has no grammatical errors, represent it with '{}'. Otherwise, represent the check result with a dictionary with 'corrected' and 'explanation' keys. All check results form a list. Output in JSON format."
 GRAMMAR_CHECK_CONFIG = (
     {"max_output_tokens": 256, "temperature": 0.2, "top_p": 0.95, "top_k": 40},
 )
