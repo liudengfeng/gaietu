@@ -10,6 +10,7 @@ from mypylib.google_ai import (
     parse_json_string,
     to_contents_info,
 )
+from mypylib.html_constants import TIPPY_JS
 from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
@@ -74,7 +75,7 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 You are an English grammar expert, please strictly check the grammar of each sentence. \
-If a sentence is grammatically correct, represent it with '{}'. Otherwise, represent the check result with a dictionary with 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys.\
+"If a sentence is grammatically correct, represent it with an empty dictionary '{}'. Otherwise, represent the check result with a dictionary with 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys."\
 All check results form a list. Output in JSON format."""
 
 GRAMMAR_CHECK_CONFIG = (
@@ -155,34 +156,9 @@ if w_btn_cols[1].button(
     # suggestions.markdown(f"**{sentence}**")
     update_sidebar_status(sidebar_status)
 
-TIPPY_JS = """
-<script src="https://unpkg.com/popper.js@1"></script>
-<script src="https://unpkg.com/tippy.js@5"></script>
-<script>
-    tippy('[data-tippy-content]', {
-        allowHTML: true,
-        theme: 'tomato',
-    });
-</script>
-"""
 
 st.markdown(
     """
-    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
-    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
-    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
-    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
-    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
-    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
-    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
-    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
-    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
-    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
-    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
-    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
-    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
-    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
-    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
     <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
     <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
     <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
