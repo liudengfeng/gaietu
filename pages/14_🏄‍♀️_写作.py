@@ -8,6 +8,7 @@ from mypylib.google_ai import (
     load_vertex_model,
     parse_generated_content_and_update_token,
     parse_json_string,
+    to_contents_info,
 )
 from mypylib.st_helper import (
     check_access,
@@ -142,11 +143,11 @@ if w_btn_cols[0].button(
 if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
+    suggestions.empty()
     paragraphs = text.split("\n")
-    st.write(paragraphs)
-    # for paragraph in paragraphs:
-    #     result = check_grammar(paragraph)
-    #     suggestions.write(result)
+    for paragraph in paragraphs:
+        result = check_grammar(paragraph)
+        suggestions.write(result)
     # suggestions.markdown(f"**{sentence}**")
     update_sidebar_status(sidebar_status)
 
