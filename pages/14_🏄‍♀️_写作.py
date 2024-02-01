@@ -76,8 +76,8 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 You are an expert in English grammar, please strictly check the grammar of each sentence in the following text.\
-If a sentence is grammatically correct, represent it with an empty list '[]'. Otherwise, represent each grammatical error in the sentence with a dictionary containing 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys. The grammatical errors of a sentence should be represented as a list of dictionaries. Then, these lists are combined into a list.\
-Output in JSON format.\
+If a sentence is grammatically correct, represent it with an empty list '[]'. Otherwise, each grammatical error in the sentence should be represented with a dictionary containing 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys. The result of the grammar check for a sentence should be represented as a list of dictionaries.\
+Then, these lists are combined into a list. Output in JSON format.\
 
 text:
 """
@@ -88,7 +88,7 @@ GRAMMAR_CHECK_CONFIG = (
 
 
 def check_grammar(paragraph):
-    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + paragraph
+    prompt = GRAMMAR_CHECK_TEMPLATE + paragraph
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
