@@ -177,6 +177,7 @@ if w_btn_cols[1].button(
                 check_dict.get("corrected", original),
                 check_dict.get("explanations", []),
             )
+        html += "<br/>"
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
