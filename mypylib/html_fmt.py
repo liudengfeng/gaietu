@@ -1,0 +1,33 @@
+import difflib
+
+
+def display_grammar_errors(original, corrected, explanations):
+    diff = difflib.ndiff(original.split(), corrected.split())
+    diff = list(diff)  # 生成列表
+
+    result = []
+    for i in range(len(diff)):
+        if diff[i][0] == "-":
+            explanation = (
+                explanations.pop(0).replace("'", "&#39;").replace('"', "&quot;")
+            )
+            result.append(
+                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
+            )
+            if i + 1 < len(diff) and diff[i + 1][0] == "+":
+                result.append(
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
+                )
+                i += 1  # 跳过下一个元素
+        elif diff[i][0] == "+":
+            if i == 0 or diff[i - 1][0] != "-":
+                explanation = (
+                    explanations.pop(0).replace("'", "&#39;").replace('"', "&quot;")
+                )
+                result.append(
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
+                )
+        else:
+            result.append(f"<span>{diff[i][2:].lstrip()}</span>")
+
+    return " ".join(result)

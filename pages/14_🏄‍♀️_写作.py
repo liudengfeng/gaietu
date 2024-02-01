@@ -109,33 +109,6 @@ def check_grammar(paragraph):
     )
 
 
-def display_grammar_errors(original, corrected, explanation):
-    diff = difflib.ndiff(original.split(), corrected.split())
-    diff = list(diff)  # 生成列表
-    explanation = explanation.replace("'", "&#39;").replace('"', "&quot;")
-
-    result = []
-    for i in range(len(diff)):
-        if diff[i][0] == "-":
-            result.append(
-                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
-            )
-            if i + 1 < len(diff) and diff[i + 1][0] == "+":
-                result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
-                )
-                i += 1  # 跳过下一个元素
-        elif diff[i][0] == "+":
-            if i == 0 or diff[i - 1][0] != "-":
-                result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
-                )
-        else:
-            result.append(f"<span>{diff[i][2:].lstrip()}</span>")
-
-    return " ".join(result)
-
-
 # endregion
 
 # region 主体
@@ -180,49 +153,22 @@ if w_btn_cols[0].button(
     initialize_writing_chat()
 
 
-test_cases = [
-    {
-        "original": "I has a baseball.",
-        "corrected": "I have a baseball.",
-        "explanation": "Use 'have' instead of 'has' after 'I'.",
-    },
-    {
-        "original": "I has a baseball in my home.",
-        "corrected": "I have a baseball at my home.",
-        "explanation": "Use 'have' instead of 'has' after 'I'. Use 'at' instead of 'in' when referring to a location.",
-    },
-    {
-        "original": "She don't like apples.",
-        "corrected": "She doesn't like apples.",
-        "explanation": "Use 'doesn't' instead of 'don't' after 'She'.",
-    },
-    {
-        "original": "He can plays the guitar.",
-        "corrected": "He can play the guitar.",
-        "explanation": "Use 'play' instead of 'plays' after 'can'.",
-    },
-    {
-        "original": "He can play play the guitar.",
-        "corrected": "He can play the guitar.",
-        "explanation": "Remove the extra 'play' before 'play'.",
-    },
-    {
-        "original": "They enjoys playing football.",
-        "corrected": "They enjoy playing football.",
-        "explanation": "Use 'enjoy' instead of 'enjoys' after 'They'.",
-    },
-    {
-        "original": "They enjoy football.",
-        "corrected": "They enjoy playing football.",
-        "explanation": "Add 'playing' before 'football' to indicate the action.",
-    },
-]
-
-
 if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     suggestions.empty()
+    suggestions.markdown(
+        "<span>I</span> <del style='color:red;text-decoration: line-through' title='&#39;has&#39; should be &#39;have&#39; in this context.'>has</del> <ins style='color:blue;text-decoration: underline' title='&#39;has&#39; should be &#39;have&#39; in this context.'>have</ins> <span>a</span> <span>pen</span>",
+        unsafe_allow_html=True,
+    )
+    suggestions.markdown(
+        "<span>I</span> <span>am</span> <span>a</span> <del style='color:red;text-decoration: line-through' title='&#39;the&#39; is unnecessary in this context.'>the</del> <span>student</span>",
+        unsafe_allow_html=True,
+    )
+    suggestions.markdown(
+        "<span>I</span> <ins style='color:blue;text-decoration: underline' title='&#39;am&#39; is missing in this context.'>am</ins> <ins style='color:blue;text-decoration: underline' title='&#39;a&#39; is missing in this context.'>a</ins> <span>student</span>",
+        unsafe_allow_html=True,
+    )
     # for test_case in test_cases:
     #     suggestions.markdown(
     #         display_grammar_errors(
@@ -232,11 +178,11 @@ if w_btn_cols[1].button(
     #     )
 
     # nlp = spacy.load("en_core_web_sm")
-    paragraphs = text.split("\n")
-    paragraphs_check = []
-    for paragraph in paragraphs:
-        paragraphs_check.append(check_grammar(paragraph))
-        st.write(paragraphs_check)
+    # paragraphs = text.split("\n")
+    # paragraphs_check = []
+    # for paragraph in paragraphs:
+    #     paragraphs_check.append(check_grammar(paragraph))
+    #     st.write(paragraphs_check)
     # html = ""
     # for paragraph, check in zip(paragraphs, paragraphs_check):
     #     sentences = paragraph.split(".")
