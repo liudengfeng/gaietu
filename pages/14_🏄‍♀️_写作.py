@@ -165,18 +165,20 @@ if w_btn_cols[1].button(
     html = ""
     for paragraph in paragraphs:
         paragraphs_check = check_grammar(paragraph)
-        # st.write(paragraphs_check)
+        st.write(paragraphs_check)
         doc = nlp(paragraph)
         sentences = list(doc.sents)
-        assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
-        for span, check_dict in zip(sentences, paragraphs_check):
-            original = span.text
-            # check_dict 可能为空 {}
-            html += display_grammar_errors(
-                original,
-                check_dict.get("corrected", original),
-                check_dict.get("explanations", []),
-            )
+        st.write(sentences)
+        st.write(len(sentences), len(paragraphs_check))
+        # assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
+        # for span, check_dict in zip(sentences, paragraphs_check):
+        #     original = span.text
+        #     # check_dict 可能为空 {}
+        #     html += display_grammar_errors(
+        #         original,
+        #         check_dict.get("corrected", original),
+        #         check_dict.get("explanations", []),
+        #     )
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
