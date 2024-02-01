@@ -12,6 +12,7 @@ from mypylib.google_ai import (
     to_contents_info,
 )
 from mypylib.html_constants import TIPPY_JS
+from mypylib.html_fmt import display_grammar_errors
 from mypylib.st_helper import (
     check_access,
     check_and_force_logout,
@@ -91,7 +92,7 @@ GRAMMAR_CHECK_CONFIG = (
 
 
 def check_grammar(paragraph):
-    prompt = GRAMMAR_CHECK_TEMPLATE + paragraph
+    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + paragraph
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
@@ -158,26 +159,20 @@ if w_btn_cols[1].button(
 ):
     suggestions.empty()
     nlp = spacy.load("en_core_web_sm")
-    paragraphs = text.split("\n")
-    paragraphs_check = []
+    paragraphs = [p for p in text.split("\n") if p.strip()]
+    html = ""
     for paragraph in paragraphs:
-        paragraphs_check.append(check_grammar(paragraph))
-        suggestions.write(paragraphs_check)
+        paragraphs_check = check_grammar(paragraph)
         doc = nlp(paragraph)
         sentences = list(doc.sents)
-        suggestions.write(sentences)
+        assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
+        for original, check_dict in zip(sentences, paragraphs_check):
+            html += display_grammar_errors(
+                original, check_dict["corrected"], check_dict["explanations"]
+            )
 
-    # html = ""
-    # for paragraph, check in zip(paragraphs, paragraphs_check):
-    #     sentences = paragraph.split(".")
-    #     doc = nlp(paragraph)
-    #     sentences = list(doc.sents)
-    #     for original, check_dict in zip(sentences, check):
-    #         html += display_grammar_errors(
-    #             original, check_dict["corrected"], check_dict["explanation"]
-    #         )
-    # # suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
-    # update_sidebar_status(sidebar_status)
+    suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
+    update_sidebar_status(sidebar_status)
 
 
 Assistant_Configuration = {
