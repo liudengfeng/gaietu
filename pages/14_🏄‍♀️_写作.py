@@ -162,6 +162,21 @@ st.markdown(
     <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
     <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
     <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
+    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
+    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
+    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
+    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
+    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
+    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
+    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
+    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
+    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
+    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
+    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
+    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
+    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
+    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
+    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
     """,
     unsafe_allow_html=True,
 )
