@@ -1,8 +1,9 @@
+import difflib
 import logging
 
 import streamlit as st
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
-import spacy
+
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
@@ -102,6 +103,34 @@ def check_grammar(paragraph):
     )
 
 
+def display_grammar_errors(original, corrected, explanation):
+    diff = difflib.ndiff(original.split(), corrected.split())
+    diff = list(diff)  # 生成列表
+
+    result = []
+    i = 0
+    while i < len(diff):
+        if diff[i][0] == "-":
+            if i + 1 < len(diff) and diff[i + 1][0] == "+":
+                result.append(
+                    f"<span style='color:blue;text-decoration: wavy underline' title='{explanation}'>{diff[i+1][2:]}</span>"
+                )
+                i += 1
+            else:
+                result.append(
+                    f"<del style='color:red;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</del>"
+                )
+        elif diff[i][0] == "+":
+            result.append(
+                f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</ins>"
+            )
+        else:
+            result.append(diff[i][2:])
+        i += 1
+
+    return " ".join(result)
+
+
 # endregion
 
 # region 主体
@@ -145,6 +174,28 @@ if w_btn_cols[0].button(
     ai_tip_container.empty()
     initialize_writing_chat()
 
+test_cases = [
+    {
+        "original": "I want to be a baseball player.",
+        "corrected": "I want to become a baseball player.",
+        "explanation": "Use 'become' instead of 'be' to indicate a change in status or condition.",
+        "operation": "replace",
+    },
+    {
+        "original": "I want to a baseball player.",
+        "corrected": "I want to be a baseball player.",
+        "explanation": "Missing verb 'be' in the sentence.",
+        "operation": "insert",
+    },
+    {
+        "original": "I want to be be a baseball player.",
+        "corrected": "I want to be a baseball player.",
+        "explanation": "Extra verb 'be' in the sentence.",
+        "operation": "delete",
+    },
+]
+
+
 if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
@@ -153,21 +204,14 @@ if w_btn_cols[1].button(
     for paragraph in paragraphs:
         result = check_grammar(paragraph)
         suggestions.write(result)
-    # suggestions.markdown(f"**{sentence}**")
+    html = ""
+    for check in test_cases:
+        html += display_grammar_errors(
+            check["original"], check["corrected"], check["explanation"]
+        )
+    suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
-
-st.markdown(
-    """
-    <span style='color:red' title='这是删除的词语'><s>删除的词语</s></span>
-    <span style='color:blue' title='这是需要关注的词语'><u>需要关注的词语</u></span>
-    <span style='color:green;text-decoration: wavy underline' title='这是可能的语法错误'>可能的语法错误</span>
-    <span style='color:purple' title='这是引用的词语'><em>引用的词语</em></span>
-    <span style='color:orange' title='这是强烈强调的词语'><strong><em>强烈强调的词语</em></strong></span>
-    """
-    + TIPPY_JS,
-    unsafe_allow_html=True,
-)
 
 Assistant_Configuration = {
     "temperature": 0.2,
