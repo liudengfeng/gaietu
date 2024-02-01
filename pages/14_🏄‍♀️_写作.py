@@ -104,6 +104,7 @@ def check_grammar(paragraph):
 
 
 def display_grammar_errors(original, corrected, explanation):
+    explanation = explanation.replace("'", "&#39;").replace('"', "&quot;")
     diff = difflib.ndiff(original.split(), corrected.split())
     diff = list(diff)  # 生成列表
 
