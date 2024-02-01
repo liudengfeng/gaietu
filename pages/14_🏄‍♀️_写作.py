@@ -168,7 +168,8 @@ if w_btn_cols[1].button(
         doc = nlp(paragraph)
         sentences = list(doc.sents)
         assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
-        for original, check_dict in zip(sentences, paragraphs_check):
+        for span, check_dict in zip(sentences, paragraphs_check):
+            original = span.text
             html += display_grammar_errors(
                 original, check_dict["corrected"], check_dict["explanations"]
             )
