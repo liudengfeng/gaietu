@@ -51,7 +51,10 @@ with st.form(key="registration_form"):
         placeholder="请输入手机号码",
     )
     email = col2.text_input(
-        "邮箱", key="email", help="✨ 请输入您常用的电子邮件地址", placeholder="请输入电子邮件地址（可选）"
+        "邮箱",
+        key="email",
+        help="✨ 请输入您常用的电子邮件地址",
+        placeholder="请输入电子邮件地址（可选）",
     )
     real_name = col1.text_input(
         "真实姓名",
@@ -60,7 +63,10 @@ with st.form(key="registration_form"):
         placeholder="请输入真实姓名（可选）",
     )
     display_name = col2.text_input(
-        "显示名称", key="display_name", help="✨ 请输入您的登录显示名称。", placeholder="请输入显示名称"
+        "显示名称",
+        key="display_name",
+        help="✨ 请输入您的登录显示名称。",
+        placeholder="请输入显示名称",
     )
     current_level = col1.selectbox(
         "当前英语水平",
@@ -123,7 +129,9 @@ with st.form(key="registration_form"):
             st.stop()
         if not is_valid_email(email):
             # st.write(f"{email=}")
-            status.warning("为了确保您能及时收到最新产品信息，请提供有效的邮箱地址。您还可以稍后在“用户中心-更新信息”中添加邮箱。")
+            status.warning(
+                "为了确保您能及时收到最新产品信息，请提供有效的邮箱地址。您还可以稍后在“用户中心-更新信息”中添加邮箱。"
+            )
         elif not is_valid_email(email):
             status.error("请输入有效的邮箱地址")
             st.stop()
@@ -185,7 +193,9 @@ with st.form(key="registration_form"):
         # 将 UTC 时间转换为特定的时区
         deadline = deadline.astimezone(tz)
         deadline_str = deadline.strftime("%Y-%m-%d %H:%M:%S")
-        st.toast(f"""恭喜{display_name}注册成功！为确保您能尽快体验我们的服务，请于{deadline_str}前完成付款。""")
+        st.toast(
+            f"""恭喜{display_name}注册成功！为确保您能尽快体验我们的服务，请于{deadline_str}前完成付款。"""
+        )
 
     with st.expander("**服务条款**", expanded=False):
         st.markdown(
@@ -198,7 +208,7 @@ with st.form(key="registration_form"):
 
 **1. 服务概述**
 
-`LinGoo` [英语速学] app（以下简称“本应用”）是由 DF studio 提供的一种使用大型生成式语言模型作为教学辅助工具，帮助用户提升英语应用能力的服务。本应用基于互联网，为用户提供丰富的学习资源和互动功能，帮助用户在英语应用能力各方面取得提升。本应用的目标用户是具有一定英语基础，希望提升英语应用能力的用户。
+`Gaietu` [英语速学] app（以下简称“本应用”）是由 DF studio 提供的一种使用大型生成式语言模型作为教学辅助工具，帮助用户提升英语应用能力的服务。本应用基于互联网，为用户提供丰富的学习资源和互动功能，帮助用户在英语应用能力各方面取得提升。本应用的目标用户是具有一定英语基础，希望提升英语应用能力的用户。
 
 **2. 服务使用条件**
 
@@ -246,6 +256,17 @@ DF studio 对用户使用本应用过程中产生的任何损失，包括但不�
 **第 2 条 用户个人信息保护**
 
 DF Studio 尊重用户的隐私权，会采取一切合理的措施保护用户的隐私。
+
+**8. 服务中断或故障**
+
+DF Studio 不对因以下原因导致的服务中断或故障承担责任：
+
+- 因不可抗力或其他无法控制的原因，包括但不限于自然灾害（如洪水、地震）、政府行为、战争、火灾、网络攻击、黑客行为、电力中断等；
+- 因用户的设备、网络环境、操作系统、浏览器等软硬件环境不符合本应用的使用要求，或用户的设备被病毒、木马或恶意程序攻击；
+- 因第三方服务（如电信运营商）的故障或服务中断；
+- 在必要的维护期间，DF Studio 有权暂时停止提供服务，DF Studio 将尽可能提前通知用户。
+
+在任何情况下，DF Studio 对由于服务中断或故障导致的任何直接、间接、附带、特殊、惩罚性或后果性损害（包括但不限于利润损失、业务中断、数据丢失或其他经济损失）不承担责任。
 
 **(一) 用户个人信息的收集**
 
@@ -320,7 +341,9 @@ DF studio 可能会使用用户的数据来提供本应用的服务，包括但�
 """
         )
 
-    with st.expander("**CEFR（欧洲共同语言参考标准）语言能力分级标准**", expanded=False):
+    with st.expander(
+        "**CEFR（欧洲共同语言参考标准）语言能力分级标准**", expanded=False
+    ):
         st.markdown(
             """\
 - A1：入门级
