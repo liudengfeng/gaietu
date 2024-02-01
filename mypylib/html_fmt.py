@@ -7,6 +7,8 @@ def view_error_counts_legend(session_state_key: str, idx=-1):
         d = st.session_state[session_state_key].get(idx, {}).get("error_counts", {})
     else:
         d = st.session_state[session_state_key].get("error_counts", {})
+    # TODO:删除
+    st.write(d)
     st.markdown("##### 图例")
     n1 = d.get("Mispronunciation", 0)
     st.markdown(
