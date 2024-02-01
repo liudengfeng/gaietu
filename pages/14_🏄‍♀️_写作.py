@@ -112,6 +112,8 @@ def display_grammar_errors(original, corrected, explanations):
     for i in range(len(diff)):
         explanation = (
             explanations[explanation_index].replace("'", "&#39;").replace('"', "&quot;")
+            if explanation_index < len(explanations)
+            else "No explanation available"
         )
         if diff[i][0] == "-":
             result.append(
