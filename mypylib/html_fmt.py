@@ -28,7 +28,6 @@ def display_grammar_errors(original, corrected, explanations):
                 result.append(
                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
                 )
-                i += 1  # 跳过下一个元素
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
                 if explanations_copy:  # 检查副本是否为空
