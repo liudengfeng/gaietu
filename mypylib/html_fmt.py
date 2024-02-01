@@ -2,9 +2,9 @@ import difflib
 import streamlit as st
 
 
-def view_error_counts_legend(session_state_key: str, idx=-1):
-    st.write(st.session_state[session_state_key])
-    if idx:
+def view_error_counts_legend(session_state_key: str, idx=None):
+    if idx is not None:
+        st.write(st.session_state[session_state_key].get(idx, {}))
         d = st.session_state[session_state_key].get(idx, {}).get("error_counts", {})
     else:
         d = st.session_state[session_state_key].get("error_counts", {})
