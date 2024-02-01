@@ -31,9 +31,14 @@ def display_grammar_errors(original, corrected, explanations):
                 i += 1  # 跳过下一个元素
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
-                explanation = (
-                    explanations.pop(0).replace("'", "&#39;").replace('"', "&quot;")
-                )
+                if explanations_copy:  # 检查副本是否为空
+                    explanation = (
+                        explanations_copy.pop(0)
+                        .replace("'", "&#39;")
+                        .replace('"', "&quot;")
+                    )
+                else:
+                    explanation = "No explanation available"  # 提供一个默认的解释
                 result.append(
                     f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
                 )
