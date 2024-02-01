@@ -167,6 +167,8 @@ def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
 def display_pronunciation_assessment_words(container, text_key, assessment_key):
     container.markdown("##### 评估结果")
     idx = st.session_state["pa-idx"]
+    # TODO:删除
+    st.write(st.session_state[assessment_key][idx]["error_counts"])
     words = st.session_state[assessment_key].get(idx, {}).get("recognized_words", [])
     # 去掉 ** 加黑标记
     text = st.session_state[text_key].replace("**", "")
