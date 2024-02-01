@@ -106,7 +106,7 @@ def check_grammar(paragraph):
         contents_info,
         GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
-        parser=parse_json_string,
+        # parser=parse_json_string,
     )
 
 
@@ -163,13 +163,14 @@ if w_btn_cols[1].button(
     html = ""
     for paragraph in paragraphs:
         paragraphs_check = check_grammar(paragraph)
-        doc = nlp(paragraph)
-        sentences = list(doc.sents)
-        assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
-        for original, check_dict in zip(sentences, paragraphs_check):
-            html += display_grammar_errors(
-                original, check_dict["corrected"], check_dict["explanations"]
-            )
+        st.write(paragraphs_check)
+        # doc = nlp(paragraph)
+        # sentences = list(doc.sents)
+        # assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
+        # for original, check_dict in zip(sentences, paragraphs_check):
+        #     html += display_grammar_errors(
+        #         original, check_dict["corrected"], check_dict["explanations"]
+        #     )
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
