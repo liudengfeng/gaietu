@@ -92,6 +92,7 @@ GRAMMAR_CHECK_CONFIG = (
 )
 
 
+@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
 def check_grammar(paragraph):
     prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + paragraph
     contents = [prompt]
