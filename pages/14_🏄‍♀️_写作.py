@@ -73,7 +73,8 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-Check the grammar of each sentence. If a sentence is grammatically correct, represent it with '{}'. Otherwise, represent the check result with a dictionary with 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys. \
+You are an English grammar expert, please strictly check the grammar of each sentence. \
+If a sentence is grammatically correct, represent it with '{}'. Otherwise, represent the check result with a dictionary with 'corrected' (the corrected sentence) and 'explanation' (the explanation of the correction) keys.\
 All check results form a list. Output in JSON format."""
 
 GRAMMAR_CHECK_CONFIG = (
