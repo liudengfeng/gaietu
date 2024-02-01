@@ -1,11 +1,13 @@
 import logging
 
 import streamlit as st
-from vertexai.preview.generative_models import GenerationConfig, Part, Content
-
+from vertexai.preview.generative_models import Content, GenerationConfig, Part
+import spacy
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
+    parse_generated_content_and_update_token,
+    parse_json_string,
 )
 from mypylib.st_helper import (
     check_access,
@@ -37,6 +39,13 @@ check_and_force_logout(sidebar_status)
 
 # endregion
 
+# region 会话
+
+if "text-model" not in st.session_state:
+    st.session_state["text-model"] = load_vertex_model("gemini-pro")
+
+# endregion
+
 # region 边栏
 
 # endregion
@@ -62,11 +71,34 @@ def initialize_writing_chat():
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
 
+GRAMMAR_CHECK_TEMPLATE = "{paragraph} \n Check the grammar of each sentence. If a sentence has no grammatical errors, represent it with '{}'. Otherwise, return a dictionary with 'corrected' and 'explanation' as keys, representing the corrected sentence and the explanation. The final result is a list of dictionaries, output in JSON format."
+GRAMMAR_CHECK_CONFIG = (
+    {"max_output_tokens": 256, "temperature": 0.2, "top_p": 0.95, "top_k": 40},
+)
+
+
+def check_grammar(paragraph):
+    prompt = GRAMMAR_CHECK_TEMPLATE.format(paragraph=paragraph)
+    contents = [prompt]
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(content), "duration": None}
+        for content in contents
+    ]
+    model = st.session_state["text-model"]
+    return parse_generated_content_and_update_token(
+        "写作练习-语法检查",
+        "gemini-pro",
+        model.generate_content,
+        contents_info,
+        GenerationConfig(**GRAMMAR_CHECK_CONFIG),
+        stream=False,
+        parser=parse_json_string,
+    )
+
+
 # endregion
 
 # region 主体
-if "text-model" not in st.session_state:
-    st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
 if "writing_chat_initialized" not in st.session_state:
     initialize_writing_chat()
@@ -106,6 +138,16 @@ if w_btn_cols[0].button(
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
+
+if w_btn_cols[1].button(
+    "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
+):
+    paragraphs = text.split("\n")
+    for paragraph in paragraphs:
+        result = check_grammar(paragraph)
+        suggestions.write(result)
+        # suggestions.markdown(f"**{sentence}**")
+    update_sidebar_status(sidebar_status)
 
 # st.markdown(
 #     """
