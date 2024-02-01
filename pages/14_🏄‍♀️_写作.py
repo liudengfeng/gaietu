@@ -75,13 +75,14 @@ def initialize_writing_chat():
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
 
+# All sentence check results form a list. Output in JSON format.\
 GRAMMAR_CHECK_TEMPLATE = """\
 You are an expert in English grammar, please strictly check the grammar of each sentence in the following text.\
 Grammar Checking Process:
 If a sentence has grammatical errors, it will be corrected and explanations will be provided. \
 The check result of a sentence is a dictionary, which includes two keys: 'corrected' represents the corrected sentence, and 'explanations' is a list of explanations (strings) for each correction.\
 If a sentence is grammatically correct, represent it with an empty list '{}';\
-All sentence check results form a list. Output in JSON format.\
+All sentence check results form a list.\
 
 text:
 """
