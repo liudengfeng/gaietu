@@ -7,41 +7,41 @@ def view_error_counts_legend(session_state_key: str):
     d = st.session_state[session_state_key].get("error_counts", {})
     n1 = d.get("Mispronunciation", 0)
     st.markdown(
-        f"<span style='color: black; background-color: #F5F5DC;'>{n1}</span> <span>发音错误</span>",
+        f"<span style='color: black; background-color: #F5F5DC;'>{n1}</span> <span> 发音错误</span>",
         help="✨ 说得不正确的字词。",
         unsafe_allow_html=True,
     )
     n2 = d.get("Omission", 0)
     st.markdown(
-        f"<span style='color: white; background-color: #A9A9A9;'>{n2}</span> <span>遗漏</span>",
+        f"<span style='color: white; background-color: #A9A9A9;'>{n2}</span> <span> 遗漏</span>",
         help="✨ 脚本中已提供，但未说出的字词。",
         unsafe_allow_html=True,
     )
     n3 = d.get("Insertion", 0)
     st.markdown(
         f'<span style="color: white; background-color: #800080;">{n3}</span>'
-        + "<span>插入内容</span>",
+        + "<span> 插入内容</span>",
         help="✨ 不在脚本中但在录制中检测到的字词。",
         unsafe_allow_html=True,
     )
     n4 = d.get("UnexpectedBreak", 0)
     st.markdown(
         f'<span style="color: black; background-color: #FFC0CB;">{n4}</span>'
-        + "<span>意外中断</span>",
+        + "<span> 意外中断</span>",
         help="✨ 同一句子中的单词之间未正确暂停。",
         unsafe_allow_html=True,
     )
     n5 = d.get("MissingBreak", 0)
     st.markdown(
         f'<span style="color: black; background-color: #D3D3D3;">{n5}</span>'
-        + "<span>缺少停顿</span>",
+        + "<span> 缺少停顿</span>",
         help="✨ 当两个单词之间存在标点符号时，词之间缺少暂停。",
         unsafe_allow_html=True,
     )
     n6 = d.get("Monotone", 0)
     st.markdown(
         f'<span style="color: white; background-color: #800080;">{n6}</span>'
-        + "<span>发音单调</span>",
+        + "<span> 发音单调</span>",
         help="✨ 这些单词正以平淡且不兴奋的语调阅读，没有任何节奏或表达。",
         unsafe_allow_html=True,
     )
