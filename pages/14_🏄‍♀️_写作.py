@@ -75,16 +75,14 @@ def initialize_writing_chat():
     st.session_state["writing-chat"] = model.start_chat(history=history)
 
 
-# All sentence check results form a list. Output in JSON format.\
 GRAMMAR_CHECK_TEMPLATE = """\
-You are an expert in English grammar, please strictly check the grammar of each sentence in the following text.\
+As an expert in English grammar, your task is to rigorously review the grammar of the sentence provided below.
 Grammar Checking Process:
-If a sentence has grammatical errors, it will be corrected and explanations will be provided. \
-The check result of a sentence is a dictionary, which includes two keys: 'corrected' represents the corrected sentence, and 'explanations' is a list of explanations (strings) for each correction.\
-If a sentence is grammatically correct, represent it with an empty list '{}';\
-All sentence check results form a list.\
+Should you find any grammatical errors in the sentence, please correct them and provide explanations for each correction.
+The result of the grammar check should be a dictionary, which includes two keys: 'corrected', representing the corrected sentence, and 'explanations', a list of explanations (strings) for each correction.
+If the sentence is grammatically correct, the result should be an empty dictionary '{}'. 
 
-text:
+Sentence:
 """
 
 GRAMMAR_CHECK_CONFIG = (
@@ -93,8 +91,8 @@ GRAMMAR_CHECK_CONFIG = (
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
-def check_grammar(paragraph):
-    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + paragraph
+def check_grammar(sentence):
+    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + sentence
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
@@ -164,21 +162,17 @@ if w_btn_cols[1].button(
     paragraphs = [p for p in text.split("\n") if p.strip()]
     html = ""
     for paragraph in paragraphs:
-        paragraphs_check = check_grammar(paragraph)
-        st.write(paragraphs_check)
         doc = nlp(paragraph)
-        sentences = list(doc.sents)
-        st.write(sentences)
-        st.write(len(sentences), len(paragraphs_check))
-        # assert len(sentences) == len(paragraphs_check), "语法检查时句子数量不一致"
-        # for span, check_dict in zip(sentences, paragraphs_check):
-        #     original = span.text
-        #     # check_dict 可能为空 {}
-        #     html += display_grammar_errors(
-        #         original,
-        #         check_dict.get("corrected", original),
-        #         check_dict.get("explanations", []),
-        #     )
+        # sentences = list(doc.sents)
+        for span in doc.sents:
+            original = span.text
+            check_dict = check_grammar(original)
+            # check_dict 可能为空 {}
+            html += display_grammar_errors(
+                original,
+                check_dict.get("corrected", original),
+                check_dict.get("explanations", []),
+            )
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
