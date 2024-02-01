@@ -152,8 +152,7 @@ if w_btn_cols[0].button(
     key="refresh",
     help="✨ 点击按钮，开始新一轮练习。",
 ):
-    text = ""
-    st.session_state["writing-chat"] = ""
+    st.session_state["writing-text"] = ""
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()

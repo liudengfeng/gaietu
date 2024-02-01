@@ -19,6 +19,7 @@ from mypylib.google_ai import (
     generate_pronunciation_assessment_text,
     load_vertex_model,
 )
+from mypylib.html_fmt import view_error_counts_legend
 from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     ORAL_ABILITY_SCORE_BADGE_MAPS,
@@ -370,8 +371,9 @@ if menu and menu.endswith("发音评估"):
     legend_container = content_cols[2].container(border=True)
 
     with legend_container:
-        st.markdown("##### 图例")
-        view_pronunciation_assessment_legend()
+        # st.markdown("##### 图例")
+        # view_pronunciation_assessment_legend()
+        view_error_counts_legend("pa-assessment")
 
     if pa_refresh_btn:
         st.session_state["pa-text"] = generate_pronunciation_assessment_text_for(
@@ -594,8 +596,9 @@ if menu and menu.endswith("口语能力"):
     oa_legend_container = content_cols[1].container(border=True)
 
     with oa_legend_container:
-        st.markdown("##### 图例")
-        view_pronunciation_assessment_legend()
+        # st.markdown("##### 图例")
+        # view_pronunciation_assessment_legend()
+        view_error_counts_legend("pa-assessment")
 
     if oa_refresh_btn:
         st.session_state["oa-topic-options"] = generate_oral_ability_topics_for(
