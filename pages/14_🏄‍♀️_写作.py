@@ -131,6 +131,7 @@ w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_ht
 text = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
+    key="writing-area",
     height=HEIGHT,
     placeholder="在此输入您的作文",
     help="在此输入您的作文",
@@ -149,9 +150,11 @@ if w_btn_cols[0].button(
     help="✨ 点击按钮，开始新一轮练习。",
 ):
     text = ""
+    st.session_state["writing-chat"].reset()
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
+    st.rerun()
 
 
 if w_btn_cols[1].button(
