@@ -161,7 +161,7 @@ def display_grammar_errors(original, corrected, explanations):
         )
         if diff[i][0] == "-":
             result.append(
-                f"<del style='color:red;text-decoration: line-through'>{diff[i][2:]}</del>"
+                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
             )
             if i + 1 < len(diff) and diff[i + 1][0] == "+":
                 result.append(
