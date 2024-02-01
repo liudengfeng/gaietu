@@ -170,10 +170,11 @@ def display_grammar_errors(original, corrected, explanations):
                 i += 1  # 跳过下一个元素
                 explanation_index += 1  # 每个替换后的单词都添加解释
         elif diff[i][0] == "+":
-            result.append(
-                f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
-            )
-            explanation_index += 1
+            if i == 0 or diff[i - 1][0] != "-":
+                result.append(
+                    f"<ins style='color:green;text-decoration: underline' title='{explanation}'>{diff[i][2:]}</ins>"
+                )
+                explanation_index += 1
         else:
             result.append(f"<span>{diff[i][2:]}</span>")
 
