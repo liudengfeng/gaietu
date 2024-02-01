@@ -143,10 +143,11 @@ if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     paragraphs = text.split("\n")
-    for paragraph in paragraphs:
-        result = check_grammar(paragraph)
-        suggestions.write(result)
-        # suggestions.markdown(f"**{sentence}**")
+    st.write(paragraphs)
+    # for paragraph in paragraphs:
+    #     result = check_grammar(paragraph)
+    #     suggestions.write(result)
+    # suggestions.markdown(f"**{sentence}**")
     update_sidebar_status(sidebar_status)
 
 # st.markdown(
