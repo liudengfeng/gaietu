@@ -121,7 +121,7 @@ def display_grammar_errors(original, corrected, explanations):
             )
             if i + 1 < len(diff) and diff[i + 1][0] == "+":
                 result.append(
-                    f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
+                    f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>[{diff[i + 1][2:]}]</ins>"
                 )
                 i += 1
             explanation_index += 1
