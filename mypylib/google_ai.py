@@ -297,7 +297,7 @@ def parse_generated_content_and_update_token(
     contents_info: List[dict],
     generation_config: GenerationConfig,
     stream: bool,
-    parser: Callable,
+    parser: Callable = lambda x: x,
 ):
     contents = [p["part"] for p in contents_info]
     start_time = time.time()  # 记录开始时间
