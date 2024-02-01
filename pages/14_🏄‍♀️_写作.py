@@ -171,6 +171,7 @@ if w_btn_cols[1].button(
         for span in doc.sents:
             original = span.text
             check_dict = check_grammar(original)
+            st.write(check_dict)
             # check_dict 可能为空 {}
             html += display_grammar_errors(
                 original,
