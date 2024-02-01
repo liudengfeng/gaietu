@@ -223,7 +223,7 @@ if w_btn_cols[1].button(
     html = ""
     for check in test_cases:
         html += display_grammar_errors(
-            check["original"], check["corrected"], check["explanation"]
+            check["original"], check["corrected"], check["explanations"]
         )
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
