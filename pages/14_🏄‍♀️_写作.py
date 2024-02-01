@@ -48,6 +48,9 @@ check_and_force_logout(sidebar_status)
 if "text-model" not in st.session_state:
     st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
+if "writing-text" not in st.session_state:
+    st.session_state["writing-text"] = ""
+
 # endregion
 
 # region 边栏
@@ -131,7 +134,7 @@ w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_ht
 text = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
-    key="writing-area",
+    value=st.session_state["writing-text"],
     height=HEIGHT,
     placeholder="在此输入您的作文",
     help="在此输入您的作文",
