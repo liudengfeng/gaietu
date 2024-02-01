@@ -167,8 +167,6 @@ def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
 def display_pronunciation_assessment_words(container, text_key, assessment_key):
     container.markdown("##### 评估结果")
     idx = st.session_state["pa-idx"]
-    # TODO:删除
-    st.write(st.session_state[assessment_key][idx]["error_counts"])
     words = st.session_state[assessment_key].get(idx, {}).get("recognized_words", [])
     # 去掉 ** 加黑标记
     text = st.session_state[text_key].replace("**", "")
@@ -373,6 +371,9 @@ if menu and menu.endswith("发音评估"):
     legend_container = content_cols[2].container(border=True)
 
     with legend_container:
+        # TODO:删除
+        idx = st.session_state["pa-idx"]
+        st.write(st.session_state["pa-assessment-dict"][idx]["error_counts"])
         if st.session_state["pa-idx"] == -1:
             view_error_counts_legend("pa-assessment-dict")
         else:
@@ -599,8 +600,6 @@ if menu and menu.endswith("口语能力"):
     oa_legend_container = content_cols[1].container(border=True)
 
     with oa_legend_container:
-        # st.markdown("##### 图例")
-        # view_pronunciation_assessment_legend()
         view_error_counts_legend("oa-assessment")
 
     if oa_refresh_btn:
