@@ -125,7 +125,7 @@ def display_grammar_errors(original, corrected, explanation):
                 f"<ins style='color:green;text-decoration: wavy underline' title='{explanation}'>{diff[i][2:]}</ins>"
             )
         else:
-            result.append(diff[i][2:])
+            result.append(f"<span>{i[2:]}</span>")
         i += 1
 
     return " ".join(result)
