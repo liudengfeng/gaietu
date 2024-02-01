@@ -220,16 +220,16 @@ if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     suggestions.empty()
-    # paragraphs = text.split("\n")
-    # for paragraph in paragraphs:
-    #     result = check_grammar(paragraph)
-    #     suggestions.write(result)
-    html = ""
-    for check in test_cases:
-        html += display_grammar_errors(
-            check["original"], check["corrected"], check["explanations"]
-        )
-    suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
+    paragraphs = text.split("\n")
+    for paragraph in paragraphs:
+        result = check_grammar(paragraph)
+        suggestions.write(result)
+    # html = ""
+    # for check in result:
+    #     html += display_grammar_errors(
+    #         check["original"], check["corrected"], check["explanations"]
+    #     )
+    # suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
 
