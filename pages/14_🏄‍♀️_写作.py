@@ -91,7 +91,7 @@ def check_grammar(paragraph):
         "gemini-pro",
         model.generate_content,
         contents_info,
-        GenerationConfig(**GRAMMAR_CHECK_CONFIG),
+        GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
         parser=parse_json_string,
     )
