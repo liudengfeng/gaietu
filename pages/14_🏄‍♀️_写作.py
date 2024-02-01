@@ -220,19 +220,20 @@ if w_btn_cols[1].button(
     "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
 ):
     suggestions.empty()
-    for test_case in test_cases:
-        suggestions.markdown(
-            display_grammar_errors(
-                test_case["original"], test_case["corrected"], test_case["explanation"]
-            ),
-            unsafe_allow_html=True,
-        )
+    # for test_case in test_cases:
+    #     suggestions.markdown(
+    #         display_grammar_errors(
+    #             test_case["original"], test_case["corrected"], test_case["explanation"]
+    #         ),
+    #         unsafe_allow_html=True,
+    #     )
 
     # nlp = spacy.load("en_core_web_sm")
-    # paragraphs = text.split("\n")
-    # paragraphs_check = []
-    # for paragraph in paragraphs:
-    #     paragraphs_check.append(check_grammar(paragraph))
+    paragraphs = text.split("\n")
+    paragraphs_check = []
+    for paragraph in paragraphs:
+        paragraphs_check.append(check_grammar(paragraph))
+        st.write(paragraphs_check)
     # html = ""
     # for paragraph, check in zip(paragraphs, paragraphs_check):
     #     sentences = paragraph.split(".")
