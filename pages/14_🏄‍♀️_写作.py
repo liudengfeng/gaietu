@@ -163,6 +163,11 @@ def display_grammar_errors(original, corrected, explanations):
             result.append(
                 f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:]}</del>"
             )
+            if i + 1 < len(diff) and diff[i + 1][0] == "+":
+                result.append(
+                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:]}</ins>"
+                )
+                i += 1  # 跳过下一个元素
             explanation_index += 1
         elif diff[i][0] == "+":
             if i == 0 or diff[i - 1][0] != "-":
