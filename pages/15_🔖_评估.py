@@ -371,9 +371,6 @@ if menu and menu.endswith("发音评估"):
     legend_container = content_cols[2].container(border=True)
 
     with legend_container:
-        # TODO:删除
-        idx = st.session_state["pa-idx"]
-        st.write(st.session_state["pa-assessment-dict"][idx]["error_counts"])
         if st.session_state["pa-idx"] == -1:
             view_error_counts_legend("pa-assessment-dict")
         else:
