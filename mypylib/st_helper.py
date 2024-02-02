@@ -11,7 +11,8 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 import vertexai
-from annotated_text import annotated_text, annotation
+
+# from annotated_text import annotated_text, annotation
 from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
@@ -23,17 +24,15 @@ from .azure_pronunciation_assessment import (
 )
 from .azure_speech import synthesize_speech
 from .db_interface import DbInterface
-from .google_ai import (
-    MAX_CALLS,
-    PER_SECONDS,
-    ModelRateLimiter,
-)
+from .google_ai import MAX_CALLS, PER_SECONDS, ModelRateLimiter
 from .google_cloud_configuration import (
     LOCATION,
     PROJECT_ID,
     get_google_service_account_info,
     google_configure,
 )
+from .html_constants import TIPPY_JS
+from .html_fmt import pronunciation_assessment_word_format
 from .word_utils import (
     audio_autoplay_elem,
     get_mini_dict,
@@ -539,42 +538,49 @@ def process_dialogue_text(reference_text):
     return reference_text.strip()
 
 
-def pronunciation_assessment_word_format(word):
-    error_type = word.error_type
-    accuracy_score = round(word.accuracy_score)
-    if error_type == "Mispronunciation":
-        return annotation(word.word, label=str(accuracy_score), background="#d5d507ce")
-    if error_type == "Omission":
-        return annotation(f"[{word.word}]", color="white", background="#4a4943b7")
-    if error_type == "Insertion":
-        return annotation(word.word, border="2px dashed red")
-    if word.is_unexpected_break:
-        return annotation(
-            f"{word.word}", label=str(accuracy_score), background="#FFC0CB"
-        )
-    if word.is_missing_break:
-        return annotation(
-            f"{word.word}", label=str(accuracy_score), background="#f2f2f2"
-        )
-    if word.is_monotone:
-        return annotation(
-            f"{word.word}",
-            color="white",
-            label=str(accuracy_score),
-            background="#ac1882ce",
-        )
-    return f"{word.word}"
+# def pronunciation_assessment_word_format(word):
+#     error_type = word.error_type
+#     accuracy_score = round(word.accuracy_score)
+#     if error_type == "Mispronunciation":
+#         return annotation(word.word, label=str(accuracy_score), background="#d5d507ce")
+#     if error_type == "Omission":
+#         return annotation(f"[{word.word}]", color="white", background="#4a4943b7")
+#     if error_type == "Insertion":
+#         return annotation(word.word, border="2px dashed red")
+#     if word.is_unexpected_break:
+#         return annotation(
+#             f"{word.word}", label=str(accuracy_score), background="#FFC0CB"
+#         )
+#     if word.is_missing_break:
+#         return annotation(
+#             f"{word.word}", label=str(accuracy_score), background="#f2f2f2"
+#         )
+#     if word.is_monotone:
+#         return annotation(
+#             f"{word.word}",
+#             color="white",
+#             label=str(accuracy_score),
+#             background="#ac1882ce",
+#         )
+#     return f"{word.word}"
+
+
+# def view_word_assessment(words):
+#     res = []
+#     for word in words:
+#         if isinstance(word, str):
+#             res.append(word)
+#         else:
+#             res.append(pronunciation_assessment_word_format(word))
+#         res.append(" ")
+#     annotated_text(*res)
 
 
 def view_word_assessment(words):
-    res = []
+    result = ""
     for word in words:
-        if isinstance(word, str):
-            res.append(word)
-        else:
-            res.append(pronunciation_assessment_word_format(word))
-        res.append(" ")
-    annotated_text(*res)
+        result += pronunciation_assessment_word_format(word)
+    st.markdown(result + TIPPY_JS, unsafe_allow_html=True)
 
 
 def _word_to_text(word):

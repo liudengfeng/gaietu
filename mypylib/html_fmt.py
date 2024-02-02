@@ -52,6 +52,35 @@ def view_error_counts_legend(session_state_key: str, idx=None):
     )
 
 
+def pronunciation_assessment_word_format(word):
+    if isinstance(word, str):
+        return f"<span style='margin-right: 5px;'>{word}</span>"
+    error_type = word.error_type
+    accuracy_score = round(word.accuracy_score)
+    result = ""
+    if error_type == "Mispronunciation":
+        result = f"<span style='color: black; background-color: #F5F5DC; margin-right: 5px; text-decoration: underline;' title='{accuracy_score}'>{word}</span>"
+    elif error_type == "Omission":
+        result = f"<span style='color: white; background-color: #808080; margin-right: 5px;'>[{word}]</span>"
+    elif error_type == "Insertion":
+        result = f"<span style='color: white; background-color: #B7410E; margin-right: 5px; text-decoration: line-through;' title='{accuracy_score}'>{word}</span>"
+
+    if word.is_unexpected_break:
+        result += f"<span style='color: black; background-color: #FFC0CB; text-decoration: line-through; margin-right: 5px;' title='{accuracy_score}'>[]</span>"
+        result += f"<span style='color: white; background-color: #B7410E; margin-right: 5px;' title='{accuracy_score}'>{word}</span>"
+    elif word.is_missing_break:
+        result += f"<span style='color: black; background-color: #D3D3D3; margin-right: 5px;' title='{accuracy_score}'>[]</span>"
+        result += (
+            f"<span style='margin-right: 5px;' title='{accuracy_score}'>{word}</span>"
+        )
+    else:
+        result = f"<span style='margin-right: 5px;'>{word}</span>"
+
+    if word.is_monotone:
+        result = f"<u style='text-decoration: underline; text-decoration-color: purple;'>{result}</u>"
+    return result
+
+
 def display_grammar_errors(original, corrected, explanations):
     if not explanations:  # 如果解释列表为空
         return " ".join(f"<span>{word}</span>" for word in corrected.split())
