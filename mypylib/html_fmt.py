@@ -15,6 +15,7 @@ def view_error_counts_legend(session_state_key: str, idx=None):
     n4 = str(d.get("UnexpectedBreak", 0)).ljust(3)
     n5 = str(d.get("MissingBreak", 0)).ljust(3)
     n6 = str(d.get("Monotone", 0)).ljust(3)
+    
     st.markdown(
         f"<div><span style='text-align: right; color: black; background-color: #FFD700; margin-right: 5px;'>{n1}</span> <span>发音错误</span></div>",
         help="✨ 说得不正确的字词。",
