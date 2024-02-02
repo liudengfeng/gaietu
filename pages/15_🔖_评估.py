@@ -428,13 +428,13 @@ if menu and menu.endswith("发音评估"):
     display_assessment_score(
         pa_report_container, PRONUNCIATION_SCORE_BADGE_MAPS, "pa-assessment"
     )
-    
+
     with legend_container:
         if st.session_state["pa-idx"] == -1:
             view_error_counts_legend("pa-assessment-dict")
         else:
             view_error_counts_legend("pa-assessment-dict", st.session_state["pa-idx"])
-    
+
     display_pronunciation_assessment_words(
         pa_words_container,
         "pa-current-text",
@@ -596,9 +596,6 @@ if menu and menu.endswith("口语能力"):
     oa_words_container = content_cols[0].container(border=True)
     oa_legend_container = content_cols[1].container(border=True)
 
-    with oa_legend_container:
-        view_error_counts_legend("oa-assessment")
-
     if oa_refresh_btn:
         st.session_state["oa-topic-options"] = generate_oral_ability_topics_for(
             difficulty, scenario_category
@@ -704,6 +701,9 @@ if menu and menu.endswith("口语能力"):
         "oa-assessment",
         "content_result",
     )
+
+    with oa_legend_container:
+        view_error_counts_legend("oa-assessment")
 
     display_oral_pronunciation_assessment_results(
         oa_words_container,
