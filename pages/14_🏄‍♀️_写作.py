@@ -113,7 +113,7 @@ def check_grammar(article):
         contents_info,
         GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
-        parser=parse_json_string,
+        # parser=parse_json_string,
     )
 
 
