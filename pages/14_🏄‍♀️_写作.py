@@ -160,7 +160,7 @@ if w_btn_cols[0].button(
 
 
 if w_btn_cols[1].button(
-    "语法[:abc:]", key="grammar", help="✨ 点击按钮，开始语法检查。"
+    "语法[:abc:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 ):
     suggestions.empty()
     nlp = spacy.load("en_core_web_sm")
@@ -188,6 +188,20 @@ if w_btn_cols[1].button(
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
+if w_btn_cols[2].button(
+    "单词[:abc:]", key="word", help="✨ 点击按钮，检查标点符号和拼写错误。"
+):
+    pass
+
+if w_btn_cols[3].button(
+    "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
+):
+    pass
+
+if w_btn_cols[4].button(
+    "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
+):
+    pass
 
 Assistant_Configuration = {
     "temperature": 0.2,
