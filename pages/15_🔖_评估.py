@@ -365,7 +365,7 @@ if menu and menu.endswith("发音评估"):
     )
     # 左侧显示发音评估文本
     # 右侧显示评估内容6
-    content_cols = st.columns([8, 8, 2])
+    content_cols = st.columns([8, 8, 3])
     pa_text_container = content_cols[0].container(border=True)
     pa_words_container = content_cols[1].container(border=True)
     legend_container = content_cols[2].container(border=True)
