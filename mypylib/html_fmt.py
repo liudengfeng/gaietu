@@ -11,7 +11,7 @@ def view_error_counts_legend(session_state_key: str, idx=None):
 
     n1 = str(d.get("Mispronunciation", 0)).zfill(3)
     st.markdown(
-        f"<div style='text-align: left; color: black; background-color: #F5F5DC; margin-right: 10px;'>{n1}</div> <span>发音错误</span>",
+        f"<div><span style='text-align: right; color: black; background-color: #F5F5DC; margin-right: 10px;'>{n1}</span> <span>发音错误</span></div>",
         help="✨ 说得不正确的字词。",
         unsafe_allow_html=True,
     )
