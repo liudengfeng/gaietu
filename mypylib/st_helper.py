@@ -527,11 +527,11 @@ def get_synthesis_speech(text, voice):
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
-    logger.info(f"语音合成费用：{cost:.4f}元，字符数：{char_count}")
-    free_flag = "免费" if is_free else "付费"
-    logger.info(
-        f"语音合成费用：{cost0:.4f}元，字符数：{char_count}，是否免费：{free_flag}，费用1：{cost1:.4f}元"
-    )
+    # logger.info(f"语音合成费用：{cost:.4f}元，字符数：{char_count}")
+    # free_flag = "免费" if is_free else "付费"
+    # logger.info(
+    #     f"语音合成费用：{cost0:.4f}元，字符数：{char_count}，是否免费：{free_flag}，费用1：{cost1:.4f}元"
+    # )
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
@@ -573,7 +573,7 @@ def pronunciation_assessment_with_cost(
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
-    logger.info(f"发音评估费用：{cost:.4f}元，时长：{duration:.2f}秒")
+    # logger.info(f"发音评估费用：{cost:.4f}元，时长：{duration:.2f}秒")
     return pronunciation_assessment_from_stream(
         audio_info, st.secrets, topic, reference_text
     )
