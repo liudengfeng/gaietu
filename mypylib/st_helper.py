@@ -520,7 +520,7 @@ def display_assessment_score(
     if assessment_key not in st.session_state:
         return
     d = st.session_state[assessment_key]
-    if idx:
+    if idx is not None:
         result = d[idx].get(score_key, {})
     else:
         result = d.get(score_key, {})
