@@ -876,7 +876,11 @@ class DbInterface:
         if phone_number != "ALL":
             collection_ref = collection_ref.where("phone_number", "==", phone_number)
         if start_date is not None:
-            start_datetime = datetime.combine(start_date, datetime.min.time())
+            if isinstance(start_date, datetime.date):
+                start_datetime = datetime.combine(start_date, datetime.min.time())
+                collection_ref = collection_ref.where("timestamp", ">=", Timestamp.FromDatetime(start_datetime))
+            else:
+                raise TypeError("start_date must be a datetime.date object")
             collection_ref = collection_ref.where(
                 "timestamp",
                 ">=",
