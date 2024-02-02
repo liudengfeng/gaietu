@@ -79,13 +79,17 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-As an expert in English grammar, your task is to rigorously review the grammar of the sentence provided below.
-Grammar Checking Process:
-Should you find any grammatical errors in the sentence, please correct them and provide explanations for each correction.
-The result of the grammar check should be a dictionary, which includes two keys: 'corrected', representing the corrected sentence, and 'explanations', a list of explanations (strings) for each correction.
-If the sentence is grammatically correct, the result should be an empty dictionary '{}'. 
+As an expert in English grammar, your task is to rigorously review the grammar of the entire article provided below and complete the corrections.
+Complete the following steps in sequence:
+1. Identify all grammatical errors in the article and complete the corrections.
+2. If there are no errors in the article, output an empty dictionary '{}'.
+3. If there are errors, in the corrected text, surround the deleted text with `~~` and the added text with `[[ ]]`.
+4. For each deletion or addition, provide a corresponding explanation.
+5. Prepare a list of these explanations for the corrections made.
+6. Output a dictionary with "corrected" (the corrected text in Markdown format) and "explanations" (the list of explanations) as keys.
+7. Finally, output the dictionary in JSON format.
 
-Sentence:
+Article:
 """
 
 GRAMMAR_CHECK_CONFIG = (
@@ -94,8 +98,8 @@ GRAMMAR_CHECK_CONFIG = (
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
-def check_grammar(sentence):
-    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + sentence
+def check_grammar(article):
+    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + article
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
@@ -131,7 +135,7 @@ w_cols = st.columns(3)
 HEIGHT = 500
 
 w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
-text = w_cols[0].text_area(
+article = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
     value=st.session_state["writing-text"],
@@ -163,27 +167,29 @@ if w_btn_cols[1].button(
     "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 ):
     suggestions.empty()
-    nlp = spacy.load("en_core_web_sm")
-    paragraphs = text.split("\n")
+    result = check_grammar(article)
+    st.write(result)
+    # nlp = spacy.load("en_core_web_sm")
+    # paragraphs = text.split("\n")
     html = ""
-    for paragraph in paragraphs:
-        if paragraph.strip() == "":
-            html += "<br/>"
-            continue
-        else:
-            doc = nlp(paragraph)
-        # sentences = list(doc.sents)
-        for span in doc.sents:
-            original = span.text
-            check_dict = check_grammar(original)
-            st.write(check_dict)
-            # check_dict 可能为空 {}
-            html += display_grammar_errors(
-                original,
-                check_dict.get("corrected", original),
-                check_dict.get("explanations", []),
-            )
-        html += "<br/>"
+    # for paragraph in paragraphs:
+    #     if paragraph.strip() == "":
+    #         html += "<br/>"
+    #         continue
+    #     else:
+    #         doc = nlp(paragraph)
+    #     # sentences = list(doc.sents)
+    #     for span in doc.sents:
+    #         original = span.text
+    #         check_dict = check_grammar(original)
+    #         st.write(check_dict)
+    #         # check_dict 可能为空 {}
+    #         html += display_grammar_errors(
+    #             original,
+    #             check_dict.get("corrected", original),
+    #             check_dict.get("explanations", []),
+    #         )
+    #     html += "<br/>"
 
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
