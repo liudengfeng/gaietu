@@ -51,8 +51,10 @@ logger = logging.getLogger("streamlit")
 
 # 发音评估(韵律、语法、词汇、主题)
 RATE_PER_HOUR = 0.3
+# 实时和批处理合成: $15/每 100 万 字符
 # 长音频制作： 每 100 万个字符 $100
-RATE_PER_MILLION_CHARS = 100
+MIN_RATE_PER_MILLION_CHARS = 15
+MAX_RATE_PER_MILLION_CHARS = 100
 
 TOEKN_HELP_INFO = (
     "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
@@ -474,6 +476,7 @@ def is_aside(text):
 def get_synthesis_speech(text, voice):
     # 首先处理text，删除text中的空白行
     text = re.sub("\n\\s*\n*", "\n", text)
+    is_free = True
     try:
         result = synthesize_speech(
             text,
@@ -486,24 +489,49 @@ def get_synthesis_speech(text, voice):
             logger.error(f"Speech synthesis canceled: {cancellation_details.reason}")
             logger.error(f"Error details: {cancellation_details.error_details}")
     except Exception as e:
+        is_free = False
         result = synthesize_speech(
             text,
             st.secrets["Microsoft"]["SPEECH_KEY"],
             st.secrets["Microsoft"]["SPEECH_REGION"],
             voice,
         )
+
+    if is_free:
+        cost0 = 0.0
+        cost1 = 0.0
+    else:
+        cost0 = (
+            (len(text) / 1000000)
+            * MIN_RATE_PER_MILLION_CHARS
+            * USD_TO_CNY_EXCHANGE_RATE
+        )
+        cost1 = (
+            (len(text) / 1000000)
+            * MAX_RATE_PER_MILLION_CHARS
+            * USD_TO_CNY_EXCHANGE_RATE
+        )
+
     # 实时和批处理合成: $15/每 100 万 字符
     # 长音频制作： 每 100 万个字符 $100
     char_count = len(text)
-    cost = (char_count / 1000000) * RATE_PER_MILLION_CHARS * USD_TO_CNY_EXCHANGE_RATE
+    cost = (
+        (char_count / 1000000) * MAX_RATE_PER_MILLION_CHARS * USD_TO_CNY_EXCHANGE_RATE
+    )
     usage = {
         "char_count": char_count,
         "cost": cost,
+        "cost0": cost0,
+        "cost1": cost1,
         "item_name": "语音合成",
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
     logger.info(f"语音合成费用：{cost:.4f}元，字符数：{char_count}")
+    free_flag = "免费" if is_free else "付费"
+    logger.info(
+        f"语音合成费用：{cost0:.4f}元，字符数：{char_count}，是否免费：{free_flag}，费用1：{cost1:.4f}元"
+    )
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
