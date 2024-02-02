@@ -4,21 +4,15 @@ import logging
 
 # import mimetypes
 import os
-import random
 import re
 import time
 from pathlib import Path
 from typing import List
-from urllib.parse import quote
-from google.api_core.exceptions import Aborted
 import pandas as pd
 import pytz
 import streamlit as st
-from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore
-from vertexai.preview.generative_models import GenerationConfig, Image, Part
 
-from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
@@ -30,10 +24,7 @@ from mypylib.st_helper import (
     get_blob_service_client,
     get_current_monday,
     on_page_to,
-    select_word_image_urls,
     setup_logger,
-    translate_text,
-    update_and_display_progress,
 )
 
 
@@ -252,9 +243,6 @@ def generate_timestamp(key: str, type: str, idx: int):
 @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
 def get_feedbacks():
     container_name = "feedback"
-    # connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
-    # blob_service_client = BlobServiceClient.from_connection_string(connect_str)
-    # container_client = blob_service_client.get_container_client(container_name)
     container_client = get_blob_container_client(container_name)
 
     # 获取blob列表
@@ -755,10 +743,10 @@ elif menu == "统计分析":
     tabs = st.tabs(["费用", "用户"])
     with tabs[0]:
         phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
-        
+
         start_date = st.date_input("开始日期", value=get_current_monday())
         end_date = st.date_input("结束日期")
-        
+
         if start_date >= end_date:
             st.error("错误: 结束日期必须大于开始日期.")
             st.stop()
