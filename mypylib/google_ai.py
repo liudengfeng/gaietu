@@ -167,7 +167,11 @@ def parse_json_string(s, prefix="```python", suffix="```"):
     s = s.replace(prefix, "").replace(suffix, "")
 
     # 解析 JSON
-    d = json.loads(s)
+    try:
+        d = json.loads(s)
+    except json.JSONDecodeError:
+        logger.info(f"Failed to parse JSON string: {s}")
+        raise
 
     return d
 
