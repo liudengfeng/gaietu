@@ -544,7 +544,7 @@ def pronunciation_assessment_with_cost(
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
-    logger.info(f"发音评估费用：{cost:.2f}元，时长：{duration:.2f}秒")
+    logger.info(f"发音评估费用：{cost:.4f}元，时长：{duration:.2f}秒")
     return pronunciation_assessment_from_stream(
         audio_info, st.secrets, topic, reference_text
     )
