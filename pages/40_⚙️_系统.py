@@ -747,7 +747,11 @@ elif menu == "统计分析":
 
         start_date = st.date_input("开始日期", value=get_current_monday())
         end_date = st.date_input("结束日期")
-
+        
+        if start_date is None or end_date is None:
+            st.warning("请先选择开始日期和结束日期。")
+            st.stop()
+        
         if start_date >= end_date:
             st.error("错误: 结束日期必须大于开始日期.")
             st.stop()
