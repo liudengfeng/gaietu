@@ -14,8 +14,14 @@ from google.cloud.firestore import FieldFilter
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from .constants import FAKE_EMAIL_DOMAIN
-from .db_model import (LearningTime, Payment, PaymentStatus, PurchaseType,
-                       TokenUsageRecord, User)
+from .db_model import (
+    LearningTime,
+    Payment,
+    PaymentStatus,
+    PurchaseType,
+    TokenUsageRecord,
+    User,
+)
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -870,12 +876,24 @@ class DbInterface:
         if phone_number != "ALL":
             collection_ref = collection_ref.where("phone_number", "==", phone_number)
         if start_date is not None:
-            collection_ref = collection_ref.where("timestamp", ">=", Timestamp.FromDatetime(start_date))
+            start_datetime = datetime.combine(start_date, datetime.min.time())
+            collection_ref = collection_ref.where(
+                "timestamp",
+                ">=",
+                Timestamp.FromDatetime(start_datetime),
+            )
         if end_date is not None:
-            collection_ref = collection_ref.where("timestamp", "<=", Timestamp.FromDatetime(end_date))
+            end_datetime = datetime.combine(end_date, datetime.max.time())
+            collection_ref = collection_ref.where(
+                "timestamp", "<=", Timestamp.FromDatetime(end_datetime)
+            )
         docs = collection_ref.get()
         usage_records = [
-            {"item_name": doc.get("item_name"), "cost": doc.get("cost"), "timestamp": doc.get("timestamp")}
+            {
+                "item_name": doc.get("item_name"),
+                "cost": doc.get("cost"),
+                "timestamp": doc.get("timestamp"),
+            }
             for doc in docs
         ]
         return usage_records
