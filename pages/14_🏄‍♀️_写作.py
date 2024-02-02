@@ -81,11 +81,11 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-As an expert in English grammar, your task is to rigorously review the grammar of the entire article provided below and complete the corrections.
-Complete the following steps in sequence:
+As an expert in English grammar, your task is to rigorously check for grammatical errors in the article.
+Step by step, complete the following:
 1. Identify all grammatical errors in the article and complete the corrections.
 2. If there are no errors in the article, output an empty dictionary '{}'.
-3. If there are errors, make corrections based on the original text. For the part to be deleted, surround it with `~~`. For the part to be added, surround it with `[[ ]]`. For replacements, first mark the part to be deleted, and then mark the part to be added. After all corrections, the text with these markings will form the "corrected" content. The "corrected" content should clearly show the modifications made to the original text.
+3. If there are errors in the original text, then for each error, make a correction: mark the part to be deleted with `~~`, and the part to be added with `[[ ]]`. For replacements, first mark the part to be deleted, and then mark the part to be added. This will form the "corrected" content, which should clearly show the modifications made to the original text.
 4. For each operation, provide a corresponding explanation. An operation can be a replacement (one deletion and one addition), a pure addition, or a pure deletion. Each operation should have one explanation.
 5. Prepare a list of these explanations for the corrections made.
 6. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
