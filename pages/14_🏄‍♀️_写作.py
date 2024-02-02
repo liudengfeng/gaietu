@@ -170,7 +170,7 @@ if w_btn_cols[1].button(
 ):
     suggestions.empty()
     result = check_grammar(article)
-    st.write(result)
+    suggestions.write(result)
     # nlp = spacy.load("en_core_web_sm")
     # paragraphs = text.split("\n")
     html = ""
