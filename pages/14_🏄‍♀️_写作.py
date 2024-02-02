@@ -115,7 +115,7 @@ def check_grammar(article):
         contents_info,
         GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
-        parser=partial(parse_json_string, prefix="", suffix=""),
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
 
 
