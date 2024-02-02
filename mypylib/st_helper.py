@@ -55,6 +55,8 @@ RATE_PER_HOUR = 0.3
 # 长音频制作： 每 100 万个字符 $100
 MIN_RATE_PER_MILLION_CHARS = 15
 MAX_RATE_PER_MILLION_CHARS = 100
+# Google 翻译费率 per million characters
+RATE_PER_MILLION_CHARS = 25
 
 TOEKN_HELP_INFO = (
     "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
@@ -204,6 +206,8 @@ def configure_google_apis():
 
 def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = False):
     """Translating Text."""
+    # Cloud Translation 会按字符数统计用量，即使一个字符为多字节也是如此。空白字符也需要付费。
+    # LLM $25 per million characters $20 per million characters
     if is_list:
         if not isinstance(text, list):
             raise ValueError("Expected a list of strings, but got a single string.")
@@ -215,6 +219,11 @@ def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = 
 
     if not text or text == "":
         return text  # type: ignore
+
+    # 计算字符数
+    char_count = len("".join(text)) if is_list else len(text)
+    # 计算费用
+    cost = (char_count / 1000000) * RATE_PER_MILLION_CHARS * USD_TO_CNY_EXCHANGE_RATE
 
     # Location must be 'us-central1' or 'global'.
     parent = f"projects/{PROJECT_ID}/locations/global"
@@ -237,6 +246,14 @@ def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = 
     for translation in response.translations:
         res.append(translation.translated_text.encode("utf8").decode("utf8"))
     # google translate api 返回一个结果
+    usage = {
+        "char_count": char_count,
+        "cost": cost,
+        "item_name": "Google翻译",
+        "timestamp": datetime.now(pytz.UTC),
+    }
+    st.session_state.dbi.add_usage_to_cache(usage)
+    logger.info(f"翻译费用：{cost:.4f}元，字符数：{char_count}")
     return res if is_list else res[0]
 
 
