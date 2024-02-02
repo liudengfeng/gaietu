@@ -4,7 +4,7 @@ import streamlit as st
 
 def view_error_counts_legend(session_state_key: str, idx=None):
     if idx is not None:
-        st.write(st.session_state[session_state_key].get(idx, {}))
+        st.write(st.session_state[session_state_key].get(idx, {})["error_counts"])
         d = st.session_state[session_state_key].get(idx, {}).get("error_counts", {})
     else:
         d = st.session_state[session_state_key].get("error_counts", {})
