@@ -1,5 +1,7 @@
 import difflib
 import logging
+from functools import partial
+
 import spacy
 import streamlit as st
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
@@ -113,7 +115,7 @@ def check_grammar(article):
         contents_info,
         GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
-        # parser=parse_json_string,
+        parser=partial(parse_json_string, prefix="", suffix=""),
     )
 
 
