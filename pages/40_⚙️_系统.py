@@ -290,7 +290,7 @@ def get_feedbacks():
 # region 侧边栏
 
 menu = st.sidebar.selectbox(
-    "菜单", options=["支付管理", "处理反馈", "词典管理", "统计分析"]
+    "菜单", options=["支付管理", "处理反馈", "统计分析"]
 )
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
@@ -741,8 +741,14 @@ elif menu == "处理反馈":
 # # endregion
 
 
-# # region 创建统计分析页面
+# region 创建统计分析页面
+elif menu == "统计分析":
+    st.subheader("统计分析", divider="rainbow", anchor=False)
+    tabs = st.tabs(["费用", "用户"])
+    with tabs[0]:
+        st.subheader("费用统计",divider="rainbow", anchor=False)
+        st.write("费用统计")
 
-# # endregion
+# endregion
 
 # endregion
