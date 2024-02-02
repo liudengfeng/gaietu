@@ -533,7 +533,7 @@ def pronunciation_assessment_with_cost(
 ):
     # $0.30 /小时/功能
     duration = calculate_audio_duration(
-        audio_info["audio_data"], audio_info["sample_rate"], audio_info["sample_width"]
+        audio_info["bytes"], audio_info["sample_rate"], audio_info["sample_width"]
     )
     cost = (duration / 3600) * RATE_PER_HOUR * USD_TO_CNY_EXCHANGE_RATE
     is_oral = topic is not None
