@@ -592,7 +592,7 @@ if menu and menu.endswith("口语能力"):
         help="""时长超过 15 秒，文字篇幅在 50 个字词(推荐)和 3 个句子以上。""",
     )
 
-    content_cols = st.columns([16, 2])
+    content_cols = st.columns([16, 3])
     oa_words_container = content_cols[0].container(border=True)
     oa_legend_container = content_cols[1].container(border=True)
 
