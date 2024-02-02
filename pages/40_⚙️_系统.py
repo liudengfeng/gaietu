@@ -28,6 +28,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
+    get_current_monday,
     on_page_to,
     select_word_image_urls,
     setup_logger,
@@ -754,8 +755,10 @@ elif menu == "统计分析":
     tabs = st.tabs(["费用", "用户"])
     with tabs[0]:
         phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
-        start_date = st.date_input("开始日期")
+        
+        start_date = st.date_input("开始日期", value=get_current_monday())
         end_date = st.date_input("结束日期")
+        
         if start_date >= end_date:
             st.error("错误: 结束日期必须大于开始日期.")
             st.stop()

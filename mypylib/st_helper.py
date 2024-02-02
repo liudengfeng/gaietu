@@ -106,6 +106,28 @@ def is_answer_correct(user_answer, standard_answer):
     return user_answer == standard_answer
 
 
+def get_current_monday():
+    """
+    使用会话缓存的用户时区信息，返回当前日期的周一日期。
+
+    Returns:
+        datetime.date: 当前日期的周一日期。
+    """
+    # 获取用户时区
+    user_timezone = st.session_state.dbi.cache["user_info"]["timezone"]
+
+    # 获取当前日期和时间
+    now = datetime.datetime.now(pytz.timezone(user_timezone))
+
+    # 获取今天是周几（0 是周一，6 是周日）
+    weekday = now.weekday()
+
+    # 获取当前周的周一
+    monday = now.date() - datetime.timedelta(days=weekday)
+
+    return monday
+
+
 # endregion
 
 # region 用户相关
