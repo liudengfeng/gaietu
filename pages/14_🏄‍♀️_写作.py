@@ -86,13 +86,14 @@ Complete the following steps in sequence:
 1. Identify all grammatical errors in the article and complete the corrections.
 2. If there are no errors in the article, output an empty dictionary '{}'.
 3. If there are errors, in the corrected text, surround the deleted text with `~~` and the added text with `[[ ]]`.
-4. For each deletion or addition, provide a corresponding explanation.
+4. For each operation, provide a corresponding explanation. An operation can be a replacement (one deletion and one addition), a pure addition, or a pure deletion. Each operation should have one explanation.
 5. Prepare a list of these explanations for the corrections made.
 6. Output a dictionary with "corrected" (the corrected text in Markdown format) and "explanations" (the list of explanations) as keys.
 7. Finally, output the dictionary in JSON format.
 
 Article:
 """
+
 
 GRAMMAR_CHECK_CONFIG = (
     {"max_output_tokens": 256, "temperature": 0.2, "top_p": 0.95, "top_k": 40},
