@@ -70,9 +70,7 @@ def pronunciation_assessment_word_format(word_obj):
         result += f"<span style='color: white; background-color: #B7410E; margin-right: 5px;' title='{accuracy_score}'>{word_obj.word}</span>"
     elif word_obj.is_missing_break:
         result += f"<span style='color: black; background-color: #D3D3D3; margin-right: 5px;' title='{accuracy_score}'>[]</span>"
-        result += (
-            f"<span style='margin-right: 5px;' title='{accuracy_score}'>{word_obj.word}</span>"
-        )
+        result += f"<span style='margin-right: 5px;' title='{accuracy_score}'>{word_obj.word}</span>"
     else:
         result = f"<span style='margin-right: 5px;'>{word_obj.word}</span>"
 
