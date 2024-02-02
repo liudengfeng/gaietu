@@ -1,5 +1,7 @@
 from pathlib import Path
 
+USD_TO_CNY_EXCHANGE_RATE = 8.0
+
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VOICES_FP = CURRENT_CWD / "resource/voices.json"
 # ORAL_FP = CURRENT_CWD / "resource/examples/Lauren_audio.wav"

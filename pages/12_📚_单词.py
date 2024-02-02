@@ -34,7 +34,6 @@ from mypylib.st_helper import (
 )
 from mypylib.word_utils import (
     audio_autoplay_elem,
-    get_or_create_and_return_audio_data,
     remove_trailing_punctuation,
 )
 

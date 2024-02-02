@@ -19,7 +19,7 @@ from vertexai.preview.generative_models import (
     ResponseBlockedError,
 )
 
-from .constants import from_chinese_to_english_topic
+from .constants import USD_TO_CNY_EXCHANGE_RATE, from_chinese_to_english_topic
 from .google_ai_prompts import (
     MULTIPLE_CHOICE_QUESTION,
     READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
@@ -28,7 +28,7 @@ from .google_ai_prompts import (
 )
 from .google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 
-USD_TO_CNY_EXCHANGE_RATE = 8.0
+
 MAX_CALLS = 10
 PER_SECONDS = 60
 shanghai_tz = pytz.timezone("Asia/Shanghai")

@@ -50,6 +50,17 @@ def combine_audio_data(audio_data_list):
 def calculate_audio_duration(
     audio_bytes: bytes, sample_rate: int, sample_width: int
 ) -> float:
+    """
+    Calculate the duration of an audio file based on the given audio bytes, sample rate, and sample width.
+
+    Args:
+        audio_bytes (bytes): The audio data in bytes.
+        sample_rate (int): The sample rate of the audio file.
+        sample_width (int): The sample width of the audio file.
+
+    Returns:
+        float: The duration of the audio file in seconds.
+    """
     total_samples = len(audio_bytes) / sample_width
     duration = total_samples / sample_rate
     return duration

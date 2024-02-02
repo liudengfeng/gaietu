@@ -35,7 +35,6 @@ from mypylib.st_helper import (
     process_dialogue_text,
     pronunciation_assessment_for,
     update_sidebar_status,
-    view_pronunciation_assessment_legend,
     view_word_assessment,
 )
 from mypylib.utils import calculate_audio_duration

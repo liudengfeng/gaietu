@@ -4,6 +4,7 @@ Speech recognition samples for the Microsoft Cognitive Services Speech SDK
 # https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/quickstarts/setup-platform?pivots=programming-language-javascript&tabs=linux%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cpypi
 使用发音评估: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/how-to-pronunciation-assessment?pivots=programming-language-python
 """
+
 import difflib
 import json
 import os

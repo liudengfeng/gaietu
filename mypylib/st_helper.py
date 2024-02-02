@@ -11,12 +11,19 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 import vertexai
+from azure.cognitiveservices.speech import (
+    ResultReason,
+    SpeechSynthesisCancellationDetails,
+)
 
 # from annotated_text import annotated_text, annotation
 from azure.storage.blob import BlobServiceClient
 from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
+
+from mypylib.constants import USD_TO_CNY_EXCHANGE_RATE
+from mypylib.utils import calculate_audio_duration
 
 from .azure_pronunciation_assessment import (
     get_syllable_durations_and_offsets,
@@ -42,6 +49,10 @@ from .word_utils import (
 
 logger = logging.getLogger("streamlit")
 
+# 发音评估(韵律、语法、词汇、主题)
+RATE_PER_HOUR = 0.3
+# 长音频制作： 每 100 万个字符 $100
+RATE_PER_MILLION_CHARS = 100
 
 TOEKN_HELP_INFO = (
     "✨ 对于 Gemini 模型，一个令牌约相当于 4 个字符。100 个词元约为 60-80 个英语单词。"
@@ -461,12 +472,37 @@ def is_aside(text):
 
 @st.cache_data(max_entries=10000, ttl=60 * 60 * 24, show_spinner=False)
 def get_synthesis_speech(text, voice):
-    result = synthesize_speech(
-        text,
-        st.secrets["Microsoft"]["SPEECH_KEY"],
-        st.secrets["Microsoft"]["SPEECH_REGION"],
-        voice,
-    )
+    # 首先处理text，删除text中的空白行
+    text = re.sub("\n\\s*\n*", "\n", text)
+    try:
+        result = synthesize_speech(
+            text,
+            st.secrets["Microsoft"]["F0_SPEECH_KEY"],
+            st.secrets["Microsoft"]["F0_SPEECH_REGION"],
+            voice,
+        )
+        if result.reason == ResultReason.Canceled:
+            cancellation_details = SpeechSynthesisCancellationDetails(result)
+            logger.error(f"Speech synthesis canceled: {cancellation_details.reason}")
+            logger.error(f"Error details: {cancellation_details.error_details}")
+    except Exception as e:
+        result = synthesize_speech(
+            text,
+            st.secrets["Microsoft"]["SPEECH_KEY"],
+            st.secrets["Microsoft"]["SPEECH_REGION"],
+            voice,
+        )
+    # 实时和批处理合成: $15/每 100 万 字符
+    # 长音频制作： 每 100 万个字符 $100
+    char_count = len(text)
+    cost = (char_count / 1000000) * RATE_PER_MILLION_CHARS * USD_TO_CNY_EXCHANGE_RATE
+    usage = {
+        "char_count": char_count,
+        "cost": cost,
+        "item_name": "语音合成",
+        "timestamp": datetime.now(pytz.UTC),
+    }
+    st.session_state.dbi.add_usage_to_cache(usage)
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
@@ -492,16 +528,35 @@ def select_word_image_urls(word: str):
     return mini_dict_doc.get("image_urls", [])
 
 
+def pronunciation_assessment_with_cost(
+    audio_info: dict, topic: str, reference_text: str
+):
+    # $0.30 /小时/功能
+    duration = calculate_audio_duration(
+        audio_info["audio_data"], audio_info["sample_rate"], audio_info["sample_width"]
+    )
+    cost = (duration / 3600) * RATE_PER_HOUR * USD_TO_CNY_EXCHANGE_RATE
+    usage = {
+        "duration": duration,
+        "cost": cost,
+        "item_name": "发音评估",
+        "timestamp": datetime.now(pytz.UTC),
+    }
+    st.session_state.dbi.add_usage_to_cache(usage)
+    logger.info(f"发音评估费用：{cost:.2f}元，时长：{duration:.2f}秒")
+    return pronunciation_assessment_from_stream(
+        audio_info, st.secrets, topic, reference_text
+    )
+
+
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
 def pronunciation_assessment_for(audio_info: dict, reference_text: str):
-    return pronunciation_assessment_from_stream(
-        audio_info, st.secrets, None, reference_text
-    )
+    return pronunciation_assessment_with_cost(audio_info, None, reference_text)
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行口语能力评估，请稍候...")
 def oral_ability_assessment_for(audio_info: dict, topic: str):
-    return pronunciation_assessment_from_stream(audio_info, st.secrets, topic)
+    return pronunciation_assessment_with_cost(audio_info, topic, None)
 
 
 def display_assessment_score(
@@ -644,15 +699,6 @@ def left_paragraph_aligned_text(text1, words):
             paragraphs1[i] += "\n" * diff
 
     return paragraphs1
-
-
-def view_pronunciation_assessment_legend():
-    annotated_text(annotation("w1", "发音错误", background="#d5d507ce"))
-    annotated_text(annotation("[w2]", "遗漏", color="white", background="#4a4943b7"))
-    annotated_text(annotation("w3", "插入内容", border="2px dashed red"))
-    annotated_text(annotation("w4", "意外中断", background="#FFC0CB"))
-    annotated_text(annotation("w5", "缺少停顿", background="#f2f2f2"))
-    annotated_text(annotation("w6", "发音单调", color="white", background="#ac1882ce"))
 
 
 # endregion

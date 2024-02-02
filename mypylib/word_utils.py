@@ -116,6 +116,7 @@ def count_words_and_get_levels(
     return total_words, dict(levels)
 
 
+# TODO:废弃
 def get_or_create_and_return_audio_data(word: str, style: str, secrets: dict):
     # 生成单词的哈希值
     hash_value = hash_word(word)
