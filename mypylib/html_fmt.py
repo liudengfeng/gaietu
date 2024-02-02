@@ -11,7 +11,7 @@ def view_error_counts_legend(session_state_key: str, idx=None):
 
     n1 = str(d.get("Mispronunciation", 0)).zfill(3)
     st.markdown(
-        f"<div><span style='text-align: right; color: black; background-color: #F5F5DC; margin-right: 5px;'>{n1}</span> <span>发音错误</span></div>",
+        f"<div><span style='text-align: right; color: black; background-color: #F0E68C; margin-right: 5px;'>{n1}</span> <span>发音错误</span></div>",
         help="✨ 说得不正确的字词。",
         unsafe_allow_html=True,
     )
@@ -65,7 +65,7 @@ def pronunciation_assessment_word_format(word_obj):
     result = ""
 
     if error_type == "Mispronunciation":
-        result = f'<span style="color: black; background-color: #F5F5DC; margin-right: 5px; text-decoration: underline; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
+        result = f'<span style="color: black; background-color: #F0E68C; margin-right: 5px; text-decoration: underline; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
     elif error_type == "Omission":
         result = f'<span style="color: white; background-color: #808080; margin-right: 5px; {underline_style}">[{word_obj.word}]</span>'
     elif error_type == "Insertion":
