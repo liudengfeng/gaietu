@@ -96,7 +96,7 @@ Article:
 
 
 GRAMMAR_CHECK_CONFIG = (
-    {"max_output_tokens": 256, "temperature": 0.2, "top_p": 0.95, "top_k": 40},
+    {"max_output_tokens": 256, "temperature": 0.0, "top_p": 0.95, "top_k": 40},
 )
 
 
