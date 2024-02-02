@@ -424,10 +424,15 @@ if menu and menu.endswith("发音评估"):
             difficulty,
             scenario_category,
         )
-
-    display_assessment_score(
-        pa_report_container, PRONUNCIATION_SCORE_BADGE_MAPS, "pa-assessment"
-    )
+    
+    if st.session_state["pa-idx"] == -1:
+        display_assessment_score(
+            pa_report_container, PRONUNCIATION_SCORE_BADGE_MAPS, "pa-assessment-dict"
+        )
+    else:
+        display_assessment_score(
+            pa_report_container, PRONUNCIATION_SCORE_BADGE_MAPS, "pa-assessment-dict",st.session_state["pa-idx"]
+        )
 
     with legend_container:
         if st.session_state["pa-idx"] == -1:

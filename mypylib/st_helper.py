@@ -506,7 +506,7 @@ def oral_ability_assessment_for(audio_info: dict, topic: str):
 
 
 def display_assessment_score(
-    container, maps, assessment_key, score_key="pronunciation_result"
+    container, maps, assessment_key, score_key="pronunciation_result", idx=None
 ):
     """
     Display the assessment score for a given assessment key.
@@ -517,9 +517,15 @@ def display_assessment_score(
     assessment_key (str): The key to retrieve the assessment from st.session_state.
     score_key (str, optional): The key to retrieve the score from the assessment. Defaults to "pronunciation_result".
     """
-    if assessment_key not in st.session_state or not st.session_state[assessment_key]:
+    if assessment_key not in st.session_state:
         return
-    result = st.session_state[assessment_key].get(score_key, {})
+    d = st.session_state[assessment_key]
+    if idx:
+        result = d[idx].get(score_key, {})
+    else:
+        result = d.get(score_key, {})
+    if not result:
+        return
     view_md_badges(container, result, maps, 0)
 
 
