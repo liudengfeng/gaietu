@@ -160,7 +160,7 @@ if w_btn_cols[0].button(
 
 
 if w_btn_cols[1].button(
-    "语法[:abc:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
+    "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 ):
     suggestions.empty()
     nlp = spacy.load("en_core_web_sm")
