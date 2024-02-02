@@ -85,11 +85,28 @@ As an expert in English grammar, your task is to rigorously check for grammatica
 Step by step, complete the following:
 1. Identify all grammatical errors in the article and complete the corrections.
 2. If there are no errors in the article, output an empty dictionary '{}'.
-3. If there are errors in the original text, then for each error, make a correction: mark the part to be deleted with `~~`, and the part to be added with `[[ ]]`. For example, if the original text is "I likes to play games.", the corrected text should be "I ~~likes~~ [[like]] to play games.". For replacements, first mark the part to be deleted, and then mark the part to be added. This will form the "corrected" content, which should clearly show the modifications made to the original text.
+3. If there are errors in the original text, then for each error, make a correction: mark the part to be deleted with `~~`, and the part to be added with `[[ ]]`. For replacements, first mark the part to be deleted, and then mark the part to be added. This will form the "corrected" content, which should clearly show the modifications made to the original text.
 4. For each operation, provide a corresponding explanation. An operation can be a replacement (one deletion and one addition), a pure addition, or a pure deletion. Each operation should have one explanation.
 5. Prepare a list of these explanations for the corrections made.
 6. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 7. Finally, output the dictionary in JSON format.
+
+Examples:
+- Original: "I likes to play games."
+    corrected: "I ~~likes~~ [[like]] to play games."
+    explanations: ["The verb 'like' should be used with the first person singular 'I'."]
+
+- Original: "I like to play games everyday."
+    corrected: "I like to play games ~~everyday~~."
+    explanations: ["The word 'everyday' is not necessary in this context."]
+
+- Original: "This could better if we add more details."
+    corrected: "This could [[be]] better if we add more details."
+    explanations: ["Added the missing word 'be' after 'could' to correct the sentence."]
+
+- Original: "She play basketballs every days."
+    corrected: "She ~~play~~ [[plays]] ~~basketballs~~ [[basketball]] every ~~days~~ [[day]]."
+    explanations: ["Replaced the entire sentence to correct multiple errors: changed 'play' to 'plays' for third person singular 'She', replaced 'basketballs' with 'basketball', and corrected 'days' to 'day' for proper usage."]
 
 Article:
 """
