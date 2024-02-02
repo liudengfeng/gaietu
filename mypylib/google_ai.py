@@ -160,7 +160,7 @@ def calculate_cost_by_model(model_name, contents, full_response):
 
 
 def parse_json_string(s, prefix="```python", suffix="```"):
-    # logger.info(f"传入的字符串：{s}")
+    logger.info(f"传入的字符串：{s}")
     # 删除换行符
     s = s.replace("\n", "")
 
