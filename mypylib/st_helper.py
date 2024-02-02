@@ -536,10 +536,11 @@ def pronunciation_assessment_with_cost(
         audio_info["audio_data"], audio_info["sample_rate"], audio_info["sample_width"]
     )
     cost = (duration / 3600) * RATE_PER_HOUR * USD_TO_CNY_EXCHANGE_RATE
+    is_oral = topic is not None
     usage = {
         "duration": duration,
         "cost": cost,
-        "item_name": "发音评估",
+        "item_name": "口语能力评估" if is_oral else "发音评估",
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
