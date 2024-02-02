@@ -57,13 +57,19 @@ def pronunciation_assessment_word_format(word_obj):
         return f"<span style='margin-right: 5px;'>{word_obj}</span>"
     error_type = word_obj.error_type
     accuracy_score = round(word_obj.accuracy_score)
+    underline_style = (
+        "text-decoration: underline wavy; text-decoration-color: purple;"
+        if word_obj.is_monotone
+        else ""
+    )
     result = ""
+
     if error_type == "Mispronunciation":
-        result = f"<span style='color: black; background-color: #F5F5DC; margin-right: 5px; text-decoration: underline;' title='{accuracy_score}'>{word_obj.word}</span>"
+        result = f"<span style='color: black; background-color: #F5F5DC; margin-right: 5px; text-decoration: underline;' {underline_style} title='{accuracy_score}'>{word_obj.word}</span>"
     elif error_type == "Omission":
-        result = f"<span style='color: white; background-color: #808080; margin-right: 5px;'>[{word_obj.word}]</span>"
+        result = f"<span style='color: white; background-color: #808080; margin-right: 5px;' {underline_style}>[{word_obj.word}]</span>"
     elif error_type == "Insertion":
-        result = f"<span style='color: white; background-color: #B7410E; margin-right: 5px; text-decoration: line-through;' title='{accuracy_score}'>{word_obj.word}</span>"
+        result = f"<span style='color: white; background-color: #B7410E; margin-right: 5px; text-decoration: line-through;' {underline_style} title='{accuracy_score}'>{word_obj.word}</span>"
 
     if word_obj.is_unexpected_break:
         result += f"<span style='color: black; background-color: #FFC0CB; text-decoration: line-through; margin-right: 5px;' title='{accuracy_score}'>[]</span>"
@@ -74,8 +80,6 @@ def pronunciation_assessment_word_format(word_obj):
     else:
         result = f"<span style='margin-right: 5px;'>{word_obj.word}</span>"
 
-    if word_obj.is_monotone:
-        result = f"<u style='text-decoration: underline wavy; text-decoration-color: purple;'>{result}</u>"
     return result
 
 
