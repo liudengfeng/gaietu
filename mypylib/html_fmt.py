@@ -25,7 +25,7 @@ def view_error_counts_legend(session_state_key: str, idx=None):
 
     n3 = str(d.get("Insertion", 0)).zfill(3)
     st.markdown(
-        f"<div><span style='text-align: right; color: white; background-color: #B7410E; margin-right: 5px;'>{n3}</span> <span>插入内容</span></div>",
+        f"<div><span style='text-align: right; color: white; background-color: #FF4500; margin-right: 5px;'>{n3}</span> <span>插入内容</span></div>",
         help="✨ 不在脚本中但在录制中检测到的字词。",
         unsafe_allow_html=True,
     )
@@ -69,11 +69,11 @@ def pronunciation_assessment_word_format(word_obj):
     elif error_type == "Omission":
         result = f'<span style="color: white; background-color: #808080; margin-right: 5px; {underline_style}">[{word_obj.word}]</span>'
     elif error_type == "Insertion":
-        result = f'<span style="color: white; background-color: #B7410E; margin-right: 5px; text-decoration: line-through; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
+        result = f'<span style="color: white; background-color: #FF4500; margin-right: 5px; text-decoration: line-through; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
 
     if word_obj.is_unexpected_break:
         result = f'<span style="color: black; background-color: #FFC0CB; text-decoration: line-through; margin-right: 5px; {underline_style}" title="{accuracy_score}">[]</span>'
-        result += f'<span style="color: white; background-color: #B7410E; margin-right: 5px; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
+        result += f'<span style="color: white; background-color: #FF4500; margin-right: 5px; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
     elif word_obj.is_missing_break:
         result = f'<span style="color: black; background-color: #D3D3D3; margin-right: 5px; {underline_style}" title="{accuracy_score}">[]</span>'
         result += f'<span style="margin-right: 5px; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
