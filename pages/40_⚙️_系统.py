@@ -746,7 +746,7 @@ elif menu == "统计分析":
     st.subheader("统计分析", divider="rainbow", anchor=False)
     tabs = st.tabs(["费用", "用户"])
     with tabs[0]:
-        st.subheader("费用统计",divider="rainbow", anchor=False)
+        st.markdown("##### 运行费用")
         st.write("费用统计")
 
 # endregion
