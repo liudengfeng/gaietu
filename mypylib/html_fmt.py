@@ -79,7 +79,7 @@ def pronunciation_assessment_word_format(word_obj):
         result += f'<span style="margin-right: 5px; {underline_style}" title="{accuracy_score}">{word_obj.word}</span>'
     elif not result:
         result = (
-            f'<span style="margin-right: 5px; {underline_style} title="{accuracy_score}">{word_obj.word}</span>'
+            f'<span style="margin-right: 5px; {underline_style};" title="{accuracy_score}">{word_obj.word}</span>'
         )
 
     return result
