@@ -503,6 +503,7 @@ def get_synthesis_speech(text, voice):
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
+    logger.info(f"语音合成费用：{cost:.4f}元，字符数：{char_count}")
     return {"audio_data": result.audio_data, "audio_duration": result.audio_duration}
 
 
