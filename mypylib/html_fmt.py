@@ -75,7 +75,7 @@ def pronunciation_assessment_word_format(word_obj):
         result = f"<span style='margin-right: 5px;'>{word_obj.word}</span>"
 
     if word_obj.is_monotone:
-        result = f"<u style='text-decoration: underline; text-decoration-color: purple;'>{result}</u>"
+        result = f"<u style='text-decoration: underline wavy; text-decoration-color: purple;'>{result}</u>"
     return result
 
 
