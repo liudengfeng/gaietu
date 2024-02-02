@@ -93,20 +93,20 @@ Step by step, complete the following:
 
 Examples:
 - Original: "I likes to play games."
-    corrected: "I ~~likes~~ [[like]] to play games."
-    explanations: ["The verb 'like' should be used with the first person singular 'I'."]
+- corrected: "I ~~likes~~ [[like]] to play games."
+- explanations: ["The verb 'like' should be used with the first person singular 'I'."]
 
 - Original: "I like to play games everyday."
-    corrected: "I like to play games ~~everyday~~."
-    explanations: ["The word 'everyday' is not necessary in this context."]
+- corrected: "I like to play games ~~everyday~~."
+- explanations: ["The word 'everyday' is not necessary in this context."]
 
 - Original: "This could better if we add more details."
-    corrected: "This could [[be]] better if we add more details."
-    explanations: ["Added the missing word 'be' after 'could' to correct the sentence."]
+- corrected: "This could [[be]] better if we add more details."
+- explanations: ["Added the missing word 'be' after 'could' to correct the sentence."]
 
 - Original: "She play basketballs every days."
-    corrected: "She ~~play~~ [[plays]] ~~basketballs~~ [[basketball]] every ~~days~~ [[day]]."
-    explanations: ["Replaced the entire sentence to correct multiple errors: changed 'play' to 'plays' for third person singular 'She', replaced 'basketballs' with 'basketball', and corrected 'days' to 'day' for proper usage."]
+- corrected: "She ~~play~~ [[plays]] ~~basketballs~~ [[basketball]] every ~~days~~ [[day]]."
+- explanations: ["Replaced the entire sentence to correct multiple errors: changed 'play' to 'plays' for third person singular 'She', replaced 'basketballs' with 'basketball', and corrected 'days' to 'day' for proper usage."]
 
 Article:
 """
