@@ -115,7 +115,7 @@ def check_grammar(article):
         contents_info,
         GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
         stream=False,
-        # parser=partial(parse_json_string, prefix="```json", suffix="```"),
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
 
 
@@ -173,6 +173,8 @@ if w_btn_cols[1].button(
     suggestions.write(type(result))
     suggestions.write(result)
     logger.info(result)
+
+    suggestions.markdown(result["corrected"], unsafe_allow_html=True)
     # nlp = spacy.load("en_core_web_sm")
     # paragraphs = text.split("\n")
     html = ""
