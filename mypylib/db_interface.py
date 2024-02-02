@@ -1,26 +1,21 @@
 import logging
 import random
 import string
+import threading
 import time
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import List, Union
-import threading
 
 # from cachetools import TTLCache
 from faker import Faker
 from google.cloud import firestore
 from google.cloud.firestore import FieldFilter
+from google.protobuf.timestamp_pb2 import Timestamp
 
 from .constants import FAKE_EMAIL_DOMAIN
-from .db_model import (
-    LearningTime,
-    Payment,
-    PaymentStatus,
-    PurchaseType,
-    TokenUsageRecord,
-    User,
-)
+from .db_model import (LearningTime, Payment, PaymentStatus, PurchaseType,
+                       TokenUsageRecord, User)
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -846,6 +841,44 @@ class DbInterface:
     # endregion
 
     # region 使用及费用记录
+
+    def list_usages_phone_number(self):
+        """
+        获取所有使用记录的电话号码列表。
+
+        Returns:
+            list: 包含所有电话号码的列表。
+        """
+        collection_ref = self.db.collection("usages")
+        docs = collection_ref.get()
+        phone_numbers = [doc.id for doc in docs]
+        return phone_numbers
+
+    def get_usage_records(self, phone_number, start_date=None, end_date=None):
+        """
+        根据电话号码获取使用记录。
+
+        Args:
+            phone_number (str): 要查询的电话号码，如果为 "ALL"，则查询所有记录。
+            start_date (datetime.date, optional): 开始日期。默认为 None。
+            end_date (datetime.date, optional): 结束日期。默认为 None。
+
+        Returns:
+            list: 包含所有匹配的使用记录的列表，每个记录是一个字典，包含 item_name, cost 和 timestamp 字段。
+        """
+        collection_ref = self.db.collection("usages")
+        if phone_number != "ALL":
+            collection_ref = collection_ref.where("phone_number", "==", phone_number)
+        if start_date is not None:
+            collection_ref = collection_ref.where("timestamp", ">=", Timestamp.FromDatetime(start_date))
+        if end_date is not None:
+            collection_ref = collection_ref.where("timestamp", "<=", Timestamp.FromDatetime(end_date))
+        docs = collection_ref.get()
+        usage_records = [
+            {"item_name": doc.get("item_name"), "cost": doc.get("cost"), "timestamp": doc.get("timestamp")}
+            for doc in docs
+        ]
+        return usage_records
 
     def add_usage_to_cache(self, usage: dict):
         # 定义缓存

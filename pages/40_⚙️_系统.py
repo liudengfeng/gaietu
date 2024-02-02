@@ -284,14 +284,21 @@ def get_feedbacks():
 
 # endregion
 
+# region 统计分析辅助函数
+
+# endregion
+
+
+@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+def get_phone_numbers():
+    return st.session_state.dbi.list_usages_phone_number()
+
 
 # endregion
 
 # region 侧边栏
 
-menu = st.sidebar.selectbox(
-    "菜单", options=["支付管理", "处理反馈", "统计分析"]
-)
+menu = st.sidebar.selectbox("菜单", options=["支付管理", "处理反馈", "统计分析"])
 sidebar_status = st.sidebar.empty()
 check_and_force_logout(sidebar_status)
 
@@ -746,8 +753,34 @@ elif menu == "统计分析":
     st.subheader("统计分析", divider="rainbow", anchor=False)
     tabs = st.tabs(["费用", "用户"])
     with tabs[0]:
+        phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
+        start_date = st.date_input("开始日期")
+        end_date = st.date_input("结束日期")
+        if start_date >= end_date:
+            st.error("错误: 结束日期必须大于开始日期.")
+            st.stop()
+
+        column_config = {
+            "item_name": "项目名称",
+            "stars": st.column_config.NumberColumn(
+                "Github Stars",
+                help="Number of stars on GitHub",
+                format="%d ⭐",
+            ),
+            "url": st.column_config.LinkColumn("App URL"),
+            "views_history": st.column_config.LineChartColumn(
+                "Views (past 30 days)", y_min=0, y_max=5000
+            ),
+        }
+
         st.markdown("##### 运行费用")
-        st.write("费用统计")
+        if st.button("统计"):
+            df = pd.DataFrame(
+                st.session_state.dbi.get_usage_records(
+                    phone_number, start_date, end_date
+                )
+            )
+            df
 
 # endregion
 
