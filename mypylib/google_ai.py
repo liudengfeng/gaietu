@@ -284,7 +284,7 @@ def display_generated_content_and_update_token(
 
     usage = {
         "item_name": item_name,
-        "total_cost": total_cost_1,
+        "cost": total_cost_1,
         "total_cost_google": total_cost_2,
         "total_tokens": total_tokens,
         "model_name": model_name,
@@ -343,7 +343,7 @@ def parse_generated_content_and_update_token(
 
     usage = {
         "item_name": item_name,
-        "total_cost": total_cost_1,
+        "cost": total_cost_1,
         "total_cost_google": total_cost_2,
         "total_tokens": total_tokens,
         "model_name": model_name,
