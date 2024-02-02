@@ -58,9 +58,9 @@ def pronunciation_assessment_word_format(word_obj):
     error_type = word_obj.error_type
     accuracy_score = round(word_obj.accuracy_score)
     underline_style = (
-        "text-decoration: underline wavy; text-decoration-color: purple;"
+        'text-decoration: underline wavy; text-decoration-color: purple;'
         if word_obj.is_monotone
-        else ""
+        else ''
     )
     result = ""
 
