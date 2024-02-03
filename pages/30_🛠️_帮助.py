@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import streamlit as st
+from menu import return_home
 
 from mypylib.st_helper import on_page_to
 
@@ -9,7 +10,7 @@ st.set_page_config(
     page_icon="🛠️",
     layout="centered",
 )
-
+return_home()
 on_page_to("帮助中心")
 
 CURRENT_CWD: Path = Path(__file__).parent.parent

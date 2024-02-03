@@ -12,6 +12,7 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
+from menu import return_home
 
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
@@ -70,7 +71,7 @@ st.set_page_config(
     page_icon=":muscle:",
     layout="wide",
 )
-
+return_home()
 check_access(False)
 # save_and_clear_all_learning_records()
 configure_google_apis()

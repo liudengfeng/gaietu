@@ -6,6 +6,7 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
+from menu import return_home
 
 from mypylib.azure_pronunciation_assessment import (
     adjust_display_by_reference_text,
@@ -47,7 +48,7 @@ st.set_page_config(
     page_icon=":bookmark:",
     layout="wide",
 )
-
+return_home()
 check_access(False)
 on_page_to("能力评估")
 configure_google_apis()

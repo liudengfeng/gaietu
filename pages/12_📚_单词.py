@@ -12,6 +12,7 @@ import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
+from menu import return_home
 
 from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_model import LearningTime
@@ -48,7 +49,7 @@ st.set_page_config(
     page_icon=":books:",
     layout="wide",
 )
-
+return_home()
 check_access(False)
 
 # save_and_clear_all_learning_records()

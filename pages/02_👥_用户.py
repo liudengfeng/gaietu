@@ -15,6 +15,7 @@ from azure.storage.blob import BlobServiceClient
 
 # from cryptography.fernet import Fernet
 from PIL import Image
+from menu import return_home
 
 from mypylib.auth_utils import is_valid_email
 from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
@@ -43,7 +44,7 @@ st.set_page_config(
     page_icon=":busts_in_silhouette:",
     layout="wide",
 )
-
+return_home()
 check_access(False)
 on_page_to("用户中心")
 
