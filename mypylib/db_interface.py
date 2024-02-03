@@ -881,7 +881,7 @@ class DbInterface:
                 "timestamp", ">=", start_timestamp
             )
         if end_date is not None:
-            end_datetime = datetime.combine(end_date, datetime.datetime.max.time())
+            end_datetime = datetime.combine(end_date, datetime.max.time())
             end_timestamp = end_datetime.timestamp()
             collection_ref = collection_ref.where(
                 "timestamp", "<=", end_timestamp
