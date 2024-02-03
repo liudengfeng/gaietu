@@ -219,7 +219,19 @@ if w_btn_cols[3].button(
 if w_btn_cols[4].button(
     "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
 ):
-    pass
+    # 你的文本
+    text = "这是一段文本。"
+
+    # 创建一个唯一的 ID
+    id = "my_text"
+
+    # 创建一个复制按钮
+    copy_button = f"""
+    <button onclick='navigator.clipboard.writeText(document.getElementById("{id}").innerText)'>复制</button>
+    """
+
+    # 显示文本和复制按钮
+    st.markdown(f'<p id="{id}">{text}</p>{copy_button}', unsafe_allow_html=True)
 
 
 # endregion
