@@ -82,7 +82,7 @@ is_logged_in = st.session_state.dbi.cache.get("user_info", {}).get(
 )
 
 login_btn = s_cols[0].button(
-    label="离线" if not is_logged_in else ":bust_in_silhouette: 在线",
+    label="离线[💔]" if not is_logged_in else "在线[📶]",
     type="primary" if not is_logged_in else "secondary",
     disabled=True,
 )
