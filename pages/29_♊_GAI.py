@@ -264,7 +264,6 @@ if menu == "聊天机器人":
         key="max-output-tokens-chatbot-slider",
         min_value=32,
         max_value=8192,
-        value=2048,
         step=32,
         help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
     )
@@ -274,7 +273,6 @@ if menu == "聊天机器人":
         value=st.session_state["max-output-tokens-chatbot"],
         min_value=32,
         max_value=8192,
-        value=2048,
         step=32,
         key="number-input-max-output-tokens-chatbot",
         help="✨ 输入词元限制。",
