@@ -272,20 +272,21 @@ with col2:
 st.divider()
 
 
-step_cols = st.columns(5)
-if step_cols[1].button(":bust_in_silhouette: 注册用户", key="注册用户"):
+step_cols = st.columns(3)
+if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
+    img1 = Image.open(LOGO_DIR / "step-1.jpg")
+    st.image(img1, use_column_width=True)
     st.switch_page("pages/00_📇_注册.py")
 
-if step_cols[2].button(":package: 订阅续费", key="订阅续费"):
+if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
+    img2 = Image.open(LOGO_DIR / "step-2.jpg")
+    st.image(img2, use_column_width=True)
     st.switch_page("pages/01_💰_订阅.py")
 
-if step_cols[3].button(":key: 登录使用", key="登录使用"):
+if step_cols[2].button(":key: 登录使用", key="登录使用"):
+    img3 = Image.open(LOGO_DIR / "step-3.jpg")
+    st.image(img3, use_column_width=True)
     st.switch_page("Home.py")
-
-log_cols = st.columns(3)
-welcome_image = Image.open(LOGO_DIR / "welcome-1.jpg")
-with log_cols[1]:
-    st.image(welcome_image, use_column_width=True)
 
 
 st.markdown(
