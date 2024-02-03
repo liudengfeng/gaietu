@@ -257,18 +257,24 @@ if menu == "聊天机器人":
     )
     st.sidebar.divider()
     sidebar_cols = st.sidebar.columns([3, 1])
+
+    def on_chatbot_output_tokens_changed(key):
+        st.session_state["max-output-tokens-chatbot"] = st.session_state[key]
+
     # 当 slider 的值改变时，更新 session_state 对象的值
-    st.session_state["max-output-tokens-chatbot"] = sidebar_cols[0].slider(
+    sidebar_cols[0].slider(
         "词元限制",
         value=st.session_state.get("max-output-tokens-chatbot", 2048),
-        key="max-output-tokens-chatbot-slider",
         min_value=32,
         max_value=8192,
         step=32,
+        key="max-output-tokens-chatbot-slider",
+        on_change=on_chatbot_output_tokens_changed,
+        args=("max-output-tokens-chatbot-slider",),
         help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
     )
     # 当 number_input 的值改变时，更新 session_state 对象的值
-    st.session_state["max-output-tokens-chatbot"] = sidebar_cols[1].number_input(
+    sidebar_cols[1].number_input(
         "输入词元",
         value=st.session_state["max-output-tokens-chatbot"],
         min_value=32,
@@ -276,6 +282,8 @@ if menu == "聊天机器人":
         step=32,
         label_visibility="hidden",
         key="number-input-max-output-tokens-chatbot",
+        on_change=on_chatbot_output_tokens_changed,
+        args=("number-input-max-output-tokens-chatbot",),
         help="✨ 输入词元限制。",
     )
     # 生成参数
