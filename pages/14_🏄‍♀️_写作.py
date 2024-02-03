@@ -63,6 +63,10 @@ if "writing-text" not in st.session_state:
 # region 函数
 
 
+def clear_text(key):
+    st.session_state[key] = ""
+
+
 def initialize_writing_chat():
     model_name = "gemini-pro"
     model = load_vertex_model(model_name)
@@ -159,7 +163,7 @@ w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
     key="article",
-    value=st.session_state.get("writing-text", ""),
+    # value=st.session_state.get("writing-text", ""),
     height=HEIGHT,
     placeholder="在此输入您的作文",
     help="在此输入您的作文",
@@ -198,6 +202,8 @@ with w_cols[2]:
 if w_btn_cols[0].button(
     "刷新[:arrows_counterclockwise:]",
     key="refresh",
+    on_click=clear_text,
+    args=("article",),
     help="✨ 点击按钮，开始新一轮练习。",
 ):
     st.session_state["writing-text"] = ""
