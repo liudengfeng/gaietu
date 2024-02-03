@@ -116,6 +116,9 @@ def delete_last_pair():
         initialize_chat()
 
 
+def on_chatbot_output_tokens_changed(key):
+    st.session_state["max-output-tokens-chatbot"] = st.session_state[key]
+
 # endregion
 
 # region 多模态辅助函数
@@ -257,9 +260,6 @@ if menu == "聊天机器人":
     )
     st.sidebar.divider()
     sidebar_cols = st.sidebar.columns([3, 1])
-
-    def on_chatbot_output_tokens_changed(key):
-        st.session_state["max-output-tokens-chatbot"] = st.session_state[key]
 
     # 当 slider 的值改变时，更新 session_state 对象的值
     sidebar_cols[0].slider(
