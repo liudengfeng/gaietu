@@ -515,7 +515,7 @@ elif menu == "多模态AI":
         tab0_ex_btn_cols = st.columns([1, 1, 1, 1, 1, 1, 4])
 
         add_media_btn = tab0_ex_btn_cols[0].button(
-            ":frame_with_picture:",
+            ":film_frames:",
             help="✨ 将上传的图片或视频文件添加到案例中",
             key="add_media_btn",
         )
@@ -525,7 +525,7 @@ elif menu == "多模态AI":
             key="add_text_btn",
         )
         view_ex_btn = tab0_ex_btn_cols[2].button(
-            ":mag_right:", help="✨ 查看全部样本", key="view_example"
+            ":eye:", help="✨ 查看全部样本", key="view_example"
         )
         del_text_btn = tab0_ex_btn_cols[3].button(
             ":wastebasket:",
@@ -616,7 +616,7 @@ elif menu == "多模态AI":
             args=("user_prompt_key",),
         )
         view_all_btn = tab0_btn_cols[1].button(
-            ":mag_right:", help="✨ 查看全部样本", key="view_example-2"
+            ":eye:", help="✨ 查看全部样本", key="view_example-2"
         )
         submitted = tab0_btn_cols[2].button("提交")
 

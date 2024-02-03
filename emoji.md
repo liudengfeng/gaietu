@@ -14,7 +14,7 @@
 | `:information_source:`        | ℹ️     | 通知、信息 |
 | `:leftwards_arrow_with_hook:` | ↩️     | 前一条记录 |
 | `:arrow_right_hook:`          | ↪️     | 后一条记录 |
-| `:arrow_right_hook:`          | 🔍     | 检查       |
+| `:mag:`                       | 🔍     | 检查       |
 | `:wastebasket:`               | 🗑️     | 清除文本   |
 | `:heavy_plus_sign:`           | ➕     | 添加       |
 | `:heavy_minus_sign:`          | ➖     | 删除       |
