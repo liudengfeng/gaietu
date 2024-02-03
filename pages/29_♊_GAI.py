@@ -274,7 +274,7 @@ if menu == "聊天机器人":
         min_value=32,
         max_value=8192,
         step=32,
-        label_visibility="collapsed",
+        label_visibility="hidden",
         key="number-input-max-output-tokens-chatbot",
         help="✨ 输入词元限制。",
     )
