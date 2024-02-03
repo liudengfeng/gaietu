@@ -6,7 +6,6 @@ import streamlit as st
 from cryptography.fernet import Fernet
 from google.cloud.firestore import FieldFilter
 
-from menu import menu_with_redirect
 from mypylib.auth_utils import is_valid_email, is_valid_phone_number
 from mypylib.constants import CEFR_LEVEL_MAPS, FAKE_EMAIL_DOMAIN, PROVINCES
 from mypylib.db_interface import DbInterface
