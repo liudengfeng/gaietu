@@ -17,12 +17,12 @@ def authenticated_menu():
 
 def unauthenticated_menu():
     # Show a navigation menu for unauthenticated users
-    st.sidebar.page_link("Home.py", label="🏠")
+    st.sidebar.page_link("Home.py", label="主页", icon="🏠")
     st.sidebar.page_link(
         "pages/00_👤_注册.py",
         label="注册",
         help="✨ 请注意，您需要先完成注册才能继续。",
-        icon="📇",
+        icon="👤",
     )
     st.sidebar.page_link(
         "pages/01_💰_订阅.py",
