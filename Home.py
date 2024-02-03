@@ -223,6 +223,9 @@ if not is_logged_in:
                 )
                 if info["status"] == "success":
                     sidebar_status.success(info["message"])
+                    st.session_state.role = st.session.dbi.cache["user_info"][
+                        "user_role"
+                    ]
                     time.sleep(2)
                     st.rerun()
                 elif info["status"] == "warning":
