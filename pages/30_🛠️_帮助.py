@@ -17,6 +17,8 @@ VIDEO_DIR = CURRENT_CWD / "resource/video_tip"
 
 # region 常见问题
 
+st.subheader(":information_source: 产品介绍", divider="rainbow", anchor="产品介绍")
+
 st.subheader(":woman-tipping-hand: 常见问题", divider="rainbow", anchor="常见问题")
 
 with st.expander(":bulb: 如何注册？", expanded=False):
