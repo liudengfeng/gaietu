@@ -208,8 +208,6 @@ with w_cols[2]:
 if w_btn_cols[0].button(
     "刷新[:arrows_counterclockwise:]",
     key="writing-refresh",
-    # on_click=clear_text,
-    # args=("writing-text",),
     help="✨ 点击按钮，开始新一轮练习。",
 ):
     suggestions.empty()
@@ -222,7 +220,7 @@ if w_btn_cols[1].button(
 ):
     pass
 
-if w_btn_cols[1].button(
+if w_btn_cols[2].button(
     "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 ):
     suggestions.empty()
@@ -234,17 +232,17 @@ if w_btn_cols[1].button(
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
-if w_btn_cols[2].button(
+if w_btn_cols[3].button(
     "单词[:abc:]", key="word", help="✨ 点击按钮，检查标点符号和拼写错误。"
 ):
     pass
 
-if w_btn_cols[3].button(
+if w_btn_cols[4].button(
     "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
 ):
     pass
 
-if w_btn_cols[4].button(
+if w_btn_cols[5].button(
     "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
 ):
     # 你的文本
@@ -253,7 +251,7 @@ if w_btn_cols[4].button(
     # 使用 st.code 显示文本
     st.code(text, language="txt")
 
-if w_btn_cols[5].button(
+if w_btn_cols[6].button(
     "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
 ):
     pass
