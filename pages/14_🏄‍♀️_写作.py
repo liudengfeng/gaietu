@@ -84,7 +84,7 @@ GRAMMAR_CHECK_TEMPLATE = """\
 As an expert in English grammar, your task is to meticulously scrutinize the provided Article for any grammatical errors.
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
-2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary '{}'.
+2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
 3. IMPORTANT: In the event of inaccuracies within the original text, each error should be addressed as follows: Utilize `~~` to denote the segment requiring deletion, and `[[ ]]` to indicate the addition. In the case of replacements, initially mark the segment for deletion, followed by the addition. This process will yield the "corrected" content, providing a clear representation of the modifications applied to the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
@@ -98,7 +98,7 @@ Example:
 
 Please ensure that the `~~` and `[[ ]]` markers are used correctly in the 'corrected' field of the output dictionary.
 
-Article:
+Article:{article}
 """
 
 
@@ -107,7 +107,7 @@ GRAMMAR_CHECK_CONFIG = ({"max_output_tokens": 2048, "temperature": 0.1},)
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
 def check_grammar(article):
-    prompt = GRAMMAR_CHECK_TEMPLATE + "\n" + article
+    prompt = GRAMMAR_CHECK_TEMPLATE.format(article=article)
     contents = [prompt]
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(content), "duration": None}
