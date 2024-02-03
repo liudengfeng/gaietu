@@ -26,7 +26,7 @@ def unauthenticated_menu():
     )
     st.sidebar.page_link(
         "pages/01_💰_订阅.py",
-        label="注册",
+        label="选择订阅套餐",
         help="请选择适合您的套餐选项。",
         icon="💰",
     )
