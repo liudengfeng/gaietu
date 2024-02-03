@@ -96,7 +96,7 @@ def display_grammar_errors(corrected, explanations):
         old, new = match.groups()
         explanation = explanations[counter[0]]
         counter[0] += 1
-        return f'<span style="text-decoration: line-through;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: green;" title="{explanation}">[{new}]</span>'
+        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: green;" title="{explanation}">[{new}]</span>'
 
     def replace_del(match):
         old = match.group(1)
