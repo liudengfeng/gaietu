@@ -102,7 +102,7 @@ Article:{article}
 """
 
 
-GRAMMAR_CHECK_CONFIG = ({"max_output_tokens": 2048, "temperature": 0.1},)
+GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.1}
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
@@ -119,7 +119,7 @@ def check_grammar(article):
         "gemini-pro",
         model.generate_content,
         contents_info,
-        GenerationConfig(**GRAMMAR_CHECK_CONFIG[0]),
+        GenerationConfig(**GRAMMAR_CHECK_CONFIG),
         stream=False,
         parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
