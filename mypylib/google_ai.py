@@ -283,6 +283,7 @@ def display_generated_content_and_update_token(
     # logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
     usage = {
+        "service_name": "Google AI",
         "item_name": item_name,
         "cost": total_cost_1,
         "total_cost_google": total_cost_2,
@@ -342,6 +343,7 @@ def parse_generated_content_and_update_token(
     # logger.info(f"{total_cost_1=:.4f}, {total_cost_2=:.4f}")
 
     usage = {
+        "service_name": "Google AI",
         "item_name": item_name,
         "cost": total_cost_1,
         "total_cost_google": total_cost_2,

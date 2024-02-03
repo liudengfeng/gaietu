@@ -294,7 +294,7 @@ def autoplay_audio_and_display_article(container):
     slot_2 = content_cols[1].empty()
     # 如果需要显示中文，那么翻译文本
     if st.session_state.get("ra-display-state", "英文") != "英文":
-        cns = translate_text(article, "zh-CN", True)
+        cns = translate_text("阅读理解练习", article, "zh-CN", True)
 
     # 播放音频并同步显示文本
     for i, duration in enumerate(durations):
@@ -326,7 +326,7 @@ def process_play_and_record_article(
     container.empty()
     content_cols = container.columns(2)
     paragraphs = st.session_state["reading-article"]
-    cns = translate_text(paragraphs, "zh-CN", True)
+    cns = translate_text("阅读理解练习", paragraphs, "zh-CN", True)
 
     idx = st.session_state["reading-exercise-idx"]
     paragraph = paragraphs[idx]
@@ -341,13 +341,11 @@ def process_play_and_record_article(
         content_cols[0].markdown("英文")
         content_cols[0].markdown(paragraph)
     elif st.session_state["ra-display-state"] == "中文":
-        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
     else:
         content_cols[0].markdown("英文")
         content_cols[0].markdown(paragraph)
-        # cn = translate_text(sentence, "zh-CN")
         content_cols[1].markdown("中文")
         content_cols[1].markdown(cns[idx])
     t = result["audio_duration"].total_seconds() + 0.5
@@ -366,7 +364,7 @@ def display_dialogue(dialogue_placeholder):
     idx = st.session_state["listening-idx"]
     if idx == -1:
         return
-    cns = translate_text(dialogue, "zh-CN", True)
+    cns = translate_text("听说练习", dialogue, "zh-CN", True)
     sentence = dialogue[idx]
 
     content_cols = dialogue_placeholder.columns(2)

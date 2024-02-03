@@ -231,7 +231,9 @@ def configure_google_apis():
         st.warning("非云端环境，无法使用 Google AI", icon="⚠️")
 
 
-def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = False):
+def google_translate(
+    item_name, text, target_language_code: str = "zh-CN", is_list: bool = False
+):
     """Translating Text."""
     # Cloud Translation 会按字符数统计用量，即使一个字符为多字节也是如此。空白字符也需要付费。
     # LLM $25 per million characters $20 per million characters
@@ -274,19 +276,20 @@ def google_translate(text, target_language_code: str = "zh-CN", is_list: bool = 
         res.append(translation.translated_text.encode("utf8").decode("utf8"))
     # google translate api 返回一个结果
     usage = {
+        "service_name": "Google 翻译",
         "char_count": char_count,
         "cost": cost,
-        "item_name": "Google翻译",
+        "item_name": item_name,
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
-    logger.info(f"翻译费用：{cost:.4f}元，字符数：{char_count}")
+    # logger.info(f"翻译费用：{cost:.4f}元，字符数：{char_count}")
     return res if is_list else res[0]
 
 
 @st.cache_data(ttl=60 * 60 * 24)  # 缓存有效期为24小时
-def translate_text(text: str, target_language_code, is_list: bool = False):
-    return google_translate(text, target_language_code, is_list)
+def translate_text(item_name, text: str, target_language_code, is_list: bool = False):
+    return google_translate(item_name, text, target_language_code, is_list)
 
 
 # endregion
@@ -563,6 +566,7 @@ def get_synthesis_speech(text, voice):
         (char_count / 1000000) * MAX_RATE_PER_MILLION_CHARS * USD_TO_CNY_EXCHANGE_RATE
     )
     usage = {
+        "service_name": "微软语音服务",
         "char_count": char_count,
         "cost": cost,
         "cost0": cost0,
@@ -611,9 +615,10 @@ def pronunciation_assessment_with_cost(
     cost = (duration / 3600) * RATE_PER_HOUR * USD_TO_CNY_EXCHANGE_RATE
     is_oral = topic is not None
     usage = {
+        "service_name": "微软语音服务",
+        "item_name": "口语能力评估" if is_oral else "发音评估",
         "duration": duration,
         "cost": cost,
-        "item_name": "口语能力评估" if is_oral else "发音评估",
         "timestamp": datetime.now(pytz.UTC),
     }
     st.session_state.dbi.add_usage_to_cache(usage)
