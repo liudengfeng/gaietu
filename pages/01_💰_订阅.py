@@ -3,6 +3,7 @@ import time
 
 import streamlit as st
 from PIL import Image
+from menu import return_home
 
 from mypylib.st_helper import on_page_to
 
@@ -16,21 +17,12 @@ st.set_page_config(
     layout="centered",
 )
 
+return_home()
 on_page_to("订阅续费")
 
 
 # region 订阅付费
 
-cols = st.columns(4)
-home_btn = cols[0].button("主页[🏠]")
-quit_btn = cols[1].button("退出[🏃‍♂️]")
-
-if home_btn:
-    st.switch_page("Home.py")
-
-if quit_btn:
-    st.session_state.dbi.logout()
-    st.switch_page("Home.py")
 
 st.subheader(":package: 订阅续费", anchor="订阅续费", divider="rainbow")
 
