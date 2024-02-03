@@ -877,8 +877,31 @@ class DbInterface:
         user_info = self.cache.get("user_info", {})
         timezone_str = user_info.get("timezone", "Asia/Shanghai")
         collection_ref = self.db.collection("usages")
+        usage_records = []
         if phone_number != "ALL":
-            collection_ref = collection_ref.where("phone_number", "==", phone_number)
+            doc_ref = collection_ref.document(phone_number)
+            doc = doc_ref.get()
+            if doc.exists:
+                usage_records = [
+                    {
+                        "phone_number": doc.id,
+                        "item_name": doc.get("item_name"),
+                        "cost": doc.get("cost"),
+                        "timestamp": doc.get("timestamp"),
+                    }
+                ]
+        else:
+            # 获取所有文档
+            docs = collection_ref.stream()
+            usage_records = [
+                {
+                    "phone_number": doc.id,
+                    "item_name": doc.get("item_name"),
+                    "cost": doc.get("cost"),
+                    "timestamp": doc.get("timestamp"),
+                }
+                for doc in docs
+            ]
         # if start_date is not None:
         #     start_datetime = combine_date_and_time_to_utc(
         #         start_date, timezone_str, True
@@ -889,16 +912,7 @@ class DbInterface:
         #     end_datetime = combine_date_and_time_to_utc(end_date, timezone_str, False)
         #     end_timestamp = end_datetime.timestamp()
         #     collection_ref = collection_ref.where("timestamp", "<=", end_timestamp)
-        
-        docs = collection_ref.get()
-        usage_records = [
-            {
-                "item_name": doc.get("item_name"),
-                "cost": doc.get("cost"),
-                "timestamp": doc.get("timestamp"),
-            }
-            for doc in docs
-        ]
+
         return usage_records
 
     def add_usage_to_cache(self, usage: dict):
