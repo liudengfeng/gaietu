@@ -155,10 +155,10 @@ w_btn_cols = st.columns(8)
 w_cols = st.columns(3)
 HEIGHT = 600
 
-w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
+w_cols[0].markdown("<h5 style='color: blue;'>您的写作练习</h5>", unsafe_allow_html=True)
 
 w_cols[0].text_area(
-    "您的作文",
+    "您的写作练习",
     max_chars=10000,
     key="writing-text",
     height=HEIGHT,
