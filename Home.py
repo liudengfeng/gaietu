@@ -223,7 +223,7 @@ if not is_logged_in:
                 )
                 if info["status"] == "success":
                     sidebar_status.success(info["message"])
-                    st.session_state.role = st.session.dbi.cache["user_info"][
+                    st.session_state.role = st.session_state.dbi.cache["user_info"][
                         "user_role"
                     ]
                     time.sleep(2)
