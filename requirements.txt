@@ -26,3 +26,4 @@ streamlit-mic-recorder==0.0.4
 st-annotated-text==4.0.1
 moviepy==1.0.3
 werkzeug==3.0.1
+langdetect==1.0.9
