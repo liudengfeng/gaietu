@@ -772,12 +772,14 @@ elif menu == "统计分析":
 
         st.markdown("##### 运行费用")
         if st.button("统计"):
-            df = pd.DataFrame(
-                st.session_state.dbi.get_usage_records(
-                    phone_number, start_date, end_date
-                )
+            result = st.session_state.dbi.get_usage_records(
+                phone_number, start_date, end_date
             )
-            df
+            st.write(result)
+            # df = pd.DataFrame(
+            #     result
+            # )
+            # df
 
 # endregion
 
