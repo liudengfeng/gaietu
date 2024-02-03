@@ -206,7 +206,7 @@ if w_btn_cols[0].button(
     args=("article",),
     help="✨ 点击按钮，开始新一轮练习。",
 ):
-    st.session_state["writing-text"] = ""
+    # st.session_state["writing-text"] = ""
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
