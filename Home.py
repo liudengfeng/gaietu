@@ -40,7 +40,7 @@ st.set_page_config(
     layout="wide",
 )
 
-
+menu()
 on_page_to("Home")
 # save_and_clear_all_learning_records()
 

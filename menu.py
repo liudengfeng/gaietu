@@ -24,6 +24,12 @@ def unauthenticated_menu():
         help="✨ 请注意，您需要先完成注册才能继续。",
         icon="📇",
     )
+    st.sidebar.page_link(
+        "pages/01_💰_订阅.py",
+        label="注册",
+        help="请选择适合您的套餐选项。",
+        icon="💰",
+    )
 
 
 def menu():
