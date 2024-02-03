@@ -803,6 +803,21 @@ elif menu == "统计分析":
                     color="service_name",
                     barmode="group",
                 )
+
+                # 更新图形的布局
+                fig.update_layout(
+                    title="一周内各项服务成本",  # 设置图形的标题
+                    xaxis_title="日期",  # 设置 x 轴的标题
+                    yaxis_title="成本",  # 设置 y 轴的标题
+                    legend_title="服务名称",  # 设置图例的标题
+                    font=dict(  # 设置字体
+                        family="Courier New, monospace", size=18, color="RebeccaPurple"
+                    ),
+                    xaxis=dict(
+                        title="日期", tickformat="%Y年%m月%d日"  # 定义日期的显示格式
+                    ),
+                )
+
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 pass
