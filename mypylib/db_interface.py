@@ -173,6 +173,7 @@ class DbInterface:
                         "message": f"嗨！{user.display_name}，又见面了。",
                     }
                 else:
+                    # TODO：单列 过期状态 以及 付费状态 st.switch_page("付费.py")
                     return {
                         "status": "warning",
                         "message": "您尚未付费订阅或者服务账号已过期，请付费订阅。",
