@@ -81,6 +81,9 @@ if "temperature-chatbot" not in st.session_state:
 if "top-k-chatbot" not in st.session_state:
     st.session_state["top-k-chatbot"] = 40
 
+if "top-p-chatbot" not in st.session_state:
+    st.session_state["top-p-chatbot"] = 1.0
+
 # endregion
 
 # region 辅助函数
@@ -360,18 +363,28 @@ if menu == "聊天机器人":
         args=("top-k-chatbot", "top-k-chatbot-number-input"),
         help="✨ 输入 Top K。",
     )
-    st.sidebar.slider(
+    sidebar_cols[0].slider(
         "Top P",
-        key="top_p-chatbot",
         min_value=0.00,
         max_value=1.0,
-        value=1.0,
-        step=0.01,
+        value=st.session_state.get("top-p-chatbot", 1.0),
+        key="top-p-chatbot-slider",
+        on_change=synchronize_session_state,
+        args=("top-p-chatbot", "top-p-chatbot-slider"),
         help="""✨ Top-p 可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
 - 例如，如果词元 A、B 和 C 的概率分别是 0.3、0.2 和 0.1，并且 Top-p 的值为 0.5，则模型将选择 A 或 B 作为下一个词元（通过温度确定）。
 - Top-p 的默认值为 0.8。""",
     )
-
+    sidebar_cols[1].number_input(
+        "输入 Top P",
+        min_value=0.00,
+        max_value=1.0,
+        value=st.session_state.get("top-p-chatbot", 1.0),
+        label_visibility="hidden",
+        key="top-p-chatbot-number-input",
+        on_change=synchronize_session_state,
+        args=("top-p-chatbot", "top-p-chatbot-number-input"),
+    )
     st.sidebar.text_input(
         "添加停止序列",
         key="stop_sequences-chatbot",
@@ -456,7 +469,7 @@ if menu == "聊天机器人":
 
         config = {
             "temperature": st.session_state["temperature-chatbot"],
-            "top_p": st.session_state["top_p-chatbot"],
+            "top_p": st.session_state["top-p-chatbot"],
             "top_k": st.session_state["top-k-chatbot"],
             "max_output_tokens": st.session_state["max-output-tokens-chatbot"],
         }
