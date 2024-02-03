@@ -11,6 +11,9 @@ from typing import List, Union
 from faker import Faker
 from google.cloud import firestore
 from google.cloud.firestore import FieldFilter
+import pytz
+
+from mypylib.utils import combine_date_and_time_to_utc
 
 from .constants import FAKE_EMAIL_DOMAIN
 from .db_model import (
@@ -871,21 +874,21 @@ class DbInterface:
         Returns:
             list: 包含所有匹配的使用记录的列表，每个记录是一个字典，包含 item_name, cost 和 timestamp 字段。
         """
+        user_info = self.cache.get("user_info", {})
+        timezone_str = user_info.get("timezone", "Asia/Shanghai")
         collection_ref = self.db.collection("usages")
         if phone_number != "ALL":
             collection_ref = collection_ref.where("phone_number", "==", phone_number)
         if start_date is not None:
-            start_datetime = datetime.combine(start_date, datetime.min.time())
+            start_datetime = combine_date_and_time_to_utc(
+                start_date, timezone_str, True
+            )
             start_timestamp = start_datetime.timestamp()
-            collection_ref = collection_ref.where(
-                "timestamp", ">=", start_timestamp
-            )
+            collection_ref = collection_ref.where("timestamp", ">=", start_timestamp)
         if end_date is not None:
-            end_datetime = datetime.combine(end_date, datetime.max.time())
+            end_datetime = combine_date_and_time_to_utc(end_date, timezone_str, False)
             end_timestamp = end_datetime.timestamp()
-            collection_ref = collection_ref.where(
-                "timestamp", "<=", end_timestamp
-            )
+            collection_ref = collection_ref.where("timestamp", "<=", end_timestamp)
         docs = collection_ref.get()
         usage_records = [
             {

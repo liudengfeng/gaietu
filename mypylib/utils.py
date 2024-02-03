@@ -1,3 +1,4 @@
+import datetime
 import io
 import wave
 from pathlib import Path
@@ -26,6 +27,36 @@ def convert_to_utc(dt, timezone_str):
     dt = timezone.localize(dt)
 
     # 将日期时间转换为UTC
+    dt_utc = dt.astimezone(pytz.UTC)
+
+    return dt_utc
+
+
+def combine_date_and_time_to_utc(date, timezone_str, is_start):
+    """
+    将给定的日期和一天中的最早或最晚时间组合成一个 datetime.datetime 对象，并将其转换为 UTC。
+
+    Args:
+        date (datetime.date): 要组合的日期。
+        timezone_str (str): 日期的时区。
+        is_start (bool): 如果为 True，那么使用一天中的最早时间。否则，使用一天中的最晚时间。
+
+    Returns:
+        datetime.datetime: 转换为 UTC 的 datetime.datetime 对象。
+    """
+    # 创建时区对象
+    timezone = pytz.timezone(timezone_str)
+
+    # 根据 is_start 的值选择一天中的最早或最晚时间
+    time = datetime.datetime.min.time() if is_start else datetime.datetime.max.time()
+
+    # 将日期和时间组合成一个 datetime.datetime 对象
+    dt = datetime.datetime.combine(date, time)
+
+    # 将 datetime.datetime 对象本地化到指定的时区
+    dt = timezone.localize(dt)
+
+    # 将 datetime.datetime 对象转换为 UTC
     dt_utc = dt.astimezone(pytz.UTC)
 
     return dt_utc
