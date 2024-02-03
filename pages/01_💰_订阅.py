@@ -21,8 +21,8 @@ on_page_to("订阅续费")
 # region 订阅付费
 
 cols = st.columns(8)
-home_btn = cols[0].button("返回主页[🏠]")
-quit_btn = cols[1].button("退出登录[🚪]")
+home_btn = cols[0].button("主页[🏠]")
+quit_btn = cols[1].button("退出[🏃‍♂️]")
 
 if home_btn:
     st.switch_page("Home.py")
