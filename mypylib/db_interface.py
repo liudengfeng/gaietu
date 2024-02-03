@@ -879,6 +879,21 @@ class DbInterface:
         collection_ref = self.db.collection("usages")
         usage_records = []
 
+        start_timestamp = None
+        end_timestamp = None
+
+        if start_date is not None:
+            start_datetime = combine_date_and_time_to_utc(
+                start_date, timezone_str, True
+            )
+            start_timestamp = start_datetime.timestamp()
+
+        if end_date is not None:
+            end_datetime = combine_date_and_time_to_utc(
+                end_date, timezone_str, False
+            )
+            end_timestamp = end_datetime.timestamp()
+
         if phone_number != "ALL":
             phone_numbers = [phone_number]
         else:
@@ -892,20 +907,10 @@ class DbInterface:
                 usages = doc.to_dict().get("usages", [])
                 for usage in usages:
                     timestamp = usage["timestamp"].timestamp()
-                    if start_date is not None:
-                        start_datetime = combine_date_and_time_to_utc(
-                            start_date, timezone_str, True
-                        )
-                        start_timestamp = start_datetime.timestamp()
-                        if timestamp < start_timestamp:
-                            continue
-                    if end_date is not None:
-                        end_datetime = combine_date_and_time_to_utc(
-                            end_date, timezone_str, False
-                        )
-                        end_timestamp = end_datetime.timestamp()
-                        if timestamp > end_timestamp:
-                            continue
+                    if start_timestamp is not None and timestamp < start_timestamp:
+                        continue
+                    if end_timestamp is not None and timestamp > end_timestamp:
+                        continue
                     usage_records.append(
                         {
                             "phone_number": phone_number,
