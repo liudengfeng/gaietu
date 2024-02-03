@@ -86,6 +86,9 @@ def pronunciation_assessment_word_format(word_obj):
 
 
 def display_grammar_errors(corrected, explanations):
+    if len(explanations) == 0:
+        return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到语法错误。</p>'
+
     pattern_del = r"~~(.*?)~~"
     pattern_add = r"\[\[(.*?)\]\]"
     pattern_both = r"~~(.*?)~~\s*\[\[(.*?)\]\]"
