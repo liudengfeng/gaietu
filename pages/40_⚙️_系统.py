@@ -778,6 +778,9 @@ elif menu == "统计分析":
                 phone_number, start_date, end_date
             )
             df = pd.DataFrame(result)
+            if df.empty:
+                st.warning("没有记录")
+                st.stop()
             df_grouped = (
                 df.groupby(["phone_number", "item_name"])["cost"].sum().reset_index()
             )
