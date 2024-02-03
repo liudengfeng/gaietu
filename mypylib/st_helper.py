@@ -105,6 +105,9 @@ def is_answer_correct(user_answer, standard_answer):
     # 比较用户的答案和标准答案
     return user_answer == standard_answer
 
+# endregion
+
+# region 时间相关
 
 def get_current_monday():
     """
@@ -285,7 +288,6 @@ def translate_text(text: str, target_language_code, is_list: bool = False):
 
 
 # endregion
-
 
 # region Azure
 @st.cache_resource
