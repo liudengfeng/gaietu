@@ -755,7 +755,7 @@ elif menu == "统计分析":
             st.warning("请先选择开始日期和结束日期。")
             st.stop()
 
-        if start_date >= end_date:
+        if end_date is not None and start_date >= end_date:
             st.error("错误: 结束日期必须大于开始日期.")
             st.stop()
 
