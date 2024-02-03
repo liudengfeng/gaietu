@@ -52,6 +52,9 @@ check_and_force_logout(sidebar_status)
 if "text-model" not in st.session_state:
     st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
+# Use the get method since the keys won't be in session_state on the first script run
+if st.session_state.get("writing-clear"):
+    st.session_state["writing-text"] = ""
 
 # endregion
 
@@ -204,9 +207,9 @@ with w_cols[2]:
 
 if w_btn_cols[0].button(
     "刷新[:arrows_counterclockwise:]",
-    key="refresh",
-    on_click=clear_text,
-    args=("writing-text",),
+    key="writing-refresh",
+    # on_click=clear_text,
+    # args=("writing-text",),
     help="✨ 点击按钮，开始新一轮练习。",
 ):
     suggestions.empty()
@@ -214,6 +217,10 @@ if w_btn_cols[0].button(
     initialize_writing_chat()
     st.rerun()
 
+if w_btn_cols[1].button(
+    "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习文本。"
+):
+    pass
 
 if w_btn_cols[1].button(
     "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
