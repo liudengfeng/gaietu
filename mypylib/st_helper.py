@@ -816,3 +816,38 @@ def on_page_to(this_page: str = ""):
 
 
 # endregion
+
+# region 个人记录
+
+
+def on_item_changed(item: str = ""):
+    """
+    检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
+    """
+    # 在会话状态中设置上一页
+    if "previous-item" not in st.session_state:
+        st.session_state["previous-item"] = None
+
+    if "current-item" not in st.session_state:
+        st.session_state["current-item"] = None
+
+    if "exercises" not in st.session_state:
+        st.session_state["exercises"] = []
+
+    # 如果当前页和上一页不同，保存上一页的学习时长
+    if st.session_state["current-item"] != item:
+        if st.session_state["previous-item"] is not None:
+            # 当转移页面时，关闭未关闭的学习记录
+            end_and_save_learning_records()
+
+        # 更新上一页为当前页
+        st.session_state["previous-item"] = st.session_state["current-item"]
+
+    st.session_state["current-item"] = item
+
+    # logger.info(
+    #     f"上一：{st.session_state['previous-item']} 当前：{st.session_state['current-item']}"
+    # )
+
+
+# endregion

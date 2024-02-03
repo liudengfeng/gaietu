@@ -10,6 +10,7 @@ import pytz
 import streamlit as st
 from PIL import Image
 
+from menu import menu
 from mypylib.auth_utils import is_valid_phone_number
 from mypylib.azure_speech import speech_synthesis_get_available_voices
 from mypylib.constants import LANGUAGES, VOICES_FP
@@ -28,6 +29,10 @@ setup_logger(logger)
 
 CURRENT_CWD: Path = Path(__file__).parent
 LOGO_DIR: Path = CURRENT_CWD / "resource/logo"
+
+# Initialize st.session_state.role to None
+if "role" not in st.session_state:
+    st.session_state.role = None
 
 st.set_page_config(
     page_title="主页",

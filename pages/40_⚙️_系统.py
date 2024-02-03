@@ -15,6 +15,7 @@ import pytz
 import streamlit as st
 from google.cloud import firestore
 
+from menu import menu_with_redirect
 from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
@@ -42,6 +43,9 @@ st.set_page_config(
     page_icon=":gear:",
     layout="wide",
 )
+
+# Redirect to Home.py if not logged in, otherwise show the navigation menu
+menu_with_redirect()
 
 on_page_to("系统管理")
 
