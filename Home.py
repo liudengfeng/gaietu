@@ -233,6 +233,7 @@ if not is_logged_in:
                     st.stop()
                 else:
                     sidebar_status.error(info["message"])
+                    time.sleep(2)
                     st.switch_page("pages/00_📇_注册.py")
 else:
     sidebar_status.success(
