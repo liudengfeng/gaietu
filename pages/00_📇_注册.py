@@ -16,6 +16,7 @@ from menu import return_home
 
 # 创建 Fernet 实例【必须将key转换为bytes类型】
 # fernet = Fernet(st.secrets["FERNET_KEY"].encode())
+return_home()
 
 st.set_page_config(
     page_title="用户管理",
@@ -23,7 +24,6 @@ st.set_page_config(
     layout="wide",
 )
 
-return_home()
 
 on_page_to("用户注册")
 
