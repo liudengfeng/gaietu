@@ -78,6 +78,9 @@ if "max-output-tokens-chatbot" not in st.session_state:
 if "temperature-chatbot" not in st.session_state:
     st.session_state["temperature-chatbot"] = 0.9
 
+if "top-k-chatbot" not in st.session_state:
+    st.session_state["top-k-chatbot"] = 40
+
 # endregion
 
 # region 辅助函数
@@ -119,12 +122,15 @@ def delete_last_pair():
         initialize_chat()
 
 
-def on_chatbot_output_tokens_changed(key):
-    st.session_state["max-output-tokens-chatbot"] = st.session_state[key]
+def synchronize_session_state(in_key, out_key):
+    """
+    Synchronizes the session state between two keys.
 
-
-def on_chatbot_temperature_changed(key):
-    st.session_state["temperature-chatbot"] = st.session_state[key]
+    Parameters:
+    in_key (str): The key to copy the value from.
+    out_key (str): The key to copy the value to.
+    """
+    st.session_state[in_key] = st.session_state[out_key]
 
 
 # endregion
@@ -277,21 +283,27 @@ if menu == "聊天机器人":
         max_value=8192,
         step=32,
         key="max-output-tokens-chatbot-slider",
-        on_change=on_chatbot_output_tokens_changed,
-        args=("max-output-tokens-chatbot-slider",),
+        on_change=synchronize_session_state,
+        args=(
+            "max-output-tokens-chatbot",
+            "max-output-tokens-chatbot-slider",
+        ),
         help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
     )
     # 当 number_input 的值改变时，更新 session_state 对象的值
     sidebar_cols[1].number_input(
         "输入词元",
-        value=st.session_state["max-output-tokens-chatbot"],
+        value=st.session_state.get("max-output-tokens-chatbot", 2048),
         min_value=32,
         max_value=8192,
         step=32,
         label_visibility="hidden",
         key="max-output-tokens-chatbot-number-input",
-        on_change=on_chatbot_output_tokens_changed,
-        args=("max-output-tokens-chatbot-number-input",),
+        on_change=synchronize_session_state,
+        args=(
+            "max-output-tokens-chatbot",
+            "max-output-tokens-chatbot-number-input",
+        ),
         help="✨ 输入词元限制。",
     )
     # 生成参数
@@ -301,8 +313,11 @@ if menu == "聊天机器人":
         min_value=0.00,
         max_value=1.0,
         key="temperature-chatbot-slider",
-        on_change=on_chatbot_temperature_changed,
-        args=("temperature-chatbot-slider",),
+        on_change=synchronize_session_state,
+        args=(
+            "temperature-chatbot",
+            "temperature-chatbot-slider",
+        ),
         help="✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
     )
     sidebar_cols[1].number_input(
@@ -312,21 +327,38 @@ if menu == "聊天机器人":
         max_value=1.0,
         label_visibility="hidden",
         key="temperature-chatbot-number-input",
-        on_change=on_chatbot_temperature_changed,
-        args=("temperature-chatbot-number-input",),
+        on_change=synchronize_session_state,
+        args=(
+            "temperature-chatbot",
+            "temperature-chatbot-number-input",
+        ),
         help="✨ 输入温度。",
     )
-    st.sidebar.slider(
+    sidebar_cols[0].slider(
         "Top K",
-        key="top_k-chatbot",
+        value=st.session_state.get("top-k-chatbot", 40),
         min_value=1,
         max_value=40,
-        value=40,
         step=1,
+        key="top-k-chatbot-slider",
+        on_change=synchronize_session_state,
+        args=("top-k-chatbot", "top-k-chatbot-slider"),
         help="""✨ Top-k 可更改模型选择输出词元的方式。
 - 如果 Top-k 设为 1，表示所选词元是模型词汇表的所有词元中概率最高的词元（也称为贪心解码）。
 - 如果 Top-k 设为 3，则表示系统将从 3 个概率最高的词元（通过温度确定）中选择下一个词元。
 - Top-k 的默认值为 40。""",
+    )
+    sidebar_cols[1].number_input(
+        "输入 Top K",
+        value=st.session_state.get("top-k-chatbot", 40),
+        min_value=1,
+        max_value=40,
+        step=1,
+        label_visibility="hidden",
+        key="top-k-chatbot-number-input",
+        on_change=synchronize_session_state,
+        args=("top-k-chatbot", "top-k-chatbot-number-input"),
+        help="✨ 输入 Top K。",
     )
     st.sidebar.slider(
         "Top P",
@@ -425,7 +457,7 @@ if menu == "聊天机器人":
         config = {
             "temperature": st.session_state["temperature-chatbot"],
             "top_p": st.session_state["top_p-chatbot"],
-            "top_k": st.session_state["top_k-chatbot"],
+            "top_k": st.session_state["top-k-chatbot"],
             "max_output_tokens": st.session_state["max-output-tokens-chatbot"],
         }
         config = GenerationConfig(**config)
