@@ -85,7 +85,7 @@ As an expert in English grammar, your task is to meticulously scrutinize the pro
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. IMPORTANT: In the event of inaccuracies within the original text, each error should be addressed as follows: Utilize `~~` to denote the segment requiring deletion, and `[[ ]]` to indicate the addition. In the case of replacements, initially mark the segment for deletion, followed by the addition. This process will yield the "corrected" content, providing a clear representation of the modifications applied to the original text.
+3. IMPORTANT: In the event of inaccuracies within the original text, each error should be addressed as follows: Use `~~` to mark the segment that needs to be deleted, and `[[` `]]` to indicate the addition. In the case of replacements, initially mark the segment for deletion, followed by the addition. This process will yield the "corrected" content, providing a clear representation of the modifications applied to the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
@@ -95,8 +95,6 @@ Example:
 - The output dictionary should be:
     - corrected: "I ~~likes~~ [[like]] to play games."
     - explanations: ["The verb 'like' should be used with the first person singular 'I'."]
-
-Please ensure that the `~~` and `[[ ]]` markers are used correctly in the 'corrected' field of the output dictionary.
 
 Article:{article}
 """
