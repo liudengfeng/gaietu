@@ -171,7 +171,7 @@ def check_access(is_admin_page):
         st.session_state["dbi"] = DbInterface(get_firestore_client())
 
     if not st.session_state.dbi.is_logged_in():
-        st.error("您尚未登录。请点击屏幕左侧的 '🏠 主页' 菜单进行登录。")
+        st.error("您尚未登录。请点击屏幕左侧 🏠 主页 菜单进行登录。")
         st.stop()
 
     if (
