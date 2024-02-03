@@ -85,7 +85,10 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
             disabled=True,
         )
         email = col2.text_input(
-            "邮箱", key="email-3", help="✨ 请输入您常用的电子邮件地址", value=user.email
+            "邮箱",
+            key="email-3",
+            help="✨ 请输入您常用的电子邮件地址",
+            value=user.email,
         )
         real_name = col1.text_input(
             "真实姓名",
@@ -94,7 +97,10 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
             value=user.real_name,
         )
         display_name = col2.text_input(
-            "显示名称", key="display_name-3", help="✨ 请输入您的登录显示名称。", value=user.display_name
+            "显示名称",
+            key="display_name-3",
+            help="✨ 请输入您的登录显示名称。",
+            value=user.display_name,
         )
         current_level = col1.selectbox(
             "当前英语水平",
@@ -117,7 +123,10 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
             key="country-3",
         )
         province = col2.selectbox(
-            "所在省份", PROVINCES, index=PROVINCES.index(user.province), key="province-3"
+            "所在省份",
+            PROVINCES,
+            index=PROVINCES.index(user.province),
+            key="province-3",
         )
         tz = col1.selectbox(
             "所在时区",
@@ -238,15 +247,22 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         else:
             current_records.rename(columns=column_mapping, inplace=True)
             current_records["时长"] = current_records["时长"] / 60
-            current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(user_tz)
+            current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
+                user_tz
+            )
             cols = st.columns(3)
             with cols[1]:
-                project_time = current_records.groupby("项目")["时长"].sum().reset_index()
+                project_time = (
+                    current_records.groupby("项目")["时长"].sum().reset_index()
+                )
                 fig = px.pie(
-                    project_time, values="时长", names="项目", title="你的学习时间是如何分配的？"
+                    project_time,
+                    values="时长",
+                    names="项目",
+                    title="你的学习时间是如何分配的？",
                 )
                 fig.update_layout(title_x=0.27)
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
             previous_period_start = start_date - (end_date - start_date)
             previous_period_end = start_date
@@ -260,7 +276,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 previous_records.rename(columns=column_mapping, inplace=True)
                 # 按日期分组并计算每天的学习时间
                 previous_daily_time = (
-                    previous_records.groupby(previous_records["学习日期"].dt.date)["时长"]
+                    previous_records.groupby(previous_records["学习日期"].dt.date)[
+                        "时长"
+                    ]
                     .sum()
                     .reset_index()
                 )
@@ -287,7 +305,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
 
                 # 显示图表
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
             with cols[2]:
                 pass

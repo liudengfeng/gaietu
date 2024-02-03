@@ -796,6 +796,7 @@ elif menu == "统计分析":
                     .sum()
                     .reset_index()
                 )
+                
                 # 使用 plotly 绘制项目柱状图，x 轴为 'timestamp'，y 轴为 'cost'，颜色为 'service_name'
                 fig = px.bar(
                     df_grouped,
@@ -804,7 +805,7 @@ elif menu == "统计分析":
                     color="service_name",
                     barmode="group",
                 )
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
             else:
                 pass
             df_grouped = (
