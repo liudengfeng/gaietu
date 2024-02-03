@@ -916,6 +916,7 @@ class DbInterface:
                     usage_records.append(
                         {
                             "phone_number": phone_number,
+                            "service_name": usage["service_name"],
                             "item_name": usage["item_name"],
                             "cost": usage["cost"],
                             "model": usage.get("model_name", ""),
