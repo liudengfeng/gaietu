@@ -102,13 +102,13 @@ def display_grammar_errors(corrected, explanations):
         old = match.group(1)
         explanation = explanations[counter[0]]
         counter[0] += 1
-        return f'<span style="text-decoration: line-through;" title="{explanation}">{old}</span>'
+        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span>'
 
     def replace_add(match):
         new = match.group(1)
         explanation = explanations[counter[0]]
         counter[0] += 1
-        return f'<span style="text-decoration: underline; color: green;" title="{explanation}">[{new}]</span>'
+        return f'<span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
 
     corrected = re.sub(pattern_both, replace_both, corrected)
     corrected = re.sub(pattern_del, replace_del, corrected)
