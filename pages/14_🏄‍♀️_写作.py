@@ -143,9 +143,11 @@ w_cols = st.columns(3)
 HEIGHT = 600
 
 w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
-article = w_cols[0].text_area(
+
+w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
+    key="article",
     value=st.session_state.get("writing-text", ""),
     height=HEIGHT,
     placeholder="在此输入您的作文",
@@ -198,8 +200,7 @@ if w_btn_cols[1].button(
     "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 ):
     suggestions.empty()
-    result = check_grammar(article)
-
+    result = check_grammar(st.session_state["article"])
     suggestions.markdown(result["corrected"], unsafe_allow_html=True)
     suggestions.markdown(result["explanations"], unsafe_allow_html=True)
 
