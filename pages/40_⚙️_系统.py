@@ -777,11 +777,10 @@ elif menu == "统计分析":
             result = st.session_state.dbi.get_usage_records(
                 phone_number, start_date, end_date
             )
-            st.write(result)
-            # df = pd.DataFrame(
-            #     result
-            # )
-            # df
+            df = pd.DataFrame(
+                result
+            )
+            df
 
 # endregion
 
