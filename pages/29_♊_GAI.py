@@ -269,11 +269,12 @@ if menu == "聊天机器人":
     )
     # 当 number_input 的值改变时，更新 session_state 对象的值
     st.session_state["max-output-tokens-chatbot"] = sidebar_cols[1].number_input(
-        "",
+        "输入词元",
         value=st.session_state["max-output-tokens-chatbot"],
         min_value=32,
         max_value=8192,
         step=32,
+        label_visibility="collapsed",
         key="number-input-max-output-tokens-chatbot",
         help="✨ 输入词元限制。",
     )
