@@ -129,10 +129,6 @@ class User(BaseModel):
         default_factory=lambda: datetime.now(timezone.utc)
     )
     total_tokens: int = Field(default=0)
-    # used_tokens: List[TokenUsageRecord] = Field(default=[])
-    # payments: Optional[List[Payment]] = Field(default_factory=list)
-    # login_events: Optional[List[LoginEvent]] = Field(default_factory=list)
-    # learning_records: List[LearningRecord] = Field(default=[])
     memo: Optional[str] = Field("")  # 新增备注字段
 
     def hash_password(self):
