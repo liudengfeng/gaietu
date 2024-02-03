@@ -898,7 +898,6 @@ class DbInterface:
         else:
             # 获取所有文档的 ID
             phone_numbers = [doc.id for doc in collection_ref.stream()]
-            logger.info(f"phone_numbers: {phone_numbers}")
 
         for phone_number in phone_numbers:
             doc_ref = collection_ref.document(phone_number)
