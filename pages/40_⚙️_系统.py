@@ -276,9 +276,6 @@ def get_feedbacks():
 
 
 # region 统计分析辅助函数
-# 定义一个函数，将时间戳转换为日期
-def timestamp_to_date(timestamp):
-    return datetime.datetime.fromtimestamp(timestamp).date()
 
 
 # @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
@@ -790,14 +787,14 @@ elif menu == "统计分析":
             if phone_number != "ALL":
                 # 显示用户每日各服务项目的费用
                 # 使用函数将 'timestamp' 列的值转换为日期
-                df["timestamp"] = df["timestamp"].apply(timestamp_to_date)
+                df["timestamp"] = df["timestamp"].dt.date
                 # 按 'service_name' 和 'timestamp' 分组，对 'cost' 进行汇总
                 df_grouped = (
                     df.groupby(["service_name", "timestamp"])["cost"]
                     .sum()
                     .reset_index()
                 )
-                
+
                 # 使用 plotly 绘制项目柱状图，x 轴为 'timestamp'，y 轴为 'cost'，颜色为 'service_name'
                 fig = px.bar(
                     df_grouped,
