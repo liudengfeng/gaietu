@@ -20,15 +20,21 @@ def unauthenticated_menu():
     st.sidebar.page_link("Home.py", label="主页", icon="🏠")
     st.sidebar.page_link(
         "pages/00_👤_注册.py",
-        label="注册",
+        label="用户注册",
         help="✨ 请注意，您需要先完成注册才能继续。",
         icon="👤",
     )
     st.sidebar.page_link(
         "pages/01_💰_订阅.py",
-        label="选择订阅套餐",
+        label="订阅套餐",
         help="请选择适合您的套餐选项。",
         icon="💰",
+    )
+    st.sidebar.page_link(
+        "pages/30_🛠️_帮助.py",
+        label="帮助文档",
+        help="请选择适合您的套餐选项。",
+        icon="🛠️",
     )
 
 
