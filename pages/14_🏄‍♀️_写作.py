@@ -152,7 +152,7 @@ st.markdown(
 
 # 布局
 w_cols = st.columns(3)
-HEIGHT = 500
+HEIGHT = 600
 
 w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_html=True)
 article = w_cols[0].text_area(
