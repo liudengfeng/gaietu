@@ -23,9 +23,6 @@ st.set_page_config(
 )
 
 
-# Redirect to Home.py if not logged in, otherwise show the navigation menu
-menu_with_redirect()
-
 on_page_to("用户注册")
 
 

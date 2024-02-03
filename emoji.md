@@ -27,3 +27,4 @@
 | `:broken_heart:`              | 💔     | 断线       |
 | `:globe_with_meridians:`      | 🌐     | 在线       |
 | `:man-running:`               | 🏃‍♂️     | 退出       |
+| `:card_index:`                | 📇     | 注册       |
