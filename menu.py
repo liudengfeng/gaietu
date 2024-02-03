@@ -2,7 +2,7 @@ import streamlit as st
 
 
 def return_home():
-    st.sidebar.page_link("Home.py", label="主页", icon="🏠")
+    st.sidebar.page_link("Home.py", label="主页", icon="🏠", help="✨ 返回主页")
 
 
 def authenticated_menu():
@@ -41,13 +41,13 @@ def unauthenticated_menu():
     st.sidebar.page_link(
         "pages/01_💰_订阅.py",
         label="订阅续费",
-        help="请选择适合您的套餐选项。",
+        help="✨ 请选择适合您的套餐选项。",
         icon="💰",
     )
     st.sidebar.page_link(
         "pages/30_🛠️_帮助.py",
         label="帮助文档",
-        help="请选择适合您的套餐选项。",
+        help="✨ 请选择适合您的套餐选项。",
         icon="🛠️",
     )
 
