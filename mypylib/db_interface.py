@@ -879,6 +879,7 @@ class DbInterface:
         collection_ref = self.db.collection("usages")
         usage_records = []
         if phone_number != "ALL":
+            logger.info(f"phone_number: {phone_number}")
             doc_ref = collection_ref.document(phone_number)
             doc = doc_ref.get()
             if doc.exists:
