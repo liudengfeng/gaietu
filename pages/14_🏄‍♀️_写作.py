@@ -201,28 +201,8 @@ if w_btn_cols[1].button(
 
     suggestions.markdown(result["corrected"], unsafe_allow_html=True)
     suggestions.markdown(result["explanations"], unsafe_allow_html=True)
-    # nlp = spacy.load("en_core_web_sm")
-    # paragraphs = text.split("\n")
-    html = ""
-    # for paragraph in paragraphs:
-    #     if paragraph.strip() == "":
-    #         html += "<br/>"
-    #         continue
-    #     else:
-    #         doc = nlp(paragraph)
-    #     # sentences = list(doc.sents)
-    #     for span in doc.sents:
-    #         original = span.text
-    #         check_dict = check_grammar(original)
-    #         st.write(check_dict)
-    #         # check_dict 可能为空 {}
-    #         html += display_grammar_errors(
-    #             original,
-    #             check_dict.get("corrected", original),
-    #             check_dict.get("explanations", []),
-    #         )
-    #     html += "<br/>"
 
+    html = display_grammar_errors(result["corrected"], result["explanations"])
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 

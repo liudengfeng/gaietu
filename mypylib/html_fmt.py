@@ -1,5 +1,6 @@
 import difflib
 import streamlit as st
+import re
 
 
 def view_error_counts_legend(session_state_key: str, idx=None):
@@ -84,47 +85,35 @@ def pronunciation_assessment_word_format(word_obj):
     return result
 
 
-def display_grammar_errors(original, corrected, explanations):
-    if not explanations:  # 如果解释列表为空
-        return " ".join(f"<span>{word}</span>" for word in corrected.split())
+def display_grammar_errors(corrected, explanations):
+    pattern_del = r"~~(.*?)~~"
+    pattern_add = r"\[\[(.*?)\]\]"
+    pattern_both = r"~~(.*?)~~\s*\[\[(.*?)\]\]"
 
-    diff = difflib.ndiff(original.split(), corrected.split())
-    diff = list(diff)  # 生成列表
+    counter = [0]  # 使用列表来作为可变的计数器
 
-    result = []
-    explanations_copy = explanations.copy()  # 创建副本
+    def replace_both(match):
+        old, new = match.groups()
+        explanation = explanations[counter[0]]
+        counter[0] += 1
+        return f'<span style="text-decoration: line-through;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: green;" title="{explanation}">[{new}]</span>'
 
-    for i in range(len(diff)):
-        if diff[i][0] == "-":
-            if explanations_copy:  # 检查副本是否为空
-                explanation = (
-                    explanations_copy.pop(0)
-                    .replace("'", "&#39;")
-                    .replace('"', "&quot;")
-                )
-            else:
-                explanation = "No explanation available"  # 提供一个默认的解释
-            result.append(
-                f"<del style='color:red;text-decoration: line-through' title='{explanation}'>{diff[i][2:].lstrip()}</del>"
-            )
-            if i + 1 < len(diff) and diff[i + 1][0] == "+":
-                result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i + 1][2:].lstrip()}</ins>"
-                )
-        elif diff[i][0] == "+":
-            if i == 0 or diff[i - 1][0] != "-":
-                if explanations_copy:  # 检查副本是否为空
-                    explanation = (
-                        explanations_copy.pop(0)
-                        .replace("'", "&#39;")
-                        .replace('"', "&quot;")
-                    )
-                else:
-                    explanation = "No explanation available"  # 提供一个默认的解释
-                result.append(
-                    f"<ins style='color:blue;text-decoration: underline' title='{explanation}'>{diff[i][2:].lstrip()}</ins>"
-                )
-        else:
-            result.append(f"<span>{diff[i][2:].lstrip()}</span>")
+    def replace_del(match):
+        old = match.group(1)
+        explanation = explanations[counter[0]]
+        counter[0] += 1
+        return f'<span style="text-decoration: line-through;" title="{explanation}">{old}</span>'
 
-    return " ".join(result)
+    def replace_add(match):
+        new = match.group(1)
+        explanation = explanations[counter[0]]
+        counter[0] += 1
+        return f'<span style="text-decoration: underline; color: green;" title="{explanation}">[{new}]</span>'
+
+    corrected = re.sub(pattern_both, replace_both, corrected)
+    corrected = re.sub(pattern_del, replace_del, corrected)
+    corrected = re.sub(pattern_add, replace_add, corrected)
+
+    corrected = corrected.replace("\n", "<br/>")
+
+    return corrected
