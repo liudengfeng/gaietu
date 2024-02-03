@@ -91,7 +91,7 @@ Step by step, complete the following:
 6. Finally, output the dictionary in JSON format.
 
 Example:
-- "Assume the original text is: 'I likes to play games.'"
+- Assume the original text is: 'I likes to play games.'
 - The output dictionary should be:
     - corrected: "I ~~likes~~ [[like]] to play games."
     - explanations: ["The verb 'like' should be used with the first person singular 'I'."]
@@ -103,7 +103,7 @@ Article:
 
 
 GRAMMAR_CHECK_CONFIG = (
-    {"max_output_tokens": 256, "temperature": 0.0, "top_p": 0.95, "top_k": 40},
+    {"max_output_tokens": 1024, "temperature": 0.1, "top_p": 0.95, "top_k": 40},
 )
 
 
