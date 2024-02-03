@@ -11,7 +11,6 @@ from typing import List, Union
 from faker import Faker
 from google.cloud import firestore
 from google.cloud.firestore import FieldFilter
-from google.protobuf.timestamp_pb2 import Timestamp
 
 from .constants import FAKE_EMAIL_DOMAIN
 from .db_model import (
@@ -877,15 +876,15 @@ class DbInterface:
             collection_ref = collection_ref.where("phone_number", "==", phone_number)
         if start_date is not None:
             start_datetime = datetime.combine(start_date, datetime.min.time())
-            logger.info(f"{start_datetime=}, {type(start_datetime)=}")
+            start_timestamp = start_datetime.timestamp()
             collection_ref = collection_ref.where(
-                "timestamp", ">=", Timestamp.FromDatetime(start_datetime)
+                "timestamp", ">=", start_timestamp
             )
         if end_date is not None:
             end_datetime = datetime.combine(end_date, datetime.datetime.max.time())
-            logger.info(f"{end_datetime=}, {type(end_datetime)=}")
+            end_timestamp = end_datetime.timestamp()
             collection_ref = collection_ref.where(
-                "timestamp", "<=", Timestamp.FromDatetime(end_datetime)
+                "timestamp", "<=", end_timestamp
             )
         docs = collection_ref.get()
         usage_records = [

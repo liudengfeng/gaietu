@@ -1,7 +1,37 @@
-from pathlib import Path
 import io
 import wave
+from pathlib import Path
+
+import pytz
 import toml
+
+# region 日期时间相关
+
+
+def convert_to_utc(dt, timezone_str):
+    """
+    将给定的日期时间从指定的时区转换为UTC。
+
+    Args:
+        dt (datetime.datetime): 要转换的日期时间。
+        timezone_str (str): dt的当前时区。
+
+    Returns:
+        datetime.datetime: 转换为UTC的日期时间。
+    """
+    # 创建时区对象
+    timezone = pytz.timezone(timezone_str)
+
+    # 将日期时间本地化到指定的时区
+    dt = timezone.localize(dt)
+
+    # 将日期时间转换为UTC
+    dt_utc = dt.astimezone(pytz.UTC)
+
+    return dt_utc
+
+
+# endregion
 
 
 def get_secrets():
