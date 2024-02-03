@@ -746,10 +746,12 @@ elif menu == "统计分析":
     with tabs[0]:
         phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
 
-        start_date = st.date_input("开始日期", value=get_current_monday())
-        end_date = st.date_input("结束日期", value=None)
+        start_date = st.date_input(
+            "开始日期", value=get_current_monday(), key="start_date"
+        )
+        end_date = st.date_input("结束日期", value=None, key="end_date")
 
-        if start_date is None or end_date is None:
+        if start_date is None and end_date is None:
             st.warning("请先选择开始日期和结束日期。")
             st.stop()
 
