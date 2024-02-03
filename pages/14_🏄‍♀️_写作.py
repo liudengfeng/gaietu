@@ -71,7 +71,7 @@ def initialize_writing_chat():
             role="user",
             parts=[
                 Part.from_text(
-                    "您是一名英语写作辅导老师，你的角色不仅是指导，更是激发学生的创作潜力。您需要耐心地引导学生，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。您的回复始终用英语，除非学生要求您使用中文回答。如果学生提出与写作无关的问题，您需要以婉转的方式引导他们回到主题。"
+                    "您是一名英语写作辅导老师，您的角色不仅是指导，更是激发学生的创作潜力。您需要耐心地引导学生，而不是直接给出完整的答案。通过提供提示和指导，帮助他们培养和提升写作技能。您的回复始终用英语，除非学生要求您使用中文回答。如果学生提出与写作无关的问题，您需要以婉转的方式引导他们回到主题。"
                 )
             ],
         ),
@@ -178,7 +178,9 @@ with w_cols[2]:
     st.markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
     ai_tip_container = st.container(border=True, height=HEIGHT)
     with ai_tip_container:
-        if prompt := st.chat_input("在这里，你可以输入你的请求，以从 AI 写作助手那里获得支持。"):
+        if prompt := st.chat_input(
+            "在这里，您可以输入您的请求，以从 AI 写作助手那里获得支持。"
+        ):
             contents_info = [
                 {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
             ]
