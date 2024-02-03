@@ -161,7 +161,7 @@ with w_cols[2]:
     ai_tip_container = st.container(border=True, height=HEIGHT)
     with ai_tip_container:
         if prompt := st.chat_input(
-            "在这里，您可以输入您的请求，以从 AI 写作助手那里获得支持。"
+            "在此输入请求，获取 AI 写作助手的支持。"
         ):
             contents_info = [
                 {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
