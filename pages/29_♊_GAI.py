@@ -75,6 +75,9 @@ if "multimodal_examples" not in st.session_state:
 if "max-output-tokens-chatbot" not in st.session_state:
     st.session_state["max-output-tokens-chatbot"] = 2048
 
+if "temperature-chatbot" not in st.session_state:
+    st.session_state["temperature-chatbot"] = 0.9
+
 # endregion
 
 # region 辅助函数
@@ -118,6 +121,11 @@ def delete_last_pair():
 
 def on_chatbot_output_tokens_changed(key):
     st.session_state["max-output-tokens-chatbot"] = st.session_state[key]
+
+
+def on_chatbot_temperature_changed(key):
+    st.session_state["temperature-chatbot"] = st.session_state[key]
+
 
 # endregion
 
@@ -281,20 +289,32 @@ if menu == "聊天机器人":
         max_value=8192,
         step=32,
         label_visibility="hidden",
-        key="number-input-max-output-tokens-chatbot",
+        key="max-output-tokens-chatbot-number-input",
         on_change=on_chatbot_output_tokens_changed,
-        args=("number-input-max-output-tokens-chatbot",),
+        args=("max-output-tokens-chatbot-number-input",),
         help="✨ 输入词元限制。",
     )
     # 生成参数
-    st.sidebar.slider(
+    sidebar_cols[0].slider(
         "温度",
+        value=st.session_state.get("temperature-chatbot", 0.9),
         min_value=0.00,
         max_value=1.0,
-        key="temperature-chatbot",
-        value=0.9,
-        step=0.1,
+        key="temperature-chatbot-slider",
+        on_change=on_chatbot_temperature_changed,
+        args=("temperature-chatbot-slider",),
         help="✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
+    )
+    sidebar_cols[0].number_input(
+        "输入温度",
+        value=st.session_state.get("temperature-chatbot", 0.9),
+        min_value=0.00,
+        max_value=1.0,
+        label_visibility="hidden",
+        key="temperature-chatbot-number-input",
+        on_change=on_chatbot_temperature_changed,
+        args=("temperature-chatbot-number-input",),
+        help="✨ 输入温度。",
     )
     st.sidebar.slider(
         "Top K",
