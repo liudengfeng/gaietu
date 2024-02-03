@@ -261,7 +261,7 @@ def display_generated_content_and_update_token(
             except (IndexError, ValueError, ResponseBlockedError) as e:
                 st.write(chunk)
                 st.error(e)
-            time.sleep(0.05)
+            time.sleep(0.02)
             # Add a blinking cursor to simulate typing
             placeholder.markdown(full_response + "▌")
     else:

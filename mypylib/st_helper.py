@@ -368,7 +368,7 @@ def view_stream_response(responses, placeholder):
             st.write(chunk)
             st.error(e)
             # pass
-        time.sleep(0.05)
+        time.sleep(0.02)
         # Add a blinking cursor to simulate typing
         placeholder.markdown(full_response + "▌")
     placeholder.markdown(full_response)
