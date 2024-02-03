@@ -794,6 +794,8 @@ elif menu == "统计分析":
                     .sum()
                     .reset_index()
                 )
+                # 将 'cost' 列的值四舍五入到小数点后两位
+                df_grouped['cost'] = df_grouped['cost'].round(2)
 
                 # 使用 plotly 绘制项目柱状图，x 轴为 'timestamp'，y 轴为 'cost'，颜色为 'service_name'
                 fig = px.bar(
