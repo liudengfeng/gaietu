@@ -1,9 +1,13 @@
 import streamlit as st
 
 
+def return_home():
+    st.sidebar.page_link("Home.py", label="主页", icon="🏠")
+
+
 def authenticated_menu():
     # Show a navigation menu for authenticated users
-    st.sidebar.page_link("Home.py", label="主页", icon="🏠")
+    return_home()
     st.sidebar.page_link("pages/02_👥_用户.py", label="用户中心", icon="👥")
     st.sidebar.page_link("pages/12_📚_单词.py", label="记忆单词", icon="📚")
     st.sidebar.page_link("pages/13_💪_练习.py", label="听说练习", icon="💪")
@@ -27,7 +31,7 @@ def authenticated_menu():
 
 def unauthenticated_menu():
     # Show a navigation menu for unauthenticated users
-    st.sidebar.page_link("Home.py", label="主页", icon="🏠")
+    return_home()
     st.sidebar.page_link(
         "pages/00_📇_注册.py",
         label="用户注册",

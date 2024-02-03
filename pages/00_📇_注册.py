@@ -12,6 +12,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS, FAKE_EMAIL_DOMAIN, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import check_and_force_logout, get_firestore_client, on_page_to
+from menu import return_home
 
 # 创建 Fernet 实例【必须将key转换为bytes类型】
 # fernet = Fernet(st.secrets["FERNET_KEY"].encode())
@@ -22,6 +23,7 @@ st.set_page_config(
     layout="wide",
 )
 
+return_home()
 
 on_page_to("用户注册")
 
