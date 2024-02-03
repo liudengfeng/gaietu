@@ -744,7 +744,7 @@ elif menu == "统计分析":
     st.subheader("统计分析", divider="rainbow", anchor=False)
     tabs = st.tabs(["费用", "用户"])
     with tabs[0]:
-        phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
+        phone_number = st.selectbox("选择用户", options=["ALL"] + get_phone_numbers())
 
         start_date = st.date_input(
             "开始日期", value=get_current_monday(), key="start_date"
