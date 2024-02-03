@@ -285,7 +285,11 @@ def get_phone_numbers():
 
 @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
 def get_usage_records(phone_number, start_date, end_date):
-    return st.session_state.dbi.get_usage_records(phone_number, start_date, end_date)
+    data = st.session_state.dbi.get_usage_records(phone_number, start_date, end_date)
+    df = pd.DataFrame(data)
+    if not df.empty:
+        df["cost"] = df["cost"].round(2)
+    return df
 
 
 # endregion
@@ -780,8 +784,7 @@ elif menu == "统计分析":
 
         st.markdown("##### 运行费用")
         if st.button("统计"):
-            result = get_usage_records(phone_number, start_date, end_date)
-            df = pd.DataFrame(result)
+            df = get_usage_records(phone_number, start_date, end_date)
             if df.empty:
                 st.warning("没有记录")
                 st.stop()
@@ -796,8 +799,6 @@ elif menu == "统计分析":
                     .sum()
                     .reset_index()
                 )
-                # 将 'cost' 列的值四舍五入到小数点后两位
-                df_grouped["cost"] = df_grouped["cost"].round(2)
 
                 # 使用 plotly 绘制项目柱状图，x 轴为 'timestamp'，y 轴为 'cost'，颜色为 'service_name'
                 fig = px.bar(
@@ -824,11 +825,16 @@ elif menu == "统计分析":
 
                 st.plotly_chart(fig, use_container_width=True)
             else:
-                pass
-            df_grouped = (
-                df.groupby(["phone_number", "item_name"])["cost"].sum().reset_index()
-            )
-            df_grouped
+                df["timestamp"] = df["timestamp"].dt.date
+                df_grouped = (
+                    df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
+                )
+                # 创建饼图
+                fig = px.pie(
+                    df_grouped, values="cost", names="item_name", title="项目成本分布"
+                )
+                # 使用 Streamlit 显示图形
+                st.plotly_chart(fig, use_container_width=True)
 
 # endregion
 
