@@ -123,8 +123,7 @@ GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
 
 @st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查语法...")
 def check_grammar(article):
-    st.write(f"{detect(article)=}")
-    # 检查 article 是否为英文文本
+    # 检查 article 是否为英文文本 [字符数量少容易被错判]
     if detect(article) != "en":
         return {"corrected": "请使用英语写作！", "explanations": []}
 
