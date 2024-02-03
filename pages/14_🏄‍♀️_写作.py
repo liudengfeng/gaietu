@@ -90,11 +90,21 @@ Step by step, complete the following:
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
+Grammatical errors include:
+- Incorrect usage of tenses to describe past, present, or future events.
+- Incorrect usage of singular or plural forms of nouns.
+- Lack of agreement between the subject and verb in person or number.
+- Incorrect usage of prepositions to indicate a specific relationship or location.
+- Incorrect usage of conjunctions to connect two sentences or phrases.
+- Incorrect usage of punctuation marks to separate sentences or phrases.
+- Incorrect capitalization for proper nouns or at the beginning of sentences.
+Please note that this list does not encompass spelling errors.
+
 Example:
 - Assume the original text is: 'I have many moeney in the past,I have not to work now.'
 - The output dictionary should be:
-    - corrected: "I ~~have~~ [[had]] many ~~moeney~~ [[money]] in the past, so I ~~have not to~~ [[don't have to]] work now."
-    - explanations: ["The past tense of 'have' is 'had'.", "The correct spelling of 'money' is 'money'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
+    - corrected: "I ~~have~~ [[had]] many money in the past, so I ~~have not to~~ [[don't have to]] work now."
+    - explanations: ["The past tense of 'have' is 'had'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
 
 Article:{article}
 """
