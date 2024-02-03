@@ -276,7 +276,7 @@ step_cols = st.columns(5)
 if step_cols[1].button(":bust_in_silhouette: 注册用户", key="注册用户"):
     st.switch_page("pages/00_📇_注册.py")
 
-if step_cols[2].button(":package: 订阅套餐", key="订阅套餐"):
+if step_cols[2].button(":package: 订阅续费", key="订阅续费"):
     st.switch_page("pages/01_💰_订阅.py")
 
 if step_cols[3].button(":key: 登录使用", key="登录使用"):

@@ -9,12 +9,18 @@ CURRENT_CWD: Path = Path(__file__).parent.parent
 WXSKM_DIR = CURRENT_CWD / "resource" / "wxskm"
 
 
-on_page_to("订阅套餐")
+st.set_page_config(
+    page_title="订阅续费",
+    page_icon=":package:",
+    layout="centered",
+)
+
+on_page_to("订阅续费")
 
 
 # region 订阅付费
 
-st.subheader(":package: 订阅套餐", anchor="订阅套餐", divider="rainbow")
+st.subheader(":package: 订阅续费", anchor="订阅续费", divider="rainbow")
 
 # Define pricing tiers
 pricing_tiers = [
