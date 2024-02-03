@@ -20,7 +20,7 @@ on_page_to("订阅续费")
 
 # region 订阅付费
 
-cols = st.columns(8)
+cols = st.columns(4)
 home_btn = cols[0].button("主页[🏠]")
 quit_btn = cols[1].button("退出[🏃‍♂️]")
 
