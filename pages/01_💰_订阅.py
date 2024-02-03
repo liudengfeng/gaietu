@@ -39,7 +39,7 @@ pricing_tiers = [
     {
         "title": "白金版",
         "price": "1890",
-        "unit": "每季度",
+        "unit": "每季",
         "description": [
             "按天计费节约30%",
             "学习分析报告",
