@@ -752,7 +752,7 @@ elif menu == "处理反馈":
 # region 创建统计分析页面
 elif menu == "统计分析":
     st.subheader("统计分析", divider="rainbow", anchor=False)
-    tabs = st.tabs(["费用", "用户"])
+    tabs = st.tabs(["运行费用", "用户"])
     with tabs[0]:
         phone_number = st.selectbox("选择用户", options=["ALL"] + get_phone_numbers())
 

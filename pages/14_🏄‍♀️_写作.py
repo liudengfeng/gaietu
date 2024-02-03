@@ -166,8 +166,32 @@ article = w_cols[0].text_area(
 )
 w_cols[1].markdown("<h5 style='color: green;'>AI建议</h5>", unsafe_allow_html=True)
 suggestions = w_cols[1].container(border=True, height=HEIGHT)
-w_cols[2].markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
-ai_tip_container = w_cols[2].container(border=True, height=HEIGHT)
+
+Assistant_Configuration = {
+    "temperature": 0.2,
+    "top_p": 1.0,
+    "top_k": 32,
+    "max_output_tokens": 1024,
+}
+assistant_config = GenerationConfig(**Assistant_Configuration)
+with w_cols[2]:
+    st.markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
+    ai_tip_container = st.container(border=True, height=HEIGHT)
+    with ai_tip_container:
+        if prompt := st.chat_input("从AI写作助教处获取支持"):
+            contents_info = [
+                {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+            ]
+            display_generated_content_and_update_token(
+                "AI写作助教",
+                "gemini-pro",
+                st.session_state["writing-chat"].send_message,
+                contents_info,
+                assistant_config,
+                stream=True,
+                placeholder=ai_tip_container.empty(),
+            )
+            update_sidebar_status(sidebar_status)
 
 w_btn_cols = st.columns(8)
 
@@ -231,27 +255,5 @@ if w_btn_cols[4].button(
 ):
     pass
 
-Assistant_Configuration = {
-    "temperature": 0.2,
-    "top_p": 1.0,
-    "top_k": 32,
-    "max_output_tokens": 1024,
-}
-config = GenerationConfig(**Assistant_Configuration)
-
-if prompt := st.chat_input("从AI写作助教处获取支持"):
-    contents_info = [
-        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
-    ]
-    display_generated_content_and_update_token(
-        "AI写作助教",
-        "gemini-pro",
-        st.session_state["writing-chat"].send_message,
-        contents_info,
-        config,
-        stream=True,
-        placeholder=ai_tip_container.empty(),
-    )
-    update_sidebar_status(sidebar_status)
 
 # endregion
