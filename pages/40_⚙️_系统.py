@@ -276,6 +276,7 @@ def get_feedbacks():
 
 # region 统计分析辅助函数
 
+
 @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
 def get_phone_numbers():
     return st.session_state.dbi.list_usages_phone_number()
@@ -746,12 +747,12 @@ elif menu == "统计分析":
         phone_number = st.selectbox("选择用户", options=["All"] + get_phone_numbers())
 
         start_date = st.date_input("开始日期", value=get_current_monday())
-        end_date = st.date_input("结束日期")
-        
+        end_date = st.date_input("结束日期", value=None)
+
         if start_date is None or end_date is None:
             st.warning("请先选择开始日期和结束日期。")
             st.stop()
-        
+
         if start_date >= end_date:
             st.error("错误: 结束日期必须大于开始日期.")
             st.stop()
