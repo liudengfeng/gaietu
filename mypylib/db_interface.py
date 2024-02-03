@@ -876,6 +876,7 @@ class DbInterface:
         """
         user_info = self.cache.get("user_info", {})
         timezone_str = user_info.get("timezone", "Asia/Shanghai")
+        tz = pytz.timezone(timezone_str)
         collection_ref = self.db.collection("usages")
         usage_records = []
 
@@ -889,9 +890,7 @@ class DbInterface:
             start_timestamp = start_datetime.timestamp()
 
         if end_date is not None:
-            end_datetime = combine_date_and_time_to_utc(
-                end_date, timezone_str, False
-            )
+            end_datetime = combine_date_and_time_to_utc(end_date, timezone_str, False)
             end_timestamp = end_datetime.timestamp()
 
         if phone_number != "ALL":
@@ -912,12 +911,15 @@ class DbInterface:
                         continue
                     if end_timestamp is not None and timestamp > end_timestamp:
                         continue
+                    
+                    timestamp_datetime = datetime.fromtimestamp(timestamp)
+                    timestamp_in_timezone = timestamp_datetime.astimezone(tz)
                     usage_records.append(
                         {
                             "phone_number": phone_number,
                             "item_name": usage["item_name"],
                             "cost": usage["cost"],
-                            "timestamp": usage["timestamp"],
+                            "timestamp": timestamp_in_timezone,
                         }
                     )
 
