@@ -72,6 +72,9 @@ if st.session_state.get("clear_example"):
 if "multimodal_examples" not in st.session_state:
     st.session_state["multimodal_examples"] = []
 
+if "max-output-tokens-chatbot" not in st.session_state:
+    st.session_state["max-output-tokens-chatbot"] = 2048
+
 # endregion
 
 # region 辅助函数
@@ -253,14 +256,28 @@ if menu == "聊天机器人":
     """
     )
     st.sidebar.divider()
-    st.sidebar.slider(
+    sidebar_cols = st.sidebar.columns([3, 1])
+    # 当 slider 的值改变时，更新 session_state 对象的值
+    st.session_state["max-output-tokens-chatbot"] = sidebar_cols[0].slider(
         "词元限制",
-        key="max_output_tokens-chatbot",
+        value=st.session_state.get("max-output-tokens-chatbot", 2048),
+        key="max-output-tokens-chatbot-slider",
         min_value=32,
         max_value=8192,
         value=2048,
         step=32,
         help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
+    )
+    # 当 number_input 的值改变时，更新 session_state 对象的值
+    st.session_state["max-output-tokens-chatbot"] = sidebar_cols[1].number_input(
+        "",
+        value=st.session_state["max-output-tokens-chatbot"],
+        min_value=32,
+        max_value=8192,
+        value=2048,
+        step=32,
+        key="number-input-max-output-tokens-chatbot",
+        help="✨ 输入词元限制。",
     )
     # 生成参数
     st.sidebar.slider(
@@ -382,7 +399,7 @@ if menu == "聊天机器人":
             "temperature": st.session_state["temperature-chatbot"],
             "top_p": st.session_state["top_p-chatbot"],
             "top_k": st.session_state["top_k-chatbot"],
-            "max_output_tokens": st.session_state["max_output_tokens-chatbot"],
+            "max_output_tokens": st.session_state["max-output-tokens-chatbot"],
         }
         config = GenerationConfig(**config)
         with st.chat_message("assistant", avatar=AVATAR_MAPS["model"]):
