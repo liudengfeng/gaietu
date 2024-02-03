@@ -12,7 +12,7 @@ import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
-from menu import return_home
+from menu import help_page, return_home
 
 from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_model import LearningTime
@@ -50,6 +50,7 @@ st.set_page_config(
     layout="wide",
 )
 return_home()
+help_page()
 check_access(False)
 
 # save_and_clear_all_learning_records()
@@ -135,7 +136,9 @@ def add_personal_dictionary(include):
             del st.session_state.word_dict["0-个人词库"]
 
 
-@st.cache_data(ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词信息...")
+@st.cache_data(
+    ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词信息..."
+)
 def get_word_info(word):
     return st.session_state.dbi.find_word(word)
 
@@ -350,7 +353,7 @@ def auto_play_flash_word(voice_style):
 def create_learning_record(idx_key, words_key, project):
     idx = st.session_state[idx_key]
     word = st.session_state[words_key][idx]
-    content=word
+    content = word
     # 统计单词词意测试的单词数量
     if words_key == "word-tests":
         word_count = 0
@@ -361,7 +364,7 @@ def create_learning_record(idx_key, words_key, project):
             elif isinstance(value, list):
                 word_count += sum(len(v.split()) for v in value)
         # 记录测试单词
-        content=st.session_state["test-words"][idx]
+        content = st.session_state["test-words"][idx]
     else:
         word_count = len(word.split())
     record = LearningTime(
@@ -491,7 +494,9 @@ def handle_puzzle_input(word_lib):
     puzzle_score = st.empty()
     sumbit_cols = st.columns(5)
 
-    if sumbit_cols[0].button("重试[:repeat:]", key="retry", help="✨ 恢复初始状态，重新开始拼图游戏。"):
+    if sumbit_cols[0].button(
+        "重试[:repeat:]", key="retry", help="✨ 恢复初始状态，重新开始拼图游戏。"
+    ):
         prepare_puzzle()
         st.rerun()
 
@@ -917,12 +922,16 @@ if menu and menu.endswith("闪卡记忆"):
     status_cols = st.columns(2)
 
     update_and_display_progress(
-        st.session_state["flashcard-idx"] + 1
-        if st.session_state["flashcard-idx"] != -1
-        else 0,
-        len(st.session_state["flashcard-words"])
-        if len(st.session_state["flashcard-words"]) != 0
-        else 1,
+        (
+            st.session_state["flashcard-idx"] + 1
+            if st.session_state["flashcard-idx"] != -1
+            else 0
+        ),
+        (
+            len(st.session_state["flashcard-words"])
+            if len(st.session_state["flashcard-words"]) != 0
+            else 1
+        ),
         status_cols[0],
         f'\t 当前单词：{st.session_state["flashcard-words"][st.session_state["flashcard-idx"]] if st.session_state["flashcard-idx"] != -1 else ""}',
     )
@@ -1078,12 +1087,16 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     update_and_display_progress(
-        st.session_state["puzzle-idx"] + 1
-        if st.session_state["puzzle-idx"] != -1
-        else 0,
-        len(st.session_state["puzzle-words"])
-        if len(st.session_state["puzzle-words"]) != 0
-        else 1,
+        (
+            st.session_state["puzzle-idx"] + 1
+            if st.session_state["puzzle-idx"] != -1
+            else 0
+        ),
+        (
+            len(st.session_state["puzzle-words"])
+            if len(st.session_state["puzzle-words"]) != 0
+            else 1
+        ),
         st.empty(),
     )
 
@@ -1280,19 +1293,25 @@ elif menu and menu.endswith("词意测试"):
     # endregion
 
     st.subheader(":pencil: 英语单词理解测试", divider="rainbow", anchor=False)
-    st.markdown("""✨ 英语单词理解测试是一种选择题形式的测试，提供一个英语单词和四个选项，要求选出正确的词义。""")
+    st.markdown(
+        """✨ 英语单词理解测试是一种选择题形式的测试，提供一个英语单词和四个选项，要求选出正确的词义。"""
+    )
 
     if "text-model" not in st.session_state:
         st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
     cols = st.columns(2)
     update_and_display_progress(
-        st.session_state["word-test-idx"] + 1
-        if st.session_state["word-test-idx"] != -1
-        else 0,
-        len(st.session_state["test-words"])
-        if len(st.session_state["test-words"]) != 0
-        else 1,
+        (
+            st.session_state["word-test-idx"] + 1
+            if st.session_state["word-test-idx"] != -1
+            else 0
+        ),
+        (
+            len(st.session_state["test-words"])
+            if len(st.session_state["test-words"]) != 0
+            else 1
+        ),
         cols[0].empty(),
         # message=st.session_state["test-words"][st.session_state["word-test-idx"]]
         # if st.session_state["word-test-idx"] != -1

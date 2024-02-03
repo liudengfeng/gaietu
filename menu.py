@@ -5,6 +5,15 @@ def return_home():
     st.sidebar.page_link("Home.py", label="主页", icon="🏠", help="✨ 返回主页。")
 
 
+def help_page():
+    st.sidebar.page_link(
+        "pages/30_🛠️_帮助.py",
+        label="帮助文档",
+        help="✨ 请选择适合您的套餐选项。",
+        icon="🛠️",
+    )
+
+
 def authenticated_menu():
     # Show a navigation menu for authenticated users
     return_home()
@@ -29,12 +38,7 @@ def authenticated_menu():
     st.sidebar.page_link(
         "pages/29_♊_GAI.py", label="智能AI", icon="♊", help="✨ 进入智能AI页面。"
     )
-    st.sidebar.page_link(
-        "pages/30_🛠️_帮助.py",
-        label="帮助文档",
-        help="✨ 请选择适合您的套餐选项。",
-        icon="🛠️",
-    )
+    help_page()
     if st.session_state.role in ["管理员"]:
         st.sidebar.page_link("pages/40_⚙️_系统.py", label="系统管理", icon="⚙️")
         # st.sidebar.page_link(
@@ -59,12 +63,7 @@ def unauthenticated_menu():
         help="✨ 请选择适合您的套餐选项。",
         icon="💰",
     )
-    st.sidebar.page_link(
-        "pages/30_🛠️_帮助.py",
-        label="帮助文档",
-        help="✨ 请选择适合您的套餐选项。",
-        icon="🛠️",
-    )
+    help_page()
 
 
 def menu():
