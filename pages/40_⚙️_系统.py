@@ -278,10 +278,14 @@ def get_feedbacks():
 # region 统计分析辅助函数
 
 
-# @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
-@st.cache_data(ttl=60 * 5)  # 缓存有效期为1小时
+@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
 def get_phone_numbers():
     return st.session_state.dbi.list_usages_phone_number()
+
+
+@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+def get_usage_records(phone_number, start_date, end_date):
+    return st.session_state.dbi.get_usage_records(phone_number, start_date, end_date)
 
 
 # endregion
@@ -776,9 +780,7 @@ elif menu == "统计分析":
 
         st.markdown("##### 运行费用")
         if st.button("统计"):
-            result = st.session_state.dbi.get_usage_records(
-                phone_number, start_date, end_date
-            )
+            result = get_usage_records(phone_number, start_date, end_date)
             df = pd.DataFrame(result)
             if df.empty:
                 st.warning("没有记录")
@@ -795,7 +797,7 @@ elif menu == "统计分析":
                     .reset_index()
                 )
                 # 将 'cost' 列的值四舍五入到小数点后两位
-                df_grouped['cost'] = df_grouped['cost'].round(2)
+                df_grouped["cost"] = df_grouped["cost"].round(2)
 
                 # 使用 plotly 绘制项目柱状图，x 轴为 'timestamp'，y 轴为 'cost'，颜色为 'service_name'
                 fig = px.bar(
