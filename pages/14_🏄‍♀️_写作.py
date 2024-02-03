@@ -178,7 +178,7 @@ with w_cols[2]:
     st.markdown("<h5 style='color: red;'>AI助教</h5>", unsafe_allow_html=True)
     ai_tip_container = st.container(border=True, height=HEIGHT)
     with ai_tip_container:
-        if prompt := st.chat_input("从AI写作助教处获取支持"):
+        if prompt := st.chat_input("在这里，你可以输入你的请求，以从 AI 写作助手那里获得支持。"):
             contents_info = [
                 {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
             ]
