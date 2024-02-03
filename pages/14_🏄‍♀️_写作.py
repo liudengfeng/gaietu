@@ -240,5 +240,10 @@ if w_btn_cols[4].button(
     # 使用 st.code 显示文本
     st.code(text, language="txt")
 
+if w_btn_cols[5].button(
+    "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
+):
+    pass
+
 
 # endregion
