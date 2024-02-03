@@ -25,5 +25,5 @@
 | `:star:`                      | ⭐     | 偏好       |
 | `:house:`                     | 🏠     | 主页       |
 | `:broken_heart:`              | 💔     | 断线       |
-| `:signal_strength:`              | 📶     | 在线       |
+| `:globe_with_meridians:`      | 🌐     | 在线       |
 | `:man-running:`               | 🏃‍♂️     | 退出       |
