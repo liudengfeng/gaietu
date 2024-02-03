@@ -281,7 +281,8 @@ def timestamp_to_date(timestamp):
     return datetime.datetime.fromtimestamp(timestamp).date()
 
 
-@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+# @st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+@st.cache_data(ttl=60 * 5)  # 缓存有效期为1小时
 def get_phone_numbers():
     return st.session_state.dbi.list_usages_phone_number()
 
