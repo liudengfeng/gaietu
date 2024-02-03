@@ -91,16 +91,16 @@ Step by step, complete the following:
 6. Finally, output the dictionary in JSON format.
 
 Example:
-- Assume the original text is: 'I likes to play games.'
+- Assume the original text is: 'I have many moeney in the past,I have not to work now.'
 - The output dictionary should be:
-    - corrected: "I ~~likes~~ [[like]] to play games."
-    - explanations: ["The verb 'like' should be used with the first person singular 'I'."]
+    - corrected: "I ~~have~~ [[had]] many ~~moeney~~ [[money]] in the past, so I ~~have not to~~ [[don't have to]] work now."
+    - explanations: ["The past tense of 'have' is 'had'.", "The correct spelling of 'money' is 'money'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
 
 Article:{article}
 """
 
 
-GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.1}
+GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
 
 
 @st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查语法...")
