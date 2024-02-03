@@ -910,7 +910,7 @@ class DbInterface:
                         continue
                     if end_timestamp is not None and timestamp > end_timestamp:
                         continue
-                    
+
                     timestamp_datetime = datetime.fromtimestamp(timestamp)
                     timestamp_in_timezone = timestamp_datetime.astimezone(tz)
                     usage_records.append(
@@ -918,6 +918,7 @@ class DbInterface:
                             "phone_number": phone_number,
                             "item_name": usage["item_name"],
                             "cost": usage["cost"],
+                            "model": usage.get("model_name", ""),
                             "timestamp": timestamp_in_timezone,
                         }
                     )
