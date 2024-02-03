@@ -88,6 +88,38 @@ if "top-p-chatbot" not in st.session_state:
 
 # region 辅助函数
 
+
+def create_synchronized_components(
+    cols, key, min_value, max_value, step, default_value, help_text
+):
+    view_key = key.rpartition("-")[0]
+    # 创建 slider 组件
+    cols[0].slider(
+        view_key,
+        value=st.session_state.get(key, default_value),
+        min_value=min_value,
+        max_value=max_value,
+        step=step,
+        key=f"{key}-slider",
+        on_change=synchronize_session_state,
+        args=(key, f"{key}-slider"),
+        help=help_text,
+    )
+    # 创建 number_input 组件
+    cols[1].number_input(
+        f"输入 {view_key}",
+        value=st.session_state.get(key, default_value),
+        min_value=min_value,
+        max_value=max_value,
+        step=step,
+        label_visibility="hidden",
+        key=f"{key}-number-input",
+        on_change=synchronize_session_state,
+        args=(key, f"{key}-number-input"),
+        help=f"✨ 输入 {key}。",
+    )
+
+
 # region 聊天机器人辅助函数
 
 
@@ -277,114 +309,155 @@ if menu == "聊天机器人":
     )
     st.sidebar.divider()
     sidebar_cols = st.sidebar.columns([3, 1])
-
-    # 当 slider 的值改变时，更新 session_state 对象的值
-    sidebar_cols[0].slider(
-        "词元限制",
-        value=st.session_state.get("max-output-tokens-chatbot", 2048),
-        min_value=32,
-        max_value=8192,
-        step=32,
-        key="max-output-tokens-chatbot-slider",
-        on_change=synchronize_session_state,
-        args=(
-            "max-output-tokens-chatbot",
-            "max-output-tokens-chatbot-slider",
-        ),
-        help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
+    
+    create_synchronized_components(
+        sidebar_cols,
+        "max-output-tokens-chatbot",
+        32,
+        8192,
+        32,
+        2048,
+        "✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。",
     )
-    # 当 number_input 的值改变时，更新 session_state 对象的值
-    sidebar_cols[1].number_input(
-        "输入词元",
-        value=st.session_state.get("max-output-tokens-chatbot", 2048),
-        min_value=32,
-        max_value=8192,
-        step=32,
-        label_visibility="hidden",
-        key="max-output-tokens-chatbot-number-input",
-        on_change=synchronize_session_state,
-        args=(
-            "max-output-tokens-chatbot",
-            "max-output-tokens-chatbot-number-input",
-        ),
-        help="✨ 输入词元限制。",
+
+    # sidebar_cols[0].slider(
+    #     "词元限制",
+    #     value=st.session_state.get("max-output-tokens-chatbot", 2048),
+    #     min_value=32,
+    #     max_value=8192,
+    #     step=32,
+    #     key="max-output-tokens-chatbot-slider",
+    #     on_change=synchronize_session_state,
+    #     args=(
+    #         "max-output-tokens-chatbot",
+    #         "max-output-tokens-chatbot-slider",
+    #     ),
+    #     help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。""",
+    # )
+    # sidebar_cols[1].number_input(
+    #     "输入词元",
+    #     value=st.session_state.get("max-output-tokens-chatbot", 2048),
+    #     min_value=32,
+    #     max_value=8192,
+    #     step=32,
+    #     label_visibility="hidden",
+    #     key="max-output-tokens-chatbot-number-input",
+    #     on_change=synchronize_session_state,
+    #     args=(
+    #         "max-output-tokens-chatbot",
+    #         "max-output-tokens-chatbot-number-input",
+    #     ),
+    #     help="✨ 输入词元限制。",
+    # )
+
+    create_synchronized_components(
+        sidebar_cols,
+        "temperature-chatbot",
+        0.00,
+        1.0,
+        0.1,
+        0.9,
+        "✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
     )
     # 生成参数
-    sidebar_cols[0].slider(
-        "温度",
-        value=st.session_state.get("temperature-chatbot", 0.9),
-        min_value=0.00,
-        max_value=1.0,
-        key="temperature-chatbot-slider",
-        on_change=synchronize_session_state,
-        args=(
-            "temperature-chatbot",
-            "temperature-chatbot-slider",
-        ),
-        help="✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
+    # sidebar_cols[0].slider(
+    #     "温度",
+    #     value=st.session_state.get("temperature-chatbot", 0.9),
+    #     min_value=0.00,
+    #     max_value=1.0,
+    #     key="temperature-chatbot-slider",
+    #     on_change=synchronize_session_state,
+    #     args=(
+    #         "temperature-chatbot",
+    #         "temperature-chatbot-slider",
+    #     ),
+    #     help="✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
+    # )
+    # sidebar_cols[1].number_input(
+    #     "输入温度",
+    #     value=st.session_state.get("temperature-chatbot", 0.9),
+    #     min_value=0.00,
+    #     max_value=1.0,
+    #     label_visibility="hidden",
+    #     key="temperature-chatbot-number-input",
+    #     on_change=synchronize_session_state,
+    #     args=(
+    #         "temperature-chatbot",
+    #         "temperature-chatbot-number-input",
+    #     ),
+    #     help="✨ 输入温度。",
+    # )
+
+    create_synchronized_components(
+        sidebar_cols,
+        "top-k-chatbot",
+        1,
+        40,
+        1,
+        40,
+        "✨ Top-k 可更改模型选择输出词元的方式。默认值为 40。",
     )
-    sidebar_cols[1].number_input(
-        "输入温度",
-        value=st.session_state.get("temperature-chatbot", 0.9),
-        min_value=0.00,
-        max_value=1.0,
-        label_visibility="hidden",
-        key="temperature-chatbot-number-input",
-        on_change=synchronize_session_state,
-        args=(
-            "temperature-chatbot",
-            "temperature-chatbot-number-input",
-        ),
-        help="✨ 输入温度。",
+
+    #     sidebar_cols[0].slider(
+    #         "Top K",
+    #         value=st.session_state.get("top-k-chatbot", 40),
+    #         min_value=1,
+    #         max_value=40,
+    #         step=1,
+    #         key="top-k-chatbot-slider",
+    #         on_change=synchronize_session_state,
+    #         args=("top-k-chatbot", "top-k-chatbot-slider"),
+    #         help="""✨ Top-k 可更改模型选择输出词元的方式。
+    # - 如果 Top-k 设为 1，表示所选词元是模型词汇表的所有词元中概率最高的词元（也称为贪心解码）。
+    # - 如果 Top-k 设为 3，则表示系统将从 3 个概率最高的词元（通过温度确定）中选择下一个词元。
+    # - Top-k 的默认值为 40。""",
+    #     )
+    #     sidebar_cols[1].number_input(
+    #         "输入 Top K",
+    #         value=st.session_state.get("top-k-chatbot", 40),
+    #         min_value=1,
+    #         max_value=40,
+    #         step=1,
+    #         label_visibility="hidden",
+    #         key="top-k-chatbot-number-input",
+    #         on_change=synchronize_session_state,
+    #         args=("top-k-chatbot", "top-k-chatbot-number-input"),
+    #         help="✨ 输入 Top K。",
+    #     )
+
+    create_synchronized_components(
+        sidebar_cols,
+        "top-p-chatbot",
+        0.00,
+        1.0,
+        0.05,
+        1.0,
+        "✨ Top-p 可更改模型选择输出词元的方式。默认值为 1.0。",
     )
-    sidebar_cols[0].slider(
-        "Top K",
-        value=st.session_state.get("top-k-chatbot", 40),
-        min_value=1,
-        max_value=40,
-        step=1,
-        key="top-k-chatbot-slider",
-        on_change=synchronize_session_state,
-        args=("top-k-chatbot", "top-k-chatbot-slider"),
-        help="""✨ Top-k 可更改模型选择输出词元的方式。
-- 如果 Top-k 设为 1，表示所选词元是模型词汇表的所有词元中概率最高的词元（也称为贪心解码）。
-- 如果 Top-k 设为 3，则表示系统将从 3 个概率最高的词元（通过温度确定）中选择下一个词元。
-- Top-k 的默认值为 40。""",
-    )
-    sidebar_cols[1].number_input(
-        "输入 Top K",
-        value=st.session_state.get("top-k-chatbot", 40),
-        min_value=1,
-        max_value=40,
-        step=1,
-        label_visibility="hidden",
-        key="top-k-chatbot-number-input",
-        on_change=synchronize_session_state,
-        args=("top-k-chatbot", "top-k-chatbot-number-input"),
-        help="✨ 输入 Top K。",
-    )
-    sidebar_cols[0].slider(
-        "Top P",
-        min_value=0.00,
-        max_value=1.0,
-        value=st.session_state.get("top-p-chatbot", 1.0),
-        key="top-p-chatbot-slider",
-        on_change=synchronize_session_state,
-        args=("top-p-chatbot", "top-p-chatbot-slider"),
-        help="""✨ Top-p 可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
-- 例如，如果词元 A、B 和 C 的概率分别是 0.3、0.2 和 0.1，并且 Top-p 的值为 0.5，则模型将选择 A 或 B 作为下一个词元（通过温度确定）。
-- Top-p 的默认值为 0.8。""",
-    )
-    sidebar_cols[1].number_input(
-        "输入 Top P",
-        min_value=0.00,
-        max_value=1.0,
-        value=st.session_state.get("top-p-chatbot", 1.0),
-        label_visibility="hidden",
-        key="top-p-chatbot-number-input",
-        on_change=synchronize_session_state,
-        args=("top-p-chatbot", "top-p-chatbot-number-input"),
-    )
+
+    #     sidebar_cols[0].slider(
+    #         "Top P",
+    #         min_value=0.00,
+    #         max_value=1.0,
+    #         value=st.session_state.get("top-p-chatbot", 1.0),
+    #         key="top-p-chatbot-slider",
+    #         on_change=synchronize_session_state,
+    #         args=("top-p-chatbot", "top-p-chatbot-slider"),
+    #         help="""✨ Top-p 可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
+    # - 例如，如果词元 A、B 和 C 的概率分别是 0.3、0.2 和 0.1，并且 Top-p 的值为 0.5，则模型将选择 A 或 B 作为下一个词元（通过温度确定）。
+    # - Top-p 的默认值为 0.8。""",
+    #     )
+    #     sidebar_cols[1].number_input(
+    #         "输入 Top P",
+    #         min_value=0.00,
+    #         max_value=1.0,
+    #         value=st.session_state.get("top-p-chatbot", 1.0),
+    #         label_visibility="hidden",
+    #         key="top-p-chatbot-number-input",
+    #         on_change=synchronize_session_state,
+    #         args=("top-p-chatbot", "top-p-chatbot-number-input"),
+    #     )
+
     st.sidebar.text_input(
         "添加停止序列",
         key="stop_sequences-chatbot",
