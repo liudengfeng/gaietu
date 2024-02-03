@@ -273,19 +273,25 @@ st.divider()
 
 
 step_cols = st.columns(3)
-if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
+with step_cols[0]:
     img1 = Image.open(LOGO_DIR / "step-1.jpg")
     st.image(img1, use_column_width=True)
+
+with step_cols[1]:
+    img2 = Image.open(LOGO_DIR / "step-2.jpg")
+    st.image(img2, use_column_width=True)
+
+with step_cols[2]:
+    img3 = Image.open(LOGO_DIR / "step-3.jpg")
+    st.image(img3, use_column_width=True)
+
+if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
     st.switch_page("pages/00_📇_注册.py")
 
 if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
-    img2 = Image.open(LOGO_DIR / "step-2.jpg")
-    st.image(img2, use_column_width=True)
     st.switch_page("pages/01_💰_订阅.py")
 
 if step_cols[2].button(":key: 登录使用", key="登录使用"):
-    img3 = Image.open(LOGO_DIR / "step-3.jpg")
-    st.image(img3, use_column_width=True)
     st.switch_page("Home.py")
 
 
