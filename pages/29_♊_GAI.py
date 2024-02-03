@@ -305,7 +305,7 @@ if menu == "聊天机器人":
         args=("temperature-chatbot-slider",),
         help="✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
     )
-    sidebar_cols[0].number_input(
+    sidebar_cols[1].number_input(
         "输入温度",
         value=st.session_state.get("temperature-chatbot", 0.9),
         min_value=0.00,
