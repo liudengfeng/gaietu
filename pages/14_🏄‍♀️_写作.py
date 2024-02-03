@@ -103,9 +103,10 @@ Please note that this list does not encompass spelling errors.
 Example:
 - Assume the original text is: 'I have many moeney in the past,I have not to work now.'
 - The output dictionary should be:
-    - corrected: "I ~~have~~ [[had]] many money in the past, so I ~~have not to~~ [[don't have to]] work now."
+    - corrected: "I ~~have~~ [[had]] many moeney in the past, so I ~~have not to~~ [[don't have to]] work now."
     - explanations: ["The past tense of 'have' is 'had'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
 
+    
 Article:{article}
 """
 
