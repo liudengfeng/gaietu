@@ -777,10 +777,11 @@ elif menu == "统计分析":
             result = st.session_state.dbi.get_usage_records(
                 phone_number, start_date, end_date
             )
-            df = pd.DataFrame(
-                result
+            df = pd.DataFrame(result)
+            df_grouped = (
+                df.groupby(["phone_number", "item_name"])["cost"].sum().reset_index()
             )
-            df
+            df_grouped
 
 # endregion
 
