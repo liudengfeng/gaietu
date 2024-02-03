@@ -144,7 +144,7 @@ w_cols[0].markdown("<h5 style='color: blue;'>您的作文</h5>", unsafe_allow_ht
 article = w_cols[0].text_area(
     "您的作文",
     max_chars=10000,
-    value=st.session_state["writing-text"],
+    value=st.session_state.get("writing-text", ""),
     height=HEIGHT,
     placeholder="在此输入您的作文",
     help="在此输入您的作文",
