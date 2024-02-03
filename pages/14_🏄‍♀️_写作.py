@@ -102,9 +102,7 @@ Article:
 """
 
 
-GRAMMAR_CHECK_CONFIG = (
-    {"max_output_tokens": 1024, "temperature": 0.1, "top_p": 0.95, "top_k": 40},
-)
+GRAMMAR_CHECK_CONFIG = ({"max_output_tokens": 2048, "temperature": 0.1},)
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在检查语法...")
