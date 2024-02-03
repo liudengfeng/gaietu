@@ -233,7 +233,7 @@ if not is_logged_in:
                     st.stop()
                 else:
                     sidebar_status.error(info["message"])
-                    st.stop()
+                    st.switch_page("pages/00_👤_注册.py")
 else:
     sidebar_status.success(
         f"您已登录，{st.session_state.dbi.cache['user_info']['display_name']} 您好！"
