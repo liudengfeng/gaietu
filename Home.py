@@ -268,7 +268,7 @@ with col1:
 
 logo_image = Image.open(LOGO_DIR / "logo.jpg")
 with col2:
-    st.image(logo_image, use_column_width=True)
+    st.image(logo_image, width=60)
 st.divider()
 
 
