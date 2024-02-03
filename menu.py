@@ -4,8 +4,24 @@ import streamlit as st
 def authenticated_menu():
     # Show a navigation menu for authenticated users
     st.sidebar.page_link("Home.py", label="主页", icon="🏠")
+    st.sidebar.page_link(
+        "pages/01_💰_订阅.py",
+        label="订阅续费",
+        help="请选择适合您的套餐选项。",
+        icon="💰",
+    )
     st.sidebar.page_link("pages/02_👥_用户.py", label="用户中心", icon="👥")
     st.sidebar.page_link("pages/12_📚_单词.py", label="单词练习", icon="📚")
+    st.sidebar.page_link("pages/13_💪_练习.py", label="听说练习", icon="💪")
+    st.sidebar.page_link("pages/14_🏄‍♀️_写作.py", label="写作练习", icon="🏄‍♀️")
+    st.sidebar.page_link("pages/15_🔖_评估.py", label="能力评估", icon="🔖")
+    st.sidebar.page_link("pages/29_♊_GAI.py", label="智能AI", icon="♊")
+    st.sidebar.page_link(
+        "pages/30_🛠️_帮助.py",
+        label="帮助文档",
+        help="请选择适合您的套餐选项。",
+        icon="🛠️",
+    )
     if st.session_state.role in ["管理员"]:
         st.sidebar.page_link("pages/40_⚙️_系统.py", label="系统管理", icon="⚙️")
         # st.sidebar.page_link(
@@ -26,7 +42,7 @@ def unauthenticated_menu():
     )
     st.sidebar.page_link(
         "pages/01_💰_订阅.py",
-        label="订阅套餐",
+        label="订阅续费",
         help="请选择适合您的套餐选项。",
         icon="💰",
     )
