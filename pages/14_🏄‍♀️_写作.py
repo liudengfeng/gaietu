@@ -238,7 +238,7 @@ if w_btn_cols[4].button(
     text = "<p>这是一段文本。</p>"
 
     # 使用 st.code 显示文本
-    st.code(text, language="markdown")
+    st.code(text, language="txt")
 
 
 # endregion
