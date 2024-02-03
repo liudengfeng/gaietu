@@ -235,10 +235,10 @@ if w_btn_cols[4].button(
     "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
 ):
     # 你的文本
-    text = "这是一段文本。"
+    text = "<p>这是一段文本。</p>"
 
     # 使用 st.code 显示文本
-    st.code(text, language="")
+    st.code(text, language="html")
 
 
 # endregion
