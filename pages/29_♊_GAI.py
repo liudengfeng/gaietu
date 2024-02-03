@@ -264,10 +264,10 @@ def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
-        temperature=st.session_state["temperature"],
-        top_p=st.session_state["top_p"],
-        top_k=st.session_state["top_k"],
-        max_output_tokens=st.session_state["max_output_tokens"],
+        temperature=st.session_state["temperature-vision"],
+        top_p=st.session_state["top-p-vision"],
+        top_k=st.session_state["top-k-vision"],
+        max_output_tokens=st.session_state["max-output-tokens-vision"],
     )
     display_generated_content_and_update_token(
         "多模态AI",
@@ -577,48 +577,93 @@ elif menu == "多模态AI":
     """
     )
     st.sidebar.divider()
-    st.sidebar.slider(
-        "词元限制",
-        key="max_output_tokens",
-        min_value=16,
-        max_value=2048,
-        value=2048,
-        step=16,
-        help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为`4`个字符。默认值为`2048`""",
+    sidebar_cols = st.sidebar.columns([3, 1])
+    create_synchronized_components(
+        sidebar_cols,
+        "max-output-tokens-vision",
+        16,
+        2048,
+        16,
+        2048,
+        "✨ 词元限制决定了一条提示的最大文本输出量。词元约为 4 个字符。默认值为 2048。",
     )
-    # 生成参数
-    st.sidebar.slider(
-        "温度",
-        min_value=0.00,
-        max_value=1.0,
-        key="temperature",
-        value=0.0,
-        step=0.1,
-        help="✨ `temperature`（温度）可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为`0`，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为`0.2`。",
+    
+    # st.sidebar.slider(
+    #     "词元限制",
+    #     key="max-output-tokens-vision",
+    #     min_value=16,
+    #     max_value=2048,
+    #     value=2048,
+    #     step=16,
+    #     help="""✨ 词元限制决定了一条提示的最大文本输出量。词元约为`4`个字符。默认值为`2048`""",
+    # )
+    
+    create_synchronized_components(
+        sidebar_cols,
+        "temperature-vision",
+        0.00,
+        1.0,
+        0.1,
+        0.9,
+        "✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
     )
-    st.sidebar.slider(
-        "Top K",
-        key="top_k",
-        min_value=1,
-        max_value=40,
-        value=32,
-        step=1,
-        help="""✨ `Top-k`可更改模型选择输出词元的方式。
+    # st.sidebar.slider(
+    #     "温度",
+    #     min_value=0.00,
+    #     max_value=1.0,
+    #     key="temperature-vision",
+    #     value=0.0,
+    #     step=0.1,
+    #     help="✨ `temperature`（温度）可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为`0`，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为`0.2`。",
+    # )
+    create_synchronized_components(
+        sidebar_cols,
+        "top-k-vision",
+        1,
+        40,
+        1,
+        32,
+        """✨ `Top-k`可更改模型选择输出词元的方式。
 - 如果`Top-k`设为`1`，表示所选词元是模型词汇表的所有词元中概率最高的词元（也称为贪心解码）。
 - 如果`Top-k`设为`3`，则表示系统将从`3`个概率最高的词元（通过温度确定）中选择下一个词元。
-- 多模态`Top-k`的默认值为`32`。""",
+- 多模态`Top-k`的默认值为`32`。"""
     )
-    st.sidebar.slider(
-        "Top P",
-        key="top_p",
-        min_value=0.00,
-        max_value=1.0,
-        value=1.0,
-        step=0.05,
-        help="""✨ `Top-p`可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
+#     st.sidebar.slider(
+#         "Top K",
+#         key="top-k-vision",
+#         min_value=1,
+#         max_value=40,
+#         value=32,
+#         step=1,
+#         help="""✨ `Top-k`可更改模型选择输出词元的方式。
+# - 如果`Top-k`设为`1`，表示所选词元是模型词汇表的所有词元中概率最高的词元（也称为贪心解码）。
+# - 如果`Top-k`设为`3`，则表示系统将从`3`个概率最高的词元（通过温度确定）中选择下一个词元。
+# - 多模态`Top-k`的默认值为`32`。""",
+#     )
+    create_synchronized_components(
+        sidebar_cols,
+        "top-p-vision",
+        0.00,
+        1.0,
+        0.05,
+        1.0,
+        """✨ `Top-p`可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
 - 例如，如果词元`A`、`B` 和`C`的概率分别是`0.3`、`0.2`和`0.1`，并且`Top-p`的值为`0.5`，则模型将选择`A`或`B`作为下一个词元（通过温度确定）。
-- 多模态`Top-p`的默认值为`1.0`。""",
+- 多模态`Top-p`的默认值为`1.0`。"""
     )
+    
+#     st.sidebar.slider(
+#         "Top P",
+#         key="top-p-vision",
+#         min_value=0.00,
+#         max_value=1.0,
+#         value=1.0,
+#         step=0.05,
+#         help="""✨ `Top-p`可更改模型选择输出词元的方式。系统会按照概率从最高到最低的顺序选择词元，直到所选词元的概率总和等于 Top-p 的值。
+# - 例如，如果词元`A`、`B` 和`C`的概率分别是`0.3`、`0.2`和`0.1`，并且`Top-p`的值为`0.5`，则模型将选择`A`或`B`作为下一个词元（通过温度确定）。
+# - 多模态`Top-p`的默认值为`1.0`。""",
+#     )
+    
     st.sidebar.text_input(
         "添加停止序列",
         key="stop_sequences",
@@ -808,10 +853,10 @@ elif menu == "多模态AI":
             col1, col2 = response_container.columns([1, 1])
             view_example(contents, col1)
             config = {
-                "temperature": st.session_state["temperature"],
-                "top_p": st.session_state["top_p"],
-                "top_k": st.session_state["top_k"],
-                "max_output_tokens": st.session_state["max_output_tokens"],
+                "temperature": st.session_state["temperature-vision"],
+                "top_p": st.session_state["top-p-vision"],
+                "top_k": st.session_state["top-k-vision"],
+                "max_output_tokens": st.session_state["max-output-tokens-vision"],
             }
             with st.spinner(f"正在运行多模态模型..."):
                 generate_content_from_files_and_prompt(
