@@ -879,16 +879,17 @@ class DbInterface:
         collection_ref = self.db.collection("usages")
         if phone_number != "ALL":
             collection_ref = collection_ref.where("phone_number", "==", phone_number)
-        if start_date is not None:
-            start_datetime = combine_date_and_time_to_utc(
-                start_date, timezone_str, True
-            )
-            start_timestamp = start_datetime.timestamp()
-            collection_ref = collection_ref.where("timestamp", ">=", start_timestamp)
-        if end_date is not None:
-            end_datetime = combine_date_and_time_to_utc(end_date, timezone_str, False)
-            end_timestamp = end_datetime.timestamp()
-            collection_ref = collection_ref.where("timestamp", "<=", end_timestamp)
+        # if start_date is not None:
+        #     start_datetime = combine_date_and_time_to_utc(
+        #         start_date, timezone_str, True
+        #     )
+        #     start_timestamp = start_datetime.timestamp()
+        #     collection_ref = collection_ref.where("timestamp", ">=", start_timestamp)
+        # if end_date is not None:
+        #     end_datetime = combine_date_and_time_to_utc(end_date, timezone_str, False)
+        #     end_timestamp = end_datetime.timestamp()
+        #     collection_ref = collection_ref.where("timestamp", "<=", end_timestamp)
+        
         docs = collection_ref.get()
         usage_records = [
             {
