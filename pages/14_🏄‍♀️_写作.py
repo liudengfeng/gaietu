@@ -222,16 +222,8 @@ if w_btn_cols[4].button(
     # 你的文本
     text = "这是一段文本。"
 
-    # 创建一个唯一的 ID
-    id = "my_text"
-
-    # 创建一个复制按钮
-    copy_button = f"""
-    <button onclick='navigator.clipboard.writeText(document.getElementById("{id}").innerText)'>复制</button>
-    """
-
-    # 显示文本和复制按钮
-    st.markdown(f'<p id="{id}">{text}</p>{copy_button}', unsafe_allow_html=True)
+    # 使用 st.code 显示文本
+    st.code(text, language="")
 
 
 # endregion
