@@ -814,6 +814,7 @@ def on_project_changed(new_project: str = ""):
     # 开始新的项目
     start_project(new_project)
 
+    # TODO:注释
     for project, data in st.session_state["project-timer"].items():
         if "duration" in data:
             duration_seconds = data["duration"].total_seconds()
@@ -847,7 +848,7 @@ def add_exercises_to_db():
         st.session_state.dbi.add_documents_to_user_history("exercises", docs)
 
         # TODO:注释
-        logger.info(f"保存项目数据到数据库：{len(docs)}")
+        logger.info(f"保存数据：{docs}")
 
         # 更新最后提交时间
         st.session_state["last_commit_time"] = time.time()
