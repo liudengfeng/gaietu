@@ -158,13 +158,16 @@ def display_word_images(word, container):
     for i, col in enumerate(cols):
         # 下载图片
         response = requests.get(urls[i])
-        img = Image.open(BytesIO(response.content))
+        try:
+            img = Image.open(BytesIO(response.content))
 
-        # 调整图片尺寸
-        new_size = (400, 400)
-        img = img.resize(new_size)
-        # 显示图片
-        col.image(img, use_column_width=True, caption=caption[i])
+            # 调整图片尺寸
+            new_size = (400, 400)
+            img = img.resize(new_size)
+            # 显示图片
+            col.image(img, use_column_width=True, caption=caption[i])
+        except Exception:
+            continue
 
 
 # endregion
