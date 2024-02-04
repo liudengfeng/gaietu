@@ -78,6 +78,8 @@ if need_update:
 
 s_cols = st.sidebar.columns(3)
 is_logged_in = st.session_state.dbi.is_logged_in()
+if is_logged_in:
+    logger.info(st.session_state.dbi.cache["user_info"])
 
 login_btn = s_cols[0].button(
     label="离线[💔]" if not is_logged_in else "在线[🌐]",
