@@ -838,13 +838,13 @@ def add_exercises_to_db():
                 project_data["duration"] = (
                     project_data["end_time"] - project_data["start_time"]
                 )
-                docs.append(
-                    {
-                        "item": project_name,
-                        "duration": project_data["duration"].total_seconds(),
-                        "timestamp": datetime.now(pytz.UTC),
-                    }
-                )
+            docs.append(
+                {
+                    "item": project_name,
+                    "duration": project_data["duration"].total_seconds(),
+                    "timestamp": datetime.now(pytz.UTC),
+                }
+            )
 
         # 保存数据到 Firestore
         st.session_state.dbi.add_documents_to_user_history("exercises", docs)
