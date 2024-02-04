@@ -808,8 +808,18 @@ def end_and_save_exercises():
 
 
 def start_project(project_name):
+    # 如果项目已经开始，那么我们就不再开始新的计时
+    if (
+        project_name in st.session_state["project-timer"]
+        and st.session_state["project-timer"][project_name]["started"]
+    ):
+        return
+
     # 记录项目开始的时间
-    st.session_state["project-timer"][project_name] = {"start_time": datetime.now()}
+    st.session_state["project-timer"][project_name] = {
+        "start_time": datetime.now(),
+        "started": True,
+    }
 
 
 def end_project(project_name):
@@ -826,6 +836,9 @@ def end_project(project_name):
         st.session_state["project-timer"][project_name]["duration"] += duration
     else:
         st.session_state["project-timer"][project_name]["duration"] = duration
+
+    # 设置项目为已结束
+    st.session_state["project-timer"][project_name]["started"] = False
 
 
 def on_project_changed(new_project: str = ""):
