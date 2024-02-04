@@ -313,4 +313,4 @@ if is_logged_in:
         st.session_state.dbi.logout()
         sidebar_status.success("已退出登录")
         time.sleep(1)
-        st.rerun()
+        st.switch_page("Home.py")
