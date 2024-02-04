@@ -21,6 +21,7 @@ from mypylib.constants import (
     SCENARIO_MAPS,
     TOPICS,
 )
+
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
@@ -43,12 +44,10 @@ from mypylib.st_helper import (
     load_mini_dict,
     pronunciation_assessment_for,
     update_and_display_progress,
-    # end_and_save_learning_records,
     get_synthesis_speech,
     is_answer_correct,
     is_aside,
     on_project_changed,
-    # process_learning_record,
     setup_logger,
     translate_text,
     update_sidebar_status,
@@ -352,11 +351,6 @@ def process_play_and_record_article(
     t = result["audio_duration"].total_seconds() + 0.5
     time.sleep(t)
 
-    # 记录学习时长
-    word_count = len(paragraph.split())
-    # record = create_learning_record("阅读理解", difficulty, genre, word_count)
-    # process_learning_record(record, "reading-learning-times")
-
 
 def display_dialogue(dialogue_placeholder):
     dialogue = st.session_state.conversation_scene
@@ -401,13 +395,6 @@ def play_and_record_dialogue(
 
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
-
-    # 记录学习时长
-    # word_count = len(sentence.split())
-    # record = create_learning_record(
-    #     "听说练习", difficulty, selected_scenario, word_count
-    # )
-    # process_learning_record(record, "listening-learning-times")
 
 
 def on_prev_btn_click(key):
@@ -1009,7 +996,6 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
-            # end_and_save_learning_records()
             st.rerun()
 
         if display_status_button:
@@ -1158,7 +1144,6 @@ if menu is not None and menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_test_btn:
-            # end_and_save_learning_records()
             st.session_state["listening-test"] = generate_listening_test_for(
                 difficulty, st.session_state.conversation_scene
             )
@@ -1477,7 +1462,6 @@ if menu is not None and menu.endswith("阅读练习"):
         if refresh_btn:
             st.session_state["reading-exercise-idx"] = -1
             st.session_state["reading-learning-times"] = 0
-            # end_and_save_learning_records()
             st.rerun()
 
         if display_status_button:
@@ -1601,7 +1585,6 @@ if menu is not None and menu.endswith("阅读练习"):
         container = st.container()
 
         if refresh_test_btn:
-            # end_and_save_learning_records()
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, english_exercise_type, st.session_state["reading-article"]
             )

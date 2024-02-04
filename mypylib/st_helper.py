@@ -47,8 +47,7 @@ from .word_utils import (
     load_image_bytes_from_url,
 )
 
-# TODO:临时调整为2分钟
-DB_TIME_INTERVAL = 2 * 60  # 10 分钟
+DB_TIME_INTERVAL = 10 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
 
 # 发音评估(韵律、语法、词汇、主题)
@@ -734,33 +733,6 @@ def left_paragraph_aligned_text(text1, words):
 
 # endregion
 
-# region 学习记录
-
-
-# def process_learning_record(record, key):
-#     if len(st.session_state["learning-record"]) > 0:
-#         st.session_state["learning-record"][-1].end()
-
-#     st.session_state["learning-record"].append(record)
-#     record.start()
-#     st.session_state[key] += 1
-
-
-# def end_and_save_learning_records():
-#     """
-#     结束并保存学习记录。
-
-#     关闭未关闭的学习记录，并将其添加到缓存中。
-#     """
-#     for r in st.session_state.get("learning-record", []):
-#         # logger.info(f"关闭：{r.project} {r.content}")
-#         r.end()
-#         st.session_state.dbi.add_record_to_cache(r)
-#     st.session_state["learning-record"] = []
-
-
-# endregion
-
 
 # region 个人记录
 
@@ -815,12 +787,11 @@ def on_project_changed(new_project: str = ""):
     # 开始新的项目
     start_project(new_project)
 
-    # TODO:注释
-    for project, data in st.session_state["project-timer"].items():
-        if "duration" in data:
-            duration_seconds = data["duration"].total_seconds()
-            logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
-    logger.info("=====================================")
+    # for project, data in st.session_state["project-timer"].items():
+    #     if "duration" in data:
+    #         duration_seconds = data["duration"].total_seconds()
+    #         logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
+    # logger.info("=====================================")
 
 
 def add_exercises_to_db():
@@ -849,8 +820,7 @@ def add_exercises_to_db():
         # 保存数据到 Firestore
         st.session_state.dbi.add_documents_to_user_history("exercises", docs)
 
-        # TODO:注释
-        logger.info(f"保存数据：{docs}")
+        # logger.info(f"保存数据：{docs}")
 
         # 更新最后提交时间
         st.session_state["last_commit_time"] = time.time()

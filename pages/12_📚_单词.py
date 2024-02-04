@@ -28,7 +28,6 @@ from mypylib.st_helper import (  # end_and_save_learning_records,
     get_synthesis_speech,
     is_answer_correct,
     on_project_changed,
-    # process_learning_record,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
@@ -1124,19 +1123,14 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     if refresh_btn:
-        # end_and_save_learning_records()
         reset_puzzle_word()
         st.rerun()
 
     if prev_btn:
         prepare_puzzle()
-        # record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        # process_learning_record(record, "word-learning-times")
 
     if next_btn:
         prepare_puzzle()
-        # record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        # process_learning_record(record, "word-learning-times")
 
     if add_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
@@ -1366,8 +1360,6 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
-        # record = create_learning_record("word-test-idx", "word-tests", "词意测试")
-        # process_learning_record(record, "word-learning-times")
 
     if next_test_btn:
         idx = st.session_state["word-test-idx"]
@@ -1379,13 +1371,8 @@ elif menu and menu.endswith("词意测试"):
                 )
                 # st.write(st.session_state["word-tests"][idx])
 
-        # 统计整个测试题的单词
-        # record = create_learning_record("word-test-idx", "word-tests", "词意测试")
-        # process_learning_record(record, "word-learning-times")
 
     if refresh_btn:
-        # end_and_save_learning_records()
-
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         st.session_state["word-tests"] = [None] * test_num  # type: ignore
