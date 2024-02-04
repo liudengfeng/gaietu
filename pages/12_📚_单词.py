@@ -275,14 +275,14 @@ def view_pos(container, word_info, word):
         _view_pos(container, key, en[key], zh[key], word)
 
 
-def get_flashcard_project(action):
+def get_flashcard_project():
     idx = st.session_state["flashcard-idx"]
     words = st.session_state["flashcard-words"]
     project = "闪卡记忆"
     if idx == -1 or len(words) == 0:
-        return f"单词练习-{project}-{action}"
+        return f"单词练习-{project}"
     else:
-        return f"单词练习-{project}-{action}-{words[idx]}"
+        return f"单词练习-{project}-{words[idx]}"
 
 
 def play_flashcard_word(voice_style, sleep=False):
@@ -344,7 +344,7 @@ def auto_play_flash_word(voice_style):
         start = time.time()
         st.session_state["flashcard-idx"] = idx
 
-        on_project_changed(get_flashcard_project("练习"))
+        on_project_changed(get_flashcard_project())
 
         play_flashcard_word(voice_style, True)
         view_flash_word(elem, False, placeholder)
@@ -978,7 +978,7 @@ if menu and menu.endswith("闪卡记忆"):
         # end_and_save_learning_records()
         reset_flashcard_word(False)
 
-        on_project_changed(get_flashcard_project("刷新"))
+        on_project_changed(get_flashcard_project())
 
         st.rerun()
 
@@ -995,7 +995,7 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        on_project_changed(get_flashcard_project("练习"))
+        on_project_changed(get_flashcard_project())
 
         view_flash_word(container)
         if autoplay:
@@ -1006,7 +1006,7 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        on_project_changed(get_flashcard_project("练习"))
+        on_project_changed(get_flashcard_project())
 
         view_flash_word(container)
 
@@ -1014,7 +1014,7 @@ if menu and menu.endswith("闪卡记忆"):
             play_flashcard_word(voice_style)
 
     if play_btn:
-        on_project_changed(get_flashcard_project("练习"))
+        on_project_changed(get_flashcard_project())
         play_flashcard_word(voice_style)
 
     if add_btn:
