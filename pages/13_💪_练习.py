@@ -43,7 +43,7 @@ from mypylib.st_helper import (
     load_mini_dict,
     pronunciation_assessment_for,
     update_and_display_progress,
-    end_and_save_learning_records,
+    # end_and_save_learning_records,
     get_synthesis_speech,
     is_answer_correct,
     is_aside,
@@ -1009,7 +1009,7 @@ if menu is not None and menu.endswith("听说练习"):
             st.session_state["listening-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
-            end_and_save_learning_records()
+            # end_and_save_learning_records()
             st.rerun()
 
         if display_status_button:
@@ -1158,7 +1158,7 @@ if menu is not None and menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_test_btn:
-            end_and_save_learning_records()
+            # end_and_save_learning_records()
             st.session_state["listening-test"] = generate_listening_test_for(
                 difficulty, st.session_state.conversation_scene
             )
@@ -1477,7 +1477,7 @@ if menu is not None and menu.endswith("阅读练习"):
         if refresh_btn:
             st.session_state["reading-exercise-idx"] = -1
             st.session_state["reading-learning-times"] = 0
-            end_and_save_learning_records()
+            # end_and_save_learning_records()
             st.rerun()
 
         if display_status_button:
@@ -1601,7 +1601,7 @@ if menu is not None and menu.endswith("阅读练习"):
         container = st.container()
 
         if refresh_test_btn:
-            end_and_save_learning_records()
+            # end_and_save_learning_records()
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, english_exercise_type, st.session_state["reading-article"]
             )
