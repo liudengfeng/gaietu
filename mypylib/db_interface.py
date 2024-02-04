@@ -1000,6 +1000,8 @@ class DbInterface:
     # region 通用函数
 
     def add_documents_to_user_history(self, collection_name, documents):
+        if len(documents) == 0:
+            return
         # 开始批处理
         batch = self.db.batch()
         phone_number = self.cache["user_info"]["phone_number"]
