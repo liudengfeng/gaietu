@@ -46,6 +46,7 @@ from .word_utils import (
     get_word_image_urls,
     load_image_bytes_from_url,
 )
+
 # TODO:临时调整为2分钟
 DB_TIME_INTERVAL = 2 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
@@ -841,6 +842,7 @@ def add_exercises_to_db():
                     {
                         "item": project_name,
                         "duration": project_data["duration"].total_seconds(),
+                        "timestamp": datetime.now(pytz.UTC),
                     }
                 )
 

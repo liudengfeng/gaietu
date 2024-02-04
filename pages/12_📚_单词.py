@@ -275,6 +275,16 @@ def view_pos(container, word_info, word):
         _view_pos(container, key, en[key], zh[key], word)
 
 
+def get_flashcard_project(action):
+    idx = st.session_state["flashcard-idx"]
+    words = st.session_state["flashcard-words"]
+    project = "闪卡记忆"
+    if idx == -1 or len(words) == 0:
+        return f"{project}-{action}"
+    else:
+        return f"{project}-{action}-{words[idx]}"
+
+
 def play_flashcard_word(voice_style, sleep=False):
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
     result = get_synthesis_speech(word, voice_style[0])
@@ -995,9 +1005,11 @@ if menu and menu.endswith("闪卡记忆"):
     if refresh_btn:
         # end_and_save_learning_records()
         reset_flashcard_word(False)
+        
+        on_project_changed(get_flashcard_project("刷新"))
+        
         st.rerun()
 
-    # 创建按钮
     if display_status_button:
         if st.session_state.flashcard_display_state == "全部":
             st.session_state.flashcard_display_state = "英文"
@@ -1010,10 +1022,9 @@ if menu and menu.endswith("闪卡记忆"):
         if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-
-        # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        # process_learning_record(record, "word-learning-times")
-
+        
+        on_project_changed(get_flashcard_project("练习"))
+        
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)
@@ -1022,14 +1033,16 @@ if menu and menu.endswith("闪卡记忆"):
         if len(st.session_state["flashcard-words"]) == 0:
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
-
-        # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        # process_learning_record(record, "word-learning-times")
+        
+        on_project_changed(get_flashcard_project("练习"))
+        
         view_flash_word(container)
+
         if autoplay:
             play_flashcard_word(voice_style)
 
     if play_btn:
+        on_project_changed(get_flashcard_project("练习"))
         play_flashcard_word(voice_style)
 
     if add_btn:
@@ -1043,6 +1056,7 @@ if menu and menu.endswith("闪卡记忆"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if auto_play_btn:
+        on_project_changed(get_flashcard_project("练习"))
         with container:
             auto_play_flash_word(voice_style)
 
