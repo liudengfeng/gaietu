@@ -21,7 +21,7 @@ from mypylib.constants import (
     SCENARIO_MAPS,
     TOPICS,
 )
-from mypylib.db_model import LearningTime
+# from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_dialogue,
     generate_listening_test,

@@ -13,7 +13,7 @@ from mypylib.azure_pronunciation_assessment import (
     read_audio_file,
 )
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP, ORAL_FP
-from mypylib.db_model import LearningTime
+# from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_oral_ability_topics,
     generate_oral_statement_template,
