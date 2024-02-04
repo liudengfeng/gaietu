@@ -142,19 +142,19 @@ def on_next_btn_click(key):
     st.session_state[key] += 1
 
 
-def create_learning_record(
-    project,
-    difficulty,
-    selected_scenario,
-    words,
-):
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project=project,
-        content=f"{difficulty}-{selected_scenario}",
-        word_count=words,
-    )
-    return record
+# def create_learning_record(
+#     project,
+#     difficulty,
+#     selected_scenario,
+#     words,
+# ):
+#     record = LearningTime(
+#         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+#         project=project,
+#         content=f"{difficulty}-{selected_scenario}",
+#         word_count=words,
+#     )
+#     return record
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成发音评估文本，请稍候...")
@@ -206,12 +206,12 @@ def play_synthesized_audio(text, voice_style, difficulty, selected_scenario):
     components.html(audio_html)
 
     # 记录学习时长
-    word_count = len(re.findall(r"\b\w+\b", text))
-    record = create_learning_record(
-        "发音评估", difficulty, selected_scenario, word_count
-    )
-    record.duration = result["audio_duration"].total_seconds()
-    st.session_state.dbi.add_record_to_cache(record)
+    # word_count = len(re.findall(r"\b\w+\b", text))
+    # record = create_learning_record(
+    #     "发音评估", difficulty, selected_scenario, word_count
+    # )
+    # record.duration = result["audio_duration"].total_seconds()
+    # st.session_state.dbi.add_record_to_cache(record)
 
 
 def display_assessment_text(pa_text_container):

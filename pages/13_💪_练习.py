@@ -48,7 +48,7 @@ from mypylib.st_helper import (
     is_answer_correct,
     is_aside,
     on_project_changed,
-    process_learning_record,
+    # process_learning_record,
     setup_logger,
     translate_text,
     update_sidebar_status,
@@ -187,19 +187,19 @@ def display_dialogue_summary(container, dialogue, summarize):
 # endregion
 
 
-def create_learning_record(
-    project,
-    difficulty,
-    selected_scenario,
-    words,
-):
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project=project,
-        content=f"{difficulty}-{selected_scenario}",
-        word_count=words,
-    )
-    return record
+# def create_learning_record(
+#     project,
+#     difficulty,
+#     selected_scenario,
+#     words,
+# ):
+#     record = LearningTime(
+#         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+#         project=project,
+#         content=f"{difficulty}-{selected_scenario}",
+#         word_count=words,
+#     )
+#     return record
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
@@ -354,8 +354,8 @@ def process_play_and_record_article(
 
     # 记录学习时长
     word_count = len(paragraph.split())
-    record = create_learning_record("阅读理解", difficulty, genre, word_count)
-    process_learning_record(record, "reading-learning-times")
+    # record = create_learning_record("阅读理解", difficulty, genre, word_count)
+    # process_learning_record(record, "reading-learning-times")
 
 
 def display_dialogue(dialogue_placeholder):
@@ -403,11 +403,11 @@ def play_and_record_dialogue(
     components.html(audio_html)
 
     # 记录学习时长
-    word_count = len(sentence.split())
-    record = create_learning_record(
-        "听说练习", difficulty, selected_scenario, word_count
-    )
-    process_learning_record(record, "listening-learning-times")
+    # word_count = len(sentence.split())
+    # record = create_learning_record(
+    #     "听说练习", difficulty, selected_scenario, word_count
+    # )
+    # process_learning_record(record, "listening-learning-times")
 
 
 def on_prev_btn_click(key):
@@ -439,14 +439,14 @@ def play_listening_test(difficulty, selected_scenario):
         time.sleep(t)
 
     # 添加一个学习时间记录
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project="听力测验",
-        content=f"{difficulty}-{selected_scenario}",
-        word_count=len(question.split()),
-        duration=t,
-    )
-    st.session_state.dbi.add_record_to_cache(record)
+    # record = LearningTime(
+    #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+    #     project="听力测验",
+    #     content=f"{difficulty}-{selected_scenario}",
+    #     word_count=len(question.split()),
+    #     duration=t,
+    # )
+    # st.session_state.dbi.add_record_to_cache(record)
 
 
 def view_listening_test(container):
@@ -503,14 +503,14 @@ def view_reading_test(container, difficulty, exercise_type, genre):
     )
 
     # 添加一个学习时间记录
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project="阅读理解测验",
-        content=f"{difficulty}-{genre}-{exercise_type}",
-        word_count=len(question.split()),
-        duration=t,
-    )
-    st.session_state.dbi.add_record_to_cache(record)
+    # record = LearningTime(
+    #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+    #     project="阅读理解测验",
+    #     content=f"{difficulty}-{genre}-{exercise_type}",
+    #     word_count=len(question.split()),
+    #     duration=t,
+    # )
+    # st.session_state.dbi.add_record_to_cache(record)
 
 
 def check_listening_test_answer(container, level, selected_scenario):
@@ -1059,14 +1059,14 @@ if menu is not None and menu.endswith("听说练习"):
             )
             dialogue_text = " ".join(st.session_state.conversation_scene)
             word_count = len(dialogue_text.split())
-            record = LearningTime(
-                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-                project="听说练习",
-                content=f"{difficulty}-{selected_scenario}",
-                duration=total,
-                word_count=word_count,
-            )
-            st.session_state.dbi.add_record_to_cache(record)
+            # record = LearningTime(
+            #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+            #     project="听说练习",
+            #     content=f"{difficulty}-{selected_scenario}",
+            #     duration=total,
+            #     word_count=word_count,
+            # )
+            # st.session_state.dbi.add_record_to_cache(record)
             # 防止重复播放
             st.rerun()
 
@@ -1513,14 +1513,14 @@ if menu is not None and menu.endswith("阅读练习"):
             )
             text = " ".join(st.session_state["reading-article"])
             word_count = len(text.split())
-            record = LearningTime(
-                phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-                project="阅读理解",
-                content=f"{difficulty}-{genre}",
-                duration=total,
-                word_count=word_count,
-            )
-            st.session_state.dbi.add_record_to_cache(record)
+            # record = LearningTime(
+            #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+            #     project="阅读理解",
+            #     content=f"{difficulty}-{genre}",
+            #     duration=total,
+            #     word_count=word_count,
+            # )
+            # st.session_state.dbi.add_record_to_cache(record)
             st.rerun()
 
     # endregion

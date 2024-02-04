@@ -7,36 +7,33 @@ from datetime import datetime, timedelta, timezone
 from functools import wraps
 from io import BytesIO
 from pathlib import Path
+
 import pandas as pd
 import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
-from menu import help_page, return_home
 
+from menu import help_page, return_home
 from mypylib.constants import CEFR_LEVEL_MAPS
-from mypylib.db_model import LearningTime
+# from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
-from mypylib.st_helper import (
+from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
     check_access,
     configure_google_apis,
     count_non_none,
-    end_and_save_learning_records,
     get_mini_dict_doc,
     get_synthesis_speech,
     is_answer_correct,
     on_project_changed,
-    process_learning_record,
+    # process_learning_record,
     select_word_image_urls,
     setup_logger,
     update_and_display_progress,
     update_sidebar_status,
 )
-from mypylib.word_utils import (
-    audio_autoplay_elem,
-    remove_trailing_punctuation,
-)
+from mypylib.word_utils import audio_autoplay_elem, remove_trailing_punctuation
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -276,7 +273,7 @@ def view_pos(container, word_info, word):
 
 def play_flashcard_word(voice_style, sleep=False):
     word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
-    record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+    # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
     result = get_synthesis_speech(word, voice_style[0])
     t = result["audio_duration"].total_seconds()
     html = audio_autoplay_elem(result["audio_data"], fmt="mav")
@@ -284,8 +281,9 @@ def play_flashcard_word(voice_style, sleep=False):
     # 如果休眠，第二次重复时会播放二次
     if sleep:
         time.sleep(t)
-    record.duration = t
-    st.session_state.dbi.add_record_to_cache(record)
+    
+    # record.duration = t
+    # st.session_state.dbi.add_record_to_cache(record)
 
 
 def view_flash_word(container, view_detail=True, placeholder=None):
@@ -334,44 +332,45 @@ def auto_play_flash_word(voice_style):
     placeholder = st.empty()
     for idx in range(n):
         start = time.time()
-        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+        # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         st.session_state["flashcard-idx"] = idx
 
         play_flashcard_word(voice_style, True)
         view_flash_word(elem, False, placeholder)
 
         time.sleep(max(2 - time.time() + start, 0))
-        record.duration = time.time() - start
-        st.session_state.dbi.add_record_to_cache(record)
+        
+        # record.duration = time.time() - start
+        # st.session_state.dbi.add_record_to_cache(record)
 
     # 恢复闪卡记忆的索引
     st.session_state["flashcard-idx"] = current_idx
 
 
-def create_learning_record(idx_key, words_key, project):
-    idx = st.session_state[idx_key]
-    word = st.session_state[words_key][idx]
-    content = word
-    # 统计单词词意测试的单词数量
-    if words_key == "word-tests":
-        word_count = 0
-        for value in word.values():
-            if isinstance(value, str):
-                word_count += len(value.split())
-            # 也可能为列表
-            elif isinstance(value, list):
-                word_count += sum(len(v.split()) for v in value)
-        # 记录测试单词
-        content = st.session_state["test-words"][idx]
-    else:
-        word_count = len(word.split())
-    record = LearningTime(
-        phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-        project=project,
-        content=content,
-        word_count=word_count,
-    )
-    return record
+# def create_learning_record(idx_key, words_key, project):
+#     idx = st.session_state[idx_key]
+#     word = st.session_state[words_key][idx]
+#     content = word
+#     # 统计单词词意测试的单词数量
+#     if words_key == "word-tests":
+#         word_count = 0
+#         for value in word.values():
+#             if isinstance(value, str):
+#                 word_count += len(value.split())
+#             # 也可能为列表
+#             elif isinstance(value, list):
+#                 word_count += sum(len(v.split()) for v in value)
+#         # 记录测试单词
+#         content = st.session_state["test-words"][idx]
+#     else:
+#         word_count = len(word.split())
+#     record = LearningTime(
+#         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
+#         project=project,
+#         content=content,
+#         word_count=word_count,
+#     )
+#     return record
 
 
 # endregion
@@ -994,7 +993,7 @@ if menu and menu.endswith("闪卡记忆"):
     container = st.container()
 
     if refresh_btn:
-        end_and_save_learning_records()
+        # end_and_save_learning_records()
         reset_flashcard_word(False)
         st.rerun()
 
@@ -1012,8 +1011,8 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+        # process_learning_record(record, "word-learning-times")
 
         view_flash_word(container)
         if autoplay:
@@ -1024,8 +1023,8 @@ if menu and menu.endswith("闪卡记忆"):
             st.warning("请先点击`🔄`按钮生成记忆闪卡。")
             st.stop()
 
-        record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
+        # process_learning_record(record, "word-learning-times")
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)
@@ -1140,19 +1139,19 @@ elif menu and menu.endswith("拼图游戏"):
     )
 
     if refresh_btn:
-        end_and_save_learning_records()
+        # end_and_save_learning_records()
         reset_puzzle_word()
         st.rerun()
 
     if prev_btn:
         prepare_puzzle()
-        record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
+        # process_learning_record(record, "word-learning-times")
 
     if next_btn:
         prepare_puzzle()
-        record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("puzzle-idx", "puzzle-words", "单词拼图")
+        # process_learning_record(record, "word-learning-times")
 
     if add_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
@@ -1382,8 +1381,8 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
-        record = create_learning_record("word-test-idx", "word-tests", "词意测试")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("word-test-idx", "word-tests", "词意测试")
+        # process_learning_record(record, "word-learning-times")
 
     if next_test_btn:
         idx = st.session_state["word-test-idx"]
@@ -1396,11 +1395,12 @@ elif menu and menu.endswith("词意测试"):
                 # st.write(st.session_state["word-tests"][idx])
 
         # 统计整个测试题的单词
-        record = create_learning_record("word-test-idx", "word-tests", "词意测试")
-        process_learning_record(record, "word-learning-times")
+        # record = create_learning_record("word-test-idx", "word-tests", "词意测试")
+        # process_learning_record(record, "word-learning-times")
 
     if refresh_btn:
-        end_and_save_learning_records()
+        # end_and_save_learning_records()
+
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         st.session_state["word-tests"] = [None] * test_num  # type: ignore

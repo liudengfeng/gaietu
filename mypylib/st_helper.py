@@ -736,26 +736,26 @@ def left_paragraph_aligned_text(text1, words):
 # region 学习记录
 
 
-def process_learning_record(record, key):
-    if len(st.session_state["learning-record"]) > 0:
-        st.session_state["learning-record"][-1].end()
+# def process_learning_record(record, key):
+#     if len(st.session_state["learning-record"]) > 0:
+#         st.session_state["learning-record"][-1].end()
 
-    st.session_state["learning-record"].append(record)
-    record.start()
-    st.session_state[key] += 1
+#     st.session_state["learning-record"].append(record)
+#     record.start()
+#     st.session_state[key] += 1
 
 
-def end_and_save_learning_records():
-    """
-    结束并保存学习记录。
+# def end_and_save_learning_records():
+#     """
+#     结束并保存学习记录。
 
-    关闭未关闭的学习记录，并将其添加到缓存中。
-    """
-    for r in st.session_state.get("learning-record", []):
-        # logger.info(f"关闭：{r.project} {r.content}")
-        r.end()
-        st.session_state.dbi.add_record_to_cache(r)
-    st.session_state["learning-record"] = []
+#     关闭未关闭的学习记录，并将其添加到缓存中。
+#     """
+#     for r in st.session_state.get("learning-record", []):
+#         # logger.info(f"关闭：{r.project} {r.content}")
+#         r.end()
+#         st.session_state.dbi.add_record_to_cache(r)
+#     st.session_state["learning-record"] = []
 
 
 # endregion
