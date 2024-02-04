@@ -16,6 +16,7 @@ from PIL import Image
 
 from menu import help_page, return_home
 from mypylib.constants import CEFR_LEVEL_MAPS
+
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (  # end_and_save_learning_records,
@@ -284,7 +285,7 @@ def play_flashcard_word(voice_style, sleep=False):
     # 如果休眠，第二次重复时会播放二次
     if sleep:
         time.sleep(t)
-    
+
     # record.duration = t
     # st.session_state.dbi.add_record_to_cache(record)
 
@@ -341,8 +342,8 @@ def auto_play_flash_word(voice_style):
         play_flashcard_word(voice_style, True)
         view_flash_word(elem, False, placeholder)
 
-        time.sleep(max(2 - time.time() + start, 0))
-        
+        time.sleep(max(3 - time.time() + start, 0))
+
         # record.duration = time.time() - start
         # st.session_state.dbi.add_record_to_cache(record)
 
@@ -1046,8 +1047,8 @@ if menu and menu.endswith("闪卡记忆"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if auto_play_btn:
-        container.empty()
-        auto_play_flash_word(voice_style)
+        with container:
+            auto_play_flash_word(voice_style)
 
 
 # endregion
