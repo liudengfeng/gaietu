@@ -18,6 +18,7 @@ from mypylib.html_constants import TIPPY_JS
 from mypylib.html_fmt import display_grammar_errors
 from mypylib.st_helper import (
     check_access,
+    on_project_changed,
     configure_google_apis,
     setup_logger,
     update_sidebar_status,
@@ -40,7 +41,7 @@ return_home()
 help_page()
 check_access(False)
 configure_google_apis()
-
+on_project_changed("写作练习")
 sidebar_status = st.sidebar.empty()
 
 # endregion
