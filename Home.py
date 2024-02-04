@@ -77,9 +77,7 @@ if need_update:
 # endregion
 
 s_cols = st.sidebar.columns(3)
-is_logged_in = st.session_state.dbi.cache.get("user_info", {}).get(
-    "is_logged_in", False
-)
+is_logged_in = st.session_state.dbi.is_logged_in()
 
 login_btn = s_cols[0].button(
     label="离线[💔]" if not is_logged_in else "在线[🌐]",
@@ -228,6 +226,10 @@ if not is_logged_in:
                     ]
                     time.sleep(2)
                     st.rerun()
+                elif info["status"] == "pending":
+                    sidebar_status.warning(info["message"])
+                    time.sleep(2)
+                    st.switch_page("pages/01_💰_订阅.py")
                 elif info["status"] == "warning":
                     sidebar_status.warning(info["message"])
                     st.stop()

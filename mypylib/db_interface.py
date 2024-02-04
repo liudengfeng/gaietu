@@ -7,11 +7,12 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import List, Union
 
+import pytz
+
 # from cachetools import TTLCache
 from faker import Faker
 from google.cloud import firestore
-from google.cloud.firestore import FieldFilter
-import pytz
+from google.cloud.firestore import ArrayUnion, FieldFilter
 
 from mypylib.utils import combine_date_and_time_to_utc
 
@@ -46,6 +47,7 @@ class DbInterface:
     def __init__(self, firestore_client):
         self.faker = Faker("zh_CN")
         self.db = firestore_client
+        self.last_check_time = time.time()
         self.cache = {
             "user_info": {},
             "personal_vocabulary": {
@@ -116,22 +118,98 @@ class DbInterface:
 
     # region 登录管理
 
+    # def create_login_event(self, phone_number):
+    #     # 创建一个登录事件
+    #     session_id = str(uuid.uuid4())
+    #     login_events_ref = self.db.collection("login_events")
+    #     login_event_doc_ref = login_events_ref.document(session_id)
+    #     login_event_doc_ref.set(
+    #         {
+    #             "phone_number": phone_number,
+    #             "login_time": datetime.now(timezone.utc),
+    #             "logout_time": None,
+    #         }
+    #     )
+    #     return session_id
+
     def create_login_event(self, phone_number):
         # 创建一个登录事件
         session_id = str(uuid.uuid4())
-        login_events_ref = self.db.collection("login_events")
-        login_event_doc_ref = login_events_ref.document(session_id)
-        login_event_doc_ref.set(
-            {
-                "phone_number": phone_number,
-                "login_time": datetime.now(timezone.utc),
-                "logout_time": None,
-            }
-        )
+        login_event = {
+            "login_time": datetime.now(timezone.utc),
+            "logout_time": None,
+        }
+
+        # 获取用户的文档引用
+        user_doc_ref = self.db.collection("authentication").document(phone_number)
+
+        # 尝试获取用户文档
+        user_doc = user_doc_ref.get()
+
+        if user_doc.exists:
+            # 如果用户文档存在，将新的登录事件添加到 history 子集合
+            history_collection_ref = user_doc_ref.collection("history")
+            # 将旧的未登出的会话标记为已登出
+            for doc in history_collection_ref.stream():
+                if doc.get("logout_time") is None:
+                    doc.reference.update({"logout_time": datetime.now(timezone.utc)})
+            # 添加新的登录事件
+            history_collection_ref.document(session_id).set(login_event)
+        else:
+            # 如果用户文档不存在，创建一个新的文档，并在 history 子集合中添加新的登录事件
+            user_doc_ref.set({})
+            user_doc_ref.collection("history").document(session_id).set(login_event)
+
         return session_id
 
+    def is_session_valid(self, session_id):
+        # 获取所有的登录事件
+        history_collection_ref = (
+            self.db.collection("authentication")
+            .document(self.cache["user_info"]["phone_number"])
+            .collection("history")
+        )
+        # 查找对应的登录事件
+        session_doc = history_collection_ref.document(session_id).get()
+        # 如果找到了对应的登录事件，并且该事件未登出，那么会话有效
+        if session_doc.exists and session_doc.get("logout_time") is None:
+            return True
+        else:
+            return False
+
     def is_logged_in(self):
-        return self.cache.get("user_info", {}).get("is_logged_in", False)
+        current_time = time.time()
+        user_info = self.cache.get("user_info", {})
+        session_id = user_info.get("session_id")
+        is_logged_in = user_info.get("is_logged_in", False)
+
+        # 如果 session_id 不存在或者 is_logged_in 已经被设置为 False，直接返回 False
+        if session_id is None or not is_logged_in:
+            return False
+
+        # 如果已经过了最大的检查间隔，检查会话是否仍然有效
+        if current_time - self.last_check_time >= MAX_TIME_INTERVAL:
+            if not self.is_session_valid(session_id):
+                user_info["is_logged_in"] = False
+            self.last_check_time = current_time
+
+        return user_info["is_logged_in"]
+
+    def is_payment_expired(self, phone_number):
+        payments = (
+            self.db.collection("payments")
+            .where(filter=FieldFilter("phone_number", "==", phone_number))
+            .stream()
+        )
+        now = datetime.now(timezone.utc)
+        is_expired = True
+        for payment in payments:
+            payment_dict = payment.to_dict()
+            expiry_time = payment_dict["expiry_time"].replace(tzinfo=timezone.utc)
+            if payment_dict["is_approved"] and expiry_time > now:
+                is_expired = False
+                break
+        return is_expired
 
     def login(self, phone_number, password):
         # 在缓存中查询是否已经正常登录
@@ -149,21 +227,7 @@ class DbInterface:
             # 验证密码
             if user.check_password(password):
                 # 验证服务活动状态
-                payments = (
-                    self.db.collection("payments")
-                    .where(filter=FieldFilter("phone_number", "==", phone_number))
-                    .stream()
-                )
-                now = datetime.now(timezone.utc)
-                is_expired = True
-                for payment in payments:
-                    payment_dict = payment.to_dict()
-                    expiry_time = payment_dict["expiry_time"].replace(
-                        tzinfo=timezone.utc
-                    )
-                    if payment_dict["is_approved"] and expiry_time > now:
-                        is_expired = False
-                        break
+                is_expired = self.is_payment_expired(phone_number)
                 if not is_expired or (user.user_role in ("管理员", "超级成员")):
                     session_id = self.create_login_event(phone_number)
                     # 如果密码正确，将用户的登录状态存储到缓存中
@@ -173,9 +237,8 @@ class DbInterface:
                         "message": f"嗨！{user.display_name}，又见面了。",
                     }
                 else:
-                    # TODO：单列 过期状态 以及 付费状态 st.switch_page("付费.py")
                     return {
-                        "status": "warning",
+                        "status": "pending",
                         "message": "您尚未付费订阅或者服务账号已过期，请付费订阅。",
                     }
             else:
@@ -191,20 +254,25 @@ class DbInterface:
 
     def logout(self):
         phone_number = self.cache["user_info"]["phone_number"]
+        session_id = self.cache["user_info"]["session_id"]
+
+        # 获取用户的文档引用
+        user_doc_ref = self.db.collection("authentication").document(phone_number)
+
+        # 尝试获取用户文档
+        user_doc = user_doc_ref.get()
+
+        if user_doc.exists:
+            # 如果用户文档存在，将对应的登录事件标记为已登出
+            history_collection_ref = user_doc_ref.collection("history")
+            session_doc = history_collection_ref.document(session_id).get()
+            if session_doc.exists:
+                session_doc.reference.update(
+                    {"logout_time": datetime.now(timezone.utc)}
+                )
+
         # 从缓存中删除用户的登录状态
         self.cache["user_info"] = {}
-
-        login_events_ref = self.db.collection("login_events")
-        login_events = (
-            login_events_ref.where(
-                filter=FieldFilter("phone_number", "==", phone_number)
-            )
-            .where(filter=FieldFilter("logout_time", "==", None))
-            .stream()
-        )
-
-        for login_event in login_events:
-            login_event.reference.update({"logout_time": datetime.now(tz=timezone.utc)})
 
         return "Logout successful"
 
