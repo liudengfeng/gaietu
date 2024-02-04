@@ -312,5 +312,6 @@ if is_logged_in:
     if logout_btn:
         st.session_state.dbi.logout()
         sidebar_status.success("已退出登录")
-        time.sleep(1)
+        st.session_state.role = None
+        time.sleep(2)
         st.switch_page("Home.py")
