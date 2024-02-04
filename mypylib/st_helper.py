@@ -46,8 +46,8 @@ from .word_utils import (
     get_word_image_urls,
     load_image_bytes_from_url,
 )
-
-DB_TIME_INTERVAL = 10 * 60  # 10 分钟
+# TODO:临时调整为2分钟
+DB_TIME_INTERVAL = 2 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
 
 # 发音评估(韵律、语法、词汇、主题)
