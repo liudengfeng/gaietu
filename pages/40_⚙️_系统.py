@@ -868,6 +868,7 @@ elif menu == "统计分析":
 
                 # 计算服务项目的数量
                 num_services = df.groupby("service_name").size().count()
+                st.write(num_services)
                 # 创建等于服务项目数量+1的列
                 columns = st.columns(num_services + 1)
 
@@ -875,7 +876,9 @@ elif menu == "统计分析":
                 columns[0].metric("总成本", f"{total_cost:.2f} 元")
 
                 # 在剩余的列中显示各个服务项目的总成本
-                for i, (service_name, cost) in enumerate(item_total_costs.items(), start=1):
+                for i, (service_name, cost) in enumerate(
+                    item_total_costs.items(), start=1
+                ):
                     columns[i].metric(service_name, f"{cost:.2f} 元")
 
                 # 创建一个空的 Figure 对象
