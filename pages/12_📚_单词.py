@@ -280,9 +280,9 @@ def get_flashcard_project(action):
     words = st.session_state["flashcard-words"]
     project = "闪卡记忆"
     if idx == -1 or len(words) == 0:
-        return f"{project}-{action}"
+        return f"单词练习-{project}-{action}"
     else:
-        return f"{project}-{action}-{words[idx]}"
+        return f"单词练习-{project}-{action}-{words[idx]}"
 
 
 def play_flashcard_word(voice_style, sleep=False):
