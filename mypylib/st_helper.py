@@ -814,11 +814,11 @@ def on_project_changed(new_project: str = ""):
     # 开始新的项目
     start_project(new_project)
 
-    # for project, data in st.session_state["project-timer"].items():
-    #     if "duration" in data:
-    #         duration_seconds = data["duration"].total_seconds()
-    #         logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
-    # logger.info("=====================================")
+    for project, data in st.session_state["project-timer"].items():
+        if "duration" in data:
+            duration_seconds = data["duration"].total_seconds()
+            logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
+    logger.info("=====================================")
 
 
 def add_exercises_to_db():
