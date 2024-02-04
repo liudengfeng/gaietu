@@ -46,7 +46,7 @@ from mypylib.st_helper import (
     get_synthesis_speech,
     is_answer_correct,
     is_aside,
-    on_page_to,
+    on_project_changed,
     process_learning_record,
     setup_logger,
     translate_text,
@@ -88,7 +88,7 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 def on_menu_changed():
     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
-    on_page_to(item)
+    on_project_changed(item)
 
 
 menu = st.sidebar.radio(

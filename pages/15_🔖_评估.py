@@ -30,7 +30,7 @@ from mypylib.st_helper import (
     configure_google_apis,
     display_assessment_score,
     get_synthesis_speech,
-    on_page_to,
+    on_project_changed,
     oral_ability_assessment_for,
     process_dialogue_text,
     pronunciation_assessment_for,
@@ -50,7 +50,7 @@ st.set_page_config(
 return_home()
 help_page()
 check_access(False)
-on_page_to("能力评估")
+on_project_changed("能力评估")
 configure_google_apis()
 
 menu_items = ["发音评估", "口语能力", "写作评估"]

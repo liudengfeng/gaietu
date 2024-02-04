@@ -875,6 +875,13 @@ class DbInterface:
 
     # endregion
 
+    # region 练习记录
+    
+    def add_to_dbcache(self, record):
+        pass    
+    
+    # endregion
+    
     # region 使用及费用记录
 
     def list_usages_phone_number(self):

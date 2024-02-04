@@ -25,7 +25,7 @@ from mypylib.st_helper import (
     get_mini_dict_doc,
     get_synthesis_speech,
     is_answer_correct,
-    on_page_to,
+    on_project_changed,
     process_learning_record,
     select_word_image_urls,
     setup_logger,
@@ -70,7 +70,7 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 def on_menu_change():
     item = st.session_state["word_dict_menu"].split(" ", 1)[1]
-    on_page_to(item)
+    on_project_changed(f"单词-{item}")
 
 
 menu: str = st.sidebar.selectbox(
@@ -1012,6 +1012,7 @@ if menu and menu.endswith("闪卡记忆"):
 
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         process_learning_record(record, "word-learning-times")
+        
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)

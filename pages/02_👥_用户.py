@@ -23,7 +23,7 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
     check_access,
-    on_page_to,
+    on_project_changed,
     setup_logger,
 )
 from mypylib.statistics import get_records
@@ -46,7 +46,7 @@ st.set_page_config(
 return_home()
 help_page()
 check_access(False)
-on_page_to("用户中心")
+on_project_changed("用户中心")
 
 # region 侧边栏
 

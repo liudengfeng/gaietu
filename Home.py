@@ -18,7 +18,7 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
 from mypylib.st_helper import (  # save_and_clear_all_learning_records,
     get_firestore_client,
-    on_page_to,
+    on_project_changed,
     setup_logger,
 )
 
@@ -40,8 +40,7 @@ st.set_page_config(
 )
 
 menu()
-on_page_to("Home")
-# save_and_clear_all_learning_records()
+on_project_changed("Home")
 
 
 if "dbi" not in st.session_state:
@@ -92,7 +91,7 @@ logout_btn = s_cols[1].button(
 
 if not is_logged_in:
     st.sidebar.info(
-        "请注意，如果您在多个地方同时登录，系统将只保留最新的登录会话，其他早先的登录会话将被自动注销。",
+        "请注意，如果您使用同一账号在多个地方同时登录，系统将只保留最新的登录会话，其他早先的登录会话将被自动注销。",
         icon="🚨",
     )
 

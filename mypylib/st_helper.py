@@ -757,69 +757,96 @@ def end_and_save_learning_records():
     st.session_state["learning-record"] = []
 
 
-def on_page_to(this_page: str = ""):
-    """
-    检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
-    """
-    # 在会话状态中设置上一页
-    if "previous-page" not in st.session_state:
-        st.session_state["previous-page"] = None
+# def on_project_changed(this_page: str = ""):
+#     """
+#     检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
+#     """
+#     # 在会话状态中设置上一页
+#     if "previous-page" not in st.session_state:
+#         st.session_state["previous-page"] = None
 
-    if "current-page" not in st.session_state:
-        st.session_state["current-page"] = None
+#     if "current-page" not in st.session_state:
+#         st.session_state["current-page"] = None
 
-    if "learning-record" not in st.session_state:
-        st.session_state["learning-record"] = []
+#     if "learning-record" not in st.session_state:
+#         st.session_state["learning-record"] = []
 
-    # 如果当前页和上一页不同，保存上一页的学习时长
-    if st.session_state["current-page"] != this_page:
-        if st.session_state["previous-page"] is not None:
-            # 当转移页面时，关闭未关闭的学习记录
-            end_and_save_learning_records()
+#     # 如果当前页和上一页不同，保存上一页的学习时长
+#     if st.session_state["current-page"] != this_page:
+#         if st.session_state["previous-page"] is not None:
+#             # 当转移页面时，关闭未关闭的学习记录
+#             end_and_save_learning_records()
 
-        # 更新上一页为当前页
-        st.session_state["previous-page"] = st.session_state["current-page"]
+#         # 更新上一页为当前页
+#         st.session_state["previous-page"] = st.session_state["current-page"]
 
-    st.session_state["current-page"] = this_page
+#     st.session_state["current-page"] = this_page
 
-    # logger.info(
-    #     f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
-    # )
+#     # logger.info(
+#     #     f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
+#     # )
 
 
 # endregion
 
+
 # region 个人记录
 
 
-def on_item_changed(item: str = ""):
+def end_and_save_exercises():
     """
-    检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
+    结束并保存学习记录。
+
+    关闭未关闭的学习记录，并将其添加到缓存中。
     """
-    # 在会话状态中设置上一页
-    if "previous-item" not in st.session_state:
-        st.session_state["previous-item"] = None
+    key = "exercises"
+    for r in st.session_state.get(key, []):
+        # logger.info(f"关闭：{r.project} {r.content}")
+        r.end()
+        st.session_state.dbi.add_to_dbcache(r)
+    st.session_state[key] = []
 
-    if "current-item" not in st.session_state:
-        st.session_state["current-item"] = None
 
-    if "exercises" not in st.session_state:
-        st.session_state["exercises"] = []
+def start_project(project_name):
+    # 记录项目开始的时间
+    st.session_state["project-timer"][project_name] = {"start_time": datetime.now()}
 
-    # 如果当前页和上一页不同，保存上一页的学习时长
-    if st.session_state["current-item"] != item:
-        if st.session_state["previous-item"] is not None:
-            # 当转移页面时，关闭未关闭的学习记录
-            end_and_save_learning_records()
 
-        # 更新上一页为当前页
-        st.session_state["previous-item"] = st.session_state["current-item"]
+def end_project(project_name):
+    # 记录项目结束的时间
+    end_time = datetime.now()
+    st.session_state["project-timer"][project_name]["end_time"] = end_time
 
-    st.session_state["current-item"] = item
+    # 计算项目的持续时间
+    start_time = st.session_state["project-timer"][project_name]["start_time"]
+    duration = end_time - start_time
 
-    # logger.info(
-    #     f"上一：{st.session_state['previous-item']} 当前：{st.session_state['current-item']}"
-    # )
+    # 如果项目已经有持续时间，那么将新的持续时间添加到旧的持续时间上
+    if "duration" in st.session_state["project-timer"][project_name]:
+        st.session_state["project-timer"][project_name]["duration"] += duration
+    else:
+        st.session_state["project-timer"][project_name]["duration"] = duration
+
+
+def on_project_changed(new_project: str = ""):
+    """
+    检查项目是否发生变化，如果发生变化，结束当前项目并开始新的项目。
+    """
+    if "project-timer" not in st.session_state:
+        st.session_state["project-timer"] = {}
+
+    timer = st.session_state["project-timer"]
+    if "current_project" in st.session_state and st.session_state["current_project"] in timer:
+        # 结束当前项目
+        end_project(st.session_state["current_project"])
+
+    # 开始新的项目
+    start_project(new_project)
+
+    # 更新当前项目
+    st.session_state["current_project"] = new_project
+
+    logger.info(f"{timer}")
 
 
 # endregion

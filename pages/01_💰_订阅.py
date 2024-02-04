@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image
 from menu import return_home
 
-from mypylib.st_helper import on_page_to
+from mypylib.st_helper import on_project_changed
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 WXSKM_DIR = CURRENT_CWD / "resource" / "wxskm"
@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 return_home()
-on_page_to("订阅续费")
+on_project_changed("订阅续费")
 
 
 # region 订阅付费

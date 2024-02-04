@@ -25,7 +25,7 @@ from mypylib.st_helper import (
     get_blob_container_client,
     get_blob_service_client,
     get_current_monday,
-    on_page_to,
+    on_project_changed,
     setup_logger,
 )
 
@@ -44,7 +44,7 @@ st.set_page_config(
 )
 return_home()
 help_page()
-on_page_to("系统管理")
+on_project_changed("系统管理")
 
 check_access(True)
 configure_google_apis()

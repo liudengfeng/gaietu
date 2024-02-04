@@ -22,7 +22,7 @@ from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
     check_access,
     configure_google_apis,
-    on_page_to,
+    on_project_changed,
     setup_logger,
     update_sidebar_status,
 )
@@ -43,7 +43,7 @@ st.set_page_config(
 return_home()
 help_page()
 check_access(False)
-on_page_to("AI")
+on_project_changed("AI")
 configure_google_apis()
 
 # endregion
