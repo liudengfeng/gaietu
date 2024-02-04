@@ -1008,11 +1008,7 @@ class DbInterface:
         doc_ref = self.db.collection(collection_name).document(phone_number)
 
         # 将整个文档列表添加到 'history' 字段的数组中
-        batch.set(
-            doc_ref,
-            {"history": firestore.ArrayUnion(documents)},
-            option=firestore.WriteOptions(merge=True),
-        )
+        batch.set(doc_ref, {"history": firestore.ArrayUnion(documents)}, merge=True)
 
         # 提交批处理
         batch.commit()
