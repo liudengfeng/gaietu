@@ -197,6 +197,7 @@ with st.form(key="registration_form"):
         st.toast(
             f"""恭喜{display_name}注册成功！为确保您能尽快体验我们的服务，请于{deadline_str}前完成付款。"""
         )
+        st.switch_page("pages/01_💰_订阅.py")
 
     with st.expander("**服务条款**", expanded=False):
         st.markdown(
