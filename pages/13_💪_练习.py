@@ -36,7 +36,6 @@ from mypylib.st_helper import (
     WORD_COUNT_BADGE_MAPS,
     autoplay_audio_and_display_text,
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     count_non_none,
     display_assessment_score,
@@ -102,7 +101,6 @@ menu = st.sidebar.radio(
 
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
-check_and_force_logout(sidebar_status)
 
 if "text_model" not in st.session_state:
     st.session_state["text_model"] = load_vertex_model("gemini-pro")

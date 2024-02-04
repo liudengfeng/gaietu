@@ -19,7 +19,6 @@ from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     count_non_none,
     end_and_save_learning_records,
@@ -56,8 +55,7 @@ check_access(False)
 # save_and_clear_all_learning_records()
 configure_google_apis()
 sidebar_status = st.sidebar.empty()
-# 在页面加载时检查是否有需要强制退出的登录会话
-check_and_force_logout(sidebar_status)
+
 
 menu_names = ["闪卡记忆", "拼图游戏", "看图猜词", "词意测试", "词库管理"]
 menu_emoji = [

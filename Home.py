@@ -17,7 +17,6 @@ from mypylib.constants import LANGUAGES, VOICES_FP
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
 from mypylib.st_helper import (  # save_and_clear_all_learning_records,
-    check_and_force_logout,
     get_firestore_client,
     on_page_to,
     setup_logger,
@@ -78,12 +77,10 @@ if need_update:
 
 s_cols = st.sidebar.columns(3)
 is_logged_in = st.session_state.dbi.is_logged_in()
-if is_logged_in:
-    logger.info(st.session_state.dbi.cache["user_info"])
+
 
 login_btn = s_cols[0].button(
     label="离线[💔]" if not is_logged_in else "在线[🌐]",
-    type="primary" if not is_logged_in else "secondary",
     disabled=True,
 )
 
@@ -93,11 +90,13 @@ logout_btn = s_cols[1].button(
     disabled=not is_logged_in,
 )
 
+if not is_logged_in:
+    st.sidebar.info(
+        "请注意，如果您在多个地方同时登录，系统将只保留最新的登录会话，其他早先的登录会话将被自动注销。",
+        icon="🚨",
+    )
 
 sidebar_status = st.sidebar.empty()
-
-# 在页面加载时检查是否有需要强制退出的登录会话
-check_and_force_logout(sidebar_status)
 
 
 def extend_service_period():

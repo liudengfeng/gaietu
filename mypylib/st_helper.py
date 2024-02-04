@@ -138,34 +138,6 @@ def get_current_monday():
 # region 用户相关
 
 
-def check_and_force_logout(status):
-    """
-    检查并强制退出用户重复登录。
-
-    Args:
-        st (object): Streamlit 模块。
-        status (object): Streamlit 状态元素，用于显示错误信息。
-
-    Returns:
-        None
-    """
-    if "session_id" in st.session_state.dbi.cache.get("user_info", {}):
-        dbi = st.session_state.dbi
-        # 存在会话id，说明用户已经登录
-        phone_number = dbi.cache["user_info"]["phone_number"]
-        # 获取除最后一个登录事件外的所有未退出的登录事件
-        active_sessions = dbi.get_active_sessions()
-        for session in active_sessions:
-            if session["session_id"] == dbi.cache.get("user_info", {}).get(
-                "session_id", ""
-            ):
-                # 如果 st.session_state 中的会话ID在需要强制退出的列表中，处理强制退出
-                dbi.force_logout_session(phone_number, session["session_id"])
-                st.session_state.clear()
-                status.error("您的账号在其他设备上登录，您已被强制退出。")
-                st.stop()
-
-
 def check_access(is_admin_page):
     if "dbi" not in st.session_state:
         st.session_state["dbi"] = DbInterface(get_firestore_client())

@@ -21,7 +21,6 @@ from mypylib.google_ai import (
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     on_page_to,
     setup_logger,
@@ -295,7 +294,6 @@ def clear_prompt(key):
 menu = st.sidebar.selectbox("菜单", options=["聊天机器人", "多模态AI", "示例教程"])
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
-check_and_force_logout(sidebar_status)
 
 # region 聊天机器人
 
@@ -417,7 +415,6 @@ if menu == "聊天机器人":
 
     # region 认证及强制退出
 
-    check_and_force_logout(sidebar_status)
 
     # endregion
 
@@ -533,7 +530,6 @@ elif menu == "多模态AI":
 
     # region 认证及强制退出
 
-    check_and_force_logout(sidebar_status)
 
     # endregion
 

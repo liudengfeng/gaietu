@@ -23,7 +23,6 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
     check_access,
-    check_and_force_logout,
     on_page_to,
     setup_logger,
 )
@@ -52,8 +51,7 @@ on_page_to("用户中心")
 # region 侧边栏
 
 sidebar_status = st.sidebar.empty()
-# 在页面加载时检查是否有需要强制退出的登录会话
-check_and_force_logout(sidebar_status)
+
 
 # endregion
 

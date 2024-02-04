@@ -118,20 +118,6 @@ class DbInterface:
 
     # region 登录管理
 
-    # def create_login_event(self, phone_number):
-    #     # 创建一个登录事件
-    #     session_id = str(uuid.uuid4())
-    #     login_events_ref = self.db.collection("login_events")
-    #     login_event_doc_ref = login_events_ref.document(session_id)
-    #     login_event_doc_ref.set(
-    #         {
-    #             "phone_number": phone_number,
-    #             "login_time": datetime.now(timezone.utc),
-    #             "logout_time": None,
-    #         }
-    #     )
-    #     return session_id
-
     def create_login_event(self, phone_number):
         # 创建一个登录事件
         session_id = str(uuid.uuid4())
@@ -656,34 +642,6 @@ class DbInterface:
                 "status": "error",
                 "message": f"不存在与手机号码 {phone_number} 相关联的用户",
             }
-
-    def get_active_sessions(self):
-        phone_number = self.cache.get("user_info", {}).get("phone_number", "")
-        if not phone_number:
-            return []
-        login_events_ref = self.db.collection("login_events")
-        login_events_query = (
-            login_events_ref.where(
-                filter=FieldFilter("phone_number", "==", phone_number)
-            )
-            .where(filter=FieldFilter("logout_time", "==", None))
-            .order_by("login_time", direction=firestore.Query.ASCENDING)
-        )
-        login_events_docs = login_events_query.stream()
-        dicts = [{"session_id": doc.id, **doc.to_dict()} for doc in login_events_docs]
-        if len(dicts) > 1:
-            return dicts[:-1]  # 返回除最后一个登录事件外的所有未退出的登录事件
-        return []
-
-    def force_logout_session(self, phone_number: str, session_id: str):
-        login_events_ref = self.db.collection("login_events")
-        login_event_doc_ref = login_events_ref.document(session_id)
-        login_event_doc = login_event_doc_ref.get()
-        if (
-            login_event_doc.exists
-            and login_event_doc.to_dict()["phone_number"] == phone_number
-        ):
-            login_event_doc_ref.update({"logout_time": datetime.now(timezone.utc)})
 
     # endregion
 

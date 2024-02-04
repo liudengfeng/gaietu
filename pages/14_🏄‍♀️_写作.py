@@ -18,7 +18,6 @@ from mypylib.html_constants import TIPPY_JS
 from mypylib.html_fmt import display_grammar_errors
 from mypylib.st_helper import (
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     setup_logger,
     update_sidebar_status,
@@ -43,7 +42,6 @@ check_access(False)
 configure_google_apis()
 
 sidebar_status = st.sidebar.empty()
-check_and_force_logout(sidebar_status)
 
 # endregion
 

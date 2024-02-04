@@ -27,7 +27,6 @@ from mypylib.st_helper import (
     PRONUNCIATION_SCORE_BADGE_MAPS,
     autoplay_audio_and_display_text,
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     display_assessment_score,
     get_synthesis_speech,
@@ -61,7 +60,6 @@ menu = st.sidebar.selectbox("菜单", menu_opts, help="选择你要练习的项�
 
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
-check_and_force_logout(sidebar_status)
 update_sidebar_status(sidebar_status)
 
 if "text_model" not in st.session_state:

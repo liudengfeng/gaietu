@@ -21,7 +21,6 @@ from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     check_access,
-    check_and_force_logout,
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
@@ -303,7 +302,6 @@ def get_usage_records(phone_number, start_date, end_date):
 
 menu = st.sidebar.selectbox("菜单", options=["支付管理", "处理反馈", "统计分析"])
 sidebar_status = st.sidebar.empty()
-check_and_force_logout(sidebar_status)
 
 # endregion
 
