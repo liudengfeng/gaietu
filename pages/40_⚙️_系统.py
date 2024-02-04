@@ -867,10 +867,10 @@ elif menu == "统计分析":
                 total_cost = df["cost"].sum()
 
                 # 计算服务项目的数量
-                num_services = df.groupby("service_name").size().count() + 1
-   
+                num_services = df.groupby("service_name").size().count()
+
                 # 创建等于服务项目数量+1的列
-                columns = st.columns(num_services)
+                columns = st.columns(int(num_services) + 1)
 
                 # 在第一列中显示总成本
                 columns[0].metric("总成本", f"{total_cost:.2f} 元")
