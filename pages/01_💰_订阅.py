@@ -14,7 +14,7 @@ WXSKM_DIR = CURRENT_CWD / "resource" / "wxskm"
 st.set_page_config(
     page_title="订阅续费",
     page_icon=":package:",
-    layout="centered",
+    layout="wide",
 )
 
 return_home()
