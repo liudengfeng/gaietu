@@ -876,12 +876,12 @@ class DbInterface:
     # endregion
 
     # region 练习记录
-    
+
     def add_to_dbcache(self, record):
-        pass    
-    
+        pass
+
     # endregion
-    
+
     # region 使用及费用记录
 
     def list_usages_phone_number(self):
@@ -994,5 +994,27 @@ class DbInterface:
             self.cache["usage_cache"] = []
             self.cache["usage_last_save_time"] = time.time()
         self.start_timer()
+
+    # endregion
+
+    # region 通用函数
+
+    def add_documents_to_user_history(self, collection_name, documents):
+        # 开始批处理
+        batch = self.db.batch()
+        phone_number = self.cache["user_info"]["phone_number"]
+
+        # 创建一个新的文档引用
+        doc_ref = self.db.collection(collection_name).document(phone_number)
+
+        # 将整个文档列表添加到 'history' 字段的数组中
+        batch.set(
+            doc_ref,
+            {"history": firestore.ArrayUnion(documents)},
+            option=firestore.WriteOptions(merge=True),
+        )
+
+        # 提交批处理
+        batch.commit()
 
     # endregion

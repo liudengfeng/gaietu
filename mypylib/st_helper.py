@@ -47,6 +47,7 @@ from .word_utils import (
     load_image_bytes_from_url,
 )
 
+DB_TIME_INTERVAL = 10 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
 
 # 发音评估(韵律、语法、词汇、主题)
@@ -763,20 +764,6 @@ def end_and_save_learning_records():
 # region 个人记录
 
 
-def end_and_save_exercises():
-    """
-    结束并保存学习记录。
-
-    关闭未关闭的学习记录，并将其添加到缓存中。
-    """
-    key = "exercises"
-    for r in st.session_state.get(key, []):
-        # logger.info(f"关闭：{r.project} {r.content}")
-        r.end()
-        st.session_state.dbi.add_to_dbcache(r)
-    st.session_state[key] = []
-
-
 def start_project(project_name):
     # 如果项目已经开始，那么我们就不再开始新的计时
     if (
@@ -827,11 +814,43 @@ def on_project_changed(new_project: str = ""):
     # 开始新的项目
     start_project(new_project)
 
-    for project, data in st.session_state["project-timer"].items():
-        if "duration" in data:
-            duration_seconds = data["duration"].total_seconds()
-            logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
-    logger.info("=====================================")
+    # for project, data in st.session_state["project-timer"].items():
+    #     if "duration" in data:
+    #         duration_seconds = data["duration"].total_seconds()
+    #         logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
+    # logger.info("=====================================")
+
+
+def save_to_db():
+    # 锁定对象，防止更改
+    project_timer = st.session_state["project-timer"].copy()
+    if "last_commit_time" not in st.session_state:
+        st.session_state["last_commit_time"] = time.time()
+
+    if time.time() - st.session_state["last_commit_time"] > DB_TIME_INTERVAL:
+        docs = []
+        for project_name, project_data in project_timer.items():
+            # 如只有开始时间，则以当前时间计算时长
+            if "start_time" in project_data and "end_time" not in project_data:
+                project_data["end_time"] = datetime.now()
+                project_data["duration"] = (
+                    project_data["end_time"] - project_data["start_time"]
+                )
+                docs.append(
+                    {
+                        "item": project_name,
+                        "duration": project_data["duration"].total_seconds(),
+                    }
+                )
+
+        # 保存数据到 Firestore
+        st.session_state.dbi.add_documents_to_user_history("exercises", docs)
+
+        # 更新最后提交时间
+        st.session_state["last_commit_time"] = time.time()
+
+        # 清除会话内容
+        st.session_state["project-timer"] = {}
 
 
 # endregion
