@@ -3,7 +3,7 @@ from pathlib import Path
 import streamlit as st
 from menu import return_home
 
-from mypylib.st_helper import on_project_changed
+from mypylib.st_helper import add_exercises_to_db, on_project_changed
 
 st.set_page_config(
     page_title="帮助中心",
@@ -12,6 +12,7 @@ st.set_page_config(
 )
 return_home()
 on_project_changed("帮助中心")
+add_exercises_to_db()
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 VIDEO_DIR = CURRENT_CWD / "resource/video_tip"

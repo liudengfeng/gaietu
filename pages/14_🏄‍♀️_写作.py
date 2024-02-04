@@ -17,6 +17,7 @@ from mypylib.google_ai import (
 from mypylib.html_constants import TIPPY_JS
 from mypylib.html_fmt import display_grammar_errors
 from mypylib.st_helper import (
+    add_exercises_to_db,
     check_access,
     on_project_changed,
     configure_google_apis,
@@ -42,6 +43,7 @@ help_page()
 check_access(False)
 configure_google_apis()
 on_project_changed("写作练习")
+add_exercises_to_db()
 sidebar_status = st.sidebar.empty()
 
 # endregion

@@ -20,6 +20,7 @@ from mypylib.google_ai import (
 )
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
+    add_exercises_to_db,
     check_access,
     configure_google_apis,
     on_project_changed,
@@ -44,7 +45,7 @@ return_home()
 help_page()
 check_access(False)
 configure_google_apis()
-
+add_exercises_to_db()
 # endregion
 
 # region 会话状态
@@ -414,7 +415,6 @@ if menu == "聊天机器人":
 
     # region 认证及强制退出
 
-
     # endregion
 
     # region 主页面
@@ -491,7 +491,7 @@ elif menu == "多模态AI":
         0.9,
         "✨ 温度可以控制词元选择的随机性。较低的温度适合希望获得真实或正确回复的提示，而较高的温度可能会引发更加多样化或意想不到的结果。如果温度为 0，系统始终会选择概率最高的词元。对于大多数应用场景，不妨先试着将温度设为 0.2。",
     )
-    
+
     create_synchronized_components(
         sidebar_cols,
         "top-k-vision",
@@ -504,7 +504,7 @@ elif menu == "多模态AI":
 - 如果`Top-k`设为`3`，则表示系统将从`3`个概率最高的词元（通过温度确定）中选择下一个词元。
 - 多模态`Top-k`的默认值为`32`。""",
     )
-    
+
     create_synchronized_components(
         sidebar_cols,
         "top-p-vision",
@@ -529,7 +529,6 @@ elif menu == "多模态AI":
     # endregion
 
     # region 认证及强制退出
-
 
     # endregion
 

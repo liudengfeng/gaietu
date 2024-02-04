@@ -18,6 +18,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (
+    add_exercises_to_db,
     check_access,
     configure_google_apis,
     count_non_none,
@@ -870,6 +871,7 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 
 # region 闪卡记忆
 
+add_exercises_to_db()
 
 if menu and menu.endswith("闪卡记忆"):
     on_project_changed("单词练习-闪卡记忆")

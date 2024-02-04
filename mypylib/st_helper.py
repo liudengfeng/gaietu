@@ -821,13 +821,13 @@ def on_project_changed(new_project: str = ""):
     # logger.info("=====================================")
 
 
-def save_to_db():
-    # 锁定对象，防止更改
-    project_timer = st.session_state["project-timer"].copy()
+def add_exercises_to_db():
     if "last_commit_time" not in st.session_state:
         st.session_state["last_commit_time"] = time.time()
 
     if time.time() - st.session_state["last_commit_time"] > DB_TIME_INTERVAL:
+        # 锁定对象，防止更改
+        project_timer = st.session_state["project-timer"].copy()
         docs = []
         for project_name, project_data in project_timer.items():
             # 如只有开始时间，则以当前时间计算时长
@@ -845,6 +845,9 @@ def save_to_db():
 
         # 保存数据到 Firestore
         st.session_state.dbi.add_documents_to_user_history("exercises", docs)
+
+        # TODO:注释
+        logger.info(f"保存项目数据到数据库：{len(docs)}")
 
         # 更新最后提交时间
         st.session_state["last_commit_time"] = time.time()

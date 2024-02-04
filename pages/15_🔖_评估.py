@@ -25,6 +25,7 @@ from mypylib.nivo_charts import gen_radar
 from mypylib.st_helper import (
     ORAL_ABILITY_SCORE_BADGE_MAPS,
     PRONUNCIATION_SCORE_BADGE_MAPS,
+    add_exercises_to_db,
     autoplay_audio_and_display_text,
     check_access,
     configure_google_apis,
@@ -264,6 +265,8 @@ def generate_oral_statement_template_for(topic, difficulty):
 
 
 # endregion
+
+add_exercises_to_db()
 
 # region 发音评估页面
 

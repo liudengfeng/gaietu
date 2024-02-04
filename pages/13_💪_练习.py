@@ -34,6 +34,7 @@ from mypylib.google_ai import (
 from mypylib.st_helper import (
     PRONUNCIATION_SCORE_BADGE_MAPS,
     WORD_COUNT_BADGE_MAPS,
+    add_exercises_to_db,
     autoplay_audio_and_display_text,
     check_access,
     configure_google_apis,
@@ -76,6 +77,7 @@ check_access(False)
 # save_and_clear_all_learning_records()
 configure_google_apis()
 
+add_exercises_to_db()
 
 menu_emoji = [
     "🗣️",

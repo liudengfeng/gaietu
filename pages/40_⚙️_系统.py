@@ -20,6 +20,7 @@ from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
+    add_exercises_to_db,
     check_access,
     configure_google_apis,
     get_blob_container_client,
@@ -44,10 +45,10 @@ st.set_page_config(
 )
 return_home()
 help_page()
-on_project_changed("系统管理")
-
 check_access(True)
 configure_google_apis()
+on_project_changed("系统管理")
+add_exercises_to_db()
 
 tz = pytz.timezone(
     st.session_state.dbi.cache.get("user_info", {}).get("timezone", "Asia/Shanghai")

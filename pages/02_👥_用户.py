@@ -22,6 +22,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
+    add_exercises_to_db,
     check_access,
     on_project_changed,
     setup_logger,
@@ -47,6 +48,7 @@ return_home()
 help_page()
 check_access(False)
 on_project_changed("用户中心")
+add_exercises_to_db()
 
 # region 侧边栏
 
