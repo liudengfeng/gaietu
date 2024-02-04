@@ -70,7 +70,6 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 def on_menu_change():
     item = st.session_state["word_dict_menu"].split(" ", 1)[1]
-    on_project_changed(f"单词-{item}")
 
 
 menu: str = st.sidebar.selectbox(
@@ -873,6 +872,7 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 
 
 if menu and menu.endswith("闪卡记忆"):
+    on_project_changed("单词练习-闪卡记忆")
     # region 侧边栏
     # 让用户选择语音风格
     pronunciation = st.sidebar.radio("发音标准", ("美式", "英式"))
@@ -1012,7 +1012,7 @@ if menu and menu.endswith("闪卡记忆"):
 
         record = create_learning_record("flashcard-idx", "flashcard-words", "闪卡记忆")
         process_learning_record(record, "word-learning-times")
-        
+
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)
@@ -1051,6 +1051,7 @@ if menu and menu.endswith("闪卡记忆"):
 # region 单词拼图
 
 elif menu and menu.endswith("拼图游戏"):
+    on_project_changed("单词练习-单词拼图")
     # region 边栏
     include_cb = st.sidebar.checkbox(
         "是否包含个人词库？",
@@ -1169,6 +1170,7 @@ elif menu and menu.endswith("拼图游戏"):
 # region 图片测词
 
 elif menu and menu.endswith("看图猜词"):
+    on_project_changed("单词练习-看图猜词")
     # region 边栏
     category = st.sidebar.selectbox(
         "请选择图片类别以生成对应的看图猜词题目",
@@ -1258,6 +1260,7 @@ elif menu and menu.endswith("看图猜词"):
 # region 词意测试
 
 elif menu and menu.endswith("词意测试"):
+    on_project_changed("单词练习-词意测试")
     update_sidebar_status(sidebar_status)
     # region 边栏
     level = st.sidebar.selectbox(
@@ -1432,6 +1435,7 @@ elif menu and menu.endswith("词意测试"):
 # region 个人词库
 
 elif menu and menu.endswith("词库管理"):
+    on_project_changed("单词练习-词库管理")
     # 基准词库不包含个人词库
     add_personal_dictionary(False)
     word_lib = st.sidebar.selectbox(

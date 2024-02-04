@@ -43,7 +43,6 @@ st.set_page_config(
 return_home()
 help_page()
 check_access(False)
-on_project_changed("AI")
 configure_google_apis()
 
 # endregion

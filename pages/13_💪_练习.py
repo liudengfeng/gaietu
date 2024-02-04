@@ -88,7 +88,6 @@ menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 def on_menu_changed():
     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
-    on_project_changed(item)
 
 
 menu = st.sidebar.radio(
@@ -695,6 +694,7 @@ def set_state(i):
 # region 听说练习
 
 if menu is not None and menu.endswith("听说练习"):
+    on_project_changed("听说练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
         st.session_state["m_voices"],
@@ -1211,6 +1211,7 @@ if menu is not None and menu.endswith("听说练习"):
 # region 阅读练习
 
 if menu is not None and menu.endswith("阅读练习"):
+    on_project_changed("阅读练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
         st.session_state["m_voices"],

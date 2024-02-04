@@ -757,36 +757,6 @@ def end_and_save_learning_records():
     st.session_state["learning-record"] = []
 
 
-# def on_project_changed(this_page: str = ""):
-#     """
-#     检查页面是否发生变化，如果发生变化，保存并清除所有学习记录。
-#     """
-#     # 在会话状态中设置上一页
-#     if "previous-page" not in st.session_state:
-#         st.session_state["previous-page"] = None
-
-#     if "current-page" not in st.session_state:
-#         st.session_state["current-page"] = None
-
-#     if "learning-record" not in st.session_state:
-#         st.session_state["learning-record"] = []
-
-#     # 如果当前页和上一页不同，保存上一页的学习时长
-#     if st.session_state["current-page"] != this_page:
-#         if st.session_state["previous-page"] is not None:
-#             # 当转移页面时，关闭未关闭的学习记录
-#             end_and_save_learning_records()
-
-#         # 更新上一页为当前页
-#         st.session_state["previous-page"] = st.session_state["current-page"]
-
-#     st.session_state["current-page"] = this_page
-
-#     # logger.info(
-#     #     f"上一页：{st.session_state['previous-page']} 当前页：{st.session_state['current-page']}"
-#     # )
-
-
 # endregion
 
 

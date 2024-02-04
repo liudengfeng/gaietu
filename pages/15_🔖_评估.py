@@ -50,7 +50,7 @@ st.set_page_config(
 return_home()
 help_page()
 check_access(False)
-on_project_changed("能力评估")
+
 configure_google_apis()
 
 menu_items = ["发音评估", "口语能力", "写作评估"]
@@ -268,6 +268,7 @@ def generate_oral_statement_template_for(topic, difficulty):
 # region 发音评估页面
 
 if menu and menu.endswith("发音评估"):
+    on_project_changed("能力评估-发音评估")
     difficulty = st.sidebar.selectbox(
         "CEFR等级",
         list(CEFR_LEVEL_MAPS.keys()),
@@ -486,6 +487,7 @@ if menu and menu.endswith("发音评估"):
 # region 口语评估
 
 if menu and menu.endswith("口语能力"):
+    on_project_changed("能力评估-口语能力")
     difficulty = st.sidebar.selectbox(
         "CEFR等级",
         list(CEFR_LEVEL_MAPS.keys()),
@@ -736,6 +738,6 @@ if menu and menu.endswith("口语能力"):
 # region 写作评估
 
 if menu and menu.endswith("写作评估"):
-    pass
+    on_project_changed("能力评估-写作评估")
 
 # endregion
