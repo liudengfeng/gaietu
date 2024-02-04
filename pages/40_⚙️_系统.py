@@ -11,6 +11,7 @@ import pandas as pd
 
 # import mimetypes
 import plotly.express as px
+import plotly.graph_objects as go
 import pytz
 import streamlit as st
 from google.cloud import firestore
@@ -276,7 +277,6 @@ def get_feedbacks():
 
 # endregion
 
-
 # region 统计分析辅助函数
 
 
@@ -295,7 +295,6 @@ def get_usage_records(phone_number, start_date, end_date):
 
 
 # endregion
-
 
 # endregion
 
@@ -836,6 +835,30 @@ elif menu == "统计分析":
                 )
                 # 使用 Streamlit 显示图形
                 st.plotly_chart(fig, use_container_width=True)
+
+                # 对数据进行分组
+                grouped = df_grouped.groupby('item_name')
+
+                # 创建一个空的 Figure 对象
+                fig = go.Figure()
+
+                # 为每个 item_name 创建一个 Bar 对象
+                for name, group in grouped:
+                    fig.add_trace(go.Bar(
+                        x=group['timestamp'],
+                        y=group['cost'],
+                        name=name
+                    ))
+
+                # 设置图表的布局
+                fig.update_layout(
+                    barmode='stack',  # 设置为堆积柱状图
+                    xaxis_title='Timestamp',
+                    yaxis_title='Cost',
+                    title='Stacked Bar Chart of Cost by Item Name over Time'
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
 
 # endregion
 
