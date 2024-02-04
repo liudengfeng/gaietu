@@ -299,7 +299,7 @@ sidebar_status = st.sidebar.empty()
 
 if menu == "聊天机器人":
     # region 边栏
-
+    on_project_changed("AI-聊天机器人")
     st.sidebar.markdown(
         """:rainbow[运行设置]\n
 :gemini: 模型：Gemini Pro            
@@ -464,6 +464,7 @@ if menu == "聊天机器人":
 # region 多模态AI
 
 elif menu == "多模态AI":
+    on_project_changed("AI-多模态AI")
     # region 边栏
     st.sidebar.markdown(
         """:rainbow[运行设置]\n
@@ -722,6 +723,7 @@ elif menu == "多模态AI":
 # region 多模态AI示例教程
 
 elif menu == "示例教程":
+    on_project_changed("AI-示例教程")
     # region 边栏
     # sidebar_status = st.sidebar.empty()
     update_sidebar_status(sidebar_status)
