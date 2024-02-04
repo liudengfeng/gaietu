@@ -853,6 +853,6 @@ def on_project_changed(new_project: str = ""):
         if "duration" in data:
             duration_seconds = data["duration"].total_seconds()
             logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
-        logger.info("=====================================")
+    logger.info("=====================================")
 
 # endregion
