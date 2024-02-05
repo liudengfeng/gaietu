@@ -219,7 +219,11 @@ with tabs[items.index(":key: 重置密码")]:
 
 # endregion
 
+
 # region 创建统计页面
+def get_first_part(project):
+    return project.split("-")[0]
+
 
 with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
@@ -242,25 +246,25 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "phone_number": "手机号码",
     }
 
-    current_records = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
+    df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
 
     study_report_items = ["学习时间", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
 
     with study_report_tabs[study_report_items.index("学习时间")]:
         st.subheader("学习时间", divider="rainbow")
-        if current_records.empty:
+        if df.empty:
             st.warning("当前期间内没有学习记录。", icon="⚠️")
         else:
-            current_records.rename(columns=column_mapping, inplace=True)
+            df.rename(columns=column_mapping, inplace=True)
+            current_records = df.copy()
             current_records["时长"] = current_records["时长"] / 60
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
                 user_tz
             )
-
-            project_time = (
-                current_records.groupby("项目")["时长"].sum().reset_index()
-            )
+            current_records["项目"] = current_records["项目"].apply(get_first_part)
+            project_time = current_records.groupby("项目")["时长"].sum().reset_index()
+            
             fig = px.pie(
                 project_time,
                 values="时长",
@@ -312,9 +316,8 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             # 显示图表
             st.plotly_chart(fig, use_container_width=True)
 
-
-                # st.subheader("按小时分组统计")
-                # 这里可以添加获取数据和绘制柱状图的代码
+            # st.subheader("按小时分组统计")
+            # 这里可以添加获取数据和绘制柱状图的代码
 
 
 # endregion
