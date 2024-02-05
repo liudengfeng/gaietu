@@ -94,7 +94,10 @@ The grammatical errors in this text refer to mistakes in tense usage, noun forms
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. IMPORTANT: In the event of grammatical inaccuracies within the original text, each discrepancy should be annotated as follows: Utilize `~~` to denote the segment necessitating removal, and `<ins>` `</ins>` to signify the addition. In instances of substitutions, initially earmark the segment for removal, succeeded by the addition. This procedure will generate the "corrected" content, lucidly articulating the amendments predicated on the original text.
+3. It is crucial to base all deletions and additions on the original text.
+    - Use `~~` to mark the segments that need to be removed.
+    - Use `<ins>` `</ins>` to indicate the additions.
+    - The "corrected" content should clearly articulate the modifications made from the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
