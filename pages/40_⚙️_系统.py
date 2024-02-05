@@ -294,6 +294,58 @@ def get_usage_records(phone_number, start_date, end_date):
     return df
 
 
+def display_service_costs(df: pd.DataFrame):
+    """
+    Display the costs of different service items over time in a stacked bar chart.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing the service cost data.
+
+    Returns:
+        None
+    """
+
+    # 对数据进行分组
+    grouped = df.groupby("service_name")
+
+    # 计算每个服务项目的总成本
+    item_total_costs = df.groupby("service_name")["cost"].sum()
+    # 计算所有服务项目的总成本
+    total_cost = df["cost"].sum()
+
+    # 计算服务项目的数量
+    num_services = df.groupby("service_name").size().count()
+
+    # 创建等于服务项目数量+1的列
+    columns = st.columns(int(num_services) + 1)
+
+    # 在第一列中显示总成本
+    columns[0].metric("总成本", f"{total_cost:.2f} 元")
+
+    # 在剩余的列中显示各个服务项目的总成本
+    for i, (service_name, cost) in enumerate(item_total_costs.items(), start=1):
+        columns[i].metric(service_name, f"{cost:.2f} 元")
+
+    # 创建一个空的 Figure 对象
+    fig = go.Figure()
+
+    # 为每个 service_item 创建一个 Bar 对象
+    for name, group in grouped:
+        fig.add_trace(go.Bar(x=group["timestamp"], y=group["cost"], name=name))
+
+    # 设置图表的布局
+    fig.update_layout(
+        barmode="stack",  # 设置为堆积柱状图
+        xaxis_title="日期",
+        xaxis=dict(
+            tickformat="%Y-%m-%d",  # 更改日期的显示格式为 "年-月-日"
+        ),
+        yaxis_title="成本",
+        title="服务项目成本随时间变化的堆积柱状图",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
 # endregion
 
 # endregion
@@ -858,46 +910,7 @@ elif menu == "统计分析":
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
-                # 对数据进行分组
-                grouped = df.groupby("service_name")
-
-                # 计算每个服务项目的总成本
-                item_total_costs = df.groupby("service_name")["cost"].sum()
-                # 计算所有服务项目的总成本
-                total_cost = df["cost"].sum()
-
-                # 计算服务项目的数量
-                num_services = df.groupby("service_name").size().count()
-
-                # 创建等于服务项目数量+1的列
-                columns = st.columns(int(num_services) + 1)
-
-                # 在第一列中显示总成本
-                columns[0].metric("总成本", f"{total_cost:.2f} 元")
-
-                # 在剩余的列中显示各个服务项目的总成本
-                for i, (service_name, cost) in enumerate(
-                    item_total_costs.items(), start=1
-                ):
-                    columns[i].metric(service_name, f"{cost:.2f} 元")
-
-                # 创建一个空的 Figure 对象
-                fig = go.Figure()
-
-                # 为每个 service_item 创建一个 Bar 对象
-                for name, group in grouped:
-                    fig.add_trace(
-                        go.Bar(x=group["timestamp"], y=group["cost"], name=name)
-                    )
-
-                # 设置图表的布局
-                fig.update_layout(
-                    barmode="stack",  # 设置为堆积柱状图
-                    xaxis_title="Timestamp",
-                    yaxis_title="Cost",
-                    title="Stacked Bar Chart of Cost by Service Item over Time",
-                )
-                st.plotly_chart(fig, use_container_width=True)
+                display_service_costs(df)
 
 
 # endregion
