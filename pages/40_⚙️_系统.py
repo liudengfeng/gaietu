@@ -294,37 +294,50 @@ def get_usage_records(phone_number, start_date, end_date):
     return df
 
 
-def display_service_costs(df: pd.DataFrame):
+def display_metric_by_item(df: pd.DataFrame, item: str):
     """
-    Display the costs of different service items over time in a stacked bar chart.
+    在给定的数据框中，按照指定的服务项目对成本进行统计，并以大号粗体字展示各个服务项目的总成本和总成本。
+    可以选择显示指标的变化情况。
 
-    Parameters:
-        df (pd.DataFrame): The DataFrame containing the service cost data.
+    参数：
+    df (pd.DataFrame): 包含成本数据的数据框。
+    item (str): 用于分组的服务项目列名。
 
-    Returns:
-        None
+    返回：
+    无返回值，直接显示指标。
     """
-
-    # 对数据进行分组
-    grouped = df.groupby("service_name")
-
-    # 计算每个服务项目的总成本
-    item_total_costs = df.groupby("service_name")["cost"].sum()
-    # 计算所有服务项目的总成本
-    total_cost = df["cost"].sum()
 
     # 计算服务项目的数量
-    num_services = df.groupby("service_name").size().count()
+    num_services = df.groupby(item).size().count()
 
     # 创建等于服务项目数量+1的列
     columns = st.columns(int(num_services) + 1)
+
+    # 计算每个服务项目的总成本
+    item_total_costs = df.groupby(item)["cost"].sum()
+    # 计算所有服务项目的总成本
+    total_cost = df["cost"].sum()
 
     # 在第一列中显示总成本
     columns[0].metric("总成本", f"{total_cost:.2f} 元")
 
     # 在剩余的列中显示各个服务项目的总成本
-    for i, (service_name, cost) in enumerate(item_total_costs.items(), start=1):
-        columns[i].metric(service_name, f"{cost:.2f} 元")
+    for i, (item_name, cost) in enumerate(item_total_costs.items(), start=1):
+        columns[i].metric(item_name, f"{cost:.2f} 元")
+
+
+def display_service_costs(df: pd.DataFrame, period: str = "天"):
+    # 使用数据框副本
+    df = df.copy()
+    if period == "天":
+        df["timestamp"] = df["timestamp"].dt.date
+    else:
+        df["timestamp"] = df["timestamp"].dt.hour
+
+    # 对数据进行分组
+    grouped = df.groupby("service_name")
+
+    display_metric_by_item(df, "service_name")
 
     # 创建一个空的 Figure 对象
     fig = go.Figure()
@@ -338,7 +351,52 @@ def display_service_costs(df: pd.DataFrame):
         barmode="stack",  # 设置为堆积柱状图
         xaxis_title="日期",
         xaxis=dict(
-            tickformat="%Y-%m-%d",  # 更改日期的显示格式为 "年-月-日"
+            tickformat=(
+                "%Y-%m-%d" if period == "天" else "%m-%d %H"
+            ),  # 根据周期调整日期的显示格式
+        ),
+        yaxis_title="成本",
+        title="服务项目成本随时间变化的堆积柱状图",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def display_cost_pie_chart(df: pd.DataFrame):
+    df_grouped = df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
+    # 创建饼图
+    fig = px.pie(df_grouped, values="cost", names="item_name", title="项目成本分布")
+    # 使用 Streamlit 显示图形
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def display_cost_bar_chart(df: pd.DataFrame, period: str = "天"):
+    # 使用数据框副本
+    df = df.copy()
+    if period == "天":
+        df["timestamp"] = df["timestamp"].dt.date
+    else:
+        df["timestamp"] = df["timestamp"].dt.hour
+
+    df_grouped = df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
+
+    display_metric_by_item(df, "item_name")
+
+    # 对数据进行分组
+    grouped = df_grouped.groupby("item_name")
+
+    # 创建一个空的 Figure 对象
+    fig = go.Figure()
+
+    # 为每个 item_name 创建一个 Bar 对象
+    for name, group in grouped:
+        fig.add_trace(go.Bar(x=group["timestamp"], y=group["cost"], name=name))
+
+    # 设置图表的布局
+    fig.update_layout(
+        barmode="stack",  # 设置为堆积柱状图
+        xaxis_title="日期",
+        xaxis=dict(
+            tickformat="%Y-%m-%d" if period == "天" else "%H:%M",  # 更改日期的显示格式
         ),
         yaxis_title="成本",
         title="服务项目成本随时间变化的堆积柱状图",
