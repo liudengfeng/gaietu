@@ -236,12 +236,10 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
     # 创建列映射
     column_mapping = {
-        "project": "项目",
-        "content": "细节",
+        "item": "项目",
         "duration": "时长",
-        "word_count": "字数",
+        "timestamp": "学习日期",
         "phone_number": "手机号码",
-        "record_time": "学习日期",
     }
 
     current_records = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
