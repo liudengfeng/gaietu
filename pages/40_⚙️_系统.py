@@ -935,40 +935,9 @@ elif menu == "统计分析":
 
                 st.plotly_chart(fig, use_container_width=True)
             else:
-                df["timestamp"] = df["timestamp"].dt.date
-
-                df_grouped = (
-                    df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
-                )
-                # 创建饼图
-                fig = px.pie(
-                    df_grouped, values="cost", names="item_name", title="项目成本分布"
-                )
-                # 使用 Streamlit 显示图形
-                st.plotly_chart(fig, use_container_width=True)
-
-                # 对数据进行分组
-                grouped = df_grouped.groupby("item_name")
-
-                # 创建一个空的 Figure 对象
-                fig = go.Figure()
-
-                # 为每个 item_name 创建一个 Bar 对象
-                for name, group in grouped:
-                    fig.add_trace(
-                        go.Bar(x=group["timestamp"], y=group["cost"], name=name)
-                    )
-
-                # 设置图表的布局
-                fig.update_layout(
-                    barmode="stack",  # 设置为堆积柱状图
-                    xaxis_title="Timestamp",
-                    yaxis_title="Cost",
-                    title="Stacked Bar Chart of Cost by Item Name over Time",
-                )
-                st.plotly_chart(fig, use_container_width=True)
-
                 display_service_costs(df)
+                display_cost_bar_chart(df)
+                display_cost_pie_chart(df)
 
 
 # endregion
