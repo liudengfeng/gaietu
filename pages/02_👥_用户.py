@@ -257,19 +257,18 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
                 user_tz
             )
-            cols = st.columns(3)
-            with cols[1]:
-                project_time = (
-                    current_records.groupby("项目")["时长"].sum().reset_index()
-                )
-                fig = px.pie(
-                    project_time,
-                    values="时长",
-                    names="项目",
-                    title="你的学习时间是如何分配的？",
-                )
-                fig.update_layout(title_x=0.27)
-                st.plotly_chart(fig, use_container_width=True)
+
+            project_time = (
+                current_records.groupby("项目")["时长"].sum().reset_index()
+            )
+            fig = px.pie(
+                project_time,
+                values="时长",
+                names="项目",
+                title="你的学习时间是如何分配的？",
+            )
+            # fig.update_layout(title_x=0.27)
+            st.plotly_chart(fig, use_container_width=True)
 
             previous_period_start = start_date - (end_date - start_date)
             previous_period_end = start_date
@@ -290,32 +289,30 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     .reset_index()
                 )
 
-            with cols[1]:
-                daily_time = (
-                    current_records.groupby(current_records["学习日期"].dt.date)["时长"]
-                    .sum()
-                    .reset_index()
-                )
-                daily_time["学习日期"] = daily_time["学习日期"].apply(
-                    lambda x: x.strftime("%Y年%m月%d日")
-                )
-                # 创建柱状图
-                fig = px.bar(
-                    daily_time,
-                    x="学习日期",
-                    y="时长",
-                    title="每天的学习时间",
-                    hover_data={"时长": ":.0f"},
-                )
+            daily_time = (
+                current_records.groupby(current_records["学习日期"].dt.date)["时长"]
+                .sum()
+                .reset_index()
+            )
+            daily_time["学习日期"] = daily_time["学习日期"].apply(
+                lambda x: x.strftime("%Y年%m月%d日")
+            )
+            # 创建柱状图
+            fig = px.bar(
+                daily_time,
+                x="学习日期",
+                y="时长",
+                title="每天的学习时间",
+                hover_data={"时长": ":.0f"},
+            )
 
-                # 更新图表布局
-                fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
+            # 更新图表布局
+            fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
 
-                # 显示图表
-                st.plotly_chart(fig, use_container_width=True)
+            # 显示图表
+            st.plotly_chart(fig, use_container_width=True)
 
-            with cols[2]:
-                pass
+
                 # st.subheader("按小时分组统计")
                 # 这里可以添加获取数据和绘制柱状图的代码
 
