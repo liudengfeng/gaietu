@@ -358,12 +358,11 @@ def parse_generated_content_and_update_token(
 
 
 WORD_TEST_PROMPT_TEMPLATE = """
-As a professional English teacher, you have a thorough understanding of the CEFR English proficiency levels and a comprehensive knowledge of the vocabulary list for each level. You also understand the sequential relationship between numbers. Your task is to create a question to assess students' understanding of English vocabulary. Please follow the requirements below:
-- avoiding Chinglish or Chinese.
-- The target audience of the question is students whose English language ability has reached the {level} level of the CEFR standard;
-- CEFR Level: {level}
-- Output in English, do not use Chinese
-- The vocabulary used in the questions and options should be within (including) the word list of CEFR {level}
+As an experienced English teacher, you are tasked with creating an examination to assess students' understanding of word meanings. The goal is to ensure that students understand the definitions of words, not their usage in context.
+- You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
+- You should have a thorough understanding of the sequence of numbers in English, such as knowing that "nineteen" follows "eighteen" and "ten" precedes "eleven". This knowledge is necessary for creating questions related to numerical vocabulary.
+- The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
+- The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
 
 {guidelines}
 
