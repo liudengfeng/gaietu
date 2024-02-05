@@ -813,75 +813,6 @@ class DbInterface:
 
     # endregion
 
-    # region 学习记录
-
-    # def add_record_to_cache(self, learning_time):
-    #     # 定义缓存
-    #     if "learning_time_cache" not in self.cache:
-    #         self.cache["learning_time_cache"] = []
-    #         self.cache["learning_time_last_save_time"] = time.time()
-
-    #     # 检查新添加的 LearningTime 实例是否与缓存中的最后一个实例有相同的项目和内容
-    #     if (
-    #         len(self.cache["learning_time_cache"]) > 0
-    #         and self.cache["learning_time_cache"][-1].project == learning_time.project
-    #         and self.cache["learning_time_cache"][-1].content == learning_time.content
-    #     ):
-    #         # 如果是，将新实例的时长添加到最后一个实例的时长上
-    #         self.cache["learning_time_cache"][-1].duration += learning_time.duration
-    #     else:
-    #         # 如果不是，将新实例添加到缓存中
-    #         self.cache["learning_time_cache"].append(learning_time)
-
-    #     # 如果缓存数量超过限制或者时间超过限制，将缓存中的 LearningTime 对象保存到数据库
-    #     if (
-    #         len(self.cache["learning_time_cache"]) > CACHE_TRIGGER_SIZE
-    #         or time.time() - self.cache["learning_time_last_save_time"]
-    #         > MAX_TIME_INTERVAL
-    #     ):
-    #         self.save_learning_time(self.cache["learning_time_cache"])
-    #         self.cache["learning_time_cache"] = []
-    #         self.cache["learning_time_last_save_time"] = time.time()
-
-    # def save_learning_time(self, records: List[LearningTime]):
-    #     # 获取 "learning_records" 集合
-    #     collection = self.db.collection("learning_time")
-
-    #     # 创建一个 WriteBatch 对象
-    #     batch = self.db.batch()
-
-    #     # 添加记录
-    #     for record in records:
-    #         # 将 LearningRecord 对象转换为字典
-    #         record_dict = record.model_dump()
-    #         results_dict = {k: v for k, v in record_dict.items() if v is not None}
-    #         # 只保存时长大于 0 的记录
-    #         if results_dict.get("duration", 0) > 0:
-    #             doc_ref = collection.document()
-    #             batch.set(doc_ref, results_dict)
-
-    #     # 提交批处理
-    #     batch.commit()
-
-    def save_daily_quiz_results(self, results: dict):
-        # 获取 "daily_quiz_results" 集合
-        collection = self.db.collection("daily_quiz_results")
-
-        # 将结果字典转换为 Firestore 可接受的格式
-        results_dict = {k: v for k, v in results.items() if v is not None}
-
-        # 创建一个新的文档并设置其内容
-        collection.document().set(results_dict)
-
-    # endregion
-
-    # region 练习记录
-
-    def add_to_dbcache(self, record):
-        pass
-
-    # endregion
-
     # region 使用及费用记录
 
     def list_usages_phone_number(self):
@@ -1000,6 +931,7 @@ class DbInterface:
     # region 通用函数
 
     def add_documents_to_user_history(self, collection_name, documents):
+        assert isinstance(documents, list), "documents 必须是一个列表。"
         if len(documents) == 0:
             return
         # 开始批处理

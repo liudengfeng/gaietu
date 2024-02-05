@@ -539,7 +539,7 @@ def check_listening_test_answer(container, level, selected_scenario):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
-        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "听力测验",
         "topic": selected_scenario,
         "level": level,
@@ -549,7 +549,8 @@ def check_listening_test_answer(container, level, selected_scenario):
         ).total_seconds(),
         "record_time": datetime.now(pytz.UTC),
     }
-    st.session_state.dbi.save_daily_quiz_results(test_dict)
+    # st.session_state.dbi.save_daily_quiz_results(test_dict)
+    st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 
 
 def check_reading_test_answer(container, difficulty, exercise_type, genre):
@@ -590,7 +591,7 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
-        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "阅读理解测验",
         "topic": genre,
         "level": f"{difficulty}-{exercise_type}",
@@ -600,7 +601,8 @@ def check_reading_test_answer(container, difficulty, exercise_type, genre):
         ).total_seconds(),
         "record_time": datetime.now(pytz.UTC),
     }
-    st.session_state.dbi.save_daily_quiz_results(test_dict)
+    # st.session_state.dbi.save_daily_quiz_results(test_dict)
+    st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 
 
 # endregion
@@ -967,7 +969,7 @@ if menu is not None and menu.endswith("听说练习"):
 
             # 添加成绩记录
             test_dict = {
-                "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+                # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
                 "item": "发音评估",
                 "topic": scenario_category,
                 "level": f"{difficulty}-{len(reference_text.split())}",
@@ -977,7 +979,8 @@ if menu is not None and menu.endswith("听说练习"):
                 "duration": (datetime.now(pytz.UTC) - start).total_seconds(),
                 "record_time": datetime.now(pytz.UTC),
             }
-            st.session_state.dbi.save_daily_quiz_results(test_dict)
+            # st.session_state.dbi.save_daily_quiz_results(test_dict)
+            st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 
         if (
             play_btn

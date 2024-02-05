@@ -500,11 +500,11 @@ def handle_puzzle_input(word_lib):
             d = {
                 "item": "拼图游戏",
                 "level": word_lib.split("-", 1)[1],
-                "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+                # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
                 "record_time": datetime.now(timezone.utc),
                 "score": score,
             }
-            st.session_state.dbi.save_daily_quiz_results(d)
+            st.session_state.dbi.add_documents_to_user_history("performances", [d])
 
 
 def handle_puzzle(word_lib):
@@ -675,13 +675,14 @@ def check_pic_answer(container):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     d = {
-        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "看图猜词",
         "level": st.session_state["pic-category"],
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
     }
-    st.session_state.dbi.save_daily_quiz_results(d)
+    # st.session_state.dbi.save_daily_quiz_results(d)
+    st.session_state.dbi.add_documents_to_user_history("performances", [d])
 
 
 # endregion
@@ -759,13 +760,14 @@ def check_word_test_answer(container, level):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
-        "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+        # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "词意测试",
         "level": level,
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
     }
-    st.session_state.dbi.save_daily_quiz_results(test_dict)
+    # st.session_state.dbi.save_daily_quiz_results(test_dict)
+    st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
     # container.divider()
 
 
@@ -1360,7 +1362,6 @@ elif menu and menu.endswith("词意测试"):
                         level,
                     )
 
-
     if next_test_btn:
         idx = st.session_state["word-test-idx"]
         word = st.session_state["test-words"][idx]
@@ -1370,7 +1371,6 @@ elif menu and menu.endswith("词意测试"):
                     "gemini-pro", st.session_state["text-model"], word, level
                 )
                 # st.write(st.session_state["word-tests"][idx])
-
 
     if refresh_btn:
         reset_test_words()
