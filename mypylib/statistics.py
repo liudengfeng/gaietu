@@ -3,7 +3,7 @@ import streamlit as st
 
 
 @st.cache_data(ttl=60 * 60 * 1)
-def get_records(phone_number, start_date, end_date):
+def get_exercises(phone_number, start_date, end_date):
     dbi = st.session_state.dbi
     db = dbi.db
     # phone_number = dbi.cache["user_info"]["phone_number"]
@@ -12,16 +12,25 @@ def get_records(phone_number, start_date, end_date):
     start_timestamp = datetime.combine(start_date, datetime.min.time())
     end_timestamp = datetime.combine(end_date, datetime.max.time())
 
-    # 查询该日期范围内的所有学习记录
-    records = (
-        db.collection("learning_time")
-        .where("phone_number", "==", phone_number)
-        .where("record_time", ">=", start_timestamp)
-        .where("record_time", "<=", end_timestamp)
-        .stream()
-    )
+    # 获取指定 ID 的文档
+    doc = db.collection("exercises").document(phone_number).get()
 
-    # 将查询结果转换为字典列表
-    records_list = [doc.to_dict() for doc in records]
+    # 初始化一个空列表来保存查询结果
+    record_list = []
 
-    return records_list
+    # 检查文档是否存在
+    if doc.exists:
+        # 获取文档的数据
+        data = doc.to_dict()
+
+        # 遍历 "history" 数组
+        for record in data.get("history", []):
+            # 获取 "record_time" 字段
+            record_time = record.get("record_time")
+            # 如果 "record_time" 字段存在，并且在指定的范围内，则添加到查询结果中
+            if record_time and start_timestamp <= record_time <= end_timestamp:
+                # 给 record 字典添加 phone_number 键值对
+                record["phone_number"] = phone_number
+                record_list.append(record)
+
+    return record_list

@@ -27,7 +27,7 @@ from mypylib.st_helper import (
     on_project_changed,
     setup_logger,
 )
-from mypylib.statistics import get_records
+from mypylib.statistics import get_exercises
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 FEEDBACK_DIR = CURRENT_CWD / "resource" / "feedback"
@@ -237,7 +237,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "record_time": "学习日期",
     }
 
-    current_records = pd.DataFrame(get_records(phone_number, start_date, end_date))
+    current_records = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
 
     study_report_items = ["学习时间", "学习项目", "单词量", "个人排位"]
     study_report_tabs = st.tabs(study_report_items)
@@ -269,7 +269,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             previous_period_start = start_date - (end_date - start_date)
             previous_period_end = start_date
             previous_records = pd.DataFrame(
-                get_records(phone_number, previous_period_start, previous_period_end)
+                get_exercises(phone_number, previous_period_start, previous_period_end)
             )
             # 如果上一个周期没有学习记录，显示警告信息
             if previous_records.empty:
