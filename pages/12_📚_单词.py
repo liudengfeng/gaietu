@@ -498,7 +498,7 @@ def handle_puzzle_input(word_lib):
         puzzle_score.markdown(msg)
         if idx == n - 1:
             d = {
-                "item": st.session_state["current-page"],
+                "item": "拼图游戏",
                 "level": word_lib.split("-", 1)[1],
                 "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
                 "record_time": datetime.now(timezone.utc),
@@ -676,7 +676,7 @@ def check_pic_answer(container):
     container.markdown(f":red[得分：{percentage:.0f}%]")
     d = {
         "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
-        "item": st.session_state["current-page"],
+        "item": "看图猜词",
         "level": st.session_state["pic-category"],
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
@@ -760,7 +760,7 @@ def check_word_test_answer(container, level):
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
         "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
-        "item": st.session_state["current-page"],
+        "item": "词意测试",
         "level": level,
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
