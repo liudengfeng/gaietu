@@ -18,7 +18,7 @@ def get_current_monday(user_timezone):
     """
 
     # 获取当前日期和时间
-    now = datetime.now(pytz.timezone(user_timezone))
+    now = datetime.datetime.now(pytz.timezone(user_timezone))
 
     # 获取今天是周几（0 是周一，6 是周日）
     weekday = now.weekday()
