@@ -98,15 +98,7 @@ Step by step, complete the following:
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
-Grammatical errors include:
-- Incorrect usage of tenses to describe past, present, or future events.
-- Incorrect usage of singular or plural forms of nouns.
-- Lack of agreement between the subject and verb in person or number.
-- Incorrect usage of prepositions to indicate a specific relationship or location.
-- Incorrect usage of conjunctions to connect two sentences or phrases.
-- Incorrect usage of punctuation marks to separate sentences or phrases.
-- Incorrect capitalization for proper nouns or at the beginning of sentences.
-Please note that this list does not encompass spelling errors.
+Grammatical errors refer to mistakes in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Spelling errors are not considered in this context. The focus is strictly on grammar.
 
 Example:
 - Assume the original text is: 'I have many moeney in the past,I have not to work now.'
