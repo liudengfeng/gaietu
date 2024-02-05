@@ -258,13 +258,13 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         else:
             df.rename(columns=column_mapping, inplace=True)
             current_records = df.copy()
-            current_records["时长"] = current_records["时长"] / 60
+            current_records["时长"] = (current_records["时长"] / 60).round(2)
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
                 user_tz
             )
             current_records["项目"] = current_records["项目"].apply(get_first_part)
             project_time = current_records.groupby("项目")["时长"].sum().reset_index()
-            
+
             fig = px.pie(
                 project_time,
                 values="时长",
