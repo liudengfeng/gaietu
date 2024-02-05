@@ -9,6 +9,26 @@ import toml
 # region 日期时间相关
 
 
+def get_current_monday(user_timezone):
+    """
+    使用会话缓存的用户时区信息，返回当前日期的周一日期。
+
+    Returns:
+        datetime.date: 当前日期的周一日期。
+    """
+
+    # 获取当前日期和时间
+    now = datetime.now(pytz.timezone(user_timezone))
+
+    # 获取今天是周几（0 是周一，6 是周日）
+    weekday = now.weekday()
+
+    # 获取当前周的周一
+    monday = now.date() - datetime.timedelta(days=weekday)
+
+    return monday
+
+
 def convert_to_utc(dt, timezone_str):
     """
     将给定的日期时间从指定的时区转换为UTC。

@@ -28,6 +28,9 @@ from mypylib.st_helper import (
     setup_logger,
 )
 from mypylib.statistics import get_exercises
+from mypylib.utils import get_current_monday
+
+# region 初始化
 
 CURRENT_CWD: Path = Path(__file__).parent.parent
 FEEDBACK_DIR = CURRENT_CWD / "resource" / "feedback"
@@ -50,12 +53,16 @@ check_access(False)
 on_project_changed("用户中心")
 add_exercises_to_db()
 
+# endregion
+
 # region 侧边栏
 
 sidebar_status = st.sidebar.empty()
 
 
 # endregion
+
+# region tabs
 
 emojis = [
     ":arrows_counterclockwise:",
@@ -67,6 +74,7 @@ item_names = ["更新信息", "重置密码", "学习报告", "问题反馈"]
 items = [f"{e} {n}" for e, n in zip(emojis, item_names)]
 tabs = st.tabs(items)
 
+# endregion
 
 # region 创建更新信息页面
 
@@ -220,9 +228,8 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
 
     now = datetime.date.today()
-    weekday = now.weekday()
     # 计算当前日期所在周的周一
-    start_date_default = now - datetime.timedelta(days=weekday)
+    start_date_default = get_current_monday(user_tz)
     with st.sidebar:
         start_date = st.date_input("开始日期", value=start_date_default)
         end_date = st.date_input("结束日期", value=now)

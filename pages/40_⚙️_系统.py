@@ -26,10 +26,11 @@ from mypylib.st_helper import (
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
-    get_current_monday,
     on_project_changed,
     setup_logger,
 )
+
+from mypylib.utils import get_current_monday
 
 # region 配置
 
@@ -882,7 +883,11 @@ elif menu == "统计分析":
         phone_number = st.selectbox("选择用户", options=["ALL"] + get_phone_numbers())
 
         start_date = st.date_input(
-            "开始日期", value=get_current_monday(), key="start_date"
+            "开始日期",
+            value=get_current_monday(
+                st.session_state.dbi.cache["user_info"]["timezone"]
+            ),
+            key="start_date",
         )
         end_date = st.date_input("结束日期", value=None, key="end_date")
 
