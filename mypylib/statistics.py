@@ -29,9 +29,9 @@ def get_exercises(phone_number, start_date, end_date):
             st.write(f"record: {record}")
 
             # 获取 "record_time" 字段
-            record_time = record.get("record_time")
+            timestamp = record.get("timestamp")
             # 如果 "record_time" 字段存在，并且在指定的范围内，则添加到查询结果中
-            if record_time and start_timestamp <= record_time <= end_timestamp:
+            if timestamp and start_timestamp <= timestamp <= end_timestamp:
                 # 给 record 字典添加 phone_number 键值对
                 record["phone_number"] = phone_number
                 record_list.append(record)
