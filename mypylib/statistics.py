@@ -26,8 +26,6 @@ def get_exercises(phone_number, start_date, end_date):
         # 遍历 "history" 数组
         for record in data.get("history", []):
 
-            st.write(f"record: {record}")
-
             # 获取 "record_time" 字段
             timestamp = record.get("timestamp")
             # 如果 "record_time" 字段存在，并且在指定的范围内，则添加到查询结果中
