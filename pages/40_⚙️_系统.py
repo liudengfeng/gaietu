@@ -379,8 +379,6 @@ def display_cost_bar_chart(df: pd.DataFrame, period: str = "天"):
 
     df_grouped = df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
 
-    display_metric_by_item(df, "item_name")
-
     # 对数据进行分组
     grouped = df_grouped.groupby("item_name")
 
@@ -396,12 +394,29 @@ def display_cost_bar_chart(df: pd.DataFrame, period: str = "天"):
         barmode="stack",  # 设置为堆积柱状图
         xaxis_title="日期",
         xaxis=dict(
-            tickformat="%Y-%m-%d" if period == "天" else "%H:%M",  # 更改日期的显示格式
+            tickformat=(
+                "%Y-%m-%d" if period == "天" else "%m-%d %H"
+            ),  # 根据周期调整日期的显示格式
         ),
         yaxis_title="成本",
         title="服务项目成本随时间变化的堆积柱状图",
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    # 创建两列
+    cols = st.columns(2)
+
+    # 在左侧列中显示堆积柱状图
+    cols[0].plotly_chart(fig, use_container_width=True)
+
+    # 在右侧列中单独绘制 item_name 的成本柱状图
+    item_costs = df.groupby("item_name")["cost"].sum()
+    fig_item = go.Figure([go.Bar(x=item_costs.index, y=item_costs.values)])
+    fig_item.update_layout(
+        xaxis_title="服务项目",
+        yaxis_title="成本",
+        title="服务项目成本柱状图",
+    )
+    cols[1].plotly_chart(fig_item, use_container_width=True)
 
 
 # endregion
