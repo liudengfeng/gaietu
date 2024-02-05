@@ -92,8 +92,8 @@ def display_grammar_errors(corrected, explanations):
         return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到语法错误。</p>'
 
     pattern_del = r"~~(.*?)~~"
-    pattern_add = r"\[\[(.*?)\]\]"
-    pattern_both = r"~~(.*?)~~\s*\[\[(.*?)\]\]"
+    pattern_add = r"<ins>(.*?)</ins>"
+    pattern_both = r"~~(.*?)~~\s*<ins>(.*?)</ins>"
 
     counter = [0]  # 使用列表来作为可变的计数器
 

@@ -89,24 +89,27 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-As an expert in English grammar, your task is to meticulously scrutinize the provided Article for any grammatical errors.
+As an expert in English grammar, your task is to meticulously scrutinize the provided Article for any grammatical errors, disregarding pure spelling mistakes as they will be checked separately.
+The grammatical errors in this text refer to mistakes in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization.
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. IMPORTANT: In the event of grammatical inaccuracies within the original text, each discrepancy should be annotated as follows: Utilize `~~` to denote the segment necessitating removal, and `[[` `]]` to signify the addition. In instances of substitutions, initially earmark the segment for removal, succeeded by the addition. This procedure will generate the "corrected" content, lucidly articulating the amendments predicated on the original text.
+3. IMPORTANT: In the event of grammatical inaccuracies within the original text, each discrepancy should be annotated as follows: Utilize `~~` to denote the segment necessitating removal, and `<ins>` `</ins>` to signify the addition. In instances of substitutions, initially earmark the segment for removal, succeeded by the addition. This procedure will generate the "corrected" content, lucidly articulating the amendments predicated on the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
-Grammatical errors refer to mistakes in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Spelling errors are not considered in this context. The focus is strictly on grammar.
+Examples:
+Assume the original text is: 'I have many moeney in the past,I have not to work now.'
+The output dictionary should include the following keys:
+- corrected: "I ~~have~~ <ins>had</ins> many moeney in the past, so I ~~have not to~~ <ins>don't have to</ins> work now."
+- explanations: ["The past tense of 'have' is 'had'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
 
-Example:
-- Assume the original text is: 'I have many moeney in the past,I have not to work now.'
-- The output dictionary should be:
-    - corrected: "I ~~have~~ [[had]] many moeney in the past, so I ~~have not to~~ [[don't have to]] work now."
-    - explanations: ["The past tense of 'have' is 'had'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
+Assume the original text is: 'She don't likes apples.'
+The output dictionary should include the following keys:
+- corrected: "She ~~don't likes~~ <ins>doesn't like</ins> apples."
+- explanations: ["The correct form is 'doesn't like' when referring to third person singular."]   
 
-    
 Article:{article}
 """
 
