@@ -95,7 +95,7 @@ Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
 3. It is crucial to base all deletions and additions on the original text.
-    - Use `~~` to mark the segments that need to be removed.
+    - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
     - The "corrected" content should clearly articulate the modifications made from the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
