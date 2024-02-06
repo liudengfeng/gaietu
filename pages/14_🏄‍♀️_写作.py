@@ -15,7 +15,7 @@ from mypylib.google_ai import (
     to_contents_info,
 )
 from mypylib.html_constants import TIPPY_JS
-from mypylib.html_fmt import display_grammar_errors
+from mypylib.html_fmt import display_grammar_errors, remove_markup
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -251,7 +251,10 @@ if w_btn_cols[5].button(
 if w_btn_cols[6].button(
     "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
 ):
-    pass
+    result = check_grammar(st.session_state["writing-text"])
+    content = remove_markup(result["corrected"])
+    st.session_state["writing-text"] = content
+    st.rerun()
 
 
 # endregion

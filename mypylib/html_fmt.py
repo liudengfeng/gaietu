@@ -122,3 +122,20 @@ def display_grammar_errors(corrected, explanations):
     corrected = corrected.replace("\n", "<br/>")
 
     return corrected
+
+
+def remove_markup(corrected):
+    pattern_del = r"~~(.*?)~~"
+    pattern_add = r"<ins>(.*?)</ins>"
+
+    def replace_del(match):
+        return ""
+
+    def replace_add(match):
+        new = match.group(1)
+        return new
+
+    corrected = re.sub(pattern_del, replace_del, corrected)
+    corrected = re.sub(pattern_add, replace_add, corrected)
+
+    return corrected
