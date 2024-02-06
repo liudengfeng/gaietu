@@ -94,7 +94,7 @@ The grammatical errors in this text refer to mistakes in tense usage, noun forms
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. It is crucial to base all deletions and additions on the original text.
+3. Indicate all deletions and additions based on the original text.
     - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
     - The "corrected" content should clearly articulate the modifications made from the original text.
