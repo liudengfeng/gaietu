@@ -97,6 +97,7 @@ Step by step, complete the following:
 3. Indicate all deletions and additions based on the original text.
     - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
+    - If a substitution is needed, mark the deletion first, followed by the addition.
     - The "corrected" content should clearly articulate the modifications made from the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
