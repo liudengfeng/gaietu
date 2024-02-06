@@ -53,6 +53,9 @@ sidebar_status = st.sidebar.empty()
 if "text-model" not in st.session_state:
     st.session_state["text-model"] = load_vertex_model("gemini-pro")
 
+if "writing-content" not in st.session_state:
+    st.session_state["writing-content"] = ""
+
 # Use the get method since the keys won't be in session_state on the first script run
 if st.session_state.get("writing-clear"):
     st.session_state["writing-text"] = ""
@@ -170,6 +173,7 @@ w_cols[0].markdown("<h5 style='color: blue;'>您的写作练习</h5>", unsafe_al
 w_cols[0].text_area(
     "您的写作练习",
     max_chars=10000,
+    value=st.session_state["writing-content"],
     key="writing-text",
     height=HEIGHT,
     placeholder="在此输入您的作文",
@@ -254,7 +258,7 @@ if w_btn_cols[6].button(
 ):
     result = check_grammar(st.session_state["writing-text"])
     content = remove_markup(result["corrected"])
-    st.session_state["writing-text"] = content
+    st.session_state["writing-content"] = content
     st.rerun()
 
 
