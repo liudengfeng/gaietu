@@ -92,9 +92,9 @@ GRAMMAR_CHECK_TEMPLATE = """\
 As an expert in English grammar, your task is to meticulously scrutinize the provided Article for any grammatical errors, disregarding pure spelling mistakes as they will be checked separately.
 The grammatical errors in this text refer to mistakes in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization.
 Step by step, complete the following:
-1. Identify all grammatical inaccuracies in the article and rectify them accordingly.
+1. Identify all grammatical inaccuracies in the article.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. Indicate all deletions and additions based on the original text.
+3. Rectify the identified grammatical inaccuracies and indicate all deletions and additions based on the original text.
     - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
     - If a substitution is needed, mark the deletion first, followed by the addition.
