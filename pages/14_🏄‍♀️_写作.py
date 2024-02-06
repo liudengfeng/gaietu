@@ -92,8 +92,8 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-As an expert in English grammar, your task is to meticulously scrutinize the provided Article for any grammatical errors, disregarding pure spelling mistakes as they will be checked separately.
-The grammatical errors in this text refer to mistakes in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization.
+As a grammar expert, your primary responsibility is to meticulously examine the provided article for any grammatical inaccuracies. 
+Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Please note that spelling errors unrelated to grammar are not included in this check.
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
