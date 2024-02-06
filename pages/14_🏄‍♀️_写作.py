@@ -221,7 +221,7 @@ if w_btn_cols[0].button(
     st.rerun()
 
 if w_btn_cols[1].button(
-    "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习文本。"
+    "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习内容。"
 ):
     pass
 
