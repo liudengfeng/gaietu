@@ -95,6 +95,7 @@ Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
 3. Rectify the identified grammatical inaccuracies and indicate all deletions and additions based on the original text.
+    - Any changes made to the original text, including the addition or deletion of white space, should be clearly marked.
     - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
     - If a substitution is needed, mark the deletion first, followed by the addition.
