@@ -225,9 +225,6 @@ if w_btn_cols[2].button(
 ):
     suggestions.empty()
     result = check_grammar(st.session_state["writing-text"])
-    suggestions.markdown(result["corrected"], unsafe_allow_html=True)
-    suggestions.markdown(result["explanations"], unsafe_allow_html=True)
-
     html = display_grammar_errors(result["corrected"], result["explanations"])
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
