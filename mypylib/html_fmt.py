@@ -141,9 +141,11 @@ def display_word_spell_errors(result: dict):
     counter = 0
 
     def replace(match):
+        nonlocal counter  # 使用nonlocal关键字来修改外部作用域的counter变量
         old = match.group(1)
         new = match.group(2)
         explanation = explanations[counter]
+        counter += 1  # 在每次调用replace函数后增加counter的值
         return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
 
     corrected = re.sub(pattern, replace, corrected)
