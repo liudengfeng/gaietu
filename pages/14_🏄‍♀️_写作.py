@@ -179,6 +179,14 @@ Step by step, complete the following:
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
+Example:
+
+The original text: 'I am going two the store two bye some bred, milk, and egs.'
+The output dictionary should include the following keys:
+- corrected: "I am going ~~two~~ <ins>to</ins> the store ~~two~~ <ins>to</ins> ~~bye~~ <ins>buy</ins> some ~~bred~~ <ins>bread</ins>, milk, and ~~egs~~ <ins>eggs</ins>."
+- explanations: ["The word 'two' is a number and should be replaced with 'to' when used as a preposition.", "The word 'bye' is a farewell expression and should be replaced with 'buy' when referring to purchasing something.", "The word 'bred' is a past tense of breed and should be replaced with 'bread' when referring to the food.", "The word 'egs' is a misspelling and should be replaced with 'eggs'."]
+ 
+
 Article:{article}
 """
 
