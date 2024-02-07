@@ -140,7 +140,13 @@ def display_word_spell_errors(result: dict):
     matches = re.findall(pattern, corrected)
     old_words, new_words = zip(*matches) if matches else ([], [])
 
+    if len(old_words) != len(new_words) or len(old_words) != len(explanations):
+        raise ValueError(
+            "The lengths of old_words, new_words, and explanations must be the same."
+        )
+
     for old, new, explanation in zip(old_words, new_words, explanations):
+        # rest of the code
         corrected = corrected.replace(
             f"~~{old}~~ <ins>{new}</ins>",
             f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>',
