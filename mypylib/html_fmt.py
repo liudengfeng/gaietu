@@ -128,7 +128,7 @@ def display_grammar_errors(result: dict):
     return corrected
 
 
-def display_word_errors(result: dict):
+def display_word_spell_errors(result: dict):
     corrected = result.get("corrected", "")
     explanations = result.get("explanations", [])
     if result["error_type"] == "LanguageError":
@@ -144,13 +144,27 @@ def display_word_errors(result: dict):
     def replace_del(match):
         old = match.group(1)
         explanation = explanations[counter[0]]
-        counter[0] += 1
+        if (
+            counter[0] < len(explanations) - 1
+            and explanations[counter[0]] == explanations[counter[0] + 1]
+        ):
+            # 如果下一个解释与当前解释相同，不增加计数器
+            pass
+        else:
+            counter[0] += 1
         return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span>'
 
     def replace_add(match):
         new = match.group(1)
         explanation = explanations[counter[0]]
-        counter[0] += 1
+        if (
+            counter[0] < len(explanations) - 1
+            and explanations[counter[0]] == explanations[counter[0] + 1]
+        ):
+            # 如果下一个解释与当前解释相同，不增加计数器
+            pass
+        else:
+            counter[0] += 1
         return f'<span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
 
     corrected = re.sub(pattern_del, replace_del, corrected)

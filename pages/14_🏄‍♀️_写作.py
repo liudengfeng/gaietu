@@ -16,7 +16,11 @@ from mypylib.google_ai import (
     to_contents_info,
 )
 from mypylib.html_constants import TIPPY_JS
-from mypylib.html_fmt import display_grammar_errors, display_word_errors, remove_markup
+from mypylib.html_fmt import (
+    display_grammar_errors,
+    display_word_spell_errors,
+    remove_markup,
+)
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -172,8 +176,8 @@ Step by step, complete the following:
 1. Read through the article and correct any spelling errors in the words. 
 2. In the event that the article is devoid of spelling errors, yield an empty dictionary.
 3. Correct the identified spelling errors based on the original text.
-    - First, use `~~` to strike through the words that need to be removed from the original text. These are the misspelled words. Then, use `<ins>` `</ins>` to indicate the corrected words.
-    - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. 
+    - First, use `~~` to strike through the words that need to be removed from the original text. Then, use `<ins>` `</ins>` to indicate the corrected words.
+    - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. The strike-through and insertion indicators should always appear in pairs to represent a single spelling correction.
     - The "corrected" content should clearly articulate the modifications made from the original text.
 4. Provide a corresponding explanation for each modification made, then compile these explanations into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
@@ -318,7 +322,7 @@ if w_btn_cols[3].button(
 ):
     suggestions.empty()
     result = check_spelling(st.session_state["writing-text"])
-    html = display_word_errors(result)
+    html = display_word_spell_errors(result)
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
 
 if w_btn_cols[4].button(
