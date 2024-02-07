@@ -176,13 +176,9 @@ Step by step, complete the following:
 1. Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
 2. Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
 3. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-4. Correct the identified spelling errors based on the original text.
-    - First, for each word that needs to be corrected, use ~~ to strike through the word in the original text. Then, use <ins> </ins> to indicate the corrected word.
-    - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. The strike-through and insertion indicators should always appear in pairs to represent a single spelling correction.
-    - The "corrected" content should clearly articulate the modifications made from the original text.
-5. For each word correction made, provide a corresponding explanation. Then, compile these explanations into a list.
-6. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
-7. Finally, output the dictionary in JSON format.
+4. For each word that needs to be corrected, use `~~` to strike through the word in the original text, then use `<ins>` `</ins>` to indicate the corrected word. Each correction should be accompanied by a corresponding explanation, even if the word error, correction, and explanation are the same. This means that each word correction is treated as a separate case and requires its own explanation. The "corrected" content should clearly articulate the modifications made from the original text, and the explanations should be compiled into a list.
+5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
+6. Finally, output the dictionary in JSON format.
 
 Examples:
 
