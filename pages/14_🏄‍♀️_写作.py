@@ -159,6 +159,9 @@ def check_grammar(article):
         parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
     result["error_type"] = "GrammarError"
+    result["character_count"] = (
+        f"{len(article)} / {len(result['corrected'])} characters corrected"
+    )
     return result
 
 

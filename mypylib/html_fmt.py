@@ -123,6 +123,8 @@ def display_grammar_errors(result: dict):
 
     corrected = corrected.replace("\n", "<br/>")
 
+    corrected += f'<p style="color:blue;">{result["character_count"]}</p>'
+
     return corrected
 
 
