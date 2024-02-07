@@ -128,6 +128,37 @@ def display_grammar_errors(result: dict):
     return corrected
 
 
+def display_word_errors(result: dict):
+    corrected = result.get("corrected", "")
+    word_count = result.get("word_count", [])
+    if result["error_type"] == "LanguageError":
+        return '<p style="color: red; font-weight: bold;">' + corrected + "</p>"
+    if word_count == 0:
+        return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到拼写错误。</p>'
+
+    pattern_del = r"~~(.*?)~~"
+    pattern_add = r"<ins>(.*?)</ins>"
+
+    def replace_del(match):
+        old = match.group(1)
+        return f'<span style="text-decoration: line-through; color: red;">{old}</span>'
+
+    def replace_add(match):
+        new = match.group(1)
+        return (
+            f'<span style="text-decoration: underline; color: #008000;">[{new}]</span>'
+        )
+
+    corrected = re.sub(pattern_del, replace_del, corrected)
+    corrected = re.sub(pattern_add, replace_add, corrected)
+
+    corrected = corrected.replace("\n", "<br/>")
+
+    corrected += f'<p style="color:blue;">{result["character_count"]}</p>'
+
+    return corrected
+
+
 def remove_markup(corrected):
     pattern_del = r"~~(.*?)~~"
     pattern_add = r"<ins>(.*?)</ins>"

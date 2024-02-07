@@ -17,7 +17,7 @@ from mypylib.google_ai import (
     to_contents_info,
 )
 from mypylib.html_constants import TIPPY_JS
-from mypylib.html_fmt import display_grammar_errors, remove_markup
+from mypylib.html_fmt import display_grammar_errors, display_word_errors, remove_markup
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -166,6 +166,7 @@ def check_grammar(article):
     return result
 
 
+@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查单词拼写...")
 def check_spelling(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
     detected_language = detect(article)
@@ -175,6 +176,7 @@ def check_spelling(article):
             "explanations": [],
             "error_type": "LanguageError",
         }
+
     spell = SpellChecker()
 
     # 找到所有拼写错误的单词
@@ -182,6 +184,7 @@ def check_spelling(article):
 
     result = {}
     corrected_article = article
+    word_count = 0
     for word in misspelled:
         # 获取每个错误单词的最可能的修正
         correction = spell.correction(word)
@@ -189,9 +192,13 @@ def check_spelling(article):
         corrected_article = corrected_article.replace(
             word, f"~~{word}~~ <ins>{correction}</ins>"
         )
+        word_count += 1
     result["corrected"] = corrected_article
     result["error_type"] = "WordError"
-    result["character_count"] = f"{len(article)} / {len()} characters corrected"
+    result["character_count"] = (
+        f"{len(article)} / {len(corrected_article)} characters corrected"
+    )
+    result["word_count"] = word_count
     return result
 
 
@@ -283,7 +290,10 @@ if w_btn_cols[2].button(
 if w_btn_cols[3].button(
     "单词[:abc:]", key="word", help="✨ 点击按钮，检查标点符号和拼写错误。"
 ):
-    pass
+    suggestions.empty()
+    result = check_spelling(st.session_state["writing-text"])
+    html = display_word_errors(result)
+    suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
 
 if w_btn_cols[4].button(
     "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
