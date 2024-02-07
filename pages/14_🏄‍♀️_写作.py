@@ -176,10 +176,10 @@ Step by step, complete the following:
 1. Read through the article and correct any spelling errors in the words. This includes errors such as misspelled words, incorrect capitalization at the beginning of sentences, and other types of spelling mistakes.
 2. In the event that the article is devoid of spelling errors, yield an empty dictionary.
 3. Correct the identified spelling errors based on the original text.
-    - First, use `~~` to strike through the words that need to be removed from the original text. Then, use `<ins>` `</ins>` to indicate the corrected words.
+    - First, for each word that needs to be corrected, use ~~ to strike through the word in the original text. Then, use <ins> </ins> to indicate the corrected word.
     - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. The strike-through and insertion indicators should always appear in pairs to represent a single spelling correction.
     - The "corrected" content should clearly articulate the modifications made from the original text.
-4. Provide a corresponding explanation for each modification made, then compile these explanations into a list.
+4. For each word correction made, provide a corresponding explanation. Then, compile these explanations into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
