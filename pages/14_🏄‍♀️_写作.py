@@ -323,7 +323,7 @@ if w_btn_cols[2].button(
     update_sidebar_status(sidebar_status)
 
 if w_btn_cols[3].button(
-    "单词[:abc:]", key="word", help="✨ 点击按钮，检查标点符号和拼写错误。"
+    "单词[:abc:]", key="word", help="✨ 点击按钮，检查单词拼写错误。"
 ):
     suggestions.empty()
     result = check_spelling(st.session_state["writing-text"])
