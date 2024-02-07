@@ -137,23 +137,16 @@ def display_word_spell_errors(result: dict):
         return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到拼写错误。</p>'
 
     pattern = r"~~(.*?)~~ <ins>(.*?)</ins>"
+    matches = re.findall(pattern, corrected)
+    old_words, new_words = zip(*matches) if matches else ([], [])
 
-    counter = 0
-
-    def replace(match):
-        nonlocal counter
-        old = match.group(1)
-        new = match.group(2)
-        explanation = (
-            explanations[counter] if counter < len(explanations) else "No explanation"
+    for old, new, explanation in zip(old_words, new_words, explanations):
+        corrected = corrected.replace(
+            f"~~{old}~~ <ins>{new}</ins>",
+            f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>',
         )
-        counter += 1
-        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
-
-    corrected = re.sub(pattern, replace, corrected)
 
     corrected = corrected.replace("\n", "<br/>")
-
     corrected += f'<p style="color:blue;">{result["character_count"]}</p>'
 
     return corrected
