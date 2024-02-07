@@ -93,7 +93,7 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 As an English grammar expert, your primary task is to inspect and correct any grammatical errors in the following "Article".
-Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Please note that spelling errors unrelated to grammar are not included in this check.
+Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Spelling errors unrelated to grammar are disregarded in this check.
 
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article.
@@ -101,8 +101,9 @@ Step by step, complete the following:
 3. Rectify the identified grammatical inaccuracies based on the original text.
     - First, use `~~` to mark the segments that are to be removed from the original text. Then, use `<ins>` `</ins>` to indicate the additions.
     - Any modifications to the original text, including the addition of white space, punctuation, and changes in case, should be distinctly indicated using the above markers.
+    - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. 
     - The "corrected" content should clearly articulate the modifications made from the original text.
-4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
+4. Provide a corresponding explanation for each modification made, then compile these explanations into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
@@ -117,6 +118,11 @@ The original text: 'She don't likes apples.'
 The output dictionary should include the following keys:
 - corrected: "She ~~don't likes~~ <ins>doesn't like</ins> apples."
 - explanations: ["The correct form is 'doesn't like' when referring to third person singular."]   
+
+The original text: 'she is a teacher.'
+The output dictionary should include the following keys:
+- corrected: "~~she~~ <ins>She</ins> is a teacher."
+- explanations: ["The first word of a sentence should be capitalized."]
 
 Article:{article}
 """
