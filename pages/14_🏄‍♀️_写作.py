@@ -93,10 +93,9 @@ def initialize_writing_chat():
 
 GRAMMAR_CHECK_TEMPLATE = """\
 As an English grammar expert, your primary task is to inspect and correct any grammatical errors in the following "Article".
-Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Spelling errors that lead to incorrect word forms or parts of speech are considered related to grammar and should be corrected. Other spelling errors that do not affect the grammatical structure of the sentence are disregarded in this check.
 
 Step by step, complete the following:
-1. Identify all grammatical inaccuracies in the article.
+1. Identify all grammatical inaccuracies in the article, including errors in tense usage, noun forms, subject-verb agreement, use of prepositions and conjunctions, punctuation, and capitalization.Spelling errors that lead to incorrect word forms or parts of speech are considered related to grammar and should be corrected. Other spelling errors that do not affect the grammatical structure of the sentence are disregarded in this check.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
 3. Rectify the identified grammatical inaccuracies based on the original text.
     - First, use `~~` to mark the segments that are to be removed from the original text. Then, use `<ins>` `</ins>` to indicate the additions.
