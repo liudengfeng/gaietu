@@ -142,7 +142,7 @@ def display_word_spell_errors(result: dict):
 
     if len(old_words) != len(new_words) or len(old_words) != len(explanations):
         raise ValueError(
-            "The lengths of old_words, new_words, and explanations must be the same."
+            f"The lengths of old_words ({len(old_words)}), new_words ({len(new_words)}), and explanations ({len(explanations)}) must be the same."
         )
 
     for old, new, explanation in zip(old_words, new_words, explanations):
