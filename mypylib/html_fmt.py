@@ -140,17 +140,11 @@ def display_word_spell_errors(result: dict):
     matches = re.findall(pattern, corrected)
     old_words, new_words = zip(*matches) if matches else ([], [])
 
-    # for old, new, explanation in zip(old_words, new_words, explanations):
-    #     corrected = corrected.replace(
-    #         f"~~{old}~~ <ins>{new}</ins>",
-    #         f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>',
-    #     )
-
     for old, new, explanation in zip(old_words, new_words, explanations):
-        st.write(f"Old word: {old}")
-        st.write(f"New word: {new}")
-        st.write(f"Explanation: {explanation}")
-        st.write("---")
+        corrected = corrected.replace(
+            f"~~{old}~~ <ins>{new}</ins>",
+            f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>',
+        )
 
     corrected = corrected.replace("\n", "<br/>")
     corrected += f'<p style="color:blue;">{result["character_count"]}</p>'
