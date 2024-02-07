@@ -171,8 +171,8 @@ As an English writing instructor, your primary task is to inspect and correct an
 Step by step, complete the following:
 1. Read through the article and correct any spelling errors in the words. 
 2. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-3. Rectify the identified spelling errors based on the original text.
-    - First, use `~~` to mark the segments that are to be removed from the original text. These are the misspelled parts. Then, use `<ins>` `</ins>` to indicate the corrections.
+3. Correct the identified spelling errors based on the original text.
+    - First, use `~~` to strike through the words that need to be removed from the original text. These are the misspelled words. Then, use `<ins>` `</ins>` to indicate the corrected words.
     - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. 
     - The "corrected" content should clearly articulate the modifications made from the original text.
 4. Provide a corresponding explanation for each modification made, then compile these explanations into a list.
