@@ -130,24 +130,28 @@ def display_grammar_errors(result: dict):
 
 def display_word_errors(result: dict):
     corrected = result.get("corrected", "")
-    word_count = result.get("word_count", [])
+    explanations = result.get("explanations", [])
     if result["error_type"] == "LanguageError":
         return '<p style="color: red; font-weight: bold;">' + corrected + "</p>"
-    if word_count == 0:
+    if len(explanations) == 0:
         return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到拼写错误。</p>'
 
     pattern_del = r"~~(.*?)~~"
     pattern_add = r"<ins>(.*?)</ins>"
 
+    counter = [0]  # 使用列表来作为可变的计数器
+
     def replace_del(match):
         old = match.group(1)
-        return f'<span style="text-decoration: line-through; color: red;">{old}</span>'
+        explanation = explanations[counter[0]]
+        counter[0] += 1
+        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span>'
 
     def replace_add(match):
         new = match.group(1)
-        return (
-            f'<span style="text-decoration: underline; color: #008000;">[{new}]</span>'
-        )
+        explanation = explanations[counter[0]]
+        counter[0] += 1
+        return f'<span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
 
     corrected = re.sub(pattern_del, replace_del, corrected)
     corrected = re.sub(pattern_add, replace_add, corrected)

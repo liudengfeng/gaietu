@@ -5,7 +5,6 @@ from functools import partial
 import spacy
 import streamlit as st
 from langdetect import detect
-from spellchecker import SpellChecker
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
 
 from menu import help_page, return_home
@@ -166,6 +165,27 @@ def check_grammar(article):
     return result
 
 
+WORD_SPELL_CHECK_TEMPLATE = """\
+As an English writing instructor, your primary task is to inspect and correct any spelling errors in the following "Article".
+
+Step by step, complete the following:
+1. Read through the article and correct any spelling errors in the words. 
+2. In the event that the article is devoid of spelling errors, yield an empty dictionary.
+3. Rectify the identified spelling errors based on the original text.
+    - First, use `~~` to mark the segments that are to be removed from the original text. These are the misspelled parts. Then, use `<ins>` `</ins>` to indicate the corrections.
+    - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. 
+    - The "corrected" content should clearly articulate the modifications made from the original text.
+4. Provide a corresponding explanation for each modification made, then compile these explanations into a list.
+5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
+6. Finally, output the dictionary in JSON format.
+
+Article:{article}
+"""
+
+
+WORD_SPELL_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
+
+
 @st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查单词拼写...")
 def check_spelling(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
@@ -177,29 +197,26 @@ def check_spelling(article):
             "error_type": "LanguageError",
         }
 
-    spell = SpellChecker()
-
-    # 找到所有拼写错误的单词
-    misspelled = spell.unknown(article.split())
-
-    result = {}
-    corrected_article = article
-    word_count = 0
-    for word in misspelled:
-        # 获取每个错误单词的最可能的修正
-        correction = spell.correction(word)
-        logger.info(f"Word: {word}, Correction: {correction}")
-        # 使用修正替换原文中的错误单词
-        corrected_article = corrected_article.replace(
-            word, f"~~{word}~~ <ins>{correction}</ins>"
-        )
-        word_count += 1
-    result["corrected"] = corrected_article
+    prompt = WORD_SPELL_CHECK_TEMPLATE.format(article=article)
+    contents = [prompt]
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(content), "duration": None}
+        for content in contents
+    ]
+    model = st.session_state["text-model"]
+    result = parse_generated_content_and_update_token(
+        "写作练习-检查单词拼写",
+        "gemini-pro",
+        model.generate_content,
+        contents_info,
+        GenerationConfig(**WORD_SPELL_CHECK_CONFIG),
+        stream=False,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
+    )
     result["error_type"] = "WordError"
     result["character_count"] = (
-        f"{len(article)} / {len(corrected_article)} characters corrected"
+        f"{len(article)} / {len(result['corrected'])} characters corrected"
     )
-    result["word_count"] = word_count
     return result
 
 
