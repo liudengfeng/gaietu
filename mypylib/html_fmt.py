@@ -136,39 +136,17 @@ def display_word_spell_errors(result: dict):
     if len(explanations) == 0:
         return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到拼写错误。</p>'
 
-    pattern_del = r"~~(.*?)~~"
-    pattern_add = r"<ins>(.*?)</ins>"
+    pattern = r"~~(.*?)~~ <ins>(.*?)</ins>"
 
-    counter = [0]  # 使用列表来作为可变的计数器
+    counter = 0
 
-    def replace_del(match):
+    def replace(match):
         old = match.group(1)
-        explanation = explanations[counter[0]]
-        if (
-            counter[0] < len(explanations) - 1
-            and explanations[counter[0]] == explanations[counter[0] + 1]
-        ):
-            # 如果下一个解释与当前解释相同，不增加计数器
-            pass
-        else:
-            counter[0] += 1
-        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span>'
+        new = match.group(2)
+        explanation = explanations[counter]
+        return f'<span style="text-decoration: line-through; color: red;" title="{explanation}">{old}</span> <span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
 
-    def replace_add(match):
-        new = match.group(1)
-        explanation = explanations[counter[0]]
-        if (
-            counter[0] < len(explanations) - 1
-            and explanations[counter[0]] == explanations[counter[0] + 1]
-        ):
-            # 如果下一个解释与当前解释相同，不增加计数器
-            pass
-        else:
-            counter[0] += 1
-        return f'<span style="text-decoration: underline; color: #008000;" title="{explanation}">[{new}]</span>'
-
-    corrected = re.sub(pattern_del, replace_del, corrected)
-    corrected = re.sub(pattern_add, replace_add, corrected)
+    corrected = re.sub(pattern, replace, corrected)
 
     corrected = corrected.replace("\n", "<br/>")
 
