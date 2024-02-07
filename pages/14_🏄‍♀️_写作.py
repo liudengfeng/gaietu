@@ -94,11 +94,12 @@ def initialize_writing_chat():
 GRAMMAR_CHECK_TEMPLATE = """\
 As a grammar expert, your primary responsibility is to meticulously examine the provided article for any grammatical inaccuracies. 
 Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Please note that spelling errors unrelated to grammar are not included in this check.
+
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
 3. Rectify the identified grammatical inaccuracies and indicate all deletions and additions based on the original text.
-    - Any changes made to the original text, including the addition or deletion of white space, should be clearly marked.
+    - Any modifications to the original text, even those involving white space, should be distinctly indicated.
     - Use `~~` to mark the segments that are to be removed from the original text.
     - Use `<ins>` `</ins>` to indicate the additions.
     - If a substitution is needed, mark the deletion first, followed by the addition.
@@ -108,12 +109,13 @@ Step by step, complete the following:
 6. Finally, output the dictionary in JSON format.
 
 Examples:
-Assume the original text is: 'I have many moeney in the past,I have not to work now.'
+
+The original text: 'I have many moeney in the past,I have not to work now.'
 The output dictionary should include the following keys:
 - corrected: "I ~~have~~ <ins>had</ins> many moeney in the past, so I ~~have not to~~ <ins>don't have to</ins> work now."
 - explanations: ["The past tense of 'have' is 'had'.", "The phrase 'have not to' is used to express necessity or obligation. In this context, it should be replaced with 'don't have to' to convey the idea of not being required to work."]
 
-Assume the original text is: 'She don't likes apples.'
+The original text: 'She don't likes apples.'
 The output dictionary should include the following keys:
 - corrected: "She ~~don't likes~~ <ins>doesn't like</ins> apples."
 - explanations: ["The correct form is 'doesn't like' when referring to third person singular."]   
