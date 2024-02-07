@@ -27,3 +27,4 @@ st-annotated-text==4.0.1
 moviepy==1.0.3
 werkzeug==3.0.1
 langdetect==1.0.9
+pyspellchecker==0.8.1
