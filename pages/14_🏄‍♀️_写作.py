@@ -188,6 +188,7 @@ def check_spelling(article):
     for word in misspelled:
         # 获取每个错误单词的最可能的修正
         correction = spell.correction(word)
+        logger.info(f"Word: {word}, Correction: {correction}")
         # 使用修正替换原文中的错误单词
         corrected_article = corrected_article.replace(
             word, f"~~{word}~~ <ins>{correction}</ins>"
