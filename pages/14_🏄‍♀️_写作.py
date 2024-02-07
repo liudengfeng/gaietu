@@ -164,7 +164,7 @@ def check_grammar(article):
     )
     result["error_type"] = "GrammarError"
     result["character_count"] = (
-        f"{len(article)} / {len(result['corrected'])} characters corrected"
+        f"{len(article)} / {len(remove_markup(result['corrected']))} characters corrected"
     )
     return result
 
@@ -227,7 +227,7 @@ def check_spelling(article):
     )
     result["error_type"] = "WordError"
     result["character_count"] = (
-        f"{len(article)} / {len(result['corrected'])} characters corrected"
+        f"{len(article)} / {len(remove_markup(result['corrected']))} characters corrected"
     )
     return result
 
