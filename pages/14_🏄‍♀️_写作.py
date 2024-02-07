@@ -1,12 +1,14 @@
 import difflib
 import logging
 from functools import partial
-from langdetect import detect
+
 import spacy
 import streamlit as st
+from langdetect import detect
+from spellchecker import SpellChecker
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
-from menu import help_page, return_home
 
+from menu import help_page, return_home
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
@@ -19,8 +21,8 @@ from mypylib.html_fmt import display_grammar_errors, remove_markup
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
-    on_project_changed,
     configure_google_apis,
+    on_project_changed,
     setup_logger,
     update_sidebar_status,
 )
@@ -161,6 +163,35 @@ def check_grammar(article):
     result["character_count"] = (
         f"{len(article)} / {len(result['corrected'])} characters corrected"
     )
+    return result
+
+
+def check_spelling(article):
+    # 检查 article 是否为英文文本 [字符数量少容易被错判]
+    detected_language = detect(article)
+    if detected_language in ["zh-cn", "ja"]:
+        return {
+            "corrected": f"The anticipated language is English, however, {detected_language} was detected",
+            "explanations": [],
+            "error_type": "LanguageError",
+        }
+    spell = SpellChecker()
+
+    # 找到所有拼写错误的单词
+    misspelled = spell.unknown(article.split())
+
+    result = {}
+    corrected_article = article
+    for word in misspelled:
+        # 获取每个错误单词的最可能的修正
+        correction = spell.correction(word)
+        # 使用修正替换原文中的错误单词
+        corrected_article = corrected_article.replace(
+            word, f"~~{word}~~ <ins>{correction}</ins>"
+        )
+    result["corrected"] = corrected_article
+    result["error_type"] = "WordError"
+    result["character_count"] = f"{len(article)} / {len()} characters corrected"
     return result
 
 
