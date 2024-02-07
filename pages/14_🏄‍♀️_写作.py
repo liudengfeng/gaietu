@@ -92,17 +92,15 @@ def initialize_writing_chat():
 
 
 GRAMMAR_CHECK_TEMPLATE = """\
-As a grammar expert, your primary responsibility is to meticulously examine the provided article for any grammatical inaccuracies. 
+As an English grammar expert, your primary task is to inspect and correct any grammatical errors in the following "Article".
 Grammatical inaccuracies in this context refer to errors in tense usage, noun forms, subject-verb agreement, preposition and conjunction usage, punctuation, and capitalization. Please note that spelling errors unrelated to grammar are not included in this check.
 
 Step by step, complete the following:
 1. Identify all grammatical inaccuracies in the article.
 2. In the event that the article is devoid of grammatical inaccuracies, yield an empty dictionary.
-3. Rectify the identified grammatical inaccuracies and indicate all deletions and additions based on the original text.
-    - Any modifications to the original text, even those involving white space, should be distinctly indicated.
-    - Use `~~` to mark the segments that are to be removed from the original text.
-    - Use `<ins>` `</ins>` to indicate the additions.
-    - If a substitution is needed, mark the deletion first, followed by the addition.
+3. Rectify the identified grammatical inaccuracies based on the original text.
+    - First, use `~~` to mark the segments that are to be removed from the original text. Then, use `<ins>` `</ins>` to indicate the additions.
+    - Any modifications to the original text, including the addition of white space, punctuation, and changes in case, should be distinctly indicated using the above markers.
     - The "corrected" content should clearly articulate the modifications made from the original text.
 4. For each modification made, whether it be a replacement (consisting of one deletion and one addition), a pure addition, or a pure deletion, provide a corresponding explanation in text form. These text explanations should be formed into a list.
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
