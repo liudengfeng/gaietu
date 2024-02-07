@@ -85,8 +85,10 @@ def pronunciation_assessment_word_format(word_obj):
     return result
 
 
-def display_grammar_errors(corrected, explanations):
-    if corrected == "请使用英语写作！":
+def display_grammar_errors(result: dict):
+    corrected = result.get("corrected", "")
+    explanations = result.get("explanations", [])
+    if result["error_type"] == "LanguageError":
         return '<p style="color: red; font-weight: bold;">' + corrected + "</p>"
     if len(explanations) == 0:
         return '<p style="color: green; font-weight: bold;">在您的写作练习中没有检测到语法错误。</p>'

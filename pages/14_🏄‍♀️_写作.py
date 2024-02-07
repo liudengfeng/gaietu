@@ -130,8 +130,13 @@ GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
 @st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查语法...")
 def check_grammar(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
-    if detect(article) != "en":
-        return {"corrected": "请使用英语写作！", "explanations": []}
+    detected_language = detect(article)
+    if detected_language in ["zh-cn", "ja"]:
+        return {
+            "corrected": f"The anticipated language is English, however, {detected_language} was detected",
+            "explanations": [],
+            "error_type": "LanguageError",
+        }
 
     prompt = GRAMMAR_CHECK_TEMPLATE.format(article=article)
     contents = [prompt]
@@ -140,7 +145,7 @@ def check_grammar(article):
         for content in contents
     ]
     model = st.session_state["text-model"]
-    return parse_generated_content_and_update_token(
+    result = parse_generated_content_and_update_token(
         "写作练习-语法检查",
         "gemini-pro",
         model.generate_content,
@@ -149,6 +154,8 @@ def check_grammar(article):
         stream=False,
         parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
+    result["error_type"] = "GrammarError"
+    return result
 
 
 # endregion
@@ -232,7 +239,7 @@ if w_btn_cols[2].button(
 ):
     suggestions.empty()
     result = check_grammar(st.session_state["writing-text"])
-    html = display_grammar_errors(result["corrected"], result["explanations"])
+    html = display_grammar_errors(result)
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
@@ -259,9 +266,10 @@ if w_btn_cols[6].button(
     "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
 ):
     result = check_grammar(st.session_state["writing-text"])
-    content = remove_markup(result["corrected"])
-    st.session_state["writing-content"] = content
-    st.rerun()
+    if result["error_type"] == "LanguageError":
+        content = remove_markup(result["corrected"])
+        st.session_state["writing-content"] = content
+        st.rerun()
 
 
 # endregion
