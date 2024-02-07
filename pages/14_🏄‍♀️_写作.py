@@ -173,22 +173,28 @@ WORD_SPELL_CHECK_TEMPLATE = """\
 As an English writing instructor, your primary task is to inspect and correct any spelling errors in the following "Article".
 
 Step by step, complete the following:
-1. Read through the article and correct any spelling errors in the words. This includes errors such as misspelled words, incorrect capitalization at the beginning of sentences, and other types of spelling mistakes.
-2. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-3. Correct the identified spelling errors based on the original text.
+1. Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
+2. Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
+3. In the event that the article is devoid of spelling errors, yield an empty dictionary.
+4. Correct the identified spelling errors based on the original text.
     - First, for each word that needs to be corrected, use ~~ to strike through the word in the original text. Then, use <ins> </ins> to indicate the corrected word.
     - Please note that the preferred method of indicating corrections is to mark the entire word for deletion and then insert the corrected word. The strike-through and insertion indicators should always appear in pairs to represent a single spelling correction.
     - The "corrected" content should clearly articulate the modifications made from the original text.
-4. For each word correction made, provide a corresponding explanation. Then, compile these explanations into a list.
-5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
-6. Finally, output the dictionary in JSON format.
+5. For each word correction made, provide a corresponding explanation. Then, compile these explanations into a list.
+6. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
+7. Finally, output the dictionary in JSON format.
 
-Example:
+Examples:
 
 The original text: 'I am going two the store two bye some bred, milk, and egs.'
 The output dictionary should include the following keys:
 - corrected: "I am going ~~two~~ <ins>to</ins> the store ~~two~~ <ins>to</ins> ~~bye~~ <ins>buy</ins> some ~~bred~~ <ins>bread</ins>, milk, and ~~egs~~ <ins>eggs</ins>."
 - explanations: ["The word 'two' is a number and should be replaced with 'to' when used as a preposition.", "The word 'bye' is a farewell expression and should be replaced with 'buy' when referring to purchasing something.", "The word 'bred' is a past tense of breed and should be replaced with 'bread' when referring to the food.", "The word 'egs' is a misspelling and should be replaced with 'eggs'."]
+
+The original text: 'i am going two the store.'
+The output dictionary should include the following keys:
+- corrected: "i am going ~~two~~ <ins>to</ins> the store."
+- explanations: ["The word 'two' is a number and should be replaced with 'to' when used as a preposition."]
 
 Article:{article}
 """
