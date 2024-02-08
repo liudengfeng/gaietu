@@ -256,7 +256,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             df.rename(columns=column_mapping, inplace=True)
             current_records = df.copy()
             # 删除无效项目 Home
-            to_remove = ["Home", "订阅续费"]
+            to_remove = ["Home", "订阅续费", "用户中心"]
             current_records = current_records[~current_records["项目"].isin(to_remove)]
             current_records["时长"] = (current_records["时长"] / 60).round(2)
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
