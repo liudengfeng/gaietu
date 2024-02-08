@@ -248,7 +248,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown(
         """
-    ## `Gaietu`[英语速学] - 你的英语学习助手！
+    ## `Gaietu`[英语学习]
 
     **Gaietu**，你的全方位英语学习平台！我们提供记忆单词、口语练习、听力练习、阅读理解、写作练习和能力评估等一站式服务。
 
@@ -263,7 +263,7 @@ with col1:
 
 logo_image = Image.open(LOGO_DIR / "logo.jpg")
 with col2:
-    st.image(logo_image, width=320)
+    st.image(logo_image, width=360)
 st.divider()
 
 
