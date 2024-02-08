@@ -407,12 +407,9 @@ with w_cols[2]:
                 placeholder=ai_tip_container.empty(),
             )
             st.session_state["writing-ai-assitant"] = (
-                f"""您的问题：
-                
-                {prompt}
-
-                'AI回复：
-                
+                f"""您的问题：\n\n
+                {prompt}\n\n
+                'AI回复：\n\n
                 {st.session_state["writing-chat"].history[-1].parts[0].text}"""
             )
             update_sidebar_status(sidebar_status)
