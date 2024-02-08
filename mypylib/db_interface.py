@@ -258,9 +258,13 @@ class DbInterface:
                 )
 
         # 从缓存中删除用户的登录状态
-        for key in list(self.cache["user_info"].keys()):  # 创建一个键的副本
-            if key not in ["phone_number", "timezone"]:
-                self.cache["user_info"].pop(key)
+        user_info_copy = {}
+        for key in ["phone_number", "timezone"]:
+            user_info_copy[key] = self.cache["user_info"][key]
+
+        # 替换原始字典
+        self.cache["user_info"] = user_info_copy
+
         logger.info(f'用户 {self.cache["user_info"]}')
         return "Logout successful"
 
