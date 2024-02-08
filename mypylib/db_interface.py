@@ -260,7 +260,7 @@ class DbInterface:
         # 从缓存中删除用户的登录状态
         for key in list(self.cache["user_info"].keys()):  # 创建一个键的副本
             if key not in ["phone_number", "timezone"]:
-                del self.cache["user_info"][key]
+                self.cache["user_info"].pop(key)
         logger.info(f'用户 {self.cache["user_info"]}')
         return "Logout successful"
 
