@@ -430,20 +430,20 @@ clr_btn = w_btn_cols[1].button(
     "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习内容。"
 )
 
-grm_btn = w_btn_cols[2].button(
-    "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
-)
-
-wrd_btn = w_btn_cols[3].button(
+wrd_btn = w_btn_cols[2].button(
     "单词[:abc:]", key="word", help="✨ 点击按钮，检查单词拼写错误。"
 )
 
-plh_btn = w_btn_cols[4].button(
-    "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
+grm_btn = w_btn_cols[3].button(
+    "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
 )
 
-lgc_btn = w_btn_cols[5].button(
+lgc_btn = w_btn_cols[4].button(
     "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
+)
+
+plh_btn = w_btn_cols[5].button(
+    "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
 )
 
 rvn_btn = w_btn_cols[6].button(
