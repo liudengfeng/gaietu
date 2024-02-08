@@ -378,7 +378,7 @@ def generate_word_test(model_name, model, word, level):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.1, top_p=1.0
+        max_output_tokens=2048, temperature=0.0, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -410,7 +410,7 @@ def generate_scenarios(model, subject):
     prompt = SCENARIO_TEMPLATE.format(subject)
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.8, top_p=1.0
+        max_output_tokens=2048, temperature=0.8, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -456,7 +456,7 @@ def generate_dialogue(model, boy_name, girl_name, scenario, plot, difficulty):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.5, top_p=1.0
+        max_output_tokens=2048, temperature=0.5, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -479,7 +479,7 @@ def summarize_in_one_sentence(model, text):
     prompt = ONE_SUMMARY_TEMPLATE.format(text=text)
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.75, top_p=1.0
+        max_output_tokens=2048, temperature=0.0, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -515,7 +515,7 @@ def generate_listening_test(model, level, dialogue, number=5):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.2, top_p=1.0
+        max_output_tokens=2048, temperature=0.2, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -552,7 +552,7 @@ def generate_reading_comprehension_article(model, genre, content, plot, level):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.8, top_p=1.0
+        max_output_tokens=2048, temperature=0.8, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -593,7 +593,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.2, top_p=1.0
+        max_output_tokens=2048, temperature=0.2, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -627,7 +627,7 @@ def generate_pronunciation_assessment_text(model, ability, level):
     prompt = PRONUNCIATION_ASSESSMENT_TEMPLATE.format(ability=scenario, level=level)
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=500, temperature=0.9, top_p=1.0
+        max_output_tokens=500, temperature=0.9, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -661,7 +661,7 @@ def generate_oral_ability_topics(model, ability, level, number):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=500, temperature=0.9, top_p=1.0
+        max_output_tokens=500, temperature=0.9, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
@@ -688,7 +688,7 @@ def generate_oral_statement_template(model, topic, level):
     prompt = ORAL_ABILITY_STATEMENT_TEMPLATE.format(topic=topic, level=level)
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=256, temperature=0.5, top_p=1.0
+        max_output_tokens=256, temperature=0.5, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
