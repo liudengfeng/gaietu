@@ -408,8 +408,11 @@ with w_cols[2]:
             )
             st.session_state["writing-ai-assitant"] = (
                 f"""您的问题：
+                
                 {prompt}
+
                 'AI回复：
+                
                 {st.session_state["writing-chat"].history[-1].parts[0].text}"""
             )
             update_sidebar_status(sidebar_status)
