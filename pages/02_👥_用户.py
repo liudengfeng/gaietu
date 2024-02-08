@@ -15,7 +15,7 @@ from azure.storage.blob import BlobServiceClient
 
 # from cryptography.fernet import Fernet
 from PIL import Image
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.auth_utils import is_valid_email
 from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
@@ -23,7 +23,7 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
+    # check_access,
     on_project_changed,
     setup_logger,
 )
@@ -47,9 +47,8 @@ st.set_page_config(
     page_icon=":busts_in_silhouette:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
+# check_access(False)
 on_project_changed("用户中心")
 add_exercises_to_db()
 

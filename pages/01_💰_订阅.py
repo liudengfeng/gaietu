@@ -3,7 +3,7 @@ import time
 
 import streamlit as st
 from PIL import Image
-from menu import return_home
+from menu import menu
 
 from mypylib.st_helper import on_project_changed
 
@@ -17,7 +17,7 @@ st.set_page_config(
     layout="wide",
 )
 
-return_home()
+menu()
 on_project_changed("订阅续费")
 
 

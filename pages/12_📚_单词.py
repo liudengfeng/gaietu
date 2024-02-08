@@ -14,14 +14,14 @@ import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
 
-from menu import help_page, return_home
+from menu import menu
 from mypylib.constants import CEFR_LEVEL_MAPS
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
-    check_access,
+    # check_access,
     configure_google_apis,
     count_non_none,
     get_mini_dict_doc,
@@ -46,9 +46,8 @@ st.set_page_config(
     page_icon=":books:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
+# check_access(False)
 
 # save_and_clear_all_learning_records()
 configure_google_apis()
@@ -70,7 +69,7 @@ def on_menu_change():
     item = st.session_state["word_dict_menu"].split(" ", 1)[1]
 
 
-menu: str = st.sidebar.selectbox(
+item_menu: str = st.sidebar.selectbox(
     "菜单",
     menu_opts,
     index=0,
@@ -855,7 +854,7 @@ with open(CURRENT_CWD / "resource/voices.json", "r", encoding="utf-8") as f:
 
 add_exercises_to_db()
 
-if menu and menu.endswith("闪卡记忆"):
+if item_menu and item_menu.endswith("闪卡记忆"):
     on_project_changed("单词练习-闪卡记忆")
     # region 侧边栏
     # 让用户选择语音风格
@@ -1037,7 +1036,7 @@ if menu and menu.endswith("闪卡记忆"):
 
 # region 单词拼图
 
-elif menu and menu.endswith("拼图游戏"):
+elif item_menu and item_menu.endswith("拼图游戏"):
     on_project_changed("单词练习-单词拼图")
     # region 边栏
     include_cb = st.sidebar.checkbox(
@@ -1151,7 +1150,7 @@ elif menu and menu.endswith("拼图游戏"):
 
 # region 图片测词
 
-elif menu and menu.endswith("看图猜词"):
+elif item_menu and item_menu.endswith("看图猜词"):
     on_project_changed("单词练习-看图猜词")
     # region 边栏
     category = st.sidebar.selectbox(
@@ -1241,7 +1240,7 @@ elif menu and menu.endswith("看图猜词"):
 
 # region 词意测试
 
-elif menu and menu.endswith("词意测试"):
+elif item_menu and item_menu.endswith("词意测试"):
     on_project_changed("单词练习-词意测试")
     update_sidebar_status(sidebar_status)
     # region 边栏
@@ -1408,7 +1407,7 @@ elif menu and menu.endswith("词意测试"):
 
 # region 个人词库
 
-elif menu and menu.endswith("词库管理"):
+elif item_menu and item_menu.endswith("词库管理"):
     on_project_changed("单词练习-词库管理")
     # 基准词库不包含个人词库
     add_personal_dictionary(False)
