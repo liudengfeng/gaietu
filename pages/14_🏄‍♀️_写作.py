@@ -294,7 +294,7 @@ def polish_article(article):
     )
     result["error_type"] = "WordError"
     result["character_count"] = (
-        f"{len(article)} / {len(remove_markup(result['corrected']))} characters corrected"
+        f"{len(article)} / {len(result['corrected'])} characters corrected"
     )
     return result
 
@@ -472,7 +472,17 @@ if wrd_btn:
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
 
 if plh_btn:
-    pass
+    suggestions.empty()
+    result = polish_article(st.session_state["writing-text"])
+
+    if not result:
+        suggestions.write("文字表述很完美，我无需进行任何润色。👏👏👏")
+    else:
+        suggestions.markdown("建议文稿：")
+        suggestions.markdown(result["corrected"], unsafe_allow_html=True)
+        suggestions.divider()
+        suggestions.write("解释：")
+        suggestions.write(result["explanation"])
 
 if lgc_btn:
     suggestions.empty()
