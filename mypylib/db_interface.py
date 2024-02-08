@@ -258,7 +258,9 @@ class DbInterface:
                 )
 
         # 从缓存中删除用户的登录状态
-        self.cache["user_info"] = {}
+        for key in self.cache["user_info"].keys():
+            if key not in ["phone_number", "timezone"]:
+                del self.cache["user_info"][key]
 
         return "Logout successful"
 

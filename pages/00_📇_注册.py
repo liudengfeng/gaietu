@@ -10,7 +10,11 @@ from mypylib.auth_utils import is_valid_email, is_valid_phone_number
 from mypylib.constants import CEFR_LEVEL_MAPS, FAKE_EMAIL_DOMAIN, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
-from mypylib.st_helper import add_exercises_to_db, get_firestore_client, on_project_changed
+from mypylib.st_helper import (
+    add_exercises_to_db,
+    get_firestore_client,
+    on_project_changed,
+)
 from menu import return_home
 
 # 创建 Fernet 实例【必须将key转换为bytes类型】
