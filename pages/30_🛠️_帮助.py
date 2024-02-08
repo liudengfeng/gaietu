@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import streamlit as st
-from menu import return_home
+from menu import menu
 
 from mypylib.st_helper import add_exercises_to_db, on_project_changed
 
@@ -10,7 +10,7 @@ st.set_page_config(
     page_icon="🛠️",
     layout="centered",
 )
-return_home()
+menu()
 on_project_changed("帮助中心")
 add_exercises_to_db()
 

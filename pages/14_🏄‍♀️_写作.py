@@ -7,7 +7,7 @@ import streamlit as st
 from langdetect import detect
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
 
-from menu import help_page, return_home
+from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
@@ -23,7 +23,6 @@ from mypylib.html_fmt import (
 )
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
     configure_google_apis,
     on_project_changed,
     setup_logger,
@@ -43,9 +42,7 @@ st.set_page_config(
     page_icon="🏄‍♀️",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
 configure_google_apis()
 on_project_changed("写作练习")
 add_exercises_to_db()
@@ -60,6 +57,12 @@ if "text-model" not in st.session_state:
 
 if "writing-content" not in st.session_state:
     st.session_state["writing-content"] = ""
+
+if "writing-ai-prompt" not in st.session_state:
+    st.session_state["writing-ai-prompt"] = ""
+
+if "writing-ai-assitant" not in st.session_state:
+    st.session_state["writing-ai-assitant"] = ""
 
 # Use the get method since the keys won't be in session_state on the first script run
 if st.session_state.get("writing-clear"):
@@ -128,7 +131,8 @@ The output dictionary should include the following keys:
 - corrected: "~~she~~ <ins>She</ins> is a teacher."
 - explanations: ["The first word of a sentence should be capitalized."]
 
-Article:{article}
+Article:
+{article}
 """
 
 
@@ -173,12 +177,13 @@ WORD_SPELL_CHECK_TEMPLATE = """\
 As an English writing instructor, your primary task is to inspect and correct any spelling errors in the following "Article".
 
 Step by step, complete the following:
-1. Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
-2. Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
-3. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-4. For each word that needs to be corrected, use `~~` to strike through the word in the original text, then use `<ins>` `</ins>` to indicate the corrected word. Each correction should be accompanied by a corresponding explanation, even if the word error, correction, and explanation are the same. This means that each word correction is treated as a separate case and requires its own explanation. The "corrected" content should clearly articulate the modifications made from the original text, and the explanations should be compiled into a list. The number of corrected words and the number of explanations should be the same. 
-5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
-6. Finally, output the dictionary in JSON format.
+
+- Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
+- Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
+- In the event that the article is devoid of spelling errors, yield an empty dictionary.
+- For each correction, three steps need to be completed: 1. Deletion of the error, marked with ~~. 2. Addition of the correction, marked with <ins> </ins>. 3. Addition of the explanation for the correction to the "explanations" list. If the correction involves adding a word, delete the word that is in the wrong context first, then add the corrected phrase. 
+- Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
+- Finally, output the dictionary in JSON format.
 
 Examples:
 
@@ -197,7 +202,8 @@ The output dictionary should include the following keys:
 - corrected: "i am going ~~two~~ <ins>to</ins> the store."
 - explanations: ["The word 'two' is a number and should be replaced with 'to' when used as a preposition."]
 
-Article:{article}
+Article:
+{article}
 """
 
 
@@ -238,6 +244,111 @@ def check_spelling(article):
     return result
 
 
+ARTICLE_POLISH_TEMPLATE = """\
+As an English writing master, your primary task is to utilize your extensive experience to polish the following "Article", ensuring the accuracy and idiomaticity of vocabulary and sentence structure.
+
+Please proceed as follows:
+
+- Carefully read the article and discern the most suitable style and tone based on its theme and purpose.
+- Refine and enrich the sentence structure according to the discerned style, and meticulously polish the article.
+- If there are no areas in the article that need to be polished, return an empty dictionary.
+- Output a dictionary with "corrected" (the revised English text) and "explanation" (the explanation in Simplified Chinese) as keys. The explanation should clearly describe the modifications, reasons, and objectives. Both the corrected text and the explanation should be presented in the form of Markdown formatted text.
+- Finally, output the dictionary in JSON format.
+
+Article:
+{article}
+"""
+
+ARTICLE_POLISH_CONFIG = {"max_output_tokens": 2048, "temperature": 0.75}
+
+
+@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在润色文章...")
+def polish_article(article):
+    # 检查 article 是否为英文文本 [字符数量少容易被错判]
+    detected_language = detect(article)
+    if detected_language in ["zh-cn", "ja"]:
+        return {
+            "corrected": f"The anticipated language is English, however, {detected_language} was detected",
+            "explanations": [],
+            "error_type": "LanguageError",
+        }
+
+    prompt = ARTICLE_POLISH_TEMPLATE.format(article=article)
+    contents = [prompt]
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(content), "duration": None}
+        for content in contents
+    ]
+    model = st.session_state["text-model"]
+    result = parse_generated_content_and_update_token(
+        "写作练习-文章润色",
+        "gemini-pro",
+        model.generate_content,
+        contents_info,
+        GenerationConfig(**ARTICLE_POLISH_CONFIG),
+        stream=False,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
+    )
+    result["error_type"] = "WordError"
+    result["character_count"] = (
+        f"{len(article)} / {len(result['corrected'])} characters corrected"
+    )
+    return result
+
+
+LOGIC_STRUCTURE_TEMPLATE = """\
+As an English writing assistant, your main task is to ensure that the "article" has a clear structure, a logical sequence, and uses appropriate conjunctions or transition words to represent the logical relationship between different parts.
+Please proceed as follows:
+- Check the logic and structure of the article, ensure clear viewpoints and sufficient arguments, and ensure clear logical relationships between paragraphs based on the theme of the article.
+- If there are no areas for improvement in terms of logic and structure in the article, return an empty dictionary. Otherwise, provide a revised version of the manuscript in English and a detailed explanation of all corrections in Simplified Chinese, both in Markdown format as a single text, using 'corrected' and 'explanation' as the keys in the dictionary.
+- Finally, output the result in JSON format.
+
+Article:
+{article}
+"""
+
+LOGIC_STRUCTURE_CONFIG = {"max_output_tokens": 2048, "temperature": 0.45}
+
+
+@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查、修正文章逻辑结构...")
+def logic_article(article):
+    # 检查 article 是否为英文文本 [字符数量少容易被错判]
+    detected_language = detect(article)
+    if detected_language in ["zh-cn", "ja"]:
+        return {
+            "corrected": f"The anticipated language is English, however, {detected_language} was detected",
+            "explanations": [],
+            "error_type": "LanguageError",
+        }
+
+    prompt = LOGIC_STRUCTURE_TEMPLATE.format(article=article)
+    contents = [prompt]
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(content), "duration": None}
+        for content in contents
+    ]
+    model = st.session_state["text-model"]
+    result = parse_generated_content_and_update_token(
+        "写作练习-逻辑结构",
+        "gemini-pro",
+        model.generate_content,
+        contents_info,
+        GenerationConfig(**LOGIC_STRUCTURE_CONFIG),
+        stream=False,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
+    )
+    result["error_type"] = "LogicError"
+    if result["corrected"]:
+        result["character_count"] = (
+            f"{len(article)} / {len(result['corrected'])} characters corrected"
+        )
+    else:
+        result["character_count"] = (
+            f"{len(article)} / {len(article)} characters corrected"
+        )
+    return result
+
+
 # endregion
 
 # region 主体
@@ -274,8 +385,8 @@ suggestions = w_cols[1].container(border=True, height=HEIGHT)
 
 Assistant_Configuration = {
     "temperature": 0.2,
-    "top_p": 1.0,
-    "top_k": 32,
+    "top_k": 1.0,
+    "top_p": 32,
     "max_output_tokens": 1024,
 }
 assistant_config = GenerationConfig(**Assistant_Configuration)
@@ -283,7 +394,7 @@ with w_cols[2]:
     st.markdown("<h5 style='color: purple;'>AI助教</h5>", unsafe_allow_html=True)
     ai_tip_container = st.container(border=True, height=HEIGHT)
     with ai_tip_container:
-        if prompt := st.chat_input("输入请求，获取 AI 写作助手的支持。"):
+        if prompt := st.chat_input("向 AI 写作助手寻求帮助。"):
             contents_info = [
                 {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
             ]
@@ -296,58 +407,100 @@ with w_cols[2]:
                 stream=True,
                 placeholder=ai_tip_container.empty(),
             )
+            st.session_state["writing-ai-prompt"] = prompt
+            st.session_state["writing-ai-assitant"] = (
+                st.session_state["writing-chat"].history[-1].parts[0].text
+            )
             update_sidebar_status(sidebar_status)
 
+    if st.session_state["writing-ai-prompt"]:
+        ai_tip_container.empty()
+        ai_tip_container.markdown("用户：")
+        ai_tip_container.markdown(st.session_state["writing-ai-prompt"])
+        ai_tip_container.divider()
+        ai_tip_container.markdown("AI：")
+        ai_tip_container.markdown(st.session_state["writing-ai-assitant"])
 
-if w_btn_cols[0].button(
+
+rfh_btn = w_btn_cols[0].button(
     "刷新[:arrows_counterclockwise:]",
     key="writing-refresh",
     help="✨ 点击按钮，开始新一轮练习。",
-):
+)
+
+clr_btn = w_btn_cols[1].button(
+    "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习内容。"
+)
+
+wrd_btn = w_btn_cols[2].button(
+    "单词[:abc:]", key="word", help="✨ 点击按钮，检查单词拼写错误。"
+)
+
+grm_btn = w_btn_cols[3].button(
+    "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
+)
+
+lgc_btn = w_btn_cols[4].button(
+    "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
+)
+
+plh_btn = w_btn_cols[5].button(
+    "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
+)
+
+rvn_btn = w_btn_cols[6].button(
+    "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
+)
+
+if rfh_btn:
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
     st.rerun()
 
-if w_btn_cols[1].button(
-    "清除[:wastebasket:]", key="writing-clear", help="✨ 点击按钮，清除写作练习内容。"
-):
+if clr_btn:
     pass
 
-if w_btn_cols[2].button(
-    "语法[:triangular_ruler:]", key="grammar", help="✨ 点击按钮，检查语法错误。"
-):
+if grm_btn:
     suggestions.empty()
     result = check_grammar(st.session_state["writing-text"])
     html = display_grammar_errors(result)
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
     update_sidebar_status(sidebar_status)
 
-if w_btn_cols[3].button(
-    "单词[:abc:]", key="word", help="✨ 点击按钮，检查单词拼写错误。"
-):
+if wrd_btn:
     suggestions.empty()
     result = check_spelling(st.session_state["writing-text"])
     html = display_word_spell_errors(result)
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
 
-if w_btn_cols[4].button(
-    "润色[:art:]", key="polish", help="✨ 点击按钮，提高词汇量和句式多样性。"
-):
-    pass
+if plh_btn:
+    suggestions.empty()
+    result = polish_article(st.session_state["writing-text"])
 
-if w_btn_cols[5].button(
-    "逻辑[:brain:]", key="logic", help="✨ 点击按钮，改善文章结构和逻辑。"
-):
-    # 你的文本
-    text = "<p>这是一段文本。</p>"
+    if not result:
+        suggestions.write("文字表述很完美，我无需进行任何润色。👏👏👏")
+    else:
+        suggestions.markdown("建议文稿：")
+        suggestions.markdown(result["corrected"], unsafe_allow_html=True)
+        suggestions.divider()
+        suggestions.write("解释：")
+        suggestions.write(result["explanation"])
 
-    # 使用 st.code 显示文本
-    st.code(text, language="txt")
+if lgc_btn:
+    suggestions.empty()
+    result = logic_article(st.session_state["writing-text"])
+    if not result:
+        suggestions.write("很好，文章的结构和逻辑已经很完善了。👏👏👏")
+    else:
+        suggestions.markdown("建议文稿：")
+        if result["corrected"]:
+            suggestions.markdown(result["corrected"], unsafe_allow_html=True)
+            suggestions.divider()
+        suggestions.write("解释：")
+        suggestions.write(result["explanation"])
 
-if w_btn_cols[6].button(
-    "修正[:wrench:]", key="revision", help="✨ 点击按钮，接受AI修正建议。"
-):
+if rvn_btn:
     result = check_grammar(st.session_state["writing-text"])
     if result["error_type"] == "LanguageError":
         content = remove_markup(result["corrected"])

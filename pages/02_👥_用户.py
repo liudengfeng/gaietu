@@ -15,7 +15,7 @@ from azure.storage.blob import BlobServiceClient
 
 # from cryptography.fernet import Fernet
 from PIL import Image
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.auth_utils import is_valid_email
 from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
@@ -23,7 +23,6 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
     on_project_changed,
     setup_logger,
 )
@@ -47,9 +46,7 @@ st.set_page_config(
     page_icon=":busts_in_silhouette:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
 on_project_changed("用户中心")
 add_exercises_to_db()
 
@@ -259,7 +256,15 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             df.rename(columns=column_mapping, inplace=True)
             current_records = df.copy()
             # 删除无效项目 Home
-            current_records = current_records[current_records["项目"] != "Home"]
+            to_remove = [
+                "Home",
+                "订阅续费",
+                "用户中心",
+                "用户注册",
+                "帮助中心",
+                "系统管理",
+            ]
+            current_records = current_records[~current_records["项目"].isin(to_remove)]
             current_records["时长"] = (current_records["时长"] / 60).round(2)
             current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
                 user_tz

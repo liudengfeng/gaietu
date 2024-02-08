@@ -258,7 +258,7 @@ with col1:
 
     **💰 价格便宜**：我们提供的是高质量的教学服务，价格却非常亲民，让你轻松享受优质的英语学习体验。
 
-    **只需要一副麦克风、耳机，你就可以开始你的英语学习之旅！**"""               
+    **只需要一副麦克风、耳机，你就可以开始你的英语学习之旅！**"""
     )
 
 logo_image = Image.open(LOGO_DIR / "logo.jpg")
@@ -289,17 +289,6 @@ if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
 if step_cols[2].button(":key: 登录使用", key="登录使用"):
     st.switch_page("Home.py")
 
-
-st.markdown(
-    """\
-欢迎来到`Gaietu` [英语速学] ，你的英语学习伙伴！
-
-**Gaietu**是一款功能强大的英语学习app，它使用最新AI技术和微软发音评估技术，可以帮助你快速提升英语水平。
-
-**Gaietu**，让你学好英语，so easy！
-""",
-    unsafe_allow_html=True,
-)
 
 if is_logged_in:
     if logout_btn:

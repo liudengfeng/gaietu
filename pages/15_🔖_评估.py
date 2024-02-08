@@ -6,13 +6,14 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.azure_pronunciation_assessment import (
     adjust_display_by_reference_text,
     read_audio_file,
 )
 from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP, ORAL_FP
+
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_oral_ability_topics,
@@ -27,7 +28,6 @@ from mypylib.st_helper import (
     PRONUNCIATION_SCORE_BADGE_MAPS,
     add_exercises_to_db,
     autoplay_audio_and_display_text,
-    check_access,
     configure_google_apis,
     display_assessment_score,
     get_synthesis_speech,
@@ -48,16 +48,14 @@ st.set_page_config(
     page_icon=":bookmark:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
 
 configure_google_apis()
 
 menu_items = ["发音评估", "口语能力", "写作评估"]
 menu_emojis = ["🔊", "🗣️", "✍️"]
 menu_opts = [f"{e} {i}" for i, e in zip(menu_items, menu_emojis)]
-menu = st.sidebar.selectbox("菜单", menu_opts, help="选择你要练习的项目")
+item_menu = st.sidebar.selectbox("菜单", menu_opts, help="选择你要练习的项目")
 
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
@@ -270,7 +268,7 @@ add_exercises_to_db()
 
 # region 发音评估页面
 
-if menu and menu.endswith("发音评估"):
+if item_menu and item_menu.endswith("发音评估"):
     on_project_changed("能力评估-发音评估")
     difficulty = st.sidebar.selectbox(
         "CEFR等级",
@@ -489,7 +487,7 @@ if menu and menu.endswith("发音评估"):
 
 # region 口语评估
 
-if menu and menu.endswith("口语能力"):
+if item_menu and item_menu.endswith("口语能力"):
     on_project_changed("能力评估-口语能力")
     difficulty = st.sidebar.selectbox(
         "CEFR等级",
@@ -740,7 +738,7 @@ if menu and menu.endswith("口语能力"):
 
 # region 写作评估
 
-if menu and menu.endswith("写作评估"):
+if item_menu and item_menu.endswith("写作评估"):
     on_project_changed("能力评估-写作评估")
 
 # endregion

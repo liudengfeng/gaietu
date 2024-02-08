@@ -10,7 +10,7 @@ import streamlit as st
 from moviepy.editor import VideoFileClip
 from PIL import Image as PImage
 from vertexai.preview.generative_models import GenerationConfig, Part
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -21,7 +21,6 @@ from mypylib.google_ai import (
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
     configure_google_apis,
     on_project_changed,
     setup_logger,
@@ -41,9 +40,7 @@ st.set_page_config(
     page_icon=":gemini:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
 configure_google_apis()
 add_exercises_to_db()
 # endregion
@@ -53,8 +50,8 @@ add_exercises_to_db()
 gemini_pro_vision_generation_config = {
     "max_output_tokens": 2048,
     "temperature": 0.4,
-    "top_p": 1,
-    "top_k": 32,
+    "top_k": 1.0,
+    "top_p": 32,
 }
 
 AVATAR_NAMES = ["user", "model"]
@@ -291,13 +288,13 @@ def clear_prompt(key):
 # region 主页
 
 
-menu = st.sidebar.selectbox("菜单", options=["聊天机器人", "多模态AI", "示例教程"])
+item_menu = st.sidebar.selectbox("菜单", options=["聊天机器人", "多模态AI", "示例教程"])
 st.sidebar.divider()
 sidebar_status = st.sidebar.empty()
 
 # region 聊天机器人
 
-if menu == "聊天机器人":
+if item_menu == "聊天机器人":
     # region 边栏
     on_project_changed("AI-聊天机器人")
     st.sidebar.markdown(
@@ -462,7 +459,7 @@ if menu == "聊天机器人":
 
 # region 多模态AI
 
-elif menu == "多模态AI":
+elif item_menu == "多模态AI":
     on_project_changed("AI-多模态AI")
     # region 边栏
     st.sidebar.markdown(
@@ -720,7 +717,7 @@ elif menu == "多模态AI":
 
 # region 多模态AI示例教程
 
-elif menu == "示例教程":
+elif item_menu == "示例教程":
     on_project_changed("AI-示例教程")
     # region 边栏
     # sidebar_status = st.sidebar.empty()

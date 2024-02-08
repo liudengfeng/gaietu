@@ -12,7 +12,7 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
@@ -37,7 +37,6 @@ from mypylib.st_helper import (
     WORD_COUNT_BADGE_MAPS,
     add_exercises_to_db,
     autoplay_audio_and_display_text,
-    check_access,
     configure_google_apis,
     count_non_none,
     display_assessment_score,
@@ -70,9 +69,9 @@ st.set_page_config(
     page_icon=":muscle:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+
+menu()
+
 # save_and_clear_all_learning_records()
 configure_google_apis()
 
@@ -91,7 +90,7 @@ def on_menu_changed():
     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
 
 
-menu = st.sidebar.radio(
+item_menu = st.sidebar.radio(
     "菜单",
     menu_opts,
     key="menu-radio",
@@ -684,7 +683,7 @@ def set_state(i):
 
 # region 听说练习
 
-if menu is not None and menu.endswith("听说练习"):
+if item_menu is not None and item_menu.endswith("听说练习"):
     on_project_changed("听说练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
@@ -1200,7 +1199,7 @@ if menu is not None and menu.endswith("听说练习"):
 
 # region 阅读练习
 
-if menu is not None and menu.endswith("阅读练习"):
+if item_menu is not None and item_menu.endswith("阅读练习"):
     on_project_changed("阅读练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
