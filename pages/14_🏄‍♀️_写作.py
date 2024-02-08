@@ -173,12 +173,13 @@ WORD_SPELL_CHECK_TEMPLATE = """\
 As an English writing instructor, your primary task is to inspect and correct any spelling errors in the following "Article".
 
 Step by step, complete the following:
-1. Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
-2. Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
-3. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-4. For each word that needs to be corrected, use `~~` to strike through the word in the original text, then use `<ins>` `</ins>` to indicate the corrected word. Each correction should be accompanied by a corresponding explanation, even if the word error, correction, and explanation are the same. This means that each word correction is treated as a separate case and requires its own explanation. The "corrected" content should clearly articulate the modifications made from the original text, and the explanations should be compiled into a list. The number of corrected words and the number of explanations should be the same. 
-5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
-6. Finally, output the dictionary in JSON format.
+
+- Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
+- Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
+- In the event that the article is devoid of spelling errors, yield an empty dictionary.
+- For each correction, first delete the error, marked with ~~, then add the correction, marked with <ins> </ins>. Then add the explanation of the correction to the explanations list. The number of corrections should be equal to the length of the explanation list.
+- Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
+- Finally, output the dictionary in JSON format.
 
 Examples:
 
