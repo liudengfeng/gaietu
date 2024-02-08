@@ -411,12 +411,13 @@ with w_cols[2]:
             )
             update_sidebar_status(sidebar_status)
 
-    ai_tip_container.empty()
-    ai_tip_container.markdown("用户：")
-    ai_tip_container.markdown(st.session_state["writing-ai-prompt"])
-    ai_tip_container.divider()
-    ai_tip_container.markdown("AI：")
-    ai_tip_container.markdown(st.session_state["writing-ai-assitant"])
+    if st.session_state["writing-ai-prompt"]:
+        ai_tip_container.empty()
+        ai_tip_container.markdown("用户：")
+        ai_tip_container.markdown(st.session_state["writing-ai-prompt"])
+        ai_tip_container.divider()
+        ai_tip_container.markdown("AI：")
+        ai_tip_container.markdown(st.session_state["writing-ai-assitant"])
 
 
 rfh_btn = w_btn_cols[0].button(
