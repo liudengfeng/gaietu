@@ -61,6 +61,9 @@ if "text-model" not in st.session_state:
 if "writing-content" not in st.session_state:
     st.session_state["writing-content"] = ""
 
+if "writing-ai-prompt" not in st.session_state:
+    st.session_state["writing-ai-prompt"] = ""
+
 if "writing-ai-assitant" not in st.session_state:
     st.session_state["writing-ai-assitant"] = ""
 
@@ -406,16 +409,15 @@ with w_cols[2]:
                 stream=True,
                 placeholder=ai_tip_container.empty(),
             )
-            text = f"""您的问题：
-
-                {prompt}
-
-                AI回复：
-
-                {st.session_state["writing-chat"].history[-1].parts[0].text}"""
-            st.session_state["writing-ai-assitant"] = text
+            st.session_state["writing-ai-prompt"] = prompt
+            st.session_state["writing-ai-assitant"] = (
+                st.session_state["writing-chat"].history[-1].parts[0].text
+            )
             update_sidebar_status(sidebar_status)
-    ai_tip_container.markdown(st.session_state["writing-ai-assitant"])
+    
+    ai_tip_container.markdown(st.session_state["writing-ai-prompt"])
+    ai_tip_container.divider()
+    ai_tip_container.code(st.session_state["writing-ai-assitant"],language="markdown")
 
 
 rfh_btn = w_btn_cols[0].button(
