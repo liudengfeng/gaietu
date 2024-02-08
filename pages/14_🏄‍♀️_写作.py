@@ -255,7 +255,7 @@ Please proceed as follows:
 - Carefully read the article and discern the most suitable style and tone based on its theme and purpose.
 - Refine and enrich the sentence structure according to the discerned style, and meticulously polish the article.
 - If there are no areas in the article that need to be polished, return an empty dictionary.
-- Output a dictionary with "corrected" (the revised text in English) and "explanation" (the explanation in Simplified Chinese) as keys, both of which should be presented in the form of Markdown formatted text.
+- Output a dictionary with "corrected" (the revised English text) and "explanation" (the explanation in Simplified Chinese) as keys. The explanation should clearly describe the modifications, reasons, and objectives. Both the corrected text and the explanation should be presented in the form of Markdown formatted text.
 - Finally, output the dictionary in JSON format.
 
 Article:
