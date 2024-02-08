@@ -21,7 +21,6 @@ from mypylib.constants import CEFR_LEVEL_MAPS
 from mypylib.google_ai import generate_word_test, load_vertex_model
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
-    # check_access,
     configure_google_apis,
     count_non_none,
     get_mini_dict_doc,
@@ -47,9 +46,7 @@ st.set_page_config(
     layout="wide",
 )
 menu()
-# check_access(False)
 
-# save_and_clear_all_learning_records()
 configure_google_apis()
 sidebar_status = st.sidebar.empty()
 

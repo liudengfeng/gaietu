@@ -22,7 +22,6 @@ from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     add_exercises_to_db,
-    # check_access,
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
@@ -46,7 +45,6 @@ st.set_page_config(
     layout="wide",
 )
 menu()
-# check_access(True)
 configure_google_apis()
 on_project_changed("系统管理")
 add_exercises_to_db()
@@ -425,7 +423,7 @@ def display_cost_bar_chart(df: pd.DataFrame, period: str = "天"):
 
 # region 侧边栏
 
-menu = st.sidebar.selectbox("菜单", options=["支付管理", "处理反馈", "统计分析"])
+item_menu = st.sidebar.selectbox("菜单", options=["支付管理", "处理反馈", "统计分析"])
 sidebar_status = st.sidebar.empty()
 
 # endregion
@@ -435,7 +433,7 @@ sidebar_status = st.sidebar.empty()
 # region 支付管理
 
 
-if menu == "支付管理":
+if item_menu == "支付管理":
     items = ["订阅登记", "支付管理"]
     tabs = st.tabs(items)
     with tabs[items.index("订阅登记")]:
@@ -799,7 +797,7 @@ if menu == "支付管理":
 
 # region 处理反馈
 
-elif menu == "处理反馈":
+elif item_menu == "处理反馈":
     st.subheader("处理反馈", divider="rainbow", anchor=False)
     container_name = "feedback"
     # connect_str = st.secrets["Microsoft"]["AZURE_STORAGE_CONNECTION_STRING"]
@@ -875,7 +873,7 @@ elif menu == "处理反馈":
 
 
 # region 创建统计分析页面
-elif menu == "统计分析":
+elif item_menu == "统计分析":
     st.subheader("统计分析", divider="rainbow", anchor=False)
     tabs = st.tabs(["运行费用", "用户"])
     with tabs[0]:

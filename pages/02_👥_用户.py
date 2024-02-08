@@ -23,7 +23,6 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
     add_exercises_to_db,
-    # check_access,
     on_project_changed,
     setup_logger,
 )
@@ -48,7 +47,6 @@ st.set_page_config(
     layout="wide",
 )
 menu()
-# check_access(False)
 on_project_changed("用户中心")
 add_exercises_to_db()
 

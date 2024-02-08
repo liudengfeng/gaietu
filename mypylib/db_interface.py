@@ -265,7 +265,7 @@ class DbInterface:
         # 替换原始字典
         self.cache["user_info"] = user_info_copy
 
-        logger.info(f'用户 {self.cache["user_info"]}')
+        # logger.info(f'用户 {self.cache["user_info"]}')
         return "Logout successful"
 
     # endregion
