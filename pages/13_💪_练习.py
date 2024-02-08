@@ -12,7 +12,7 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
@@ -37,7 +37,7 @@ from mypylib.st_helper import (
     WORD_COUNT_BADGE_MAPS,
     add_exercises_to_db,
     autoplay_audio_and_display_text,
-    check_access,
+    # check_access,
     configure_google_apis,
     count_non_none,
     display_assessment_score,
@@ -70,9 +70,10 @@ st.set_page_config(
     page_icon=":muscle:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+
+menu()
+# check_access(False)
+
 # save_and_clear_all_learning_records()
 configure_google_apis()
 

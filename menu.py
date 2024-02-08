@@ -72,6 +72,14 @@ def menu():
     if "role" not in st.session_state or st.session_state.role is None:
         unauthenticated_menu()
         return
+    # pages = [
+    #     "pages/02_👥_用户.py",
+    #     "pages/12_📚_单词.py",
+    #     "pages/13_💪_练习.py",
+    #     "pages/14_🏄‍♀️_写作.py",
+    #     "pages/15_🔖_评估.py",
+    #     "pages/40_⚙️_系统.py",
+    # ]
     authenticated_menu()
 
 

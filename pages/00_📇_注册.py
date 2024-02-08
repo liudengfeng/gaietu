@@ -6,6 +6,7 @@ import streamlit as st
 from cryptography.fernet import Fernet
 from google.cloud.firestore import FieldFilter
 
+from menu import menu
 from mypylib.auth_utils import is_valid_email, is_valid_phone_number
 from mypylib.constants import CEFR_LEVEL_MAPS, FAKE_EMAIL_DOMAIN, PROVINCES
 from mypylib.db_interface import DbInterface
@@ -15,7 +16,6 @@ from mypylib.st_helper import (
     get_firestore_client,
     on_project_changed,
 )
-from menu import return_home
 
 # 创建 Fernet 实例【必须将key转换为bytes类型】
 # fernet = Fernet(st.secrets["FERNET_KEY"].encode())
@@ -26,7 +26,7 @@ st.set_page_config(
     layout="wide",
 )
 
-return_home()
+menu()
 
 on_project_changed("用户注册")
 add_exercises_to_db()
