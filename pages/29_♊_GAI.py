@@ -10,7 +10,7 @@ import streamlit as st
 from moviepy.editor import VideoFileClip
 from PIL import Image as PImage
 from vertexai.preview.generative_models import GenerationConfig, Part
-from menu import help_page, return_home
+from menu import menu
 
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -41,9 +41,8 @@ st.set_page_config(
     page_icon=":gemini:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
+# check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 # endregion

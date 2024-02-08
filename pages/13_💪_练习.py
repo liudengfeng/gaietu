@@ -92,7 +92,7 @@ def on_menu_changed():
     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
 
 
-menu = st.sidebar.radio(
+item_menu = st.sidebar.radio(
     "菜单",
     menu_opts,
     key="menu-radio",
@@ -685,7 +685,7 @@ def set_state(i):
 
 # region 听说练习
 
-if menu is not None and menu.endswith("听说练习"):
+if item_menu is not None and item_menu.endswith("听说练习"):
     on_project_changed("听说练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",
@@ -1201,7 +1201,7 @@ if menu is not None and menu.endswith("听说练习"):
 
 # region 阅读练习
 
-if menu is not None and menu.endswith("阅读练习"):
+if item_menu is not None and item_menu.endswith("阅读练习"):
     on_project_changed("阅读练习")
     m_voice_style = st.sidebar.selectbox(
         "合成男声风格",

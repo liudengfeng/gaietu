@@ -7,7 +7,7 @@ import streamlit as st
 from langdetect import detect
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
 
-from menu import help_page, return_home
+from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
@@ -23,7 +23,7 @@ from mypylib.html_fmt import (
 )
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
+    # check_access,
     configure_google_apis,
     on_project_changed,
     setup_logger,
@@ -43,9 +43,8 @@ st.set_page_config(
     page_icon="🏄‍♀️",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(False)
+menu()
+# check_access(False)
 configure_google_apis()
 on_project_changed("写作练习")
 add_exercises_to_db()

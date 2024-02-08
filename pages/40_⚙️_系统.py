@@ -16,13 +16,13 @@ import pytz
 import streamlit as st
 from google.cloud import firestore
 
-from menu import help_page, return_home
+from menu import menu
 from mypylib.db_interface import PRICES
 from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     add_exercises_to_db,
-    check_access,
+    # check_access,
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
@@ -45,9 +45,8 @@ st.set_page_config(
     page_icon=":gear:",
     layout="wide",
 )
-return_home()
-help_page()
-check_access(True)
+menu()
+# check_access(True)
 configure_google_apis()
 on_project_changed("系统管理")
 add_exercises_to_db()
