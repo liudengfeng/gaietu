@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 import threading
 import time
 from collections import deque
@@ -177,14 +178,12 @@ def parse_json_string(s, prefix="```python", suffix="```"):
     return d
 
 
-@st.cache_resource
 class ModelRateLimiter:
     def __init__(self, max_calls, per_seconds):
         self.max_calls = max_calls
         self.per_seconds = per_seconds
         self.calls = {}
         self.lock = threading.Lock()
-        # self.records = {}
 
     def _allow_call(self, model_name):
         with self.lock:
@@ -206,6 +205,11 @@ class ModelRateLimiter:
         while not self._allow_call(model_name):
             time.sleep(0.2)
         return func(*args, **kwargs)
+
+
+# 在streamlit环境下使用装饰器
+if "streamlit" in sys.modules:
+    ModelRateLimiter = st.cache_resource(ModelRateLimiter)
 
 
 # if "user_name" not in st.session_state:
@@ -593,7 +597,7 @@ def generate_reading_comprehension_test(model, question_type, number, level, art
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.2, top_k=1.0
+        max_output_tokens=2048, temperature=0.0, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
