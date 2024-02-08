@@ -299,10 +299,8 @@ def polish_article(article):
 
 
 LOGIC_STRUCTURE_TEMPLATE = """\
-As an English writing guide, your main task is to check and correct any logical or structural errors in the following "article".
-
+As an AI English writing assistant, your main task is to ensure that the "article" has a clear structure, a logical sequence, and uses appropriate conjunctions or transition words to represent the logical relationship between different parts.
 Please proceed as follows:
-
 - Check the logic and structure of the article, ensure clear viewpoints and sufficient arguments, and ensure clear logical relationships between paragraphs based on the theme of the article.
 - If there are no areas for improvement in terms of logic and structure in the article, return an empty dictionary. Otherwise, provide a revised version of the manuscript and a detailed explanation of each correction, using 'corrected' and 'explanation' as the keys in the dictionary.
 - Finally, output the result in JSON format.
@@ -340,9 +338,9 @@ def logic_article(article):
         stream=False,
         parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
-    result["error_type"] = "WordError"
+    result["error_type"] = "LogicError"
     result["character_count"] = (
-        f"{len(article)} / {len(remove_markup(result['corrected']))} characters corrected"
+        f"{len(article)} / {len(result['corrected'])} characters corrected"
     )
     return result
 
