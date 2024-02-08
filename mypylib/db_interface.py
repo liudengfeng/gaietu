@@ -261,7 +261,7 @@ class DbInterface:
         for key in self.cache["user_info"].keys():
             if key not in ["phone_number", "timezone"]:
                 del self.cache["user_info"][key]
-        logger.info(f"用户 {self.cache["user_info"]}")
+        logger.info(f'用户 {self.cache["user_info"]}')
         return "Logout successful"
 
     # endregion
