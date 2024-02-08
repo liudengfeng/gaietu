@@ -248,12 +248,12 @@ def check_spelling(article):
 
 
 ARTICLE_POLISH_TEMPLATE = """\
-As an English writing assistant, your main task is to check and optimize the following "Article" in terms of writing style and sentence structure, ensuring the accuracy and idiomaticity of vocabulary and sentence structure, that is, to finely polish the article.
+As an English writing master, your primary task is to utilize your extensive experience to polish the following "Article", ensuring the accuracy and idiomaticity of vocabulary and sentence structure.
 
 Please proceed as follows:
 
-- Read the article and determine the most appropriate style and tone based on the theme and purpose of the article.
-- Adjust and enrich the sentence structure according to the determined style, and finely polish the article.
+- Carefully read the article and discern the most suitable style and tone based on its theme and purpose.
+- Refine and enrich the sentence structure according to the discerned style, and meticulously polish the article.
 - If there are no areas in the article that need to be polished, return an empty dictionary.
 - Output a dictionary with "corrected" (the revised text in English) and "explanation" (the explanation in Simplified Chinese) as keys, both of which should be presented in the form of Markdown formatted text.
 - Finally, output the dictionary in JSON format.
