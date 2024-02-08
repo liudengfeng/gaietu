@@ -749,6 +749,10 @@ def on_project_changed(new_project: str = ""):
     """
     检查项目是否发生变化，如果发生变化，结束当前项目并开始新的项目。
     """
+    session_id = st.session_state.dbi.cache["user_info"].get("session_id")
+    if session_id is None:
+        return
+
     if "project-timer" not in st.session_state:
         st.session_state["project-timer"] = {}
 
@@ -769,6 +773,10 @@ def on_project_changed(new_project: str = ""):
 
 
 def add_exercises_to_db():
+    session_id = st.session_state.dbi.cache["user_info"].get("session_id")
+    if session_id is None:
+        return    
+    
     if "last_commit_time" not in st.session_state:
         st.session_state["last_commit_time"] = time.time()
 
