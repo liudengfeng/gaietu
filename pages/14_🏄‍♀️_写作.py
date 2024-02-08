@@ -61,6 +61,9 @@ if "text-model" not in st.session_state:
 if "writing-content" not in st.session_state:
     st.session_state["writing-content"] = ""
 
+if "writing-ai-assitant" not in st.session_state:
+    st.session_state["writing-ai-assitant"] = ""
+
 # Use the get method since the keys won't be in session_state on the first script run
 if st.session_state.get("writing-clear"):
     st.session_state["writing-text"] = ""
@@ -403,7 +406,12 @@ with w_cols[2]:
                 stream=True,
                 placeholder=ai_tip_container.empty(),
             )
+            st.session_state["writing-ai-assitant"] = (
+                f"您的问题：\n{prompt}"
+                + f'AI回复：\n{st.session_state["writing-chat"].history[-1].parts[0].text}'
+            )
             update_sidebar_status(sidebar_status)
+    ai_tip_container.markdown(st.session_state["writing-ai-assitant"])
 
 
 rfh_btn = w_btn_cols[0].button(
