@@ -341,9 +341,14 @@ def logic_article(article):
         parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
     result["error_type"] = "LogicError"
-    result["character_count"] = (
-        f"{len(article)} / {len(result['corrected'])} characters corrected"
-    )
+    if result["corrected"]:
+        result["character_count"] = (
+            f"{len(article)} / {len(result['corrected'])} characters corrected"
+        )
+    else:
+        result["character_count"] = (
+            f"{len(article)} / {len(article)} characters corrected"
+        )
     return result
 
 
