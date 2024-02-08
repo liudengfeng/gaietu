@@ -185,7 +185,7 @@ Examples:
 The original text: 'It help us to learn new things and to develop our skills. It also help us to get a good job and to make a differents in the world.'
 The output dictionary should include the following keys:
 - corrected: "It ~~help~~ <ins>helps</ins> us to learn new things and to develop our skills. It also ~~help~~ <ins>helps</ins> us to get a good job and to make a ~~differents~~ <ins>difference</ins> in the world."
-- explanations: ["The first 'help' should be replaced with 'helps' when the subject is singular.", "The second 'help' should be replaced with 'helps' when the subject is singular.", "The word 'differents' is a misspelling and should be replaced with 'difference'."]
+- explanations: ["The word 'help' should be replaced with 'helps' when the subject is singular.", "The word 'help' should be replaced with 'helps' when the subject is singular.", "The word 'differents' is a misspelling and should be replaced with 'difference'."]
 
 The original text: 'I am going two the store two bye some bred, milk, and egs.'
 The output dictionary should include the following keys:
