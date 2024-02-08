@@ -177,7 +177,7 @@ Step by step, complete the following:
 - Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
 - Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
 - In the event that the article is devoid of spelling errors, yield an empty dictionary.
-- For each correction, first delete the error, marked with `~~`, then add the correction, marked with `<ins>` `</ins>`. If the correction involves adding a word, delete the word that is in the wrong context first, then add the corrected phrase. Then add the explanation of the correction to the explanations list.
+- For each correction, three steps need to be completed: 1. Deletion of the error, marked with ~~. 2. Addition of the correction, marked with <ins> </ins>. 3. Addition of the explanation for the correction to the "explanations" list. If the correction involves adding a word, delete the word that is in the wrong context first, then add the corrected phrase. 
 - Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 - Finally, output the dictionary in JSON format.
 
