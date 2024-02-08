@@ -308,7 +308,7 @@ LOGIC_STRUCTURE_TEMPLATE = """\
 As an AI English writing assistant, your main task is to ensure that the "article" has a clear structure, a logical sequence, and uses appropriate conjunctions or transition words to represent the logical relationship between different parts.
 Please proceed as follows:
 - Check the logic and structure of the article, ensure clear viewpoints and sufficient arguments, and ensure clear logical relationships between paragraphs based on the theme of the article.
-- If there are no areas for improvement in terms of logic and structure in the article, return an empty dictionary. Otherwise, provide a revised version of the manuscript and a detailed explanation of all corrections, both in Markdown format as a single text, using 'corrected' and 'explanation' as the keys in the dictionary.
+- If there are no areas for improvement in terms of logic and structure in the article, return an empty dictionary. Otherwise, provide a revised version of the manuscript in English and a detailed explanation of all corrections in Simplified Chinese, both in Markdown format as a single text, using 'corrected' and 'explanation' as the keys in the dictionary.
 - Finally, output the result in JSON format.
 
 Article:{article}
