@@ -176,11 +176,16 @@ Step by step, complete the following:
 1. Read through the article and identify any spelling errors in the words. This primarily includes errors such as misspelled words.
 2. Please note that this task does not include correcting capitalization errors at the beginning of sentences. If such errors are encountered, they should be ignored and no changes should be made.
 3. In the event that the article is devoid of spelling errors, yield an empty dictionary.
-4. For each word that needs to be corrected, use `~~` to strike through the word in the original text, then use `<ins>` `</ins>` to indicate the corrected word. Each correction should be accompanied by a corresponding explanation, even if the word error, correction, and explanation are the same. This means that each word correction is treated as a separate case and requires its own explanation. The "corrected" content should clearly articulate the modifications made from the original text, and the explanations should be compiled into a list.
+4. For each word that needs to be corrected, use `~~` to strike through the word in the original text, then use `<ins>` `</ins>` to indicate the corrected word. Each correction should be accompanied by a corresponding explanation, even if the word error, correction, and explanation are the same. This means that each word correction is treated as a separate case and requires its own explanation. The "corrected" content should clearly articulate the modifications made from the original text, and the explanations should be compiled into a list. The number of corrected words and the number of explanations should be the same. 
 5. Output a dictionary with "corrected" (the corrected text) and "explanations" (the list of explanations) as keys.
 6. Finally, output the dictionary in JSON format.
 
 Examples:
+
+The original text: 'It help us to learn new things and to develop our skills. It also help us to get a good job and to make a differents in the world.'
+The output dictionary should include the following keys:
+- corrected: "It ~~help~~ <ins>helps</ins> us to learn new things and to develop our skills. It also ~~help~~ <ins>helps</ins> us to get a good job and to make a ~~differents~~ <ins>difference</ins> in the world."
+- explanations: ["The first 'help' should be replaced with 'helps' when the subject is singular.", "The second 'help' should be replaced with 'helps' when the subject is singular.", "The word 'differents' is a misspelling and should be replaced with 'difference'."]
 
 The original text: 'I am going two the store two bye some bred, milk, and egs.'
 The output dictionary should include the following keys:
