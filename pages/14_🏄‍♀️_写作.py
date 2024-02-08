@@ -466,8 +466,10 @@ if lgc_btn:
     if not result:
         suggestions.write("很好，文章的结构和逻辑已经很完善了。👏👏👏")
     else:
+        suggestions.markdown("修正文稿如下：")
         suggestions.markdown(result["corrected"], unsafe_allow_html=True)
         suggestions.divider()
+        suggestions.write("解释如下：")
         suggestions.write(result["explanation"])
 
 if rvn_btn:
