@@ -134,7 +134,8 @@ The output dictionary should include the following keys:
 - corrected: "~~she~~ <ins>She</ins> is a teacher."
 - explanations: ["The first word of a sentence should be capitalized."]
 
-Article:{article}
+Article:
+{article}
 """
 
 
@@ -204,7 +205,8 @@ The output dictionary should include the following keys:
 - corrected: "i am going ~~two~~ <ins>to</ins> the store."
 - explanations: ["The word 'two' is a number and should be replaced with 'to' when used as a preposition."]
 
-Article:{article}
+Article:
+{article}
 """
 
 
@@ -246,25 +248,18 @@ def check_spelling(article):
 
 
 ARTICLE_POLISH_TEMPLATE = """\
-作为英文写作指导者，你的主要任务是检查并纠正以下"文章"中的任何拼写错误。
+As an English writing assistant, your main task is to check and optimize the following "Article" in terms of writing style and sentence structure, ensuring the accuracy and idiomaticity of vocabulary and sentence structure, that is, to finely polish the article.
 
-按步骤完成以下操作：
+Please proceed as follows:
 
-- 仔细阅读文章，找出任何拼写错误。这主要包括像拼写错误这样的错误。
-- 请注意，这个任务不包括在句子开头纠正大写错误。如果遇到这样的错误，应忽略它们，不做任何改变。
-- 如果文章没有拼写错误，返回一个空字典。
-- 对于每个修正，需要完成三个步骤：1. 删除错误，用~~标记。2. 添加修正，用<ins> </ins>标记。3. 将修正的解释添加到"explanations"列表中。如果修正涉及添加单词，先删除错误的上下文中的单词，然后添加修正的短语。
-- 输出一个字典，其中"corrected"（修正后的文本）和"explanations"（解释列表）作为键。
-- 最后，以JSON格式输出字典。
+- Read the article and determine the most appropriate style and tone based on the theme and purpose of the article.
+- Adjust and enrich the sentence structure according to the determined style, and finely polish the article.
+- If there are no areas in the article that need to be polished, return an empty dictionary.
+- Output a dictionary with "corrected" (the revised English text) and "explanation" (the explanation in Simplified Chinese) as keys, both of which should be presented in the form of Markdown formatted text.
+- Finally, output the dictionary in JSON format.
 
-示例：
-
-原文：'It help us to learn new things and to develop our skills. It also help us to get a good job and to make a differents in the world.'
-输出的字典应包括以下键：
-- corrected: "It ~~help~~ <ins>helps</ins> us to learn new things and to develop our skills. It also ~~help~~ <ins>helps</ins> us to get a good job and to make a ~~differents~~ <ins>difference</ins> in the world."
-- explanations: ["The word 'help' should be replaced with 'helps' when the subject is singular.", "The word 'help' should be replaced with 'helps' when the subject is singular.", "The word 'differents' is a misspelling and should be replaced with 'difference'."]
-
-文章:{article}
+Article:
+{article}
 """
 
 ARTICLE_POLISH_CONFIG = {"max_output_tokens": 2048, "temperature": 0.75}
@@ -305,13 +300,14 @@ def polish_article(article):
 
 
 LOGIC_STRUCTURE_TEMPLATE = """\
-As an AI English writing assistant, your main task is to ensure that the "article" has a clear structure, a logical sequence, and uses appropriate conjunctions or transition words to represent the logical relationship between different parts.
+As an English writing assistant, your main task is to ensure that the "article" has a clear structure, a logical sequence, and uses appropriate conjunctions or transition words to represent the logical relationship between different parts.
 Please proceed as follows:
 - Check the logic and structure of the article, ensure clear viewpoints and sufficient arguments, and ensure clear logical relationships between paragraphs based on the theme of the article.
 - If there are no areas for improvement in terms of logic and structure in the article, return an empty dictionary. Otherwise, provide a revised version of the manuscript in English and a detailed explanation of all corrections in Simplified Chinese, both in Markdown format as a single text, using 'corrected' and 'explanation' as the keys in the dictionary.
 - Finally, output the result in JSON format.
 
-Article:{article}
+Article:
+{article}
 """
 
 LOGIC_STRUCTURE_CONFIG = {"max_output_tokens": 2048, "temperature": 0.45}
