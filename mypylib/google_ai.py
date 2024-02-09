@@ -364,7 +364,7 @@ def parse_generated_content_and_update_token(
 WORD_TEST_PROMPT_TEMPLATE = """
 As an experienced English teacher, you are tasked with creating an examination to assess students' understanding of word meanings. The goal is to ensure that students understand the definitions of words, not their usage in context.
 - You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
-- You should have a thorough understanding of the sequence of numbers in English, such as knowing that "nineteen" follows "eighteen" and "ten" precedes "eleven". This knowledge is necessary for creating questions related to numerical vocabulary.
+- You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
 - The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
 - The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
 
@@ -395,6 +395,29 @@ def generate_word_test(model_name, model, word, level):
         # parser=lambda x: json.loads(x),
         parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
     )
+
+
+WORD_TEST_PROMPT_TEMPLATE = """
+As an experienced English teacher, you are tasked with creating an examination to assess students' understanding of word meanings. The goal is to ensure that students understand the definitions of words, not their usage in context.
+- You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
+- You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
+- The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
+- The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
+
+{guidelines}
+
+Output in JSON format, without using list or Markdown formatting.
+
+Word: {word}
+"""
+
+
+def generate_word_tests(model_name, model, words, level):
+    # 确定单词为列表
+    if not isinstance(words, list):
+        raise TypeError("words must be a list of words")
+    tests = [generate_word_test(model_name, model, word, level) for word in words]
+    return tests
 
 
 SCENARIO_TEMPLATE = """
