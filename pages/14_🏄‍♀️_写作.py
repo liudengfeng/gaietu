@@ -391,6 +391,7 @@ Assistant_Configuration = {
 }
 assistant_config = GenerationConfig(**Assistant_Configuration)
 with w_cols[2]:
+    on_project_changed("写作练习-AI助教")
     st.markdown("<h5 style='color: purple;'>AI助教</h5>", unsafe_allow_html=True)
     ai_tip_container = st.container(border=True, height=HEIGHT)
     with ai_tip_container:
@@ -453,6 +454,7 @@ rvn_btn = w_btn_cols[6].button(
 )
 
 if rfh_btn:
+    on_project_changed("写作练习-刷新")
     suggestions.empty()
     ai_tip_container.empty()
     initialize_writing_chat()
@@ -462,6 +464,7 @@ if clr_btn:
     pass
 
 if grm_btn:
+    on_project_changed("写作练习-语法")
     suggestions.empty()
     result = check_grammar(st.session_state["writing-text"])
     html = display_grammar_errors(result)
@@ -469,12 +472,14 @@ if grm_btn:
     update_sidebar_status(sidebar_status)
 
 if wrd_btn:
+    on_project_changed("写作练习-单词")
     suggestions.empty()
     result = check_spelling(st.session_state["writing-text"])
     html = display_word_spell_errors(result)
     suggestions.markdown(html + TIPPY_JS, unsafe_allow_html=True)
 
 if plh_btn:
+    on_project_changed("写作练习-润色")
     suggestions.empty()
     result = polish_article(st.session_state["writing-text"])
 
@@ -488,6 +493,7 @@ if plh_btn:
         suggestions.write(result["explanation"])
 
 if lgc_btn:
+    on_project_changed("写作练习-逻辑")
     suggestions.empty()
     result = logic_article(st.session_state["writing-text"])
     if not result:
@@ -501,6 +507,7 @@ if lgc_btn:
         suggestions.write(result["explanation"])
 
 if rvn_btn:
+    on_project_changed("写作练习-修正")
     result = check_grammar(st.session_state["writing-text"])
     if result["error_type"] == "LanguageError":
         content = remove_markup(result["corrected"])
