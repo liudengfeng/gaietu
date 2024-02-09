@@ -1,18 +1,20 @@
 import json
 import logging
 import sys
+import tempfile
 import threading
 import time
 from collections import deque
 from datetime import datetime
+from functools import partial
 from typing import Callable, List
-from moviepy.editor import VideoFileClip
-import tempfile
-import requests
+
 import pytz
+import requests
 import streamlit as st
 import yaml
 from faker import Faker
+from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import (
     GenerationConfig,
     GenerativeModel,
@@ -28,7 +30,6 @@ from .google_ai_prompts import (
     SINGLE_CHOICE_QUESTION,
 )
 from .google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
-
 
 MAX_CALLS = 10
 PER_SECONDS = 60
@@ -166,7 +167,8 @@ def parse_json_string(s, prefix="```python", suffix="```"):
     s = s.replace("\n", "")
 
     # 删除前缀和后缀
-    s = s.replace(prefix, "").replace(suffix, "")
+    s = s.replace(prefix.upper(), "").replace(suffix.upper(), "")
+    s = s.replace(prefix.lower(), "").replace(suffix.lower(), "")
 
     # 解析 JSON
     try:
@@ -392,13 +394,12 @@ def generate_word_test(model_name, model, word, level):
         contents_info,
         generation_config,
         stream=False,
-        # parser=lambda x: json.loads(x),
         parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
     )
 
 
-WORD_TEST_PROMPT_TEMPLATE = """
-As an experienced English teacher, you are tasked with creating an examination to assess students' understanding of word meanings. The goal is to ensure that students understand the definitions of words, not their usage in context.
+WORDS_TEST_PROMPT_TEMPLATE = """
+As an experienced English teacher, you are tasked with creating an examination for the following "Words" to assess students' understanding of their meanings.
 - You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
 - You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
 - The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
@@ -408,7 +409,7 @@ As an experienced English teacher, you are tasked with creating an examination t
 
 Output in JSON format, without using list or Markdown formatting.
 
-Word: {word}
+Words: {words}
 """
 
 
@@ -416,8 +417,24 @@ def generate_word_tests(model_name, model, words, level):
     # 确定单词为列表
     if not isinstance(words, list):
         raise TypeError("words must be a list of words")
-    tests = [generate_word_test(model_name, model, word, level) for word in words]
-    return tests
+    words = " , ".join(words)
+    prompt = WORDS_TEST_PROMPT_TEMPLATE.format(
+        words=words, level=level, guidelines=SINGLE_CHOICE_QUESTION
+    )
+    contents = [prompt]
+    generation_config = GenerationConfig(
+        max_output_tokens=4096, temperature=0.0, top_k=1.0
+    )
+    contents_info = to_contents_info(contents)
+    return parse_generated_content_and_update_token(
+        "单词理解测试",
+        model_name,
+        model.generate_content,
+        contents_info,
+        generation_config,
+        stream=False,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
+    )
 
 
 SCENARIO_TEMPLATE = """
@@ -553,7 +570,7 @@ def generate_listening_test(model, level, dialogue, number=5):
         contents_info,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
 
 
