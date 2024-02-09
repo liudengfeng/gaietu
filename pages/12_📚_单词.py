@@ -1379,7 +1379,7 @@ elif item_menu and item_menu.endswith("词意测试"):
         #         st.session_state["word-tests"][idx] = generate_word_test(
         #             "gemini-pro", st.session_state["text-model"], word, level
         #         )
-                # st.write(st.session_state["word-tests"][idx])
+        # st.write(st.session_state["word-tests"][idx])
 
     if refresh_btn:
         reset_test_words()
@@ -1392,7 +1392,7 @@ elif item_menu and item_menu.endswith("词意测试"):
 
     if (
         st.session_state["word-test-idx"] != -1
-        and st.session_state["word-tests"][st.session_state["word-test-idx"]]
+        and len(st.session_state["word-tests"]) >= 1
         and not sumbit_test_btn
     ):
         view_test_word(container)
