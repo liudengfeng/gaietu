@@ -18,7 +18,7 @@ from menu import menu
 from mypylib.constants import CEFR_LEVEL_MAPS
 
 # from mypylib.db_model import LearningTime
-from mypylib.google_ai import generate_word_test, load_vertex_model
+from mypylib.google_ai import generate_word_test, generate_word_tests, load_vertex_model
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
     configure_google_apis,
@@ -132,6 +132,17 @@ def add_personal_dictionary(include):
 )
 def get_word_info(word):
     return st.session_state.dbi.find_word(word)
+
+
+@st.cache_data(
+    ttl=timedelta(hours=24),
+    max_entries=10000,
+    show_spinner="AI正在生成单词理解测试题...",
+)
+def generate_word_tests_for(words, level):
+    model_name = "gemini-pro"
+    model = load_vertex_model(model_name)
+    return generate_word_tests(model_name, model, words, level)
 
 
 def word_lib_format_func(word_lib_name):
@@ -1346,33 +1357,37 @@ elif item_menu and item_menu.endswith("词意测试"):
     container = st.container()
 
     if prev_test_btn:
-        idx = st.session_state["word-test-idx"]
-        if idx != -1:
-            word = st.session_state["test-words"][idx]
-            if not st.session_state["word-tests"][idx]:
-                with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-                    st.session_state["word-tests"][idx] = generate_word_test(
-                        "gemini-pro",
-                        st.session_state["text-model"],
-                        word,
-                        level,
-                    )
+        pass
+        # idx = st.session_state["word-test-idx"]
+        # if idx != -1:
+        #     word = st.session_state["test-words"][idx]
+        #     if not st.session_state["word-tests"][idx]:
+        #         with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
+        #             st.session_state["word-tests"][idx] = generate_word_test(
+        #                 "gemini-pro",
+        #                 st.session_state["text-model"],
+        #                 word,
+        #                 level,
+        #             )
 
     if next_test_btn:
-        idx = st.session_state["word-test-idx"]
-        word = st.session_state["test-words"][idx]
-        if not st.session_state["word-tests"][idx]:
-            with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-                st.session_state["word-tests"][idx] = generate_word_test(
-                    "gemini-pro", st.session_state["text-model"], word, level
-                )
+        pass
+        # idx = st.session_state["word-test-idx"]
+        # word = st.session_state["test-words"][idx]
+        # if not st.session_state["word-tests"][idx]:
+        #     with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
+        #         st.session_state["word-tests"][idx] = generate_word_test(
+        #             "gemini-pro", st.session_state["text-model"], word, level
+        #         )
                 # st.write(st.session_state["word-tests"][idx])
 
     if refresh_btn:
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
-        st.session_state["word-tests"] = [None] * test_num  # type: ignore
         generate_page_words(word_lib, test_num, "test-words", True)
+        st.session_state["word-tests"] = generate_word_tests_for(
+            st.session_state["test-words"], level
+        )
         st.rerun()
 
     if (
