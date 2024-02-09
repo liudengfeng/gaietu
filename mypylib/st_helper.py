@@ -114,9 +114,6 @@ def is_answer_correct(user_answer, standard_answer):
 
 
 def check_access(is_admin_page):
-    if "dbi" not in st.session_state:
-        st.session_state["dbi"] = DbInterface(get_firestore_client())
-
     if not st.session_state.dbi.is_logged_in():
         st.error("您尚未登录。请点击屏幕左侧 🏠 主页 菜单进行登录。")
         st.stop()

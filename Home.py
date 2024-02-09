@@ -44,9 +44,6 @@ menu()
 on_project_changed("Home")
 add_exercises_to_db()
 
-if "dbi" not in st.session_state:
-    st.session_state["dbi"] = DbInterface(get_firestore_client())
-
 
 # region 更新语音列表
 need_update = False

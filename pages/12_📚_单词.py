@@ -1249,10 +1249,12 @@ elif item_menu and item_menu.endswith("看图猜词"):
     container = st.container()
 
     if refresh_btn:
+        on_project_changed("单词练习-看图猜词-刷新")
         n = len(st.session_state.pic_tests)
         st.session_state.user_pic_answer = [None] * n
 
     if sumbit_pic_btn:
+        on_project_changed("单词练习-看图猜词-检查答案")
         if count_non_none(st.session_state.user_pic_answer) == 0:
             st.warning("您尚未答题。")
             st.stop()
@@ -1263,6 +1265,8 @@ elif item_menu and item_menu.endswith("看图猜词"):
             container.warning("您尚未完成全部测试题目。")
         check_pic_answer(container)
     elif st.session_state.pic_idx != -1:
+        idx = st.session_state.pic_idx
+        on_project_changed(f"单词练习-看图猜词-{idx}")
         view_pic_question(container)
 
 

@@ -31,8 +31,6 @@ menu()
 on_project_changed("用户注册")
 add_exercises_to_db()
 
-if "dbi" not in st.session_state:
-    st.session_state["dbi"] = DbInterface(get_firestore_client())
 
 # region 侧边栏
 

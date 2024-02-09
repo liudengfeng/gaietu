@@ -1,5 +1,8 @@
 import streamlit as st
 
+from mypylib.db_interface import DbInterface
+from mypylib.st_helper import get_firestore_client
+
 
 def return_home():
     st.sidebar.page_link("Home.py", label="主页", icon="🏠", help="✨ 返回主页。")
@@ -67,6 +70,8 @@ def unauthenticated_menu():
 
 
 def menu():
+    if "dbi" not in st.session_state:
+        st.session_state["dbi"] = DbInterface(get_firestore_client())
     # Determine if a user is logged in or not, then show the correct
     # navigation menu
     if "role" not in st.session_state or st.session_state.role is None:
