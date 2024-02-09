@@ -1059,14 +1059,6 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             )
             dialogue_text = " ".join(st.session_state.conversation_scene)
             word_count = len(dialogue_text.split())
-            # record = LearningTime(
-            #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-            #     project="听说练习",
-            #     content=f"{difficulty}-{selected_scenario}",
-            #     duration=total,
-            #     word_count=word_count,
-            # )
-            # st.session_state.dbi.add_record_to_cache(record)
             # 防止重复播放
             st.rerun()
 
@@ -1158,6 +1150,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         container = st.container()
 
         if refresh_test_btn:
+            on_project_changed(f"听说练习-测试题目")
             st.session_state["listening-test"] = generate_listening_test_for(
                 difficulty, st.session_state.conversation_scene
             )
@@ -1179,16 +1172,22 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 play_listening_test(difficulty, selected_scenario)
 
         if rpl_test_btn:
+            on_project_changed("听说练习-测试-听题")
             if st.session_state["listening-test-idx"] != -1:
                 play_listening_test(difficulty, selected_scenario)
 
         if listening_prev_test_btn:
+            idx = st.session_state["listening-test-idx"]
+            on_project_changed(f"听说练习-测试-{idx}")
             play_listening_test(difficulty, selected_scenario)
 
         if listening_next_test_btn:
+            idx = st.session_state["listening-test-idx"]
+            on_project_changed(f"听说练习-测试-{idx}")
             play_listening_test(difficulty, selected_scenario)
 
         if sumbit_test_btn:
+            on_project_changed("听说练习-测试-答题")
             container.empty()
 
             if count_non_none(st.session_state["listening-test-answer"]) == 0:
@@ -1203,6 +1202,8 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             check_listening_test_answer(container, difficulty, selected_scenario)
         else:
             if st.session_state["listening-test-idx"] != -1:
+                idx = st.session_state["listening-test-idx"]
+                on_project_changed(f"听说练习-测试-答题-{idx}")
                 view_listening_test(container)
 
     # endregion
@@ -1297,6 +1298,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
         plot = None
 
         with sub_tabs[0]:
+            on_project_changed("阅读练习-难度")
             st.info("第一步：点击下拉框选择CEFR等级", icon="🚨")
             difficulty = st.selectbox(
                 "CEFR等级",
@@ -1310,6 +1312,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
             )
 
         with sub_tabs[1]:
+            on_project_changed("阅读练习-文章体裁")
             st.info("第二步：设置文章体裁和内容", icon="🚨")
             st.markdown(AI_TIPS[difficulty], unsafe_allow_html=True)
             if st.session_state.stage == 1 or difficulty is not None:
@@ -1334,6 +1337,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
                 )
 
         with sub_tabs[2]:
+            on_project_changed("阅读练习-情节")
             st.info(
                 "第三步：可选。可在文本框内添加一些有趣的情节以丰富练习材料。如果您想跳过这一步，可以选择'跳过'。",
                 icon="🚨",
@@ -1356,6 +1360,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
                 )
 
         with sub_tabs[3]:
+            on_project_changed("阅读练习-生成场景")
             st.info(
                 """在完成所有步骤后，您可以在此处生成并查看场景。生成场景后，您可以切换到最上方👆的 "开始练习" 标签页，开始进行阅读理解练习。""",
                 icon="🚨",
@@ -1474,6 +1479,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
         container = st.container()
 
         if refresh_btn:
+            on_project_changed("阅读练习-刷新")
             st.session_state["reading-exercise-idx"] = -1
             st.session_state["reading-learning-times"] = 0
             st.rerun()
@@ -1496,6 +1502,8 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
                 )
 
         if prev_btn or next_btn or replay_btn:
+            idx = st.session_state["reading-exercise-idx"]
+            on_project_changed(f"阅读练习-练习-{idx}")
             process_play_and_record_article(
                 container,
                 m_voice_style,
@@ -1505,20 +1513,13 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
             )
 
         if full_reading_btn:
+            on_project_changed("阅读练习-练习-全文")
             total = autoplay_audio_and_display_article(container)
             st.session_state["reading-learning-times"] = len(
                 st.session_state["reading-article"]
             )
             text = " ".join(st.session_state["reading-article"])
             word_count = len(text.split())
-            # record = LearningTime(
-            #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-            #     project="阅读理解",
-            #     content=f"{difficulty}-{genre}",
-            #     duration=total,
-            #     word_count=word_count,
-            # )
-            # st.session_state.dbi.add_record_to_cache(record)
             st.rerun()
 
     # endregion
@@ -1526,6 +1527,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
     # region 阅读测验
 
     with reading_tabs[2]:
+        on_project_changed("阅读练习-理解测验")
         st.subheader("阅读理解测验", divider="rainbow", anchor="阅读理解测验")
         if "reading-start-time" not in st.session_state:
             st.session_state["reading-start-time"] = None
@@ -1599,6 +1601,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
         container = st.container()
 
         if refresh_test_btn:
+            on_project_changed("阅读练习-理解测验-刷新")
             st.session_state["reading-test"] = generate_reading_test_for(
                 difficulty, english_exercise_type, st.session_state["reading-article"]
             )
@@ -1612,13 +1615,18 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
             st.rerun()
 
         if prev_test_btn:
+            idx = st.session_state["reading-test-idx"]
+            on_project_changed(f"阅读练习-理解测验-{idx}")
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if next_test_btn:
+            idx = st.session_state["reading-test-idx"]
+            on_project_changed(f"阅读练习-理解测验-{idx}")
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if rpl_test_btn:
             idx = st.session_state["reading-test-idx"]
+            on_project_changed(f"阅读练习-理解测验-{idx}")
             test = st.session_state["reading-test"][idx]
             question = test["question"]
             with st.spinner(f"使用 Azure 将文本合成语音..."):
@@ -1628,6 +1636,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
             view_reading_test(container, difficulty, exercise_type, genre)
 
         if sumbit_test_btn:
+            on_project_changed("阅读练习-理解测验-评分")
             container.empty()
 
             if count_non_none(st.session_state["reading-test-answer"]) == 0:
