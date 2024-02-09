@@ -394,7 +394,7 @@ def generate_word_test(model_name, model, word, level):
         contents_info,
         generation_config,
         stream=False,
-        parser=lambda x: json.loads(x.replace("```json", "").replace("```", "")),
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
 
 
