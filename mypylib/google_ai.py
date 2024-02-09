@@ -407,7 +407,8 @@ As an experienced English teacher, you are tasked with creating an examination f
 
 {guidelines}
 
-Output in JSON format, without using list or Markdown formatting.
+- Create a list of dictionaries, each representing a test question for each word.
+- Output the list in JSON format. Note that 'question', 'options', and 'answer' in the dictionary should not use Markdown formatting.
 
 Words: {words}
 """
