@@ -397,6 +397,15 @@ def reset_puzzle_word():
     st.session_state.puzzle_answer = ""
 
 
+def get_puzzle_project():
+    idx = st.session_state["puzzle-idx"]
+    project = "单词拼图"
+    if idx == -1:
+        return f"单词练习-{project}"
+    else:
+        return f"单词练习-{project}-{idx}"
+
+
 def get_word_definition(word):
     word_info = get_word_info(word)
     definition = ""
@@ -723,6 +732,15 @@ def on_prev_test_btn_click():
 
 def on_next_test_btn_click():
     st.session_state["word-test-idx"] += 1
+
+
+def get_word_test_project():
+    idx = st.session_state["word-test-idx"]
+    project = "词义测试"
+    if idx == -1:
+        return f"单词练习-{project}"
+    else:
+        return f"单词练习-{project}-{idx}"
 
 
 def check_word_test_answer(container, level):
@@ -1132,14 +1150,17 @@ elif item_menu and item_menu.endswith("拼图游戏"):
     )
 
     if refresh_btn:
+        on_project_changed(get_puzzle_project())
         reset_puzzle_word()
         st.rerun()
 
     if prev_btn:
         prepare_puzzle()
+        on_project_changed(get_puzzle_project())
 
     if next_btn:
         prepare_puzzle()
+        on_project_changed(get_puzzle_project())
 
     if add_btn:
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
@@ -1153,6 +1174,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if st.session_state["puzzle-idx"] != -1:
         handle_puzzle(word_lib)
+        on_project_changed(get_puzzle_project())
 
 # endregion
 
@@ -1357,31 +1379,13 @@ elif item_menu and item_menu.endswith("词意测试"):
     container = st.container()
 
     if prev_test_btn:
-        pass
-        # idx = st.session_state["word-test-idx"]
-        # if idx != -1:
-        #     word = st.session_state["test-words"][idx]
-        #     if not st.session_state["word-tests"][idx]:
-        #         with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-        #             st.session_state["word-tests"][idx] = generate_word_test(
-        #                 "gemini-pro",
-        #                 st.session_state["text-model"],
-        #                 word,
-        #                 level,
-        #             )
+        on_project_changed(get_word_test_project())
 
     if next_test_btn:
-        pass
-        # idx = st.session_state["word-test-idx"]
-        # word = st.session_state["test-words"][idx]
-        # if not st.session_state["word-tests"][idx]:
-        #     with st.spinner("AI🤖正在生成单词理解测试题，请稍候..."):
-        #         st.session_state["word-tests"][idx] = generate_word_test(
-        #             "gemini-pro", st.session_state["text-model"], word, level
-        #         )
-        # st.write(st.session_state["word-tests"][idx])
+        on_project_changed(get_word_test_project())
 
     if refresh_btn:
+        on_project_changed(get_word_test_project())
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         generate_page_words(word_lib, test_num, "test-words", True)
@@ -1395,9 +1399,11 @@ elif item_menu and item_menu.endswith("词意测试"):
         and len(st.session_state["word-tests"]) >= 1
         and not sumbit_test_btn
     ):
+        on_project_changed(get_word_test_project())
         view_test_word(container)
 
     if sumbit_test_btn:
+        on_project_changed(get_word_test_project())
         container.empty()
         if count_non_none(st.session_state["user-answer"]) != count_non_none(
             st.session_state["word-tests"]

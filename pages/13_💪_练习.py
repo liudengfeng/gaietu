@@ -732,6 +732,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 args=(1,),
                 placeholder="请选择CEFR等级",
             )
+            on_project_changed("听说练习-CEFR等级")
 
         with sub_tabs[1]:
             st.info("第二步：点击下拉框选定场景类别", icon="🚨")
@@ -746,6 +747,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                     key="scenario_category",
                     placeholder="请选择场景类别",
                 )
+                on_project_changed("听说练习-场景类别")
             # logger.info(f"{st.session_state.stage=}")
 
         with sub_tabs[2]:
@@ -772,6 +774,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                     args=(3,),
                     placeholder="请选择您感兴趣的场景",
                 )
+                on_project_changed(f"听说练习-选择场景")
 
         with sub_tabs[3]:
             st.info(
@@ -794,8 +797,10 @@ if item_menu is not None and item_menu.endswith("听说练习"):
 - 同事在工作中犯了一个错误，但他能够及时发现并改正。
                 """,
                 )
+                on_project_changed("听说练习-添加情节")
 
         with sub_tabs[4]:
+            on_project_changed("听说练习-生成对话")
             st.info(
                 """在完成所有步骤后，您可以在此处生成并查看详细的对话场景。生成对话场景后，您可以切换到最上方👆的 "开始练习" 标签页，开始进行听力和口语练习。""",
                 icon="🚨",
@@ -946,6 +951,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         dialogue_placeholder = st.empty()
 
         if pro_btn and audio_info is not None:
+            on_project_changed("听说练习-发音评估")
             # 去掉发言者的名字
             reference_text = st.session_state.conversation_scene[
                 st.session_state["listening-idx"]
@@ -979,13 +985,16 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 "record_time": datetime.now(pytz.UTC),
             }
             # st.session_state.dbi.save_daily_quiz_results(test_dict)
-            st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
+            st.session_state.dbi.add_documents_to_user_history(
+                "performances", [test_dict]
+            )
 
         if (
             play_btn
             and audio_info
             and st.session_state["listening-pronunciation-assessment"]
         ):
+            on_project_changed("听说练习-回放录音")
             autoplay_audio_and_display_text(
                 replay_text_placeholder,
                 audio_info["bytes"],
@@ -995,6 +1004,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             )
 
         if refresh_btn:
+            on_project_changed("听说练习-刷新")
             st.session_state["listening-idx"] = -1
             st.session_state["listening-learning-times"] = 0
             st.session_state["listening-pronunciation-assessment"] = None
@@ -1009,6 +1019,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 st.session_state["listening-display-state"] = "英文"
 
         if prev_btn or next_btn or replay_btn:
+            on_project_changed("听说练习-练习")
             play_and_record_dialogue(
                 m_voice_style, fm_voice_style, difficulty, selected_scenario
             )
@@ -1034,6 +1045,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             current_idx = st.session_state["listening-idx"]
 
             for i, duration in enumerate(duration_list):
+                on_project_changed(f"听说练习-第{i:2d}轮")
                 st.session_state["listening-idx"] = i
                 display_dialogue(dialogue_placeholder)
                 play_and_record_dialogue(
