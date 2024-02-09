@@ -162,13 +162,13 @@ def calculate_cost_by_model(model_name, contents, full_response):
 
 
 def parse_json_string(s, prefix="```python", suffix="```"):
-    logger.info(f"传入的字符串：{s}")
-    # 删除换行符
-    s = s.replace("\n", "")
-
-    # 删除前缀和后缀
-    s = s.replace(prefix.upper(), "").replace(suffix.upper(), "")
-    s = s.replace(prefix.lower(), "").replace(suffix.lower(), "")
+    s = s.strip()  # 删除字符串两端的空白字符
+    if s.startswith(prefix.upper()):
+        s = s[len(prefix) :]  # 删除前缀
+    if s.startswith(prefix.lower()):
+        s = s[len(prefix) :]  # 删除前缀
+    if s.endswith(suffix):
+        s = s[: -len(suffix)]  # 删除后缀
 
     # 解析 JSON
     try:
