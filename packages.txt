@@ -1,4 +1,2 @@
-python3-setuptools
-python3-wheel
-python-pip==24.0
+pip==24.0
 ffmpeg
