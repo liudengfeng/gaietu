@@ -741,7 +741,6 @@ def end_project(project_name):
     # 设置项目为已结束
     st.session_state["project-timer"][project_name]["started"] = False
 
-
 def on_project_changed(new_project: str = ""):
     """
     检查项目是否发生变化，如果发生变化，结束当前项目并开始新的项目。
@@ -756,15 +755,20 @@ def on_project_changed(new_project: str = ""):
 
     if "project-timer" not in st.session_state:
         st.session_state["project-timer"] = {}
+    
+    if "previous-project" not in st.session_state:
+        st.session_state["previous-project"] = None
 
-    timer = st.session_state["project-timer"]
-    for project, _ in timer.items():
-        if project != new_project:
-            # 结束当前项目
-            end_project(project)
+    previous_project = st.session_state["previous-project"]
+    if previous_project is not None and previous_project != new_project:
+        # 结束上一个项目
+        end_project(previous_project)
 
     # 开始新的项目
     start_project(new_project)
+
+    # 更新上一个项目为新的项目
+    st.session_state["previous-project"] = new_project
 
     for project, data in st.session_state["project-timer"].items():
         if "duration" in data:
