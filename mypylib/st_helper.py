@@ -748,7 +748,9 @@ def on_project_changed(new_project: str = ""):
     """
     if "dbi" not in st.session_state:
         return
+    
     session_id = st.session_state.dbi.cache["user_info"].get("session_id")
+    
     if session_id is None:
         return
 
@@ -756,7 +758,7 @@ def on_project_changed(new_project: str = ""):
         st.session_state["project-timer"] = {}
 
     timer = st.session_state["project-timer"]
-    for project, data in timer.items():
+    for project, _ in timer.items():
         if project != new_project:
             # 结束当前项目
             end_project(project)
@@ -764,11 +766,11 @@ def on_project_changed(new_project: str = ""):
     # 开始新的项目
     start_project(new_project)
 
-    # for project, data in st.session_state["project-timer"].items():
-    #     if "duration" in data:
-    #         duration_seconds = data["duration"].total_seconds()
-    #         logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
-    # logger.info("=====================================")
+    for project, data in st.session_state["project-timer"].items():
+        if "duration" in data:
+            duration_seconds = data["duration"].total_seconds()
+            logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
+    logger.info("=====================================")
 
 
 def add_exercises_to_db(force=False):
