@@ -715,20 +715,20 @@ def on_project_changed(project_name):
     if "project-timer" not in st.session_state:
         st.session_state["project-timer"] = {}
 
-    if (
-        "current-project" in st.session_state
-        and project_name in st.session_state["project-timer"]
-    ):
+    if "current-project" in st.session_state:
         # 结束上一个项目，计算总时长
         previous_project = st.session_state["current-project"]
-        start_time = st.session_state["project-timer"][previous_project]["start_time"]
-        duration = st.session_state["project-timer"][previous_project]["duration"]
-        duration += time.time() - start_time
-        st.session_state["project-timer"][previous_project] = {
-            "start_time": None,
-            "end_time": time.time(),
-            "duration": duration,
-        }
+        if previous_project in st.session_state["project-timer"]:
+            start_time = st.session_state["project-timer"][previous_project][
+                "start_time"
+            ]
+            duration = st.session_state["project-timer"][previous_project]["duration"]
+            duration += time.time() - start_time
+            st.session_state["project-timer"][previous_project] = {
+                "start_time": None,
+                "end_time": time.time(),
+                "duration": duration,
+            }
 
     # 如果项目已经存在，那么累计之前的时长，否则初始化时长为0
     if project_name in st.session_state["project-timer"]:
