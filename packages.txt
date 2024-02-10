@@ -1,2 +1,2 @@
-python3-pip
+python3-pip==24.0
 ffmpeg
