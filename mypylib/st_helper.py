@@ -715,7 +715,10 @@ def on_project_changed(project_name):
     if "project-timer" not in st.session_state:
         st.session_state["project-timer"] = {}
 
-    if "current-project" in st.session_state:
+    if (
+        "current-project" in st.session_state
+        and project_name in st.session_state["project-timer"]
+    ):
         # 结束上一个项目，计算总时长
         previous_project = st.session_state["current-project"]
         start_time = st.session_state["project-timer"][previous_project]["start_time"]
