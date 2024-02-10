@@ -741,38 +741,73 @@ def end_project(project_name):
     # 设置项目为已结束
     st.session_state["project-timer"][project_name]["started"] = False
 
-def on_project_changed(new_project: str = ""):
-    """
-    检查项目是否发生变化，如果发生变化，结束当前项目并开始新的项目。
-    """
-    if "dbi" not in st.session_state:
-        return
-    
-    session_id = st.session_state.dbi.cache["user_info"].get("session_id")
-    
-    if session_id is None:
-        return
 
+# def on_project_changed(new_project: str = ""):
+#     if "dbi" not in st.session_state:
+#         return
+
+#     session_id = st.session_state.dbi.cache["user_info"].get("session_id")
+
+#     if session_id is None:
+#         return
+
+#     if "project-timer" not in st.session_state:
+#         st.session_state["project-timer"] = {}
+
+#     if "previous-project" not in st.session_state:
+#         st.session_state["previous-project"] = None
+
+#     previous_project = st.session_state["previous-project"]
+#     if previous_project is not None and previous_project != new_project:
+#         # 结束上一个项目
+#         end_project(previous_project)
+
+#     # 开始新的项目
+#     start_project(new_project)
+
+#     # 更新上一个项目为新的项目
+#     st.session_state["previous-project"] = new_project
+
+#     for project, data in st.session_state["project-timer"].items():
+#         if "duration" in data:
+#             duration_seconds = data["duration"].total_seconds()
+#             logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
+#     logger.info("=====================================")
+
+
+def on_project_changed(project_name):
     if "project-timer" not in st.session_state:
         st.session_state["project-timer"] = {}
-    
-    if "previous-project" not in st.session_state:
-        st.session_state["previous-project"] = None
 
-    previous_project = st.session_state["previous-project"]
-    if previous_project is not None and previous_project != new_project:
-        # 结束上一个项目
-        end_project(previous_project)
+    if "current-project" in st.session_state:
+        # 结束上一个项目，计算总时长
+        previous_project = st.session_state["current-project"]
+        start_time = st.session_state["project-timer"][previous_project]["start_time"]
+        duration = st.session_state["project-timer"][previous_project]["duration"]
+        duration += time.time() - start_time
+        st.session_state["project-timer"][previous_project] = {
+            "start_time": None,
+            "end_time": time.time(),
+            "duration": duration,
+        }
 
-    # 开始新的项目
-    start_project(new_project)
+    # 如果项目已经存在，那么累计之前的时长，否则初始化时长为0
+    if project_name in st.session_state["project-timer"]:
+        previous_duration = st.session_state["project-timer"][project_name]["duration"]
+    else:
+        previous_duration = 0.0
 
-    # 更新上一个项目为新的项目
-    st.session_state["previous-project"] = new_project
+    # 开始新的项目，记录开始时间
+    st.session_state["project-timer"][project_name] = {
+        "start_time": time.time(),
+        "end_time": None,
+        "duration": previous_duration,
+    }
+    st.session_state["current-project"] = project_name
 
     for project, data in st.session_state["project-timer"].items():
         if "duration" in data:
-            duration_seconds = data["duration"].total_seconds()
+            duration_seconds = data["duration"]
             logger.info(f"项目 {project} 的总时长（秒）: {duration_seconds}")
     logger.info("=====================================")
 
@@ -795,15 +830,18 @@ def add_exercises_to_db(force=False):
         docs = []
         for project_name, project_data in project_timer.items():
             # 如只有开始时间，则以当前时间计算时长
-            if "start_time" in project_data and "end_time" not in project_data:
-                project_data["end_time"] = datetime.now()
+            if (
+                project_data.get("start_time") is not None
+                and project_data.get("end_time") is None
+            ):
+                project_data["end_time"] = time.time()
                 project_data["duration"] = (
                     project_data["end_time"] - project_data["start_time"]
                 )
             docs.append(
                 {
                     "item": project_name,
-                    "duration": project_data["duration"].total_seconds(),
+                    "duration": project_data["duration"],
                     "timestamp": datetime.now(pytz.UTC),
                 }
             )
