@@ -289,7 +289,7 @@ if step_cols[2].button(":key: 登录使用", key="登录使用"):
 
 if is_logged_in:
     if logout_btn:
-        add_exercises_to_db()
+        add_exercises_to_db(True)
         st.session_state.dbi.logout()
         sidebar_status.success("已退出登录")
         st.session_state.role = None

@@ -771,17 +771,19 @@ def on_project_changed(new_project: str = ""):
     # logger.info("=====================================")
 
 
-def add_exercises_to_db():
+def add_exercises_to_db(force=False):
     if "dbi" not in st.session_state:
         return
+
     session_id = st.session_state.dbi.cache["user_info"].get("session_id")
+
     if session_id is None:
         return
 
     if "last_commit_time" not in st.session_state:
         st.session_state["last_commit_time"] = time.time()
 
-    if time.time() - st.session_state["last_commit_time"] > DB_TIME_INTERVAL:
+    if force or time.time() - st.session_state["last_commit_time"] > DB_TIME_INTERVAL:
         # 锁定对象，防止更改
         project_timer = st.session_state["project-timer"].copy()
         docs = []
