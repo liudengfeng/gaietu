@@ -1,2 +1,2 @@
-pip
+python3-pip
 ffmpeg
