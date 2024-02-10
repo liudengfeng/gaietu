@@ -736,7 +736,7 @@ def on_next_test_btn_click():
 
 def get_word_test_project():
     idx = st.session_state["word-test-idx"]
-    project = "词义测试"
+    project = "词意测试"
     if idx == -1:
         return f"单词练习-{project}"
     else:
