@@ -16,7 +16,7 @@ from mypylib.azure_speech import speech_synthesis_get_available_voices
 from mypylib.constants import LANGUAGES, VOICES_FP
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
-from mypylib.st_helper import (  # save_and_clear_all_learning_records,
+from mypylib.st_helper import (
     add_exercises_to_db,
     get_firestore_client,
     on_project_changed,

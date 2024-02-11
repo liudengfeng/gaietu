@@ -73,7 +73,6 @@ st.set_page_config(
 
 menu()
 check_access(False)
-# save_and_clear_all_learning_records()
 configure_google_apis()
 
 add_exercises_to_db()
