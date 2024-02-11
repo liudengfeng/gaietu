@@ -281,7 +281,7 @@ def autoplay_audio_and_display_article(container):
     total = 0
     for i, paragraph in enumerate(article):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-        with st.spinner(f"使用 Azure 将第{i+1}段文本合成语音..."):
+        with st.spinner(f"微软语音合成 第{i+1}段文本..."):
             result = get_synthesis_speech(paragraph, voice_style[0])
         audio_data_list.append(result["audio_data"])
         duration = result["audio_duration"]
