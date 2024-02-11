@@ -37,6 +37,7 @@ from mypylib.st_helper import (
     WORD_COUNT_BADGE_MAPS,
     add_exercises_to_db,
     autoplay_audio_and_display_text,
+    check_access,
     configure_google_apis,
     count_non_none,
     display_assessment_score,
@@ -71,7 +72,7 @@ st.set_page_config(
 )
 
 menu()
-
+check_access(False)
 # save_and_clear_all_learning_records()
 configure_google_apis()
 

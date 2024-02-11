@@ -28,6 +28,7 @@ from mypylib.st_helper import (
     PRONUNCIATION_SCORE_BADGE_MAPS,
     add_exercises_to_db,
     autoplay_audio_and_display_text,
+    check_access,
     configure_google_apis,
     display_assessment_score,
     get_synthesis_speech,
@@ -49,7 +50,7 @@ st.set_page_config(
     layout="wide",
 )
 menu()
-
+check_access(False)
 configure_google_apis()
 
 menu_items = ["发音评估", "口语能力", "写作评估"]

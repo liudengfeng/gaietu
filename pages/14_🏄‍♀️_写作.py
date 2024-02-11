@@ -23,6 +23,7 @@ from mypylib.html_fmt import (
 )
 from mypylib.st_helper import (
     add_exercises_to_db,
+    check_access,
     configure_google_apis,
     on_project_changed,
     setup_logger,
@@ -43,6 +44,7 @@ st.set_page_config(
     layout="wide",
 )
 menu()
+check_access(False)
 configure_google_apis()
 on_project_changed("写作练习")
 add_exercises_to_db()

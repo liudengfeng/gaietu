@@ -22,6 +22,7 @@ from mypylib.db_model import Payment, PaymentStatus, PurchaseType, str_to_enum
 from mypylib.google_cloud_configuration import PROJECT_ID
 from mypylib.st_helper import (
     add_exercises_to_db,
+    check_access,
     configure_google_apis,
     get_blob_container_client,
     get_blob_service_client,
@@ -45,6 +46,7 @@ st.set_page_config(
     layout="wide",
 )
 menu()
+check_access(True)
 configure_google_apis()
 on_project_changed("系统管理")
 add_exercises_to_db()

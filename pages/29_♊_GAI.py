@@ -21,6 +21,7 @@ from mypylib.google_ai import (
 from mypylib.google_cloud_configuration import DEFAULT_SAFETY_SETTINGS
 from mypylib.st_helper import (
     add_exercises_to_db,
+    check_access,
     configure_google_apis,
     on_project_changed,
     setup_logger,
@@ -41,6 +42,7 @@ st.set_page_config(
     layout="wide",
 )
 menu()
+check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 # endregion
