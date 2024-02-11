@@ -709,7 +709,7 @@ def left_paragraph_aligned_text(text1, words):
 
 
 def on_project_changed(project_name):
-    if not st.session_state.role:
+    if "role" not in st.session_state or not st.session_state.role:
         return
 
     if "project-timer" not in st.session_state:
