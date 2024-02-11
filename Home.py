@@ -18,7 +18,6 @@ from mypylib.db_interface import DbInterface
 from mypylib.db_model import PaymentStatus, UserRole, str_to_enum
 from mypylib.st_helper import (
     add_exercises_to_db,
-    get_firestore_client,
     on_project_changed,
     setup_logger,
 )
