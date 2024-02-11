@@ -41,3 +41,72 @@ Reading Comprehension Fill in the Blank Question Guidelines:
 - Determine the options for the blank according to the context. The options for the blank should conform to the meaning of the context, avoiding too vague or biased options.
 - Each question should be output as a dictionary with 'question', 'answer', and 'explanation' as keys.
 """
+
+# 问题：总分、明细不一致
+ENGLISH_ESSAY_SCORING_TEMPLATE = """
+As an educator specializing in English composition, your task is to evaluate your students' essays according to the following criteria.
+- Content (Total: 40 points)
+    - Consistency between the theme of the title and the content of the article (Total: 10 points):
+        - Completely conforms to the meaning of the question, understands and answers the question accurately, score: 10.
+        - Basically meets the meaning of the question, but there are a few deviations from the question or missing key points. Score: 5-8.
+        - Deviates from the meaning of the question and fails to answer the question completely, score: 0-4.
+    - Complete content (Total: 10 points):
+        - Covers all key points and has substantial content. Score: 10.
+        - A few key points are missing, but the content is basically complete. Score: 5-8.
+        - Missing important points and incomplete content, score: 0-4.
+    - Clear point of view (Total: 10 points):
+        - The point is clear and the argument is sufficient. Score: 10.
+        - The point of view is basically clear, but the argument is insufficient. Score: 5-8.
+        - Vague views and insufficient arguments, score: 0-4.
+    - Logic (Total: 10 points):
+        - Clear thinking, reasonable structure, rigorous logic, score: 10.
+        - The ideas are basically clear, the structure is slightly loose, and the logic occasionally has flaws. Score: 5-8.
+        - The ideas are confusing, the structure is unreasonable, and there are many logical errors. Score: 0-4.
+- Language (Total: 30 points)
+    - Vocabulary (Total: 10 points):
+        - Rich vocabulary, appropriate use, no obvious errors, score: 10.
+        - Vocabulary basically meets the requirements. Occasionally there are errors. Score: 5-8.
+        - Poor vocabulary and many errors, which affects understanding. Score: 0-4.
+    - Grammar (Total: 10 points):
+        - The grammar is accurate, the sentence structure is complete, and there are no obvious errors. Score: 10.
+        - Grammar is basically accurate, with occasional errors, which do not affect understanding. Score: 5-8.
+        - There are many grammatical errors, which affect understanding. Score: 0-4.
+    - Fluency (Total: 10 points):
+        - The sentences are fluent, the expression is natural, and it is easy to understand. Score: 10.
+        - The sentence structure is a bit stiff and the expression is not natural enough. Score: 5-8.
+        - The sentences are not fluent and the expression is unnatural, which affects understanding. Score: 0-4.
+- Structure (Total: 20 points)
+    - Paragraph division (Total: 10 points):
+        - The paragraphs are reasonably divided and hierarchical. Score: 10.
+        - The division of paragraphs is not reasonable enough, but the hierarchy is basically clear. Score: 5-8.
+        - The division of paragraphs is unreasonable and the hierarchy is confusing. Score: 0-4.
+    - Connection means (Total: 10 points):
+        - The cohesion means are rich, used appropriately, and the whole text is coherent. Score: 10.
+        - The connection methods basically meet the requirements, with occasional stiffness. Score: 5-8.
+        - Lack of cohesion means, the whole text is incoherent, affecting understanding, score: 0-4.
+- Others (Total: 10 points)
+    - Innovation (Total: 5 points):
+        - Novel and creative ideas, score: 5.
+        - The viewpoint is basically novel and has a certain degree of creativity. Score: 3-4.
+        - The ideas lack new ideas and have no obvious creativity. Score: 0-2.
+    - Language style (Total: 5 points):
+        - The language style is vivid and contagious. Score: 5.
+        - The language style is basically vivid and has a certain appeal. Score: 3-4.
+        - The language style is bland and lacks appeal. Score: 0-2.
+
+- Scoring details
+    - Scores will be given for each criterion based on the specific circumstances.
+    - The full score is 100 points.
+
+Step by step:
+- For each criterion, evaluate the specific aspects according to the detailed grading rubric. Generate score records, each record including the specific aspect, score, and explanation.
+- Ensure that the total score for each criterion does not exceed the total possible points for that criterion.
+- Calculate the score for each criterion by summing up the scores of its specific aspects.
+- The total score is equal to the sum of the scores of each criterion.
+- The output key is a dictionary with total points, scoring details for each criterion, and scoring details for each specific aspect.
+- Output format is JSON.
+
+Composition:
+
+{composition}
+"""
