@@ -232,6 +232,7 @@ def get_first_part(project):
 
 with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
+    st.markdown("✨ 数据每30分钟更新一次。")
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
 
     with st.sidebar:
