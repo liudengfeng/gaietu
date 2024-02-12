@@ -744,11 +744,12 @@ def on_next_test_btn_click():
 
 def get_word_test_project():
     idx = st.session_state["word-test-idx"]
+    word = st.session_state["test-words"][idx]
     project = "词意测试"
     if idx == -1:
         return f"单词练习-{project}"
     else:
-        return f"单词练习-{project}-{idx}"
+        return f"单词练习-{project}-{word}"
 
 
 def check_word_test_answer(container, level):
