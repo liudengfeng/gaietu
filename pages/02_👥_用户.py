@@ -64,8 +64,8 @@ sidebar_status = st.sidebar.empty()
 # region tabs
 
 emojis = [
-    ":key:",
     ":bar_chart:",
+    ":key:",
     ":arrows_counterclockwise:",
     ":memo:",
 ]
