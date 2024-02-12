@@ -64,9 +64,9 @@ sidebar_status = st.sidebar.empty()
 # region tabs
 
 emojis = [
-    ":arrows_counterclockwise:",
     ":key:",
     ":bar_chart:",
+    ":arrows_counterclockwise:",
     ":memo:",
 ]
 item_names = ["学习报告", "更新信息", "重置密码", "问题反馈"]
