@@ -47,6 +47,7 @@ from .word_utils import (
     load_image_bytes_from_url,
 )
 
+ABNORMAL_DURATION = 60 * 60  # 1小时
 DB_TIME_INTERVAL = 10 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
 
@@ -761,7 +762,7 @@ def add_exercises_to_db(force=False):
     返回：
     无返回值。
     """
-    
+
     if "dbi" not in st.session_state:
         return
 
@@ -787,13 +788,15 @@ def add_exercises_to_db(force=False):
                 project_data["duration"] = (
                     project_data["end_time"] - project_data["start_time"]
                 )
-            docs.append(
-                {
-                    "item": project_name,
-                    "duration": project_data["duration"],
-                    "timestamp": datetime.now(pytz.UTC),
-                }
-            )
+            
+            if project_data["duration"] <= ABNORMAL_DURATION:
+                docs.append(
+                    {
+                        "item": project_name,
+                        "duration": project_data["duration"],
+                        "timestamp": datetime.now(pytz.UTC),
+                    }
+                )
 
         # 保存数据到 Firestore
         st.session_state.dbi.add_documents_to_user_history("exercises", docs)
