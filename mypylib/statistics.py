@@ -3,8 +3,8 @@ import streamlit as st
 import pytz
 import pandas as pd
 
-
-@st.cache_data(ttl=60 * 30)
+# TODO:更新
+@st.cache_data(ttl=60 * 5)
 def get_exercises(phone_number, start_date, end_date):
     dbi = st.session_state.dbi
     db = dbi.db
