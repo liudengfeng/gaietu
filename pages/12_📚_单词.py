@@ -400,11 +400,12 @@ def reset_puzzle_word():
 
 def get_puzzle_project():
     idx = st.session_state["puzzle-idx"]
+    word = st.session_state["puzzle-words"][idx]
     project = "单词拼图"
     if idx == -1:
         return f"单词练习-{project}"
     else:
-        return f"单词练习-{project}-{idx}"
+        return f"单词练习-{project}-{word}"
 
 
 def get_word_definition(word):
@@ -1280,7 +1281,8 @@ elif item_menu and item_menu.endswith("看图猜词"):
         check_pic_answer(container)
     elif st.session_state.pic_idx != -1:
         idx = st.session_state.pic_idx
-        on_project_changed(f"单词练习-看图猜词-{idx}")
+        answer = st.session_state.pic_tests[idx]["answer"]
+        on_project_changed(f"单词练习-看图猜词-{answer}")
         view_pic_question(container)
 
 
