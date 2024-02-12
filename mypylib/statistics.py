@@ -52,7 +52,7 @@ def word_study_stats(df: pd.DataFrame, period: str = "天"):
         df["学习日期"] = df["学习日期"].dt.hour
 
     # 解析出单词
-    df["单词"] = df["项目"].str.extract("单词练习-(.*?)-([a-zA-Z\s]+)")
+    df["单词"] = df["项目"].str.extract("单词练习-.*?-([a-zA-Z\s]+)$")
 
     # 按日期和单词进行分组
     grouped = df.groupby(["学习日期", "单词"])
