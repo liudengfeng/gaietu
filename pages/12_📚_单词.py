@@ -520,6 +520,7 @@ def handle_puzzle_input(word_lib):
                 # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
                 "record_time": datetime.now(timezone.utc),
                 "score": score,
+                "word_results": st.session_state.puzzle_test_score,
             }
             st.session_state.dbi.add_documents_to_user_history("performances", [d])
 
@@ -656,6 +657,7 @@ def view_pic_question(container):
 
 def check_pic_answer(container):
     score = 0
+    word_results = {}
     tests = st.session_state.pic_tests
     n = len(tests)
     for idx in range(n):
@@ -680,7 +682,10 @@ def check_pic_answer(container):
             key=f"pic_options_{idx}",
         )
         msg = ""
-        if options[user_answer_idx].strip().endswith(answer.strip()):
+        is_correct = options[user_answer_idx].strip().endswith(answer.strip())
+        # 结果是单词
+        word_results[answer] = is_correct
+        if is_correct:
             score += 1
             msg = f"正确答案：{answer} :white_check_mark:"
         else:
@@ -697,6 +702,7 @@ def check_pic_answer(container):
         "level": st.session_state["pic-category"],
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
+        "word_results": word_results,
     }
     # st.session_state.dbi.save_daily_quiz_results(d)
     st.session_state.dbi.add_documents_to_user_history("performances", [d])
@@ -750,6 +756,7 @@ def check_word_test_answer(container, level):
         container.stop()
 
     score = 0
+    word_results = {}
     n = count_non_none(st.session_state["word-tests"])
     for idx, test in enumerate(st.session_state["word-tests"]):
         question = test["question"]
@@ -771,9 +778,11 @@ def check_word_test_answer(container, level):
             label_visibility="collapsed",
             key=f"test-options-{word}",
         )
+        is_correct = is_answer_correct(user_answer_idx, answer)
+        word_results[word] = is_correct
         msg = ""
         # 用户答案是选项序号，而提供的标准答案是A、B、C、D
-        if is_answer_correct(user_answer_idx, answer):
+        if is_correct:
             score += 1
             msg = f"正确答案：{answer} :white_check_mark:"
         else:
@@ -786,11 +795,12 @@ def check_word_test_answer(container, level):
     container.divider()
     container.markdown(f":red[得分：{percentage:.0f}%]")
     test_dict = {
-        # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
         "item": "词意测试",
         "level": level,
         "score": percentage,
         "record_time": datetime.now(timezone.utc),
+        # 记录单词测试情况
+        "word_results": word_results,
     }
     # st.session_state.dbi.save_daily_quiz_results(test_dict)
     st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
