@@ -3,6 +3,7 @@ import streamlit as st
 import pytz
 import pandas as pd
 
+
 # TODO:更新
 @st.cache_data(ttl=60 * 5)
 def get_exercises(phone_number, start_date, end_date):
@@ -49,7 +50,7 @@ def word_study_stats(df: pd.DataFrame, period: str = "天"):
     if period == "天":
         df["学习日期"] = df["学习日期"].dt.date
     else:
-        df["学习日期"] = df["学习日期"].dt.hour
+        df["学习日期"] = df["学习日期"].dt.strftime("%m-%d %H")
 
     # 解析出单词
     df["单词"] = df["项目"].str.extract("单词练习-.*?-([a-zA-Z\s]+)$")
