@@ -1436,7 +1436,7 @@ elif item_menu and item_menu.endswith("词意测试"):
 # region 个人词库
 
 elif item_menu and item_menu.endswith("词库管理"):
-    on_project_changed("单词练习-词库管理")
+    on_project_changed("Home")
     # 基准词库不包含个人词库
     add_personal_dictionary(False)
     word_lib = st.sidebar.selectbox(
