@@ -3,7 +3,7 @@ import streamlit as st
 import pytz
 
 
-@st.cache_data(ttl=60 * 20)
+@st.cache_data(ttl=60 * 30)
 def get_exercises(phone_number, start_date, end_date):
     dbi = st.session_state.dbi
     db = dbi.db
