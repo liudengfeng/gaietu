@@ -44,16 +44,12 @@ def get_exercises(phone_number, start_date, end_date):
     return record_list
 
 
-def word_study_stats(df: pd.DataFrame):
-    # 确保输入是 pandas DataFrame
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError("Input should be a pandas DataFrame")
-
-    # 检查必要的列是否存在
-    if not {"项目", "学习日期", "时长"}.issubset(df.columns):
-        raise ValueError(
-            "DataFrame should contain '项目', '学习日期', and '时长' columns"
-        )
+def word_study_stats(df: pd.DataFrame, period: str = "天"):
+    df = df.copy()
+    if period == "天":
+        df["学习日期"] = df["学习日期"].dt.date
+    else:
+        df["学习日期"] = df["学习日期"].dt.hour
 
     # 解析出单词
     df["单词"] = df["项目"].str.extract("单词练习-(.*?)-([a-zA-Z\s]+)")

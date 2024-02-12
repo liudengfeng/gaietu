@@ -27,7 +27,7 @@ from mypylib.st_helper import (
     on_project_changed,
     setup_logger,
 )
-from mypylib.statistics import get_exercises
+from mypylib.statistics import get_exercises, word_study_stats
 from mypylib.utils import get_current_monday
 
 # region 初始化
@@ -225,6 +225,7 @@ now = datetime.date.today()
 # 计算当前日期所在周的周一
 start_date_default = get_current_monday(user_tz)
 
+
 def get_first_part(project):
     return project.split("-")[0]
 
@@ -236,6 +237,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     with st.sidebar:
         start_date = st.date_input("开始日期", value=start_date_default)
         end_date = st.date_input("结束日期", value=now)
+        period = st.selectbox("统计周期", ["天", "小时"], index=0)
 
     # 创建列映射
     column_mapping = {
@@ -259,6 +261,15 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
     with study_report_tabs[study_report_items.index("学习单词")]:
         st.subheader("学习单词", divider="rainbow")
+        if st.button(
+            "查阅[:eye:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
+        ):
+            if df.empty:
+                st.warning("当前期间内没有学习记录。", icon="⚠️")
+            else:
+                df.rename(columns=column_mapping, inplace=True)
+                stats = word_study_stats(df, period)
+                st.dataframe(stats)
 
     with study_report_tabs[study_report_items.index("学习时间")]:
         st.subheader("学习时间", divider="rainbow")
