@@ -261,7 +261,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
     with study_report_tabs[study_report_items.index("学习时间")]:
         st.subheader("学习时间", divider="rainbow")
-        if st.button("查阅[:eye:]"):
+        if st.button(
+            "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
+        ):
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
