@@ -1,6 +1,7 @@
 from datetime import datetime
 import streamlit as st
 import pytz
+import pandas as pd
 
 
 @st.cache_data(ttl=60 * 30)
@@ -41,3 +42,37 @@ def get_exercises(phone_number, start_date, end_date):
                 record_list.append(record)
 
     return record_list
+
+
+def word_study_stats(df: pd.DataFrame):
+    # 确保输入是 pandas DataFrame
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Input should be a pandas DataFrame")
+
+    # 检查必要的列是否存在
+    if not {"项目", "学习日期", "时长"}.issubset(df.columns):
+        raise ValueError(
+            "DataFrame should contain '项目', '学习日期', and '时长' columns"
+        )
+
+    # 解析出单词
+    df["单词"] = df["项目"].str.extract("单词练习-(.*?)-([a-zA-Z\s]+)")
+
+    # 按日期和单词进行分组
+    grouped = df.groupby(["学习日期", "单词"])
+
+    # 计算每个单词的累计学习时间
+    total_study_time = grouped["时长"].sum()
+
+    # 计算每个单词的累计学习单词量
+    total_word_count = grouped.size()
+
+    # 将结果合并到一个新的 DataFrame
+    stats = pd.DataFrame(
+        {"累计学习时间": total_study_time, "单词数量": total_word_count}
+    )
+
+    # 重置索引
+    stats = stats.reset_index()
+
+    return stats

@@ -880,15 +880,15 @@ elif item_menu == "统计分析":
     tabs = st.tabs(["运行费用", "用户"])
     with tabs[0]:
         phone_number = st.selectbox("选择用户", options=["ALL"] + get_phone_numbers())
-
-        start_date = st.date_input(
+        cols = st.columns(2)
+        start_date = cols[0].date_input(
             "开始日期",
             value=get_current_monday(
                 st.session_state.dbi.cache["user_info"]["timezone"]
             ),
             key="start_date",
         )
-        end_date = st.date_input("结束日期", value=None, key="end_date")
+        end_date = cols[1].date_input("结束日期", value=None, key="end_date")
 
         if start_date is None and end_date is None:
             st.warning("请先选择开始日期和结束日期。")

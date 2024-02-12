@@ -220,7 +220,10 @@ with tabs[items.index(":key: 重置密码")]:
 
 
 # region 创建统计页面
-
+user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
+now = datetime.date.today()
+# 计算当前日期所在周的周一
+start_date_default = get_current_monday(user_tz)
 
 def get_first_part(project):
     return project.split("-")[0]
@@ -228,13 +231,8 @@ def get_first_part(project):
 
 with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
-
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
-    user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
 
-    now = datetime.date.today()
-    # 计算当前日期所在周的周一
-    start_date_default = get_current_monday(user_tz)
     with st.sidebar:
         start_date = st.date_input("开始日期", value=start_date_default)
         end_date = st.date_input("结束日期", value=now)
@@ -250,7 +248,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
 
     study_report_items = [
-        "单词",
+        "学习单词",
         "学习时间",
         "学习项目",
         "学习进度",
@@ -258,6 +256,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "个人排位",
     ]
     study_report_tabs = st.tabs(study_report_items)
+
+    with study_report_tabs[study_report_items.index("学习单词")]:
+        st.subheader("学习单词", divider="rainbow")
 
     with study_report_tabs[study_report_items.index("学习时间")]:
         st.subheader("学习时间", divider="rainbow")
