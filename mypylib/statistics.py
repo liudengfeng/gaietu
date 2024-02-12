@@ -45,8 +45,8 @@ def get_exercises(phone_number, start_date, end_date):
     return record_list
 
 
-def word_study_stats(df: pd.DataFrame, period: str = "天"):
-    df = df.copy()
+def word_study_stats(data: pd.DataFrame, period: str = "天"):
+    df = data.copy()
     if period == "天":
         df["学习日期"] = df["学习日期"].dt.date
     else:
