@@ -86,8 +86,8 @@ menu_names = ["听说练习", "阅读练习"]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
-def on_menu_changed():
-    item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
+# def on_menu_changed():
+#     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
 
 
 item_menu = st.sidebar.radio(
@@ -95,7 +95,7 @@ item_menu = st.sidebar.radio(
     menu_opts,
     key="menu-radio",
     help="✨ 请选择您要进行的练习项目",
-    on_change=on_menu_changed,
+    # on_change=on_menu_changed,
 )
 
 st.sidebar.divider()
@@ -183,21 +183,6 @@ def display_dialogue_summary(container, dialogue, summarize):
 
 
 # endregion
-
-
-# def create_learning_record(
-#     project,
-#     difficulty,
-#     selected_scenario,
-#     words,
-# ):
-#     record = LearningTime(
-#         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-#         project=project,
-#         content=f"{difficulty}-{selected_scenario}",
-#         word_count=words,
-#     )
-#     return record
 
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
@@ -410,7 +395,7 @@ def on_word_test_radio_change(idx, options):
     st.session_state["listening-test-answer"][idx] = options.index(current)
 
 
-def play_listening_test(difficulty, selected_scenario):
+def play_listening_test():
     idx = st.session_state["listening-test-idx"]
     test = st.session_state["listening-test"][idx]
     question = test["question"]
@@ -423,16 +408,6 @@ def play_listening_test(difficulty, selected_scenario):
         components.html(audio_html)
         t = question_audio["audio_duration"].total_seconds() + 0.5
         time.sleep(t)
-
-    # 添加一个学习时间记录
-    # record = LearningTime(
-    #     phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-    #     project="听力测验",
-    #     content=f"{difficulty}-{selected_scenario}",
-    #     word_count=len(question.split()),
-    #     duration=t,
-    # )
-    # st.session_state.dbi.add_record_to_cache(record)
 
 
 def view_listening_test(container):
@@ -543,9 +518,7 @@ def check_listening_test_answer(container, level, selected_scenario):
         "topic": selected_scenario,
         "level": level,
         "score": percentage,
-        "duration": (
-            datetime.now(pytz.UTC) - st.session_state["listening-start-time"]
-        ).total_seconds(),
+        "duration": (time.time() - st.session_state["listening-start-time"]),
         "record_time": datetime.now(pytz.UTC),
     }
     # st.session_state.dbi.save_daily_quiz_results(test_dict)
@@ -1158,7 +1131,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             st.session_state["listening-test-answer"] = [None] * len(
                 st.session_state["listening-test"]
             )
-            st.session_state["listening-start-time"] = datetime.now(pytz.UTC)
+            st.session_state["listening-start-time"] = time.time()
             # 更新
             st.rerun()
 
@@ -1169,22 +1142,22 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 st.session_state["listening-test-display-state"] = "文本"
 
             if st.session_state["listening-test-idx"] != -1:
-                play_listening_test(difficulty, selected_scenario)
+                play_listening_test()
 
         if rpl_test_btn:
             on_project_changed("听说练习-测试-听题")
             if st.session_state["listening-test-idx"] != -1:
-                play_listening_test(difficulty, selected_scenario)
+                play_listening_test()
 
         if listening_prev_test_btn:
             idx = st.session_state["listening-test-idx"]
             on_project_changed(f"听说练习-测试-{idx}")
-            play_listening_test(difficulty, selected_scenario)
+            play_listening_test()
 
         if listening_next_test_btn:
             idx = st.session_state["listening-test-idx"]
             on_project_changed(f"听说练习-测试-{idx}")
-            play_listening_test(difficulty, selected_scenario)
+            play_listening_test()
 
         if sumbit_test_btn:
             on_project_changed("听说练习-测试-答题")
