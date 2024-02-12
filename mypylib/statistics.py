@@ -65,7 +65,7 @@ def word_study_stats(df: pd.DataFrame, period: str = "天"):
 
     # 将结果合并到一个新的 DataFrame
     stats = pd.DataFrame(
-        {"累计学习时间": total_study_time, "单词数量": total_word_count}
+        {"累计学习时间": total_study_time, "学习次数": total_word_count}
     )
 
     # 重置索引

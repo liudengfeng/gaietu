@@ -69,7 +69,7 @@ emojis = [
     ":bar_chart:",
     ":memo:",
 ]
-item_names = ["更新信息", "重置密码", "学习报告", "问题反馈"]
+item_names = ["学习报告", "更新信息", "重置密码", "问题反馈"]
 items = [f"{e} {n}" for e, n in zip(emojis, item_names)]
 tabs = st.tabs(items)
 
