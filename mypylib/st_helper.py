@@ -47,6 +47,8 @@ from .word_utils import (
     load_image_bytes_from_url,
 )
 
+# 单个单词单次最长学习时长
+MAX_WORD_STUDY_TIME = 60  # 60秒
 ABNORMAL_DURATION = 60 * 60  # 1小时
 DB_TIME_INTERVAL = 10 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
@@ -724,7 +726,11 @@ def on_project_changed(project_name):
                 "start_time"
             ]
             duration = st.session_state["project-timer"][previous_project]["duration"]
-            duration += time.time() - start_time
+            t = time.time() - start_time
+            if previous_project.startswith("单词练习") and t > MAX_WORD_STUDY_TIME:
+                t = MAX_WORD_STUDY_TIME
+            duration += t
+
             st.session_state["project-timer"][previous_project] = {
                 "start_time": None,
                 "end_time": time.time(),
@@ -788,7 +794,7 @@ def add_exercises_to_db(force=False):
                 project_data["duration"] = (
                     project_data["end_time"] - project_data["start_time"]
                 )
-            
+
             if project_data["duration"] <= ABNORMAL_DURATION:
                 docs.append(
                     {
