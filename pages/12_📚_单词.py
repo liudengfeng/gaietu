@@ -1002,10 +1002,9 @@ if item_menu and item_menu.endswith("闪卡记忆"):
     container = st.container()
 
     if refresh_btn:
+        on_project_changed("Home")
         # end_and_save_learning_records()
         reset_flashcard_word(False)
-
-        on_project_changed(get_flashcard_project())
 
         st.rerun()
 
@@ -1045,11 +1044,13 @@ if item_menu and item_menu.endswith("闪卡记忆"):
         play_flashcard_word(voice_style)
 
     if add_btn:
+        on_project_changed("Home")
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
+        on_project_changed("Home")
         word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
         st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
@@ -1151,7 +1152,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
     )
 
     if refresh_btn:
-        on_project_changed(get_puzzle_project())
+        on_project_changed("Home")
         reset_puzzle_word()
         st.rerun()
 
@@ -1164,11 +1165,13 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         on_project_changed(get_puzzle_project())
 
     if add_btn:
+        on_project_changed("Home")
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
+        on_project_changed("Home")
         word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
         st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")
@@ -1250,7 +1253,7 @@ elif item_menu and item_menu.endswith("看图猜词"):
     container = st.container()
 
     if refresh_btn:
-        on_project_changed("单词练习-看图猜词-刷新")
+        on_project_changed("Home")
         n = len(st.session_state.pic_tests)
         st.session_state.user_pic_answer = [None] * n
 
@@ -1390,7 +1393,7 @@ elif item_menu and item_menu.endswith("词意测试"):
         on_project_changed(get_word_test_project())
 
     if refresh_btn:
-        on_project_changed(get_word_test_project())
+        on_project_changed("Home")
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
         generate_page_words(word_lib, test_num, "test-words", True)
@@ -1417,11 +1420,13 @@ elif item_menu and item_menu.endswith("词意测试"):
         check_word_test_answer(container, level)
 
     if add_btn:
+        on_project_changed("Home")
         word = st.session_state["test-words"][st.session_state["word-test-idx"]]
         st.session_state.dbi.add_words_to_personal_dictionary([word])
         st.toast(f"添加单词：{word} 到个人词库。")
 
     if del_btn:
+        on_project_changed("Home")
         word = st.session_state["test-words"][st.session_state["word-test-idx"]]
         st.session_state.dbi.remove_words_from_personal_dictionary([word])
         st.toast(f"从个人词库中删除单词：{word}。")

@@ -752,6 +752,16 @@ def on_project_changed(project_name):
 
 
 def add_exercises_to_db(force=False):
+    """
+    将练习数据添加到数据库中。
+
+    参数：
+    - force：bool，可选，是否强制添加数据到数据库。默认为False。
+
+    返回：
+    无返回值。
+    """
+    
     if "dbi" not in st.session_state:
         return
 
