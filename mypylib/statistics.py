@@ -50,7 +50,6 @@ def word_study_stats(data: pd.DataFrame, period: str = "天"):
     if period == "天":
         df["学习日期"] = df["学习日期"].dt.date
     else:
-        df["学习日期"] = pd.to_datetime(df["学习日期"])
         df["学习日期"] = df["学习日期"].dt.strftime("%m-%d %H")
 
     # 解析出单词
