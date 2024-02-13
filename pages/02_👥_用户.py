@@ -269,6 +269,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
                 df.rename(columns=column_mapping, inplace=True)
+                # 将 "学习日期" 列转换为 datetime 类型，并设置时区
+                df["学习日期"] = pd.to_datetime(df["学习日期"])
+                df["学习日期"] = df["学习日期"].dt.tz_convert(user_tz)
                 stats = word_study_stats(df, period)
                 st.dataframe(stats)
 
