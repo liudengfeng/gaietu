@@ -133,19 +133,16 @@ def display_word_study(
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
     if period == "天":
         fig1.update_xaxes(tickformat="%Y-%m-%d")
-    fig1.update_traces(marker=dict(line=dict(width=0.5)))  # 设置柱的最大宽度
     st.plotly_chart(fig1, use_container_width=True)
 
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     if period == "天":
         fig2.update_xaxes(tickformat="%Y-%m-%d")
-    fig2.update_traces(marker=dict(line=dict(width=0.5)))  # 设置柱的最大宽度
     st.plotly_chart(fig2, use_container_width=True)
 
     column_config = {
         "学习日期": "学习日期",
-        "学习时间": "学习时间",
-        # "学习时间": st.column_config.LineChartColumn("学习时间", y_min=0, y_max=1440),
+        "学习时间": st.column_config.LineChartColumn("学习时间", y_min=0, y_max=1440),
         "单词数量": st.column_config.LineChartColumn("单词数量", y_min=0, y_max=1000),
     }
     st.dataframe(
@@ -153,3 +150,4 @@ def display_word_study(
         column_config=column_config,
         hide_index=True,
     )
+    st.write(stats.dtypes)
