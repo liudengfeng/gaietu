@@ -54,12 +54,8 @@ def get_exercises(phone_number, start_date, end_date, previous_period=False):
     return record_list
 
 
-def display_word_study(
-    data: pd.DataFrame,
-    data_previous_period: pd.DataFrame,
-    column_mapping,
-    user_tz,
-    period: str = "天",
+def _process_word_exercise_data(
+    data: pd.DataFrame, column_mapping, user_tz: str, period: str = "天"
 ):
     df = data.copy()
     df.rename(columns=column_mapping, inplace=True)
@@ -69,50 +65,39 @@ def display_word_study(
         df["学习日期"] = df["学习日期"].dt.date
     else:
         df["学习日期"] = df["学习日期"].dt.strftime("%m-%d %H")
-
-    df_previous_period = None
-    if not data_previous_period.empty:
-        df_previous_period = data_previous_period.copy()
-        df_previous_period.rename(columns=column_mapping, inplace=True)
-        df_previous_period["学习日期"] = pd.to_datetime(df_previous_period["学习日期"])
-        df_previous_period["学习日期"] = df_previous_period["学习日期"].dt.tz_convert(
-            user_tz
-        )
-        if period == "天":
-            df_previous_period["学习日期"] = df_previous_period["学习日期"].dt.date
-        else:
-            df_previous_period["学习日期"] = df_previous_period["学习日期"].dt.strftime(
-                "%m-%d %H"
-            )
-
     df["单词"] = df["项目"].str.extract("单词练习-.*?-([a-zA-Z\s]+)$")
+    df = df[df["单词"].notna()]
+    # 修正错误计时，单个时长超过阈值的，以阈值代替
     df.loc[df["时长"] > MAX_WORD_STUDY_TIME, "时长"] = MAX_WORD_STUDY_TIME
     df["时长"] = (df["时长"] / 60).round(2)
-    grouped = df.groupby(["学习日期", "单词"])
-    # 修正错误计时，单个时长超过阈值的，以阈值代替
-    total_study_time = grouped["时长"].sum()
-    total_word_count = grouped.size()
+    return df
+
+
+def display_word_study(
+    data: pd.DataFrame,
+    data_previous_period: pd.DataFrame,
+    column_mapping,
+    user_tz,
+    period: str = "天",
+):
+    df = _process_word_exercise_data(data, column_mapping, user_tz, period)
+    total_study_time = df["时长"].sum()
+    total_word_count = df["单词"].count()
 
     delta_study_time = "NA"
     delta_word_count = "NA"
-    if df_previous_period is not None:
-        df_previous_period["单词"] = df_previous_period["项目"].str.extract(
-            "单词练习-.*?-([a-zA-Z\s]+)$"
-        )
-        df_previous_period.loc[
-            df_previous_period["时长"] > MAX_WORD_STUDY_TIME, "时长"
-        ] = MAX_WORD_STUDY_TIME
-        df_previous_period["时长"] = (df_previous_period["时长"] / 60).round(2)
-        grouped_previous_period = df_previous_period.groupby(["学习日期", "单词"])
-        total_study_time_previous_period = grouped_previous_period["时长"].sum()
-        total_word_count_previous_period = grouped_previous_period.size()
 
-        delta_study_time = (
-            total_study_time.sum() - total_study_time_previous_period.sum()
+    df_previous_period = None
+    if not data_previous_period.empty:
+        df_previous_period = _process_word_exercise_data(
+            data_previous_period, column_mapping, user_tz, period
         )
-        delta_word_count = (
-            total_word_count.sum() - total_word_count_previous_period.sum()
-        )
+
+        total_study_time_previous_period = df_previous_period["时长"].sum()
+        total_word_count_previous_period = df_previous_period["单词"].count()
+
+        delta_study_time = total_study_time - total_study_time_previous_period
+        delta_word_count = total_word_count - total_word_count_previous_period
 
     cols = st.columns([2, 1])
     metric_cols = cols[0].columns([1, 1])
