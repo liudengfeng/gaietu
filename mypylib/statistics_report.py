@@ -127,6 +127,7 @@ def display_word_study(
 
     column_config_1 = {
         "学习日期": "学习日期",
+        "单词数量": None,
         "学习时间": st.column_config.LineChartColumn(
             "学习时间", y_min=0, y_max=24 * 60
         ),
@@ -134,6 +135,7 @@ def display_word_study(
 
     column_config_2 = {
         "学习日期": "学习日期",
+        "学习时间": None,
         "单词数量": st.column_config.LineChartColumn("单词数量", y_min=0, y_max=1000),
     }
     # 按 "学习日期" 分组并计算学习时间和单词数量
@@ -143,12 +145,12 @@ def display_word_study(
 
     # if period == "天":
     #     stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
-
+    fig_cols = st.columns([2, 1])
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
     if period == "天":
         fig1.update_xaxes(tickformat="%Y-%m-%d")
-    cols[0].plotly_chart(fig1, use_container_width=True)
-    cols[1].dataframe(
+    fig_cols[0].plotly_chart(fig1, use_container_width=True)
+    fig_cols[1].dataframe(
         stats,
         column_config=column_config_1,
         hide_index=True,
@@ -157,8 +159,8 @@ def display_word_study(
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     if period == "天":
         fig2.update_xaxes(tickformat="%Y-%m-%d")
-    cols[0].plotly_chart(fig2, use_container_width=True)
-    cols[1].dataframe(
+    fig_cols[0].plotly_chart(fig2, use_container_width=True)
+    fig_cols[1].dataframe(
         stats,
         column_config=column_config_2,
         hide_index=True,
