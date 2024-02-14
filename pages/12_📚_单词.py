@@ -33,7 +33,10 @@ from mypylib.st_helper import (  # end_and_save_learning_records,
     update_and_display_progress,
     update_sidebar_status,
 )
-from mypylib.st_utils import init_words_between_containers, move_words_between_containers
+from mypylib.st_utils import (
+    init_words_between_containers,
+    move_words_between_containers,
+)
 from mypylib.word_utils import audio_autoplay_elem, remove_trailing_punctuation
 
 # 创建或获取logger对象
@@ -393,9 +396,7 @@ if "puzzle_test_score" not in st.session_state:
 def reset_puzzle_word():
     # 恢复初始显示状态
     st.session_state["puzzle-idx"] = -1
-    st.session_state["puzzle_view_word"] = []
     st.session_state["puzzle_test_score"] = {}
-    # st.session_state.puzzle_answer_value = ""
     st.session_state.puzzle_answer = ""
 
 
@@ -425,28 +426,8 @@ def prepare_puzzle():
     # 打乱单词字符顺序
     ws = [w for w in word]
     random.shuffle(ws)
-    st.session_state.puzzle_view_word = ws
-    # st.session_state.clicked_character = [False] * len(ws)
-
-
-# def view_puzzle_word():
-#     ws = st.session_state.puzzle_view_word
-#     n = len(ws)
-#     cols = st.columns(36)
-#     button_placeholders = [cols[i].empty() for i in range(n)]
-#     for i in range(n):
-#         if button_placeholders[i].button(
-#             ws[i],
-#             key=f"btn_{i}",
-#             disabled=st.session_state.clicked_character[i],
-#             help="✨ 点击选择字符。",
-#             type="primary",
-#             use_container_width=True,
-#         ):
-#             # st.session_state.puzzle_answer_value += ws[i]
-#             st.session_state.puzzle_answer += ws[i]
-#             st.session_state.clicked_character[i] = True
-#             st.rerun()
+    st.session_state["puzzle_view_word"] = ws
+    init_words_between_containers(ws)
 
 
 def display_puzzle_translation():
@@ -475,69 +456,34 @@ def on_next_puzzle_btn_click():
     st.session_state.puzzle_answer = ""
 
 
-def handle_puzzle_input(word_lib):
-    # Use the get method since the keys won't be in session_state
-    # on the first script run
-    if st.session_state.get("retry"):
-        st.session_state["puzzle_answer"] = ""
+def check_puzzle(word_lib):
+    idx = st.session_state["puzzle-idx"]
+    word = st.session_state["puzzle-words"][idx]
+    if word not in st.session_state["flashcard-word-info"]:
+        st.session_state["flashcard-word-info"][word] = get_word_info(word)
+    msg = f'单词：{word}\t翻译：{st.session_state["flashcard-word-info"][word]["zh-CN"]["translation"]}'
+    user_input = "".join(st.session_state["target-container-words"])
+    if user_input == word:
+        st.balloons()
+        st.session_state.puzzle_test_score[word] = True
+    else:
+        st.write(f"对不起，您回答错误。正确的单词应该为：{word}")
+        st.session_state.puzzle_test_score[word] = False
 
-    user_input = st.text_input(
-        "点击字符按钮或输入您的答案",
-        placeholder="点击字符按钮或直接输入您的答案",
-        key="puzzle_answer",
-        label_visibility="collapsed",
-    )
-
-    puzzle_score = st.empty()
-    sumbit_cols = st.columns(5)
-
-    if sumbit_cols[0].button(
-        "重试[:repeat:]", key="retry", help="✨ 恢复初始状态，重新开始拼图游戏。"
-    ):
-        prepare_puzzle()
-        st.rerun()
-
-    if sumbit_cols[1].button("检查[:mag:]", help="✨ 点击按钮，检查您的答案是否正确。"):
-        idx = st.session_state["puzzle-idx"]
-        word = st.session_state["puzzle-words"][idx]
-        if word not in st.session_state["flashcard-word-info"]:
-            st.session_state["flashcard-word-info"][word] = get_word_info(word)
-
-        msg = f'单词：{word}\t翻译：{st.session_state["flashcard-word-info"][word]["zh-CN"]["translation"]}'
-        if user_input == word:
-            st.balloons()
-            st.session_state.puzzle_test_score[word] = True
-        else:
-            st.write(f"对不起，您回答错误。正确的单词应该为：{word}")
-            st.session_state.puzzle_test_score[word] = False
-
-        n = len(st.session_state["puzzle-words"])
-        score = sum(st.session_state.puzzle_test_score.values()) / n * 100
-        msg = f":red[您的得分：{score:.0f}%]\t{msg}"
-        puzzle_score.markdown(msg)
-        if idx == n - 1:
-            d = {
-                "item": "拼图游戏",
-                "level": word_lib.split("-", 1)[1],
-                # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
-                "record_time": datetime.now(timezone.utc),
-                "score": score,
-                "word_results": st.session_state.puzzle_test_score,
-            }
-            st.session_state.dbi.add_documents_to_user_history("performances", [d])
-
-
-# def handle_puzzle(word_lib):
-#     display_puzzle_translation()
-#     view_puzzle_word()
-#     handle_puzzle_input(word_lib)
-
-#     word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
-#     st.divider()
-#     st.info("如果字符中包含空格，这可能表示该单词是一个复合词或短语。", icon="ℹ️")
-#     container = st.container()
-#     display_puzzle_definition()
-#     display_word_images(word, container)
+    n = len(st.session_state["puzzle-words"])
+    score = sum(st.session_state.puzzle_test_score.values()) / n * 100
+    msg = f":red[您的得分：{score:.0f}%]\t{msg}"
+    st.markdown(msg)
+    if idx == n - 1:
+        d = {
+            "item": "拼图游戏",
+            "level": word_lib.split("-", 1)[1],
+            # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+            "record_time": datetime.now(timezone.utc),
+            "score": score,
+            "word_results": st.session_state.puzzle_test_score,
+        }
+        st.session_state.dbi.add_documents_to_user_history("performances", [d])
 
 
 def handle_puzzle():
@@ -1169,13 +1115,16 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         or st.session_state["puzzle-idx"]
         == len(st.session_state["puzzle-words"]) - 1,  # type: ignore
     )
-    add_btn = puzzle_cols[3].button(
+    chk_btn = puzzle_cols[3].button(
+        "检查[:mag:]", help="✨ 点击按钮，检查您的答案是否正确。"
+    )
+    add_btn = puzzle_cols[4].button(
         "添加[:heavy_plus_sign:]",
         key="puzzle-add",
         help="✨ 将当前单词添加到个人词库",
         disabled=st.session_state["puzzle-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
     )
-    del_btn = puzzle_cols[4].button(
+    del_btn = puzzle_cols[5].button(
         "删除[:heavy_minus_sign:]",
         key="puzzle-del",
         help="✨ 将当前单词从个人词库中删除",
@@ -1189,13 +1138,14 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if prev_btn:
         prepare_puzzle()
-        init_words_between_containers(st.session_state.puzzle_view_word)
         on_project_changed(get_puzzle_project())
 
     if next_btn:
         prepare_puzzle()
-        init_words_between_containers(st.session_state.puzzle_view_word)
         on_project_changed(get_puzzle_project())
+
+    if chk_btn:
+        check_puzzle(word_lib)
 
     if add_btn:
         on_project_changed("Home")
