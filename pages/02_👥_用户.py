@@ -311,8 +311,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 # 统计时长，转换为小时，比较差异，画出进度条
                 total_time = exercise_time["时长"].sum() / 60.0
                 progress = total_time / hours
+                cols = st.columns(2)
                 # 显示进度条
-                st.progress(
+                cols[0].progress(
                     progress,
                     f"需要 {hours} 小时，完成 {total_time:.0f} 小时。完成百分比：{progress:.2%}",
                 )
