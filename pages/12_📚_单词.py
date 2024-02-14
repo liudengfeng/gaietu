@@ -456,7 +456,8 @@ def on_next_puzzle_btn_click():
     st.session_state.puzzle_answer = ""
 
 
-def check_puzzle(word_lib):
+def check_puzzle(word_lib, puzzle_container):
+    puzzle_container.empty()
     idx = st.session_state["puzzle-idx"]
     word = st.session_state["puzzle-words"][idx]
     if word not in st.session_state["flashcard-word-info"]:
@@ -467,13 +468,14 @@ def check_puzzle(word_lib):
         st.balloons()
         st.session_state.puzzle_test_score[word] = True
     else:
-        st.write(f"对不起，您回答错误。正确的单词应该为：{word}")
+        puzzle_container.markdown(f"对不起，您回答错误。正确的单词应该为：{word}")
         st.session_state.puzzle_test_score[word] = False
 
     n = len(st.session_state["puzzle-words"])
     score = sum(st.session_state.puzzle_test_score.values()) / n * 100
     msg = f":red[您的得分：{score:.0f}%]\t{msg}"
-    st.markdown(msg)
+    puzzle_container.markdown(msg)
+    puzzle_container.divider()
     if idx == n - 1:
         d = {
             "item": "拼图游戏",
@@ -1092,6 +1094,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
     )
 
     puzzle_cols = st.columns(8)
+    puzzle_container = st.container()
     refresh_btn = puzzle_cols[0].button(
         "刷新[:arrows_counterclockwise:]",
         key="puzzle-refresh",
@@ -1145,7 +1148,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         on_project_changed(get_puzzle_project())
 
     if chk_btn:
-        check_puzzle(word_lib)
+        check_puzzle(word_lib, puzzle_container)
 
     if add_btn:
         on_project_changed("Home")
