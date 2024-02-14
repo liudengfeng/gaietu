@@ -145,22 +145,23 @@ def display_word_study(
 
     # if period == "天":
     #     stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
-    fig_cols = st.columns([2, 1])
+    fig1_cols = st.columns([2, 1])
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
     if period == "天":
         fig1.update_xaxes(tickformat="%Y-%m-%d")
-    fig_cols[0].plotly_chart(fig1, use_container_width=True)
-    fig_cols[1].dataframe(
+    fig1_cols[0].plotly_chart(fig1, use_container_width=True)
+    fig1_cols[1].dataframe(
         stats,
         column_config=column_config_1,
         hide_index=True,
     )
 
+    fig2_cols = st.columns([2, 1])
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     if period == "天":
         fig2.update_xaxes(tickformat="%Y-%m-%d")
-    fig_cols[0].plotly_chart(fig2, use_container_width=True)
-    fig_cols[1].dataframe(
+    fig2_cols[0].plotly_chart(fig2, use_container_width=True)
+    fig2_cols[1].dataframe(
         stats,
         column_config=column_config_2,
         hide_index=True,
