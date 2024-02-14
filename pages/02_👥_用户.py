@@ -221,8 +221,8 @@ with tabs[items.index(":key: 重置密码")]:
 
 # region 创建统计页面
 user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
-now = datetime.date.today(pytz.timezone(user_tz))
-st.write(f"当前日期：{now}")
+now = datetime.datetime.now(pytz.timezone(user_tz))
+st.write(f"当前时间：{now}")
 # 计算当前日期所在周的周一
 start_date_default = get_current_monday(user_tz)
 
@@ -238,7 +238,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
     with st.sidebar:
         start_date = st.date_input("开始日期", value=start_date_default)
-        end_date = st.date_input("结束日期", value=now)
+        end_date = st.date_input("结束日期", value="today")
         period = st.selectbox("统计周期", ["天", "小时"], index=0)
 
     # 创建列映射
