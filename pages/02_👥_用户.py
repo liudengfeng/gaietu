@@ -297,7 +297,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     with study_report_tabs[study_report_items.index("📈 学习进度")]:
         st.subheader("📈 学习进度", divider="rainbow")
         if st.button(
-            "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
+            "查阅[:eye:]", key="study_progress_button", help="✨ 点击查看学习进度报告。"
         ):
             df = pd.DataFrame(get_exercises(phone_number))
             if df.empty:
