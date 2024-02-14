@@ -140,6 +140,7 @@ def display_word_study(
         fig2.update_xaxes(tickformat="%Y-%m-%d")
     st.plotly_chart(fig2, use_container_width=True)
 
+    st.markdown("#### 统计数据")
     column_config = {
         "学习日期": "学习日期",
         "学习时间": st.column_config.LineChartColumn("学习时间", y_min=0, y_max=1440),
@@ -147,7 +148,6 @@ def display_word_study(
     }
     st.dataframe(
         stats,
-        column_config=column_config,
+        # column_config=column_config,
         hide_index=True,
     )
-    st.write(stats.dtypes)
