@@ -33,7 +33,7 @@ from mypylib.st_helper import (  # end_and_save_learning_records,
     update_and_display_progress,
     update_sidebar_status,
 )
-from mypylib.st_utils import move_words_between_containers
+from mypylib.st_utils import init_words_between_containers, move_words_between_containers
 from mypylib.word_utils import audio_autoplay_elem, remove_trailing_punctuation
 
 # 创建或获取logger对象
@@ -379,8 +379,8 @@ if "puzzle-words" not in st.session_state:
 if "puzzle_view_word" not in st.session_state:
     st.session_state["puzzle_view_word"] = []
 
-if "clicked_character" not in st.session_state:
-    st.session_state["clicked_character"] = []
+# if "clicked_character" not in st.session_state:
+#     st.session_state["clicked_character"] = []
 
 if "puzzle_test_score" not in st.session_state:
     st.session_state["puzzle_test_score"] = {}
@@ -426,27 +426,27 @@ def prepare_puzzle():
     ws = [w for w in word]
     random.shuffle(ws)
     st.session_state.puzzle_view_word = ws
-    st.session_state.clicked_character = [False] * len(ws)
+    # st.session_state.clicked_character = [False] * len(ws)
 
 
-def view_puzzle_word():
-    ws = st.session_state.puzzle_view_word
-    n = len(ws)
-    cols = st.columns(36)
-    button_placeholders = [cols[i].empty() for i in range(n)]
-    for i in range(n):
-        if button_placeholders[i].button(
-            ws[i],
-            key=f"btn_{i}",
-            disabled=st.session_state.clicked_character[i],
-            help="✨ 点击选择字符。",
-            type="primary",
-            use_container_width=True,
-        ):
-            # st.session_state.puzzle_answer_value += ws[i]
-            st.session_state.puzzle_answer += ws[i]
-            st.session_state.clicked_character[i] = True
-            st.rerun()
+# def view_puzzle_word():
+#     ws = st.session_state.puzzle_view_word
+#     n = len(ws)
+#     cols = st.columns(36)
+#     button_placeholders = [cols[i].empty() for i in range(n)]
+#     for i in range(n):
+#         if button_placeholders[i].button(
+#             ws[i],
+#             key=f"btn_{i}",
+#             disabled=st.session_state.clicked_character[i],
+#             help="✨ 点击选择字符。",
+#             type="primary",
+#             use_container_width=True,
+#         ):
+#             # st.session_state.puzzle_answer_value += ws[i]
+#             st.session_state.puzzle_answer += ws[i]
+#             st.session_state.clicked_character[i] = True
+#             st.rerun()
 
 
 def display_puzzle_translation():
@@ -542,22 +542,20 @@ def handle_puzzle_input(word_lib):
 
 def handle_puzzle():
     display_puzzle_translation()
-    
+
     st.markdown("打乱的字符")
     src_container = st.container()
     st.markdown("您的拼图")
     tgt_container = st.container()
     words = st.session_state.puzzle_view_word
     move_words_between_containers(src_container, tgt_container, words, True)
-    
+
     word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     st.divider()
     st.info("如果字符中包含空格，这可能表示该单词是一个复合词或短语。", icon="ℹ️")
     container = st.container()
     display_puzzle_definition()
     display_word_images(word, container)
-    
-
 
 
 # endregion
@@ -1191,10 +1189,12 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if prev_btn:
         prepare_puzzle()
+        init_words_between_containers(st.session_state.puzzle_view_word)
         on_project_changed(get_puzzle_project())
 
     if next_btn:
         prepare_puzzle()
+        init_words_between_containers(st.session_state.puzzle_view_word)
         on_project_changed(get_puzzle_project())
 
     if add_btn:

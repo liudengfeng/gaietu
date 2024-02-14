@@ -4,6 +4,11 @@ import logging
 logger = logging.getLogger("streamlit")
 
 
+def init_words_between_containers(words):
+    st.session_state["source-container-words"] = words.copy()
+    st.session_state["target-container-words"] = []
+
+
 def move_words_between_containers(
     source_container, target_container, words, is_char=False
 ):
