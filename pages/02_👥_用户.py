@@ -315,7 +315,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 # 显示进度条
                 cols[0].progress(
                     progress,
-                    f"你的目标是需要 {hours} 小时的学习时间，你已经完成了 {total_time:.0f} 小时的学习。已经完成了目标的 {progress:.2%}。继续加油！",
+                    f"您的目标是需要 {hours} 小时的学习时间，您已经完成了 {total_time:.0f} 小时的学习。已经完成了目标的 {progress:.2%}。继续加油！",
                 )
 
 
