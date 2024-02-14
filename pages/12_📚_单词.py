@@ -1191,6 +1191,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if st.session_state["puzzle-idx"] != -1:
         # handle_puzzle(word_lib)
+        display_puzzle_translation()
         src_container = st.container()
         tgt_container = st.container()
         words = st.session_state.puzzle_view_word
