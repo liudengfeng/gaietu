@@ -127,10 +127,11 @@ def display_word_study(
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
 
-    # 绘制学习时间的柱状图
+    if period == "天":
+        stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
+
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
     st.plotly_chart(fig1, use_container_width=True)
 
-    # 绘制学习单词的柱状图
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     st.plotly_chart(fig2, use_container_width=True)
