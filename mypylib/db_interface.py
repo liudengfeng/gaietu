@@ -72,6 +72,8 @@ class DbInterface:
             "email": user.email,
             "user_role": user.user_role,
             "timezone": user.timezone,
+            "current_level": user.current_level,
+            "target_level": user.target_level,
             "session_id": session_id,
         }
 

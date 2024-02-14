@@ -35,6 +35,25 @@ CEFR_LEVEL_PLAN_HOURS = {
     "C2": 5000,
 }
 
+
+def calculate_required_hours(current_level, target_level):
+    if (
+        current_level not in ["零基础"] + list(CEFR_LEVEL_PLAN_HOURS.keys())
+        or target_level not in CEFR_LEVEL_PLAN_HOURS
+    ):
+        raise ValueError(
+            "Invalid level. Level should be one of: "
+            + ", ".join(CEFR_LEVEL_PLAN_HOURS.keys())
+        )
+
+    if current_level == "零基础":
+        current_hours = 0
+    else:
+        current_hours = CEFR_LEVEL_PLAN_HOURS[current_level]
+    target_hours = CEFR_LEVEL_PLAN_HOURS[target_level]
+    return target_hours - current_hours
+
+
 CEFR_LEVEL_DETAIL = {
     "A1": [
         "能够理解并运用与自己最切身相关且经常使用的表达方式和非常简单的语句，例如：个人的姓名、家庭成员、基本日常活动、购物等。",

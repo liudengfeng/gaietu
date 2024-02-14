@@ -9,20 +9,19 @@ import plotly.express as px
 
 
 @st.cache_data(ttl=60 * 30)
-def get_exercises(phone_number, start_date, end_date, previous_period=False):
+def get_exercises(phone_number, start_date=None, end_date=None, previous_period=False):
     dbi = st.session_state.dbi
     db = dbi.db
-    # phone_number = dbi.cache["user_info"]["phone_number"]
 
     # 将日期转换为 Firestore 时间戳
-    start_timestamp = datetime.combine(start_date, datetime.min.time())
-    end_timestamp = datetime.combine(end_date, datetime.max.time())
+    if start_date is not None:
+        start_timestamp = datetime.combine(start_date, datetime.min.time())
+        start_timestamp = pytz.UTC.localize(start_timestamp)  # 转换为 UTC 时间
+    if end_date is not None:
+        end_timestamp = datetime.combine(end_date, datetime.max.time())
+        end_timestamp = pytz.UTC.localize(end_timestamp)  # 转换为 UTC 时间
 
-    # 转换为 UTC 时间
-    start_timestamp = pytz.UTC.localize(start_timestamp)
-    end_timestamp = pytz.UTC.localize(end_timestamp)
-
-    if previous_period:
+    if previous_period and start_date is not None and end_date is not None:
         # 计算上一个周期的日期范围
         period_length = end_timestamp - start_timestamp
         start_timestamp -= period_length
@@ -41,12 +40,15 @@ def get_exercises(phone_number, start_date, end_date, previous_period=False):
 
         # 遍历 "history" 数组
         for record in data.get("history", []):
-
             # 获取 "record_time" 字段
             timestamp = record.get("timestamp")
             timestamp = timestamp.astimezone(pytz.UTC)
             # 如果 "record_time" 字段存在，并且在指定的范围内，则添加到查询结果中
-            if timestamp and start_timestamp <= timestamp <= end_timestamp:
+            if (
+                timestamp
+                and (start_date is None or start_timestamp <= timestamp)
+                and (end_date is None or timestamp <= end_timestamp)
+            ):
                 # 给 record 字典添加 phone_number 键值对
                 record["phone_number"] = phone_number
                 record_list.append(record)

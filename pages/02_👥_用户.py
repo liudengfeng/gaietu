@@ -18,7 +18,7 @@ from PIL import Image
 from menu import menu
 
 from mypylib.auth_utils import is_valid_email
-from mypylib.constants import CEFR_LEVEL_MAPS, PROVINCES
+from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_PLAN_HOURS, PROVINCES
 from mypylib.db_interface import DbInterface
 from mypylib.db_model import User
 from mypylib.st_helper import (
@@ -168,6 +168,12 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
             if tz:
                 update_fields["timezone"] = tz
 
+            if current_level == target_level:
+                status.error(
+                    "当前水平和目标水平一样？哎呀，我们总得有点上进心，对吧？😉"
+                )
+                st.stop()
+
             if not update_fields:
                 status.error("您没有修改任何信息")
                 st.stop()
@@ -287,7 +293,19 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     df, df_previous_period, column_mapping, user_tz, period
                 )
 
-
+    with study_report_tabs[study_report_items.index("📈 学习进度")]:
+        st.subheader("📈 学习进度", divider="rainbow")
+        if st.button(
+            "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
+        ):
+            df = pd.DataFrame(get_exercises(phone_number))
+            current_level = st.session_state.dbi.cache["user_info"]["current_level"]
+            target_level = st.session_state.dbi.cache["user_info"]["target_level"]
+            hours = CEFR_LEVEL_PLAN_HOURS[target_level]
+            if df.empty:
+                st.warning("当前期间内没有学习记录。", icon="⚠️")
+            else:
+                pass
 # endregion
 
 # region 创建反馈页面
