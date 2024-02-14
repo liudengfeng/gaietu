@@ -33,6 +33,7 @@ from mypylib.st_helper import (  # end_and_save_learning_records,
     update_and_display_progress,
     update_sidebar_status,
 )
+from mypylib.st_utils import move_words_between_containers
 from mypylib.word_utils import audio_autoplay_elem, remove_trailing_punctuation
 
 # 创建或获取logger对象
@@ -1189,7 +1190,11 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if st.session_state["puzzle-idx"] != -1:
-        handle_puzzle(word_lib)
+        # handle_puzzle(word_lib)
+        src_container = st.container()
+        tgt_container = st.container()
+        words = st.session_state.puzzle_view_word
+        move_words_between_containers(src_container, tgt_container, words, True)
         on_project_changed(get_puzzle_project())
 
 # endregion
