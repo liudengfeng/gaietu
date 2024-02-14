@@ -49,18 +49,41 @@ with st.expander(":bulb: 如何调整布局让屏幕显示更美观？", expande
 # endregion
 
 # region 使用指南
-st.subheader("使用指南", divider="rainbow", anchor="使用指南")
+st.subheader("使用指南-单词练习", divider="rainbow", anchor="使用指南")
+
+with st.expander(":bulb: 如何将单词添加到个人词库？", expanded=False):
+    fp = str(VIDEO_DIR / "单词" / "个人词库逐词添加.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
+
+with st.expander(":bulb: 如何将单词从个人词库中删除？", expanded=False):
+    fp = str(VIDEO_DIR / "单词" / "个人词库逐词删除.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
 
 with st.expander(":bulb: 如何把一个基础词库整体添加到个人词库？", expanded=False):
-    pass
+    fp = str(VIDEO_DIR / "单词" / "基础词库整体加入个人词库.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
 
-with st.expander(":bulb: 如何进行单词拼图游戏", expanded=False):
+with st.expander(":bulb: 如何删除个人词库？", expanded=False):
+    fp = str(VIDEO_DIR / "单词" / "删除个人词库.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
+
+with st.expander(":bulb: 如何进行单词拼图游戏？", expanded=False):
     fp = str(VIDEO_DIR / "单词" / "如何进行单词拼图游戏.mp4")
     video_file = open(fp, "rb")
     video_bytes = video_file.read()
     st.video(video_bytes)
 
-with st.expander(":bulb: 如何进行阅读练习", expanded=False):
+st.subheader("使用指南-阅读练习", divider="rainbow", anchor="使用指南")
+
+with st.expander(":bulb: 如何进行阅读练习？", expanded=False):
     fp = str(VIDEO_DIR / "reading_excise.mp4")
     video_file = open(fp, "rb")
     video_bytes = video_file.read()
