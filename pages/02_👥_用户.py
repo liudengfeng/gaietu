@@ -221,7 +221,8 @@ with tabs[items.index(":key: 重置密码")]:
 
 # region 创建统计页面
 user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
-now = datetime.date.today()
+now = datetime.date.today(pytz.timezone(user_tz))
+st.write(f"当前日期：{now}")
 # 计算当前日期所在周的周一
 start_date_default = get_current_monday(user_tz)
 
