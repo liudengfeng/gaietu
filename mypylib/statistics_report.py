@@ -112,18 +112,35 @@ def display_word_study(
             total_word_count.sum() - total_word_count_previous_period.sum()
         )
 
-    cols = st.columns(2)
-    cols[0].metric(
+    cols = st.columns([2, 1])
+    metric_cols = cols[0].columns([1, 1])
+    metric_cols[0].metric(
         label="学习时间",
         value=f"{total_study_time.sum():.2f} 分钟",
         delta=f"{delta_study_time} 小时" if delta_study_time != "NA" else "NA",
     )
-    cols[1].metric(
+    metric_cols[1].metric(
         label="单词数量",
         value=f"{total_word_count.sum()} 个",
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
 
+    column_config_1 = (
+        {
+            "学习日期": "学习日期",
+            "学习时间": st.column_config.LineChartColumn(
+                "学习时间", y_min=0, y_max=24 * 60
+            ),
+        },
+    )
+    column_config_2 = (
+        {
+            "学习日期": "学习日期",
+            "单词数量": st.column_config.LineChartColumn(
+                "单词数量", y_min=0, y_max=1000
+            ),
+        },
+    )
     # 按 "学习日期" 分组并计算学习时间和单词数量
     stats = df.groupby("学习日期").agg({"时长": "sum", "单词": "count"})
     stats = stats.rename(columns={"时长": "学习时间", "单词": "单词数量"}).reset_index()
@@ -135,11 +152,19 @@ def display_word_study(
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
     if period == "天":
         fig1.update_xaxes(tickformat="%Y-%m-%d")
-    st.plotly_chart(fig1, use_container_width=True)
+    cols[0].plotly_chart(fig1, use_container_width=True)
+    cols[1].dataframe(
+        stats,
+        column_config=column_config_1,
+        hide_index=True,
+    )
 
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     if period == "天":
         fig2.update_xaxes(tickformat="%Y-%m-%d")
-    st.plotly_chart(fig2, use_container_width=True)
-
-    st.dataframe(stats)
+    cols[0].plotly_chart(fig2, use_container_width=True)
+    cols[1].dataframe(
+        stats,
+        column_config=column_config_2,
+        hide_index=True,
+    )
