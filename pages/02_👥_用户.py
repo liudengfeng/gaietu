@@ -303,7 +303,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
-                logger.info(st.session_state.dbi.cache["user_info"])
+                # logger.info(st.session_state.dbi.cache["user_info"])
                 current_level = st.session_state.dbi.cache["user_info"]["current_level"]
                 target_level = st.session_state.dbi.cache["user_info"]["target_level"]
                 hours = calculate_required_hours(current_level, target_level)
