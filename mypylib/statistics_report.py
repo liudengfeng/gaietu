@@ -129,13 +129,17 @@ def display_word_study(
     stats = stats.rename(columns={"时长": "学习时间", "单词": "单词数量"}).reset_index()
     stats["学习时间"] = stats["学习时间"].round(2)
 
-    if period == "天":
-        stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
+    # if period == "天":
+    #     stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
 
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
+    if period == "天":
+        fig1.update_xaxes(tickformat="%Y-%m-%d")
     st.plotly_chart(fig1, use_container_width=True)
 
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
+    if period == "天":
+        fig2.update_xaxes(tickformat="%Y-%m-%d")
     st.plotly_chart(fig2, use_container_width=True)
 
     st.dataframe(stats)
