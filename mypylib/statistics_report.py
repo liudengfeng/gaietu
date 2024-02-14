@@ -198,11 +198,23 @@ def display_study_time(
 
     project_time = df.groupby("项目")["时长"].sum().reset_index()
 
-    fig = px.pie(
+    fig1 = px.pie(
         project_time,
         values="时长",
         names="项目",
         title="你的学习时间是如何分配的？",
     )
     # fig.update_layout(title_x=0.27)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig1, use_container_width=True)
+
+    # 添加一个以学习日期x轴，按项目汇总时间的堆柱状图
+    stats = df.groupby(["学习日期", "项目"]).agg({"时长": "sum"}).reset_index()
+    fig2 = px.bar(
+        stats,
+        x="学习日期",
+        y="时长",
+        color="项目",
+        title="分项目的学习时间",
+        barmode="stack",
+    )
+    st.plotly_chart(fig2, use_container_width=True)
