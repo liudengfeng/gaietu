@@ -127,6 +127,7 @@ def display_word_study(
     # 按 "学习日期" 分组并计算学习时间和单词数量
     stats = df.groupby("学习日期").agg({"时长": "sum", "单词": "count"})
     stats = stats.rename(columns={"时长": "学习时间", "单词": "单词数量"}).reset_index()
+    stats["学习时间"] = stats["学习时间"].round(2)
 
     if period == "天":
         stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
