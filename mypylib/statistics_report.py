@@ -5,6 +5,7 @@ import pandas as pd
 from mypylib.st_helper import (
     MAX_WORD_STUDY_TIME,
 )
+import plotly.express as px
 
 
 @st.cache_data(ttl=60 * 30)
@@ -51,36 +52,6 @@ def get_exercises(phone_number, start_date, end_date, previous_period=False):
                 record_list.append(record)
 
     return record_list
-
-
-def word_study_stats(data: pd.DataFrame, period: str = "天"):
-    df = data.copy()
-    if period == "天":
-        df["学习日期"] = df["学习日期"].dt.date
-    else:
-        df["学习日期"] = df["学习日期"].dt.strftime("%m-%d %H")
-
-    # 解析出单词
-    df["单词"] = df["项目"].str.extract("单词练习-.*?-([a-zA-Z\s]+)$")
-
-    # 按日期和单词进行分组
-    grouped = df.groupby(["学习日期", "单词"])
-
-    # 计算每个单词的累计学习时间
-    total_study_time = grouped["时长"].sum()
-
-    # 计算每个单词的累计学习单词量
-    total_word_count = grouped.size()
-
-    # 将结果合并到一个新的 DataFrame
-    stats = pd.DataFrame(
-        {"累计学习时间": total_study_time, "学习次数": total_word_count}
-    )
-
-    # 重置索引
-    stats = stats.reset_index()
-
-    return stats
 
 
 def display_word_study(
@@ -155,4 +126,11 @@ def display_word_study(
         value=f"{total_word_count.sum()} 个",
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
-    cols[0].dataframe(stats, height=400)
+
+    # 绘制学习时间的柱状图
+    fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
+    st.plotly_chart(fig1, use_container_width=True)
+
+    # 绘制学习单词的柱状图
+    fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
+    st.plotly_chart(fig2, use_container_width=True)
