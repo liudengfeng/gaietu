@@ -136,12 +136,13 @@ def display_word_study(
             total_word_count.sum() - total_word_count_previous_period.sum()
         )
 
-    st.metric(
+    cols = st.columns(4)
+    cols[0].metric(
         label="学习时间",
         value=f"{total_study_time.sum():.2f} 分钟",
         delta=f"{delta_study_time} 小时" if delta_study_time != "NA" else "NA",
     )
-    st.metric(
+    cols[1].metric(
         label="单词数量",
         value=f"{total_word_count.sum()} 个",
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
