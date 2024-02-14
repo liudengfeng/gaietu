@@ -542,12 +542,6 @@ def handle_puzzle_input(word_lib):
 
 def handle_puzzle():
     display_puzzle_translation()
-    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
-    st.divider()
-    st.info("如果字符中包含空格，这可能表示该单词是一个复合词或短语。", icon="ℹ️")
-    container = st.container()
-    display_puzzle_definition()
-    display_word_images(word, container)
     
     st.markdown("打乱的字符")
     src_container = st.container()
@@ -555,6 +549,14 @@ def handle_puzzle():
     tgt_container = st.container()
     words = st.session_state.puzzle_view_word
     move_words_between_containers(src_container, tgt_container, words, True)
+    
+    word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
+    st.divider()
+    st.info("如果字符中包含空格，这可能表示该单词是一个复合词或短语。", icon="ℹ️")
+    container = st.container()
+    display_puzzle_definition()
+    display_word_images(word, container)
+    
 
 
 
