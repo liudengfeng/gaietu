@@ -117,7 +117,7 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
         )
         current_level = col1.selectbox(
             "当前英语水平",
-            CEFR,
+            ["零基础"] + CEFR,
             index=CEFR.index(user.current_level),
             key="current_level-3",
             help="✨ 请选择您当前的英语水平。如果您不了解如何分级，请参阅屏幕下方关于CEFR分级的说明。",
