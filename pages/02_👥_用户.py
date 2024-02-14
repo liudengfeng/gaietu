@@ -27,7 +27,7 @@ from mypylib.st_helper import (
     on_project_changed,
     setup_logger,
 )
-from mypylib.statistics_report import get_exercises, word_study_stats
+from mypylib.statistics_report import display_word_study, get_exercises
 from mypylib.utils import get_current_monday
 
 # region 初始化
@@ -249,6 +249,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     }
 
     df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
+    df_previous_period = pd.DataFrame(
+        get_exercises(phone_number, start_date, end_date, previous_period=True)
+    )
 
     study_report_items = [
         "学习单词",
@@ -268,12 +271,9 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
-                df.rename(columns=column_mapping, inplace=True)
-                # 将 "学习日期" 列转换为 datetime 类型，并设置时区
-                df["学习日期"] = pd.to_datetime(df["学习日期"])
-                df["学习日期"] = df["学习日期"].dt.tz_convert(user_tz)
-                stats = word_study_stats(df, period)
-                st.dataframe(stats)
+                display_word_study(
+                    df, df_previous_period, column_mapping, user_tz, period
+                )
 
     with study_report_tabs[study_report_items.index("学习时间")]:
         st.subheader("学习时间", divider="rainbow")
