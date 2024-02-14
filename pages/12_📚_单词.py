@@ -1192,8 +1192,12 @@ elif item_menu and item_menu.endswith("拼图游戏"):
     if st.session_state["puzzle-idx"] != -1:
         # handle_puzzle(word_lib)
         display_puzzle_translation()
-        src_container = st.container()
-        tgt_container = st.container()
+        s_cols = st.columns(2)
+        t_cols = st.columns(2)
+        s_cols[0].markdown("打乱的字符")
+        src_container = s_cols[1].container()
+        t_cols[0].markdown("拼图区")
+        tgt_container = t_cols[1].container()
         words = st.session_state.puzzle_view_word
         move_words_between_containers(src_container, tgt_container, words, True)
         on_project_changed(get_puzzle_project())
