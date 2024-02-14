@@ -255,17 +255,16 @@ with tabs[items.index(":bar_chart: 学习报告")]:
     )
 
     study_report_items = [
-        "学习单词",
-        "学习时间",
-        "学习项目",
-        "学习进度",
-        "成绩趋势",
-        "个人排位",
+        "📚 学习单词",
+        "⏰ 学习时间",
+        "📈 学习进度",
+        "📊 成绩趋势",
+        "🏆 个人排位",
     ]
     study_report_tabs = st.tabs(study_report_items)
 
-    with study_report_tabs[study_report_items.index("学习单词")]:
-        st.subheader("学习单词", divider="rainbow")
+    with study_report_tabs[study_report_items.index("📚 学习单词")]:
+        st.subheader("📚 学习单词", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
         ):
@@ -276,8 +275,8 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     df, df_previous_period, column_mapping, user_tz, period
                 )
 
-    with study_report_tabs[study_report_items.index("学习时间")]:
-        st.subheader("学习时间", divider="rainbow")
+    with study_report_tabs[study_report_items.index("⏰ 学习时间")]:
+        st.subheader("⏰ 学习时间", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
         ):
