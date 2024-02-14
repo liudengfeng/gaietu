@@ -149,6 +149,6 @@ def display_word_study(
     }
     st.dataframe(
         stats,
-        column_config=column_config,
+        # column_config=column_config,
         # hide_index=True,
     )
