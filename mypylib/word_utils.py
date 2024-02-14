@@ -219,3 +219,27 @@ def get_cefr_vocabulary_list(texts: List[str], mini_dict: dict, exclude_persons=
             cefr_vocabulary[cefr_level].add(lemma)
 
     return cefr_vocabulary
+
+
+def is_phrase_combination_description(word, exclude_pattern="^either .+ or"):
+    """
+    判断一个单词是否是短语组合的描述。
+
+    Args:
+        word (str): 要判断的单词。
+        exclude_pattern (str, optional): 排除模式的正则表达式。默认为"^either .+ or"。
+
+    Returns:
+        bool: 如果是短语组合的描述，则返回True；否则返回False。
+    """
+    # 转换为小写
+    word = word.lower()
+    exclude_pattern = exclude_pattern.lower()
+    # 匹配 "or" 或 "="，或者 word 是 "etc."，但排除固定搭配
+    if (
+        "etc." in word
+        or (" or " in word or " = " in word)
+        and not re.search(exclude_pattern, word)
+    ):
+        return True
+    return False

@@ -747,3 +747,44 @@ def generate_oral_statement_template(model, topic, level):
         stream=False,
         parser=lambda x: x,
     )
+
+
+EXTRACT_ONE_PHRASE_TEMPLATE = """
+From the given phrase combinations, randomly select one.
+
+For example:
+- Given the phrase combinations "(be) concentrated around or in or on, etc.".
+- You might randomly select and output: "(be) concentrated in".
+
+Phrase combinations:
+{phrase}
+"""
+
+
+def pick_a_phrase(model, phrase):
+    """
+    从模型中提取与给定短语相关的短语搭配。
+
+    Args:
+        model: 模型对象，用于生成短语搭配。
+        phrase: 给定的短语。
+
+    Returns:
+        提取的短语搭配结果。
+    """
+
+    prompt = EXTRACT_ONE_PHRASE_TEMPLATE.format(phrase=phrase)
+    contents = [prompt]
+    generation_config = GenerationConfig(
+        max_output_tokens=128, temperature=0.1, top_k=1.0
+    )
+    contents_info = to_contents_info(contents)
+    return parse_generated_content_and_update_token(
+        "提取短语搭配",
+        "gemini-pro",
+        model.generate_content,
+        contents_info,
+        generation_config,
+        stream=False,
+        parser=lambda x: x,
+    )

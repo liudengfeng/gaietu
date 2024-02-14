@@ -18,7 +18,12 @@ from menu import menu
 from mypylib.constants import CEFR_LEVEL_MAPS
 
 # from mypylib.db_model import LearningTime
-from mypylib.google_ai import generate_word_test, generate_word_tests, load_vertex_model
+from mypylib.google_ai import (
+    pick_a_phrase,
+    generate_word_test,
+    generate_word_tests,
+    load_vertex_model,
+)
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
     check_access,
@@ -37,7 +42,11 @@ from mypylib.st_utils import (
     init_words_between_containers,
     move_words_between_containers,
 )
-from mypylib.word_utils import audio_autoplay_elem, remove_trailing_punctuation
+from mypylib.word_utils import (
+    audio_autoplay_elem,
+    is_phrase_combination_description,
+    remove_trailing_punctuation,
+)
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -376,14 +385,8 @@ if "puzzle-idx" not in st.session_state:
 if "puzzle-words" not in st.session_state:
     st.session_state["puzzle-words"] = []
 
-# if "puzzle_answer_value" not in st.session_state:
-#     st.session_state["puzzle_answer_value"] = ""
-
 if "puzzle_view_word" not in st.session_state:
     st.session_state["puzzle_view_word"] = []
-
-# if "clicked_character" not in st.session_state:
-#     st.session_state["clicked_character"] = []
 
 if "puzzle_test_score" not in st.session_state:
     st.session_state["puzzle_test_score"] = {}
@@ -421,8 +424,18 @@ def get_word_definition(word):
     return definition
 
 
+@st.cache_data(ttl=timedelta(hours=24), max_entries=10000)
+def normalize_puzzle_word(word):
+    # 挑选一个短语
+    if is_phrase_combination_description(word):
+        model = load_vertex_model("gemini-pro")
+        return pick_a_phrase(model, word)
+    return word
+
+
 def prepare_puzzle():
     word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
+    word = normalize_puzzle_word(word)
     # 打乱单词字符顺序
     ws = [w for w in word]
     random.shuffle(ws)
@@ -460,11 +473,12 @@ def check_puzzle(word_lib, puzzle_container):
     puzzle_container.empty()
     idx = st.session_state["puzzle-idx"]
     word = st.session_state["puzzle-words"][idx]
+    answer = normalize_puzzle_word(word)
     if word not in st.session_state["flashcard-word-info"]:
         st.session_state["flashcard-word-info"][word] = get_word_info(word)
     msg = f'单词：{word}\t翻译：{st.session_state["flashcard-word-info"][word]["zh-CN"]["translation"]}'
     user_input = "".join(st.session_state["target-container-words"])
-    if user_input == word:
+    if user_input == answer:
         st.balloons()
         st.session_state.puzzle_test_score[word] = True
     else:
