@@ -92,9 +92,6 @@ def display_word_study(
     total_study_time = grouped["时长"].sum()
     total_word_count = grouped.size()
 
-    stats = pd.DataFrame({"学习时间": total_study_time, "单词数量": total_word_count})
-    stats = stats.reset_index()
-
     delta_study_time = "NA"
     delta_word_count = "NA"
     if df_previous_period is not None:
@@ -126,6 +123,13 @@ def display_word_study(
         value=f"{total_word_count.sum()} 个",
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
+
+    grouped = df.groupby("学习日期")
+    total_study_time = grouped["时长"].sum()
+    total_word_count = grouped.size()
+
+    stats = pd.DataFrame({"学习时间": total_study_time, "单词数量": total_word_count})
+    stats = stats.reset_index()
 
     if period == "天":
         stats["学习日期"] = stats["学习日期"].apply(lambda x: x.strftime("%Y-%m-%d"))
