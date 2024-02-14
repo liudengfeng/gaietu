@@ -1475,6 +1475,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
                 )
 
         if prev_btn or next_btn or replay_btn:
+            st.session_state["reading-learning-times"] += 1
             idx = st.session_state["reading-exercise-idx"]
             on_project_changed(f"阅读练习-练习-{idx}")
             process_play_and_record_article(
