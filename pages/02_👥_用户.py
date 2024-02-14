@@ -27,7 +27,7 @@ from mypylib.st_helper import (
     on_project_changed,
     setup_logger,
 )
-from mypylib.statistics import get_exercises, word_study_stats
+from mypylib.statistics_report import get_exercises, word_study_stats
 from mypylib.utils import get_current_monday
 
 # region 初始化

@@ -375,7 +375,7 @@ def display_cost_bar_chart(df: pd.DataFrame, period: str = "天"):
     if period == "天":
         df["timestamp"] = df["timestamp"].dt.date
     else:
-        df["timestamp"] = df["timestamp"].dt.hour
+        df["timestamp"] = df["timestamp"].dt.strftime("%m-%d %H")
 
     df_grouped = df.groupby(["timestamp", "item_name"])["cost"].sum().reset_index()
 
