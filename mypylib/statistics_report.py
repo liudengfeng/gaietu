@@ -138,7 +138,7 @@ def display_word_study(
 
     st.metric(
         label="学习时间",
-        value=f"{total_study_time.sum()} 分钟",
+        value=f"{total_study_time.sum():.2f} 分钟",
         delta=f"{delta_study_time} 小时" if delta_study_time != "NA" else "NA",
     )
     st.metric(
