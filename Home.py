@@ -239,14 +239,14 @@ else:
         f"您已登录，{st.session_state.dbi.cache['user_info']['display_name']} 您好！"
     )
 
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([2, 1])
 
 with col1:
     st.markdown(
         """
         ## `Gaietu`：英语学习平台
         
-        ** `Gaietu`：你的全方位英语学习平台，开启沉浸式学习体验！**
+        **你的全方位英语学习平台，开启沉浸式学习体验！**
         
         **三大亮点，助你突破英语学习瓶颈：**
         1. 👩‍🏫 优异AI老师资源
@@ -281,7 +281,7 @@ with col1:
 
 logo_image = Image.open(LOGO_DIR / "logo.jpg")
 with col2:
-    st.image(logo_image, width=360)
+    st.image(logo_image, width=240)
 st.divider()
 
 
