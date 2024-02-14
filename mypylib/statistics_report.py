@@ -125,14 +125,6 @@ def display_word_study(
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
 
-    column_config = {
-        "学习日期": "学习日期",
-        "学习时间": st.column_config.LineChartColumn(
-            "学习时间", y_min=0, y_max=24 * 60
-        ),
-        "单词数量": st.column_config.LineChartColumn("单词数量", y_min=0, y_max=1000),
-    }
-
     # 按 "学习日期" 分组并计算学习时间和单词数量
     stats = df.groupby("学习日期").agg({"时长": "sum", "单词": "count"})
     stats = stats.rename(columns={"时长": "学习时间", "单词": "单词数量"}).reset_index()
@@ -150,8 +142,13 @@ def display_word_study(
         fig2.update_xaxes(tickformat="%Y-%m-%d")
     st.plotly_chart(fig2, use_container_width=True)
 
+    column_config = {
+        "学习日期": "学习日期",
+        "学习时间": st.column_config.LineChartColumn("学习时间", y_min=0, y_max=1440),
+        "单词数量": st.column_config.LineChartColumn("单词数量", y_min=0, y_max=1000),
+    }
     st.dataframe(
         stats,
         column_config=column_config,
-        hide_index=True,
+        # hide_index=True,
     )
