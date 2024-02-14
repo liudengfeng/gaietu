@@ -49,10 +49,16 @@ with st.expander(":bulb: 如何调整布局让屏幕显示更美观？", expande
 # endregion
 
 # region 使用指南
-st.subheader("使用指南")
+st.subheader("使用指南", divider="rainbow", anchor="使用指南")
 
 with st.expander(":bulb: 如何把一个基础词库整体添加到个人词库？", expanded=False):
     pass
+
+with st.expander(":bulb: 如何进行单词拼图游戏", expanded=False):
+    fp = str(VIDEO_DIR / "单词" / "如何进行单词拼图游戏.mp4")
+    video_file = open(fp, "rb")
+    video_bytes = video_file.read()
+    st.video(video_bytes)
 
 with st.expander(":bulb: 如何进行阅读练习", expanded=False):
     fp = str(VIDEO_DIR / "reading_excise.mp4")
