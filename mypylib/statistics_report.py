@@ -2,6 +2,9 @@ from datetime import datetime
 import streamlit as st
 import pytz
 import pandas as pd
+from mypylib.st_helper import (
+    MAX_WORD_STUDY_TIME,
+)
 
 
 @st.cache_data(ttl=60 * 30)
@@ -113,6 +116,8 @@ def display_word_study(
 
     df["单词"] = df["项目"].str.extract("单词练习-.*?-([a-zA-Z\s]+)$")
     grouped = df.groupby(["学习日期", "单词"])
+    # 修正错误计时，单个时长超过阈值的，以阈值代替
+    df.loc[df["时长"] > MAX_WORD_STUDY_TIME, "时长"] = MAX_WORD_STUDY_TIME
     total_study_time = grouped["时长"].sum()
     total_word_count = grouped.size()
 
@@ -126,6 +131,9 @@ def display_word_study(
             "单词练习-.*?-([a-zA-Z\s]+)$"
         )
         grouped_previous_period = df_previous_period.groupby(["学习日期", "单词"])
+        df_previous_period.loc[
+            df_previous_period["时长"] > MAX_WORD_STUDY_TIME, "时长"
+        ] = MAX_WORD_STUDY_TIME
         total_study_time_previous_period = grouped_previous_period["时长"].sum()
         total_word_count_previous_period = grouped_previous_period.size()
 
