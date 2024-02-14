@@ -135,3 +135,5 @@ def display_word_study(
 
     fig2 = px.bar(stats, x="学习日期", y="单词数量", title="学习单词")
     st.plotly_chart(fig2, use_container_width=True)
+
+    st.dataframe(stats)
