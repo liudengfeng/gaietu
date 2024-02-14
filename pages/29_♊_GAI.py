@@ -52,8 +52,8 @@ add_exercises_to_db()
 gemini_pro_vision_generation_config = {
     "max_output_tokens": 2048,
     "temperature": 0.4,
-    "top_k": 1.0,
-    "top_p": 32,
+    "top_k": 32,
+    "top_p": 1.0,
 }
 
 AVATAR_NAMES = ["user", "model"]

@@ -387,8 +387,8 @@ suggestions = w_cols[1].container(border=True, height=HEIGHT)
 
 Assistant_Configuration = {
     "temperature": 0.2,
-    "top_k": 1.0,
-    "top_p": 32,
+    "top_k": 32,
+    "top_p": 1.0,
     "max_output_tokens": 1024,
 }
 assistant_config = GenerationConfig(**Assistant_Configuration)
