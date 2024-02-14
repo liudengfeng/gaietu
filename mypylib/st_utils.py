@@ -39,11 +39,3 @@ def move_words_between_containers(source_container, target_container, words):
             st.session_state["source-container-words"].append(tw)
             st.session_state["target-container-words"].remove(tw)
             st.rerun()
-
-
-source_container = st.container()
-target_container = st.container()
-
-# 你需要提供一个 words 列表
-words = ["word1", "word2", "word3", "word4", "word5"]
-move_words_between_containers(source_container, target_container, words)
