@@ -272,7 +272,6 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
-                st.dataframe(df)
                 display_word_study(
                     df, df_previous_period, column_mapping, user_tz, period
                 )
