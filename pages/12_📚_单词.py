@@ -468,6 +468,7 @@ def check_puzzle(word_lib, puzzle_container):
         st.balloons()
         st.session_state.puzzle_test_score[word] = True
     else:
+        st.snow()
         puzzle_container.markdown(f"对不起，您回答错误。正确的单词应该为：{word}")
         st.session_state.puzzle_test_score[word] = False
 
