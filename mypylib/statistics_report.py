@@ -136,7 +136,7 @@ def display_word_study(
             total_word_count.sum() - total_word_count_previous_period.sum()
         )
 
-    cols = st.columns(4)
+    cols = st.columns(2)
     cols[0].metric(
         label="学习时间",
         value=f"{total_study_time.sum():.2f} 分钟",
@@ -147,3 +147,4 @@ def display_word_study(
         value=f"{total_word_count.sum()} 个",
         delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
     )
+    cols[0].dataframe(stats, height=400)
