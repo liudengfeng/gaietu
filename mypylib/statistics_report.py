@@ -70,7 +70,7 @@ def _process_word_exercise_data(
     # 修正错误计时，单个时长超过阈值的，以阈值代替
     df.loc[df["时长"] > MAX_WORD_STUDY_TIME, "时长"] = MAX_WORD_STUDY_TIME
     df["时长"] = (df["时长"] / 60).round(2)
-    st.write(df)
+    # st.write(df)
     return df
 
 
