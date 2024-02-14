@@ -27,7 +27,11 @@ from mypylib.st_helper import (
     on_project_changed,
     setup_logger,
 )
-from mypylib.statistics_report import display_word_study, get_exercises
+from mypylib.statistics_report import (
+    display_study_time,
+    display_word_study,
+    get_exercises,
+)
 from mypylib.utils import get_current_monday
 
 # region 初始化
@@ -227,10 +231,6 @@ now = datetime.datetime.now(pytz.timezone(user_tz))
 start_date_default = get_current_monday(user_tz)
 
 
-def get_first_part(project):
-    return project.split("-")[0]
-
-
 with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
     st.markdown("✨ :rainbow[数据每30分钟更新一次。]")
@@ -259,7 +259,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "学习时间",
         "学习项目",
         "学习进度",
-        "成绩进度",
+        "成绩趋势",
         "个人排位",
     ]
     study_report_tabs = st.tabs(study_report_items)
@@ -284,81 +284,82 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
-                df.rename(columns=column_mapping, inplace=True)
-                current_records = df.copy()
-                # 删除无效项目 Home
-                to_remove = [
-                    "Home",
-                    "订阅续费",
-                    "用户中心",
-                    "用户注册",
-                    "帮助中心",
-                    "系统管理",
-                ]
-                current_records = current_records[
-                    ~current_records["项目"].isin(to_remove)
-                ]
-                current_records["时长"] = (current_records["时长"] / 60).round(2)
-                current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
-                    user_tz
-                )
-                current_records["项目"] = current_records["项目"].apply(get_first_part)
-                project_time = (
-                    current_records.groupby("项目")["时长"].sum().reset_index()
-                )
+                display_study_time(df, df_previous_period, column_mapping, user_tz)
+                # df.rename(columns=column_mapping, inplace=True)
+                # current_records = df.copy()
+                # # 删除无效项目 Home
+                # to_remove = [
+                #     "Home",
+                #     "订阅续费",
+                #     "用户中心",
+                #     "用户注册",
+                #     "帮助中心",
+                #     "系统管理",
+                # ]
+                # current_records = current_records[
+                #     ~current_records["项目"].isin(to_remove)
+                # ]
+                # current_records["时长"] = (current_records["时长"] / 60).round(2)
+                # current_records["学习日期"] = current_records["学习日期"].dt.tz_convert(
+                #     user_tz
+                # )
+                # current_records["项目"] = current_records["项目"].apply(get_first_part)
+                # project_time = (
+                #     current_records.groupby("项目")["时长"].sum().reset_index()
+                # )
 
-                fig = px.pie(
-                    project_time,
-                    values="时长",
-                    names="项目",
-                    title="你的学习时间是如何分配的？",
-                )
-                # fig.update_layout(title_x=0.27)
-                st.plotly_chart(fig, use_container_width=True)
+                # fig = px.pie(
+                #     project_time,
+                #     values="时长",
+                #     names="项目",
+                #     title="你的学习时间是如何分配的？",
+                # )
+                # # fig.update_layout(title_x=0.27)
+                # st.plotly_chart(fig, use_container_width=True)
 
-                previous_period_start = start_date - (end_date - start_date)
-                previous_period_end = start_date
-                previous_records = pd.DataFrame(
-                    get_exercises(
-                        phone_number, previous_period_start, previous_period_end
-                    )
-                )
-                # 如果上一个周期没有学习记录，显示警告信息
-                if previous_records.empty:
-                    st.warning("上一个周期没有学习记录。", icon="⚠️")
-                else:
-                    previous_records.rename(columns=column_mapping, inplace=True)
-                    # 按日期分组并计算每天的学习时间
-                    previous_daily_time = (
-                        previous_records.groupby(previous_records["学习日期"].dt.date)[
-                            "时长"
-                        ]
-                        .sum()
-                        .reset_index()
-                    )
+                # previous_period_start = start_date - (end_date - start_date)
+                # previous_period_end = start_date
+                # previous_records = pd.DataFrame(
+                #     get_exercises(
+                #         phone_number, previous_period_start, previous_period_end
+                #     )
+                # )
+                # # 如果上一个周期没有学习记录，显示警告信息
+                # if previous_records.empty:
+                #     st.warning("上一个周期没有学习记录。", icon="⚠️")
+                # else:
+                #     previous_records.rename(columns=column_mapping, inplace=True)
+                #     # 按日期分组并计算每天的学习时间
+                #     previous_daily_time = (
+                #         previous_records.groupby(previous_records["学习日期"].dt.date)[
+                #             "时长"
+                #         ]
+                #         .sum()
+                #         .reset_index()
+                #     )
 
-                daily_time = (
-                    current_records.groupby(current_records["学习日期"].dt.date)["时长"]
-                    .sum()
-                    .reset_index()
-                )
-                daily_time["学习日期"] = daily_time["学习日期"].apply(
-                    lambda x: x.strftime("%Y年%m月%d日")
-                )
-                # 创建柱状图
-                fig = px.bar(
-                    daily_time,
-                    x="学习日期",
-                    y="时长",
-                    title="每天的学习时间",
-                    hover_data={"时长": ":.0f"},
-                )
+                # daily_time = (
+                #     current_records.groupby(current_records["学习日期"].dt.date)["时长"]
+                #     .sum()
+                #     .reset_index()
+                # )
+                # daily_time["学习日期"] = daily_time["学习日期"].apply(
+                #     lambda x: x.strftime("%Y年%m月%d日")
+                # )
+                # # 创建柱状图
+                # fig = px.bar(
+                #     daily_time,
+                #     x="学习日期",
+                #     y="时长",
+                #     title="每天的学习时间",
+                #     hover_data={"时长": ":.0f"},
+                # )
 
-                # 更新图表布局
-                fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
+                # # 更新图表布局
+                # fig.update_layout(xaxis_title="日期", yaxis_title="学习时间（分钟）")
 
-                # 显示图表
-                st.plotly_chart(fig, use_container_width=True)
+                # # 显示图表
+                # st.plotly_chart(fig, use_container_width=True)
 
                 # st.subheader("按小时分组统计")
                 # 这里可以添加获取数据和绘制柱状图的代码

@@ -139,3 +139,70 @@ def display_word_study(
         # column_config=column_config,
         hide_index=True,
     )
+
+
+def get_first_part(project):
+    return project.split("-")[0]
+
+
+def _process_study_time_data(
+    data: pd.DataFrame, column_mapping, user_tz: str, period: str = "天"
+):
+    df = data.copy()
+    df.rename(columns=column_mapping, inplace=True)
+    # 删除无效项目 Home
+    to_remove = [
+        "Home",
+        "订阅续费",
+        "用户中心",
+        "用户注册",
+        "帮助中心",
+        "系统管理",
+    ]
+    df = df[~df["项目"].isin(to_remove)]
+    df["时长"] = (df["时长"] / 60).round(2)
+    df["学习日期"] = df["学习日期"].dt.tz_convert(user_tz)
+    if period == "天":
+        df["学习日期"] = df["学习日期"].dt.date
+    else:
+        df["学习日期"] = df["学习日期"].dt.strftime("%m-%d %H")
+    df["项目"] = df["项目"].apply(get_first_part)
+    return df
+
+
+def display_study_time(
+    data: pd.DataFrame,
+    data_previous_period: pd.DataFrame,
+    column_mapping,
+    user_tz,
+    period: str = "天",
+):
+    df = _process_study_time_data(data, column_mapping, user_tz, period)
+    total_study_time = df["时长"].sum()
+    delta_study_time = "NA"
+    df_previous_period = None
+    if not data_previous_period.empty:
+        df_previous_period = _process_study_time_data(
+            data_previous_period, column_mapping, user_tz, period
+        )
+        total_study_time_previous_period = df_previous_period["时长"].sum()
+        delta_study_time = total_study_time - total_study_time_previous_period
+
+    cols = st.columns([2, 1])
+    metric_cols = cols[0].columns([1, 1])
+    metric_cols[0].metric(
+        label="学习时间",
+        value=f"{total_study_time.sum():.2f} 分钟",
+        delta=f"{delta_study_time} 小时" if delta_study_time != "NA" else "NA",
+    )
+
+    project_time = df.groupby("项目")["时长"].sum().reset_index()
+
+    fig = px.pie(
+        project_time,
+        values="时长",
+        names="项目",
+        title="你的学习时间是如何分配的？",
+    )
+    # fig.update_layout(title_x=0.27)
+    st.plotly_chart(fig, use_container_width=True)
