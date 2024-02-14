@@ -312,7 +312,10 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 total_time = exercise_time["时长"].sum() / 60.0
                 progress = total_time / hours * 100
                 # 显示进度条
-                st.progress(progress, f"需要 {hours} 小时，完成百分比：{progress:.2%}%")
+                st.progress(
+                    progress,
+                    f"需要 {hours} 小时，完成 {total_time:.0f} 小时。完成百分比：{progress:.2%}",
+                )
 
 
 # endregion
