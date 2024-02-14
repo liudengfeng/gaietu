@@ -56,6 +56,23 @@ def get_exercises(phone_number, start_date=None, end_date=None, previous_period=
     return record_list
 
 
+def get_valid_exercise_time(data, column_mapping):
+    df = data.copy()
+    df.rename(columns=column_mapping, inplace=True)
+    # 删除无效项目
+    to_remove = [
+        "Home",
+        "订阅续费",
+        "用户中心",
+        "用户注册",
+        "帮助中心",
+        "系统管理",
+    ]
+    df = df[~df["项目"].isin(to_remove)]
+    df["时长"] = (df["时长"] / 60).round(2)
+    return df
+
+
 def _process_word_exercise_data(
     data: pd.DataFrame, column_mapping, user_tz: str, period: str = "天"
 ):
