@@ -239,7 +239,7 @@ else:
         f"您已登录，{st.session_state.dbi.cache['user_info']['display_name']} 您好！"
     )
 
-col1, col2 = st.columns([2, 1])
+col1, col2 = st.columns([4, 1])
 
 with col1:
     st.markdown(
@@ -282,7 +282,7 @@ with col1:
 
 logo_image = Image.open(LOGO_DIR / "logo.jpg")
 with col2:
-    st.image(logo_image, width=240)
+    st.image(logo_image, width=60)
 st.divider()
 
 
