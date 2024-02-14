@@ -310,8 +310,10 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                 exercise_time = get_valid_exercise_time(df, column_mapping)
                 # 统计时长，转换为小时，比较差异，画出进度条
                 total_time = exercise_time["时长"].sum() / 60.0
-                progress = total_time / hours
-                st.write(f"您的学习进度：{progress:.2%}")
+                progress = total_time / hours * 100
+                # 显示进度条
+                st.progress(progress, f"需要 {hours} 小时，完成百分比：{progress:.2%}%")
+
 
 # endregion
 
