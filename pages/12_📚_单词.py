@@ -387,7 +387,10 @@ def auto_play_flash_word(voice_style):
     for idx in range(n):
         start = time.time()
         st.session_state["flashcard-idx"] = idx
-
+        
+        word = st.session_state["flashcard-words"][idx]
+        st.session_state["today-learned"].add(word)
+        
         on_project_changed(get_flashcard_project())
 
         play_flashcard_word(voice_style, True)
