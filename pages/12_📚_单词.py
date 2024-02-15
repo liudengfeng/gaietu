@@ -115,13 +115,14 @@ def generate_page_words(
     word_lib_name, num_words, key, exclude_slash=False, from_today_learned=False
 ):
     # 根据from_today_learned参数决定从哪里获取单词
+    # 集合转换为列表
     if from_today_learned:
         words = list(st.session_state["today-learned"])
     else:
         words = list(st.session_state.word_dict[word_lib_name])
 
-    logger.info(f"单词库名称：{word_lib_name} 单词：{words}")
-    
+    # logger.info(f"单词库名称：{word_lib_name} 单词：{words}")
+
     if from_today_learned and len(words) == 0:
         st.error("今天没有学习记录，请先进行闪卡记忆。")
         st.stop()
