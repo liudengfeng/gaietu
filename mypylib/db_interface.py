@@ -984,9 +984,10 @@ class DbInterface:
                         else:
                             word_results_total[word]["failed"] += 1
             # 使用一个事务来更新word_pass_stats
-            self.db.run_transaction(
+            transaction_result = doc_ref.run_transaction(
                 self.transaction_update_word_pass_stats, doc_ref, word_results_total
             )
+            logger.info(f"事务结果：{transaction_result}")
 
         if collection_name == "exercises":
             word_duration_total = {}
@@ -1001,11 +1002,10 @@ class DbInterface:
                     word_duration_total[word] += document["duration"]
                     logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
             # 使用一个事务来更新word_duration_stats
-            self.db.run_transaction(
-                self.transaction_update_word_duration_stats,
-                doc_ref,
-                word_duration_total,
+            transaction_result = doc_ref.run_transaction(
+                self.transaction_update_word_pass_stats, doc_ref, word_duration_total
             )
+            logger.info(f"事务结果：{transaction_result}")
 
         # 提交批处理
         batch.commit()
