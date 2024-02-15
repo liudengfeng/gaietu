@@ -1,5 +1,6 @@
 import logging
 import random
+import re
 import string
 import threading
 import time
@@ -18,10 +19,9 @@ from mypylib.utils import combine_date_and_time_to_utc
 
 from .constants import FAKE_EMAIL_DOMAIN
 from .db_model import (
-    # LearningTime,
     Payment,
     PaymentStatus,
-    PurchaseType,
+    PurchaseType,  # LearningTime,
     TokenUsageRecord,
     User,
 )
@@ -939,20 +939,21 @@ class DbInterface:
     # region 通用函数
     # 在事务中处理word_pass_stats
     def transaction_update_word_pass_stats(transaction, doc_ref, word_results_total):
+        if not word_results_total:
+            return
         # 获取当前的word_pass_stats，如果不存在则初始化为空字典
         doc = transaction.get(doc_ref)
-        word_pass_stats = doc.to_dict().get('word_pass_stats', {})
+        word_pass_stats = doc.to_dict().get("word_pass_stats", {})
         # 使用word_results_total来累加word_pass_stats
         for word, passed in word_results_total.items():
             if word not in word_pass_stats:
-                word_pass_stats[word] = {'passed': 0, 'failed': 0}
+                word_pass_stats[word] = {"passed": 0, "failed": 0}
             if passed:
-                word_pass_stats[word]['passed'] += 1
+                word_pass_stats[word]["passed"] += 1
             else:
-                word_pass_stats[word]['failed'] += 1
+                word_pass_stats[word]["failed"] += 1
         # 更新word_pass_stats字段
-        transaction.update(doc_ref, {'word_pass_stats': word_pass_stats})
-
+        transaction.update(doc_ref, {"word_pass_stats": word_pass_stats})
 
     def add_documents_to_user_history(self, collection_name, documents):
         assert isinstance(documents, list), "documents 必须是一个列表。"
@@ -977,16 +978,33 @@ class DbInterface:
                     # 累加所有的word_results到word_results_total
                     for word, passed in word_results.items():
                         if word not in word_results_total:
-                            word_results_total[word] = {'passed': 0, 'failed': 0}
+                            word_results_total[word] = {"passed": 0, "failed": 0}
                         if passed:
-                            word_results_total[word]['passed'] += 1
+                            word_results_total[word]["passed"] += 1
                         else:
-                            word_results_total[word]['failed'] += 1
+                            word_results_total[word]["failed"] += 1
             # 使用一个事务来更新word_pass_stats
-            self.db.run_transaction(self.transaction_update_word_pass_stats, doc_ref, word_results_total)
+            self.db.run_transaction(
+                self.transaction_update_word_pass_stats, doc_ref, word_results_total
+            )
 
         if collection_name == "exercises":
-            pass
+            word_duration_total = {}
+            for document in documents:
+                # 使用正则表达式提取单词
+                match = re.search(r"单词练习-.*?-([a-zA-Z\s]+)$", document["item"])
+                if match:
+                    word = match.group(1)
+                    # 累加持续时间
+                    if word not in word_duration_total:
+                        word_duration_total[word] = 0
+                    word_duration_total[word] += document["duration"]
+            # 使用一个事务来更新word_duration_stats
+            self.db.run_transaction(
+                self.transaction_update_word_duration_stats,
+                doc_ref,
+                word_duration_total,
+            )
 
         # 提交批处理
         batch.commit()
