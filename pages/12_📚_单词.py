@@ -9,6 +9,7 @@ from io import BytesIO
 from pathlib import Path
 
 import pandas as pd
+import pytz
 import requests
 import streamlit as st
 import streamlit.components.v1 as components
@@ -18,11 +19,7 @@ from menu import menu
 from mypylib.constants import CEFR_LEVEL_MAPS
 
 # from mypylib.db_model import LearningTime
-from mypylib.google_ai import (
-    pick_a_phrase,
-    generate_word_tests,
-    load_vertex_model,
-)
+from mypylib.google_ai import generate_word_tests, load_vertex_model, pick_a_phrase
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
     check_access,
@@ -62,7 +59,7 @@ menu()
 check_access(False)
 configure_google_apis()
 sidebar_status = st.sidebar.empty()
-
+user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
 
 menu_names = ["闪卡记忆", "拼图游戏", "看图猜词", "词意测试", "词库管理"]
 menu_emoji = [
@@ -100,9 +97,6 @@ CURRENT_CWD: Path = Path(__file__).parent.parent
 DICT_DIR = CURRENT_CWD / "resource/dictionary"
 VIDEO_DIR = CURRENT_CWD / "resource/video_tip"
 
-TIME_LIMIT = 10 * 60  # 10分钟
-OP_THRESHOLD = 10000  # 操作阈值
-
 
 # endregion
 
@@ -117,14 +111,25 @@ def load_word_dict():
         return json.load(f)
 
 
-def generate_page_words(word_lib_name, num_words, key, exclude_slash=False):
-    # 获取选中的单词列表
-    words = st.session_state.word_dict[word_lib_name]
+def generate_page_words(
+    word_lib_name, num_words, key, exclude_slash=False, from_today_learned=False
+):
+    # 根据from_today_learned参数决定从哪里获取单词
+    if from_today_learned:
+        words = list(st.session_state["today-learned"])
+    else:
+        words = st.session_state.word_dict[word_lib_name]
+
     if exclude_slash:
         words = [word for word in words if "/" not in word]
+    
+    if from_today_learned and len(words) == 0:
+        st.warning("今天没有学习记录，请先进行闪卡记忆。")
+        st.stop()
+    
     n = min(num_words, len(words))
     # 随机选择单词
-    st.session_state[key] = random.sample(list(words), n)
+    st.session_state[key] = random.sample(words, n)
     name = word_lib_name.split("-", maxsplit=1)[1]
     st.toast(f"当前单词列表名称：{name} 单词数量: {len(st.session_state[key])}")
 
@@ -194,8 +199,25 @@ def display_word_images(word, container):
 
 # region 闪卡状态
 
+# 获取用户时区的当前日期
+now = datetime.datetime.now(pytz.timezone(user_tz)).date()
+
 if "flashcard-words" not in st.session_state:
     st.session_state["flashcard-words"] = []
+
+if (
+    "today-learned" not in st.session_state
+    or "today-learned-date" not in st.session_state
+):
+    # 如果today-learned或其创建日期不存在，创建它们
+    st.session_state["today-learned"] = set()
+    st.session_state["today-learned-date"] = now
+else:
+    # 如果today-learned和其创建日期都存在，检查创建日期是否是今天
+    if st.session_state["today-learned-date"] != now:
+        # 如果不是今天，清空today-learned并更新创建日期
+        st.session_state["today-learned"] = set()
+        st.session_state["today-learned-date"] = now
 
 if "flashcard-word-info" not in st.session_state:
     st.session_state["flashcard-word-info"] = {}
@@ -996,9 +1018,7 @@ if item_menu and item_menu.endswith("闪卡记忆"):
 
     if refresh_btn:
         on_project_changed("Home")
-        # end_and_save_learning_records()
         reset_flashcard_word(False)
-
         st.rerun()
 
     if display_status_button:
@@ -1017,6 +1037,11 @@ if item_menu and item_menu.endswith("闪卡记忆"):
 
         on_project_changed(get_flashcard_project())
 
+        # 添加当天学习的单词
+        idx = st.session_state["flashcard-idx"]
+        word = st.session_state["flashcard-words"][idx]
+        st.session_state["today-learned"].add(word)
+
         view_flash_word(container)
         if autoplay:
             play_flashcard_word(voice_style)
@@ -1027,6 +1052,11 @@ if item_menu and item_menu.endswith("闪卡记忆"):
             st.stop()
 
         on_project_changed(get_flashcard_project())
+
+        # 添加当天学习的单词
+        idx = st.session_state["flashcard-idx"]
+        word = st.session_state["flashcard-words"][idx]
+        st.session_state["today-learned"].add(word)
 
         view_flash_word(container)
 
@@ -1115,7 +1145,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         key="puzzle-refresh",
         help="✨ 点击按钮，将从词库中抽取单词，开始或重新开始单词拼图游戏。",
         on_click=generate_page_words,
-        args=(word_lib, num_word, "puzzle-words", True),
+        args=(word_lib, num_word, "puzzle-words", True, True),
     )
     prev_btn = puzzle_cols[1].button(
         "上一[:leftwards_arrow_with_hook:]",
