@@ -50,7 +50,8 @@ from .word_utils import (
 # 单个单词单次最长学习时长
 MAX_WORD_STUDY_TIME = 60  # 60秒
 ABNORMAL_DURATION = 60 * 60  # 1小时
-DB_TIME_INTERVAL = 10 * 60  # 10 分钟
+# TODO：10
+DB_TIME_INTERVAL = 1 * 60  # 10 分钟
 logger = logging.getLogger("streamlit")
 
 # 发音评估(韵律、语法、词汇、主题)
