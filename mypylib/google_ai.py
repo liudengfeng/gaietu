@@ -364,7 +364,7 @@ def parse_generated_content_and_update_token(
 
 
 WORDS_TEST_PROMPT_TEMPLATE = """
-As an experienced English teacher, you are tasked with creating an examination for the following "Words" to assess students' understanding of their meanings.
+As an experienced English teacher, you are tasked with creating an examination for the following words to assess students' understanding of their meanings.
 - You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
 - You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
 - The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
