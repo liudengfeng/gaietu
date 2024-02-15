@@ -137,7 +137,7 @@ def get_sampled_word(phone_number, words, num_words):
         (word, duration) for word, duration in word_duration_stats.items()
     ]
     pass_records = [
-        (word, passed, failed) for word, passed, failed in word_pass_stats.items()
+        (word, d["passed"], d["failed"]) for word, d in word_pass_stats.items()
     ]
     probabilities = calculate_sampling_probabilities(
         words, duration_records, pass_records
