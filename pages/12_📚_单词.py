@@ -120,12 +120,14 @@ def generate_page_words(
     else:
         words = st.session_state.word_dict[word_lib_name]
 
+    logger.info(f"单词库名称：{word_lib_name} 单词：{words}")
+    
+    if from_today_learned and len(words) == 0:
+        st.error("今天没有学习记录，请先进行闪卡记忆。")
+        st.stop()
+
     if exclude_slash:
         words = [word for word in words if "/" not in word]
-
-    if from_today_learned and len(words) == 0:
-        st.warning("今天没有学习记录，请先进行闪卡记忆。")
-        st.stop()
 
     n = min(num_words, len(words))
     # 随机选择单词
