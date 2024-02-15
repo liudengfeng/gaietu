@@ -954,7 +954,6 @@ class DbInterface:
 
         if collection_name == "performances":
             word_results_total = {}
-            # 如果documents包含'word_results'键，进行相应处理
             for document in documents:
                 if "word_results" in document:
                     word_results = document["word_results"]
@@ -966,8 +965,19 @@ class DbInterface:
                             word_results_total[word]["passed"] += 1
                         else:
                             word_results_total[word]["failed"] += 1
+
+            # 读取当前的word_pass_stats
+            current_word_pass_stats = doc_ref.get().to_dict().get("word_pass_stats", {})
+
+            # 合并当前的word_pass_stats和新的word_results_total
+            for word, results in word_results_total.items():
+                if word not in current_word_pass_stats:
+                    current_word_pass_stats[word] = {"passed": 0, "failed": 0}
+                current_word_pass_stats[word]["passed"] += results["passed"]
+                current_word_pass_stats[word]["failed"] += results["failed"]
+
             # 更新word_pass_stats
-            doc_ref.update({"word_pass_stats": word_results_total})
+            doc_ref.update({"word_pass_stats": current_word_pass_stats})
             # logger.info(f"已更新 word_pass_stats")
 
         if collection_name == "exercises":
@@ -981,9 +991,20 @@ class DbInterface:
                     if word not in word_duration_total:
                         word_duration_total[word] = 0
                     word_duration_total[word] += document["duration"]
-                    logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
+                    # logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
+
+            # 读取当前的word_duration_stats
+            current_word_duration_stats = doc_ref.get().to_dict().get("word_duration_stats", {})
+
+            # 合并当前的word_duration_stats和新的word_duration_total
+            for word, duration in word_duration_total.items():
+                if word not in current_word_duration_stats:
+                    current_word_duration_stats[word] = 0
+                current_word_duration_stats[word] += duration
+
             # 更新word_duration_stats
-            doc_ref.update({"word_duration_stats": word_duration_total})
+            doc_ref.update({"word_duration_stats": current_word_duration_stats})
+            # logger.info(f"已更新 word_duration_stats")
 
         # 提交批处理
         batch.commit()
