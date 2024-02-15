@@ -36,7 +36,7 @@ def calculate_sampling_probabilities(word_list, learning_records, test_records):
     # 初始化权重为等概率
     weights = {word: 1 for word in word_list}
 
-    total_learning_time = sum(duration for word, duration in learning_records)
+    total_learning_time = sum(duration for _, duration in learning_records)
     # 按学习时长反向调整权重，降低学习时长的影响
     for word, duration in learning_records:
         weights[word] *= 1 - 0.1 * duration / total_learning_time

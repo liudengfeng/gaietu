@@ -20,6 +20,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import generate_word_tests, load_vertex_model, pick_a_phrase
+from mypylib.personalized_task import calculate_sampling_probabilities
 from mypylib.st_helper import (  # end_and_save_learning_records,
     add_exercises_to_db,
     check_access,
@@ -110,6 +111,29 @@ def load_word_dict():
     ) as f:
         return json.load(f)
 
+# 使用手机号码防止缓存冲突
+@st.cache_data(show_spinner="单词概率抽样...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
+def get_sampled_word(phone_number, words, num_words):
+    word_duration_stats = st.session_state.dbi.generate_word_duration_stats(
+        phone_number, "exercises"
+    )
+    word_pass_stats = st.session_state.dbi.generate_word_pass_stats(
+        phone_number, "performances"
+    )
+    duration_records = [
+        (word, duration) for word, duration in word_duration_stats.items()
+    ]
+    pass_records = [
+        (word, passed, failed) for word, passed, failed in word_pass_stats.items()
+    ]
+    probabilities = calculate_sampling_probabilities(
+        words, duration_records, pass_records
+    )
+    # 根据概率进行抽样
+    words = list(probabilities.keys())
+    probs = list(probabilities.values())
+    return random.choices(words, weights=probs, k=num_words)
+
 
 def generate_page_words(
     word_lib_name, num_words, key, exclude_slash=False, from_today_learned=False
@@ -131,8 +155,11 @@ def generate_page_words(
         words = [word for word in words if "/" not in word]
 
     n = min(num_words, len(words))
+
+    phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
     # 随机选择单词
-    st.session_state[key] = random.sample(words, n)
+    # st.session_state[key] = random.sample(words, n)
+    st.session_state[key] = get_sampled_word(phone_number, words, num_words)
     name = word_lib_name.split("-", maxsplit=1)[1]
     st.toast(f"当前单词列表名称：{name} 单词数量: {len(st.session_state[key])}")
 
@@ -387,10 +414,10 @@ def auto_play_flash_word(voice_style):
     for idx in range(n):
         start = time.time()
         st.session_state["flashcard-idx"] = idx
-        
+
         word = st.session_state["flashcard-words"][idx]
         st.session_state["today-learned"].add(word)
-        
+
         on_project_changed(get_flashcard_project())
 
         play_flashcard_word(voice_style, True)

@@ -936,9 +936,9 @@ class DbInterface:
     # endregion
 
     # region 通用函数
-    def _generate_word_pass_stats(self, doc_ref):
-        # 从doc_ref中获取文档
-        doc = doc_ref.get()
+    def generate_word_pass_stats(self, phone_number, collection_name):
+        # phone_number = self.cache["user_info"]["phone_number"]
+        doc = self.db.collection(collection_name).document(phone_number).get()
 
         # 将文档转换为字典
         doc_dict = doc.to_dict()
@@ -974,9 +974,10 @@ class DbInterface:
         # 返回word_pass_stats
         return word_pass_stats
 
-    def _generate_word_duration_stats(self, doc_ref):
+    def generate_word_duration_stats(self, phone_number, collection_name):
         # 从doc_ref中获取文档
-        doc = doc_ref.get()
+        phone_number = self.cache["user_info"]["phone_number"]
+        doc = self.db.collection(collection_name).document(phone_number).get()
 
         # 将文档转换为字典
         doc_dict = doc.to_dict()
@@ -1036,7 +1037,9 @@ class DbInterface:
                             word_results_total[word]["failed"] += 1
 
             # 读取当前的word_pass_stats
-            current_word_pass_stats = self._generate_word_pass_stats(doc_ref)
+            current_word_pass_stats = self.generate_word_pass_stats(
+                phone_number, collection_name
+            )
 
             # 合并当前的word_pass_stats和新的word_results_total
             for word, results in word_results_total.items():
@@ -1063,7 +1066,9 @@ class DbInterface:
                     # logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
 
             # 读取当前的word_duration_stats
-            current_word_duration_stats = self._generate_word_duration_stats(doc_ref)
+            current_word_duration_stats = self.generate_word_duration_stats(
+                phone_number, collection_name
+            )
 
             # 合并当前的word_duration_stats和新的word_duration_total
             for word, duration in word_duration_total.items():
