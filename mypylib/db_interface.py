@@ -937,23 +937,6 @@ class DbInterface:
     # endregion
 
     # region 通用函数
-    # 在事务中处理word_pass_stats
-    def transaction_update_word_pass_stats(transaction, doc_ref, word_results_total):
-        if not word_results_total:
-            return
-        # 获取当前的word_pass_stats，如果不存在则初始化为空字典
-        doc = transaction.get(doc_ref)
-        word_pass_stats = doc.to_dict().get("word_pass_stats", {})
-        # 使用word_results_total来累加word_pass_stats
-        for word, passed in word_results_total.items():
-            if word not in word_pass_stats:
-                word_pass_stats[word] = {"passed": 0, "failed": 0}
-            if passed:
-                word_pass_stats[word]["passed"] += 1
-            else:
-                word_pass_stats[word]["failed"] += 1
-        # 更新word_pass_stats字段
-        transaction.update(doc_ref, {"word_pass_stats": word_pass_stats})
 
     def add_documents_to_user_history(self, collection_name, documents):
         assert isinstance(documents, list), "documents 必须是一个列表。"
@@ -983,11 +966,9 @@ class DbInterface:
                             word_results_total[word]["passed"] += 1
                         else:
                             word_results_total[word]["failed"] += 1
-            # 使用一个事务来更新word_pass_stats
-            transaction_result = doc_ref.run_transaction(
-                self.transaction_update_word_pass_stats, doc_ref, word_results_total
-            )
-            logger.info(f"事务结果：{transaction_result}")
+            # 更新word_pass_stats
+            doc_ref.update({"word_pass_stats": word_results_total})
+            # logger.info(f"已更新 word_pass_stats")
 
         if collection_name == "exercises":
             word_duration_total = {}
@@ -1001,11 +982,8 @@ class DbInterface:
                         word_duration_total[word] = 0
                     word_duration_total[word] += document["duration"]
                     logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
-            # 使用一个事务来更新word_duration_stats
-            transaction_result = doc_ref.run_transaction(
-                self.transaction_update_word_pass_stats, doc_ref, word_duration_total
-            )
-            logger.info(f"事务结果：{transaction_result}")
+            # 更新word_duration_stats
+            doc_ref.update({"word_duration_stats": word_duration_total})
 
         # 提交批处理
         batch.commit()
