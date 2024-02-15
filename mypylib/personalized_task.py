@@ -33,8 +33,15 @@ def create_memory_task(word, start_date=None):
 
 
 def calculate_sampling_probabilities(word_list, learning_records, test_records):
-    # 初始化权重为等概率
-    weights = {word: 1 for word in word_list}
+    # 从三个列表中获取所有的单词，并形成一个集合
+    words = set(
+        word_list
+        + [word for word, _ in learning_records]
+        + [word for word, _, _ in test_records]
+    )
+
+    # 为每个单词赋予初始权重 1
+    weights = {word: 1 for word in words}
 
     total_learning_time = sum(duration for _, duration in learning_records)
     # 按学习时长反向调整权重，降低学习时长的影响
