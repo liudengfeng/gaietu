@@ -167,12 +167,11 @@ def generate_page_words(
     if exclude_slash:
         words = [word for word in words if "/" not in word]
 
-    n = min(num_words, len(words))
-
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
+    n = min(num_words, len(words))
+    word_lib = get_sampled_word(phone_number, words, n * 10)
     # 随机选择单词
-    # st.session_state[key] = random.sample(words, n)
-    st.session_state[key] = get_sampled_word(phone_number, words, num_words)
+    st.session_state[key] = random.sample(word_lib, n)
     name = word_lib_name.split("-", maxsplit=1)[1]
     st.toast(f"当前单词列表名称：{name} 单词数量: {len(st.session_state[key])}")
 

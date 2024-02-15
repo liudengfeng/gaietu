@@ -1009,7 +1009,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 sentence_without_speaker_name = re.sub(
                     r"^\w+:\s", "", sentence.replace("**", "")
                 )
-                with st.spinner(f"使用 Azure 将第 {i+1:2d} 轮对话文本合成语音..."):
+                with st.spinner(f"微软语音合成 第 {i+1:2d} 轮对话..."):
                     result = get_synthesis_speech(sentence_without_speaker_name, style)
                 audio_data_list.append(result["audio_data"])
                 duration_list.append(result["audio_duration"])
