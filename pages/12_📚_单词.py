@@ -118,7 +118,7 @@ def generate_page_words(
     if from_today_learned:
         words = list(st.session_state["today-learned"])
     else:
-        words = st.session_state.word_dict[word_lib_name]
+        words = list(st.session_state.word_dict[word_lib_name])
 
     logger.info(f"单词库名称：{word_lib_name} 单词：{words}")
     
