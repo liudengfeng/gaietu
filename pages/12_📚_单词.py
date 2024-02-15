@@ -200,7 +200,7 @@ def display_word_images(word, container):
 # region 闪卡状态
 
 # 获取用户时区的当前日期
-now = datetime.datetime.now(pytz.timezone(user_tz)).date()
+now = datetime.now(pytz.timezone(user_tz)).date()
 
 if "flashcard-words" not in st.session_state:
     st.session_state["flashcard-words"] = []
