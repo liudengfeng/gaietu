@@ -513,7 +513,7 @@ def prepare_puzzle():
 def display_puzzle_translation():
     word = st.session_state["puzzle-words"][st.session_state["puzzle-idx"]]
     t_word = get_mini_dict_doc(word).get("translation", "")
-    msg = f"中译文：{t_word}"
+    msg = f"中文提示：{t_word}"
     st.markdown(msg)
 
 
