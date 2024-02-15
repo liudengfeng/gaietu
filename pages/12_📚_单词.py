@@ -122,11 +122,11 @@ def generate_page_words(
 
     if exclude_slash:
         words = [word for word in words if "/" not in word]
-    
+
     if from_today_learned and len(words) == 0:
         st.warning("今天没有学习记录，请先进行闪卡记忆。")
         st.stop()
-    
+
     n = min(num_words, len(words))
     # 随机选择单词
     st.session_state[key] = random.sample(words, n)
@@ -1144,8 +1144,8 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         "刷新[:arrows_counterclockwise:]",
         key="puzzle-refresh",
         help="✨ 点击按钮，将从词库中抽取单词，开始或重新开始单词拼图游戏。",
-        on_click=generate_page_words,
-        args=(word_lib, num_word, "puzzle-words", True, True),
+        # on_click=generate_page_words,
+        # args=(word_lib, num_word, "puzzle-words", True, True),
     )
     prev_btn = puzzle_cols[1].button(
         "上一[:leftwards_arrow_with_hook:]",
@@ -1183,6 +1183,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if refresh_btn:
         on_project_changed("Home")
+        generate_page_words(word_lib, num_word, "puzzle-words", True, True)
         reset_puzzle_word()
         st.rerun()
 
