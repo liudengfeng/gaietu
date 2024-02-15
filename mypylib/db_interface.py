@@ -936,7 +936,7 @@ class DbInterface:
     # endregion
 
     # region 通用函数
-    def _generate_word_pass_stats(doc_ref):
+    def _generate_word_pass_stats(self, doc_ref):
         # 从doc_ref中获取文档
         doc = doc_ref.get()
 
@@ -974,7 +974,7 @@ class DbInterface:
         # 返回word_pass_stats
         return word_pass_stats
 
-    def _generate_word_duration_stats(doc_ref):
+    def _generate_word_duration_stats(self, doc_ref):
         # 从doc_ref中获取文档
         doc = doc_ref.get()
 
