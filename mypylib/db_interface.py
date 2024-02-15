@@ -936,6 +936,76 @@ class DbInterface:
     # endregion
 
     # region 通用函数
+    def _generate_word_pass_stats(doc_ref):
+        # 从doc_ref中获取文档
+        doc = doc_ref.get()
+
+        # 将文档转换为字典
+        doc_dict = doc.to_dict()
+
+        # 从字典中获取word_pass_stats
+        word_pass_stats = doc_dict.get("word_pass_stats")
+
+        # 如果word_pass_stats不存在，初始化为一个空字典
+        if word_pass_stats is None:
+            word_pass_stats = {}
+        else:
+            return word_pass_stats
+
+        # 从字典中获取history
+        history = doc_dict.get("history")
+
+        # 如果history存在
+        if history:
+            # 遍历每个评分文档
+            for grading_doc in history:
+                # 从评分文档中获取word_results
+                word_results = grading_doc.get("word_results")
+                # 如果word_results存在，统计生成word_pass_stats
+                if word_results:
+                    for word, passed in word_results.items():
+                        if word not in word_pass_stats:
+                            word_pass_stats[word] = {"passed": 0, "failed": 0}
+                        if passed:
+                            word_pass_stats[word]["passed"] += 1
+                        else:
+                            word_pass_stats[word]["failed"] += 1
+
+        # 返回word_pass_stats
+        return word_pass_stats
+
+    def _generate_word_duration_stats(doc_ref):
+        # 从doc_ref中获取文档
+        doc = doc_ref.get()
+
+        # 将文档转换为字典
+        doc_dict = doc.to_dict()
+
+        # 从字典中获取word_pass_stats
+        word_duration_stats = doc_dict.get("word_duration_stats")
+
+        # 如果word_pass_stats不存在，初始化为一个空字典
+        if word_duration_stats is None:
+            word_duration_stats = {}
+        else:
+            return word_duration_stats
+
+        # 从字典中获取history
+        history = doc_dict.get("history")
+
+        # 如果history存在
+        if history:
+            for document in history:
+                # 使用正则表达式提取单词
+                match = re.search(r"单词练习-.*?-([a-zA-Z\s]+)$", document["item"])
+                if match:
+                    word = match.group(1)
+                    # 累加持续时间
+                    if word not in word_duration_stats:
+                        word_duration_stats[word] = 0
+                    word_duration_stats[word] += document["duration"]
+
+        return word_duration_stats
 
     def add_documents_to_user_history(self, collection_name, documents):
         assert isinstance(documents, list), "documents 必须是一个列表。"
@@ -966,7 +1036,7 @@ class DbInterface:
                             word_results_total[word]["failed"] += 1
 
             # 读取当前的word_pass_stats
-            current_word_pass_stats = doc_ref.get().to_dict().get("word_pass_stats", {})
+            current_word_pass_stats = self._generate_word_pass_stats(doc_ref)
 
             # 合并当前的word_pass_stats和新的word_results_total
             for word, results in word_results_total.items():
@@ -993,9 +1063,7 @@ class DbInterface:
                     # logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
 
             # 读取当前的word_duration_stats
-            current_word_duration_stats = (
-                doc_ref.get().to_dict().get("word_duration_stats", {})
-            )
+            current_word_duration_stats = self._generate_word_duration_stats(doc_ref)
 
             # 合并当前的word_duration_stats和新的word_duration_total
             for word, duration in word_duration_total.items():
