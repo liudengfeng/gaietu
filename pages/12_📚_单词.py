@@ -111,9 +111,22 @@ def load_word_dict():
     ) as f:
         return json.load(f)
 
+
 # 使用手机号码防止缓存冲突
 @st.cache_data(show_spinner="单词概率抽样...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
 def get_sampled_word(phone_number, words, num_words):
+    """
+    从给定的单词列表中根据概率进行抽样，返回抽样结果。
+
+    Args:
+        phone_number (str): 手机号码。
+        words (list): 单词列表。
+        num_words (int): 抽样的单词数量。
+
+    Returns:
+        list: 抽样结果，包含抽样的单词列表。
+
+    """
     word_duration_stats = st.session_state.dbi.generate_word_duration_stats(
         phone_number, "exercises"
     )
