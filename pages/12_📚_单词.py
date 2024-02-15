@@ -1178,8 +1178,8 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         st.toast(f"从个人词库中删除单词：{word}。")
 
     if st.session_state["puzzle-idx"] != -1:
-        handle_puzzle()
         on_project_changed(get_puzzle_project())
+        handle_puzzle()
 
 # endregion
 

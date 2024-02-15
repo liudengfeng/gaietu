@@ -937,6 +937,22 @@ class DbInterface:
     # endregion
 
     # region 通用函数
+    # 在事务中处理word_pass_stats
+    def transaction_update_word_pass_stats(transaction, doc_ref, word_results_total):
+        # 获取当前的word_pass_stats，如果不存在则初始化为空字典
+        doc = transaction.get(doc_ref)
+        word_pass_stats = doc.to_dict().get('word_pass_stats', {})
+        # 使用word_results_total来累加word_pass_stats
+        for word, passed in word_results_total.items():
+            if word not in word_pass_stats:
+                word_pass_stats[word] = {'passed': 0, 'failed': 0}
+            if passed:
+                word_pass_stats[word]['passed'] += 1
+            else:
+                word_pass_stats[word]['failed'] += 1
+        # 更新word_pass_stats字段
+        transaction.update(doc_ref, {'word_pass_stats': word_pass_stats})
+
 
     def add_documents_to_user_history(self, collection_name, documents):
         assert isinstance(documents, list), "documents 必须是一个列表。"
@@ -951,6 +967,26 @@ class DbInterface:
 
         # 将整个文档列表添加到 'history' 字段的数组中
         batch.set(doc_ref, {"history": firestore.ArrayUnion(documents)}, merge=True)
+
+        if collection_name == "performances":
+            word_results_total = {}
+            # 如果documents包含'word_results'键，进行相应处理
+            for document in documents:
+                if "word_results" in document:
+                    word_results = document["word_results"]
+                    # 累加所有的word_results到word_results_total
+                    for word, passed in word_results.items():
+                        if word not in word_results_total:
+                            word_results_total[word] = {'passed': 0, 'failed': 0}
+                        if passed:
+                            word_results_total[word]['passed'] += 1
+                        else:
+                            word_results_total[word]['failed'] += 1
+            # 使用一个事务来更新word_pass_stats
+            self.db.run_transaction(self.transaction_update_word_pass_stats, doc_ref, word_results_total)
+
+        if collection_name == "exercises":
+            pass
 
         # 提交批处理
         batch.commit()
