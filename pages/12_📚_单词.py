@@ -1002,6 +1002,7 @@ if item_menu and item_menu.endswith("闪卡记忆"):
         st.rerun()
 
     if display_status_button:
+        on_project_changed("Home")
         if st.session_state.flashcard_display_state == "全部":
             st.session_state.flashcard_display_state = "英文"
         elif st.session_state.flashcard_display_state == "英文":
