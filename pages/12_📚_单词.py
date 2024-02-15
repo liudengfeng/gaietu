@@ -20,7 +20,6 @@ from mypylib.constants import CEFR_LEVEL_MAPS
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     pick_a_phrase,
-    generate_word_test,
     generate_word_tests,
     load_vertex_model,
 )

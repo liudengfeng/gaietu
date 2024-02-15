@@ -363,48 +363,13 @@ def parse_generated_content_and_update_token(
     return parser(full_response)
 
 
-WORD_TEST_PROMPT_TEMPLATE = """
-As an experienced English teacher, you are tasked with creating an examination to assess students' understanding of word meanings. The goal is to ensure that students understand the definitions of words, not their usage in context.
-- You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
-- You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
-- The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
-- The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
-
-{guidelines}
-
-Output in JSON format, without using list or Markdown formatting.
-
-Word: {word}
-"""
-
-
-def generate_word_test(model_name, model, word, level):
-    prompt = WORD_TEST_PROMPT_TEMPLATE.format(
-        word=word, level=level, guidelines=SINGLE_CHOICE_QUESTION
-    )
-    contents = [prompt]
-    generation_config = GenerationConfig(
-        max_output_tokens=2048, temperature=0.0, top_k=1.0
-    )
-    contents_info = to_contents_info(contents)
-    return parse_generated_content_and_update_token(
-        "单词理解考题",
-        model_name,
-        model.generate_content,
-        contents_info,
-        generation_config,
-        stream=False,
-        parser=partial(parse_json_string, prefix="```json", suffix="```"),
-    )
-
-
 WORDS_TEST_PROMPT_TEMPLATE = """
 As an experienced English teacher, you are tasked with creating an examination for the following "Words" to assess students' understanding of their meanings.
 - You possess an in-depth understanding of the vocabulary for each level of the Common European Framework of Reference for Languages (CEFR).
 - You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
 - The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
 - The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
-- It is crucial to verify the distribution of correct answers, ensuring that they are randomly and evenly distributed among the options. This practice guarantees the fairness of the examination and prevents any potential biases.
+- Inspect and adjust the distribution of answers for these questions, ensuring they are randomly and evenly distributed. 
 
 {guidelines}
 
