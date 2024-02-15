@@ -172,8 +172,9 @@ def generate_page_words(
     word_lib = get_sampled_word(phone_number, words, n * 10)
     # 随机选择单词
     st.session_state[key] = random.sample(word_lib, n)
-    name = word_lib_name.split("-", maxsplit=1)[1]
-    st.toast(f"当前单词列表名称：{name} 单词数量: {len(st.session_state[key])}")
+    if not from_today_learned:
+        name = word_lib_name.split("-", maxsplit=1)[1]
+        st.toast(f"当前单词列表名称：{name} 单词数量: {len(st.session_state[key])}")
 
 
 def add_personal_dictionary(include):
@@ -535,7 +536,7 @@ def on_next_puzzle_btn_click():
     st.session_state.puzzle_answer = ""
 
 
-def check_puzzle(word_lib, puzzle_container):
+def check_puzzle(puzzle_container):
     puzzle_container.empty()
     idx = st.session_state["puzzle-idx"]
     word = st.session_state["puzzle-words"][idx]
@@ -560,7 +561,7 @@ def check_puzzle(word_lib, puzzle_container):
     if idx == n - 1:
         d = {
             "item": "拼图游戏",
-            "level": word_lib.split("-", 1)[1],
+            "level": answer,
             # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
             "record_time": datetime.now(timezone.utc),
             "score": score,
@@ -1136,21 +1137,21 @@ if item_menu and item_menu.endswith("闪卡记忆"):
 elif item_menu and item_menu.endswith("拼图游戏"):
     on_project_changed("单词练习-单词拼图")
     # region 边栏
-    include_cb = st.sidebar.checkbox(
-        "是否包含个人词库？",
-        key="include-personal-dictionary",
-        value=False,
-        on_change=on_include_cb_change,
-    )
+    # include_cb = st.sidebar.checkbox(
+    #     "是否包含个人词库？",
+    #     key="include-personal-dictionary",
+    #     value=False,
+    #     on_change=on_include_cb_change,
+    # )
     # 在侧边栏添加一个选项卡让用户选择一个单词列表
-    word_lib = st.sidebar.selectbox(
-        "词库",
-        sorted(list(st.session_state.word_dict.keys())),
-        key="puzzle-selected",
-        on_change=reset_puzzle_word,
-        format_func=word_lib_format_func,
-        help="✨ 选择一个词库，用于生成单词拼图。",
-    )
+    # word_lib = st.sidebar.selectbox(
+    #     "词库",
+    #     sorted(list(st.session_state.word_dict.keys())),
+    #     key="puzzle-selected",
+    #     on_change=reset_puzzle_word,
+    #     format_func=word_lib_format_func,
+    #     help="✨ 选择一个词库，用于生成单词拼图。",
+    # )
 
     # 在侧边栏添加一个滑块让用户选择记忆的单词数量
     num_word = st.sidebar.slider(
@@ -1189,8 +1190,6 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         "刷新[:arrows_counterclockwise:]",
         key="puzzle-refresh",
         help="✨ 点击按钮，将从词库中抽取单词，开始或重新开始单词拼图游戏。",
-        # on_click=generate_page_words,
-        # args=(word_lib, num_word, "puzzle-words", True, True),
     )
     prev_btn = puzzle_cols[1].button(
         "上一[:leftwards_arrow_with_hook:]",
@@ -1217,7 +1216,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         "添加[:heavy_plus_sign:]",
         key="puzzle-add",
         help="✨ 将当前单词添加到个人词库",
-        disabled=st.session_state["puzzle-idx"] == -1 or "个人词库" in word_lib,  # type: ignore
+        disabled=st.session_state["puzzle-idx"] == -1,  # type: ignore
     )
     del_btn = puzzle_cols[5].button(
         "删除[:heavy_minus_sign:]",
@@ -1228,7 +1227,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if refresh_btn:
         on_project_changed("Home")
-        generate_page_words(word_lib, num_word, "puzzle-words", True, True)
+        generate_page_words(None, num_word, "puzzle-words", True, True)
         reset_puzzle_word()
         st.rerun()
 
@@ -1242,7 +1241,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     if chk_btn:
         on_project_changed("Home")
-        check_puzzle(word_lib, puzzle_container)
+        check_puzzle(puzzle_container)
 
     if add_btn:
         on_project_changed("Home")
