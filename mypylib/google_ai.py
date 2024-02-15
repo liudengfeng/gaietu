@@ -404,7 +404,7 @@ As an experienced English teacher, you are tasked with creating an examination f
 - You should have a thorough understanding of the sequence of numbers in English, such as knowing that each number has a unique successor and predecessor. For instance, the successor of "eighteen" is "nineteen", and the predecessor of "eleven" is "ten". This knowledge is necessary for creating questions related to numerical vocabulary.
 - The target audience for the examination is students who have achieved the {level} proficiency level according to the CEFR standards. The complexity of the questions should not exceed their comprehension abilities.
 - The examination questions and options should not contain any Chinese. However, Chinese can be used in the "explanations" section when necessary.
-- Importantly, the correct answer should be randomized among the options and not always 'A'. This is to ensure fairness and avoid any biases in the examination.
+- It is crucial to verify the distribution of correct answers, ensuring that they are randomly and evenly distributed among the options. This practice guarantees the fairness of the examination and prevents any potential biases.
 
 {guidelines}
 
