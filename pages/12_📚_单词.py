@@ -1134,7 +1134,9 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         == len(st.session_state["puzzle-words"]) - 1,  # type: ignore
     )
     chk_btn = puzzle_cols[3].button(
-        "检查[:mag:]", help="✨ 点击按钮，检查您的答案是否正确。"
+        "检查[:mag:]",
+        help="✨ 点击按钮，检查您的答案是否正确。",
+        disabled=st.session_state["puzzle-idx"] == -1,
     )
     add_btn = puzzle_cols[4].button(
         "添加[:heavy_plus_sign:]",
@@ -1163,6 +1165,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         on_project_changed(get_puzzle_project())
 
     if chk_btn:
+        on_project_changed("Home")
         check_puzzle(word_lib, puzzle_container)
 
     if add_btn:
