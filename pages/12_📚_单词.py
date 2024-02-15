@@ -1431,7 +1431,7 @@ elif item_menu and item_menu.endswith("词意测试"):
         on_project_changed("Home")
         reset_test_words()
         st.session_state["user-answer"] = [None] * test_num  # type: ignore
-        generate_page_words(word_lib, test_num, "test-words", True)
+        generate_page_words(word_lib, test_num, "test-words", True, True)
         st.session_state["word-tests"] = generate_word_tests_for(
             st.session_state["test-words"], level
         )
