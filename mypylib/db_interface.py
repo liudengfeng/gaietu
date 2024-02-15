@@ -999,6 +999,7 @@ class DbInterface:
                     if word not in word_duration_total:
                         word_duration_total[word] = 0
                     word_duration_total[word] += document["duration"]
+                    logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
             # 使用一个事务来更新word_duration_stats
             self.db.run_transaction(
                 self.transaction_update_word_duration_stats,
