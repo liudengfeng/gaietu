@@ -22,14 +22,12 @@ from google.cloud import firestore, translate
 from google.oauth2.service_account import Credentials
 from vertexai.preview.generative_models import GenerativeModel, Image
 
-from mypylib.constants import USD_TO_CNY_EXCHANGE_RATE
-from mypylib.utils import calculate_audio_duration
-
 from .azure_pronunciation_assessment import (
     get_syllable_durations_and_offsets,
     pronunciation_assessment_from_stream,
 )
 from .azure_speech import synthesize_speech
+from .constants import USD_TO_CNY_EXCHANGE_RATE
 from .db_interface import DbInterface
 from .google_ai import MAX_CALLS, PER_SECONDS, ModelRateLimiter
 from .google_cloud_configuration import (
@@ -40,6 +38,7 @@ from .google_cloud_configuration import (
 )
 from .html_constants import TIPPY_JS
 from .html_fmt import pronunciation_assessment_word_format
+from .utils import calculate_audio_duration
 from .word_utils import (
     audio_autoplay_elem,
     get_mini_dict,

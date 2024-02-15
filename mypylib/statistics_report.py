@@ -2,7 +2,7 @@ from datetime import datetime
 import streamlit as st
 import pytz
 import pandas as pd
-from mypylib.st_helper import (
+from .st_helper import (
     MAX_WORD_STUDY_TIME,
 )
 import plotly.express as px

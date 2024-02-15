@@ -15,8 +15,7 @@ from faker import Faker
 from google.cloud import firestore
 from google.cloud.firestore import ArrayUnion, FieldFilter
 
-from mypylib.utils import combine_date_and_time_to_utc
-
+from .utils import combine_date_and_time_to_utc
 from .constants import FAKE_EMAIL_DOMAIN
 from .db_model import (
     Payment,
@@ -994,7 +993,9 @@ class DbInterface:
                     # logger.info(f"单词：{word}，持续时间：{word_duration_total[word]}")
 
             # 读取当前的word_duration_stats
-            current_word_duration_stats = doc_ref.get().to_dict().get("word_duration_stats", {})
+            current_word_duration_stats = (
+                doc_ref.get().to_dict().get("word_duration_stats", {})
+            )
 
             # 合并当前的word_duration_stats和新的word_duration_total
             for word, duration in word_duration_total.items():
