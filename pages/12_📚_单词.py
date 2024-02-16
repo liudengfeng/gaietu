@@ -372,8 +372,11 @@ def get_flashcard_project():
         return f"单词练习-{project}-{words[idx]}"
 
 
-def play_flashcard_word(voice_style, sleep=False):
-    word = st.session_state["flashcard-words"][st.session_state["flashcard-idx"]]
+def play_word_audio(
+    voice_style, sleep=False, words_key="flashcard-words", idx_key="flashcard-idx"
+):
+    idx = st.session_state[idx_key]
+    word = st.session_state[words_key][idx]
     result = get_synthesis_speech(word, voice_style[0])
     t = result["audio_duration"].total_seconds()
     html = audio_autoplay_elem(result["audio_data"], fmt="mav")
@@ -436,7 +439,7 @@ def auto_play_flash_word(voice_style):
 
         on_project_changed(get_flashcard_project())
 
-        play_flashcard_word(voice_style, True)
+        play_word_audio(voice_style, True)
         view_flash_word(elem, False, placeholder)
 
         time.sleep(max(3 - time.time() + start, 0))
@@ -1082,7 +1085,7 @@ if item_menu and item_menu.endswith("闪卡记忆"):
 
         view_flash_word(container)
         if autoplay:
-            play_flashcard_word(voice_style)
+            play_word_audio(voice_style)
 
     if next_btn:
         if len(st.session_state["flashcard-words"]) == 0:
@@ -1099,11 +1102,11 @@ if item_menu and item_menu.endswith("闪卡记忆"):
         view_flash_word(container)
 
         if autoplay:
-            play_flashcard_word(voice_style)
+            play_word_audio(voice_style)
 
     if play_btn:
         on_project_changed(get_flashcard_project())
-        play_flashcard_word(voice_style)
+        play_word_audio(voice_style)
 
     if add_btn:
         on_project_changed("Home")
@@ -1128,22 +1131,15 @@ if item_menu and item_menu.endswith("闪卡记忆"):
 
 elif item_menu and item_menu.endswith("拼图游戏"):
     on_project_changed("单词练习-单词拼图")
-    # region 边栏
-    # include_cb = st.sidebar.checkbox(
-    #     "是否包含个人词库？",
-    #     key="include-personal-dictionary",
-    #     value=False,
-    #     on_change=on_include_cb_change,
-    # )
-    # 在侧边栏添加一个选项卡让用户选择一个单词列表
-    # word_lib = st.sidebar.selectbox(
-    #     "词库",
-    #     sorted(list(st.session_state.word_dict.keys())),
-    #     key="puzzle-selected",
-    #     on_change=reset_puzzle_word,
-    #     format_func=word_lib_format_func,
-    #     help="✨ 选择一个词库，用于生成单词拼图。",
-    # )
+    pronunciation = st.sidebar.radio("发音标准", ("美式", "英式"))
+    autoplay = st.sidebar.toggle(
+        "自动音频", True, key="word-autoplay", help="✨ 选择是否自动播放单词音频。"
+    )
+
+    style = "en-US" if pronunciation == "美式" else "en-GB"
+    # 固定语音风格
+    voice_style = voice_style_options[style][0]
+    st.sidebar.info(f"语音风格：{voice_style[0]}({voice_style[1]})")
 
     # 在侧边栏添加一个滑块让用户选择记忆的单词数量
     num_word = st.sidebar.slider(
@@ -1224,12 +1220,16 @@ elif item_menu and item_menu.endswith("拼图游戏"):
         st.rerun()
 
     if prev_btn:
-        prepare_puzzle()
         on_project_changed(get_puzzle_project())
+        if autoplay:
+            play_word_audio(voice_style, words_key="puzzle-words", idx_key="puzzle-idx")
+        prepare_puzzle()
 
     if next_btn:
-        prepare_puzzle()
         on_project_changed(get_puzzle_project())
+        if autoplay:
+            play_word_audio(voice_style, words_key="puzzle-words", idx_key="puzzle-idx")
+        prepare_puzzle()
 
     if chk_btn:
         on_project_changed("Home")
