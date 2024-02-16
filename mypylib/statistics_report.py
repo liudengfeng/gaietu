@@ -75,10 +75,10 @@ def calculate_rankings(date):
     # 将列表转换为数据框架
     df = pd.DataFrame(performances_list)
 
-    # 计算每个省份每个项目的平均分
-    df_grouped = df.groupby(["province", "item"])["score"].mean().reset_index()
+    # 计算每个人每一项的成绩
+    df_grouped = df.groupby(["phone_number", "item"])["score"].mean().reset_index()
 
-    # 按照省份和平均分进行排名
+    # 按照区域和成绩进行排名
     df_grouped["rank"] = df_grouped.groupby("province")["score"].rank(ascending=False)
 
     # 返回排名结果
