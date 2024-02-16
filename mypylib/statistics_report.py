@@ -266,7 +266,9 @@ def display_word_study(
 
     # 按 "学习日期" 分组并计算学习时间和单词数量
     stats = df.groupby("学习日期").agg({"时长": "sum", "单词": "count"})
-    stats = stats.rename(columns={"时长": "学习时间", "单词": "学习单词次数"}).reset_index()
+    stats = stats.rename(
+        columns={"时长": "学习时间", "单词": "学习单词次数"}
+    ).reset_index()
     # stats["学习时间"] = stats["学习时间"].round(2)
 
     fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
@@ -409,7 +411,7 @@ def display_average_scores(
                 2,
             )
             delta = (
-                round(current_score - previous_score, 2)
+                f"{current_score - previous_score:.2f}"
                 if pd.notna(previous_score)
                 else "NA"
             )
@@ -417,7 +419,7 @@ def display_average_scores(
             delta = "NA"
 
         # 在 Streamlit 应用中显示得分变化
-        cols[i].metric(label=f"{item}", value=current_score, delta=delta)
+        cols[i].metric(label=f"{item}", value=f"{current_score:.2f}", delta=delta)
 
     # 使用 plotly 绘制折线图
     fig = px.line(
