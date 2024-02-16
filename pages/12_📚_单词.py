@@ -830,7 +830,7 @@ def check_word_test_answer(container, level):
             index=user_answer_idx,
             disabled=True,
             label_visibility="collapsed",
-            key=f"test-options-{word}",
+            key=f"test-options-{word}-{idx}",
         )
         is_correct = is_answer_correct(user_answer_idx, answer)
         word_results[word] = is_correct
