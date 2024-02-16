@@ -172,7 +172,7 @@ def generate_page_words(
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
     n = min(num_words, len(words))
     word_lib = get_sampled_word(phone_number, words, n * 10)
-    logger.info(f"{from_today_learned=} {word_lib}")
+    # logger.info(f"{from_today_learned=} {word_lib}")
     # 随机选择单词
     st.session_state[key] = random.sample(word_lib, n)
     if not from_today_learned:
@@ -1463,7 +1463,7 @@ elif item_menu and item_menu.endswith("词意测试"):
 
     if next_test_btn:
         on_project_changed(get_word_test_project())
-        logger.info(st.session_state["test-words"])
+        # logger.info(st.session_state["test-words"])
 
     if refresh_btn:
         on_project_changed("Home")
