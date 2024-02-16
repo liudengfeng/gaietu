@@ -343,7 +343,7 @@ def display_average_scores(
             delta = "NA"
 
         # 在 Streamlit 应用中显示得分变化
-        cols[i].metric(label=f"{item} 得分变化", value=current_score, delta=delta)
+        cols[i].metric(label=f"{item}", value=current_score, delta=delta)
 
     # 使用 plotly 绘制折线图
     fig = px.line(
