@@ -1052,7 +1052,11 @@ class DbInterface:
                 current_word_pass_stats[word]["failed"] += results["failed"]
 
             # 更新word_pass_stats
-            doc_ref.update({"word_pass_stats": current_word_pass_stats})
+            try:
+                doc_ref.update({"word_pass_stats": current_word_pass_stats})
+            except firestore.exceptions.NotFound:
+                # 如果文档不存在，创建一个新文档
+                doc_ref.set({"word_pass_stats": current_word_pass_stats})
             # logger.info(f"已更新 word_pass_stats")
 
         if collection_name == "exercises":
@@ -1079,8 +1083,11 @@ class DbInterface:
                     current_word_duration_stats[word] = 0
                 current_word_duration_stats[word] += duration
 
-            # 更新word_duration_stats
-            doc_ref.update({"word_duration_stats": current_word_duration_stats})
+            try:
+                doc_ref.update({"word_duration_stats": current_word_duration_stats})
+            except firestore.exceptions.NotFound:
+                # 如果文档不存在，创建一个新文档
+                doc_ref.set({"word_duration_stats": current_word_duration_stats})
             # logger.info(f"已更新 word_duration_stats")
 
         # 提交批处理
