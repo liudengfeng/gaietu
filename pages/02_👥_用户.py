@@ -349,6 +349,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             df1 = get_performance_data(utc_now)
 
             # 临时添加的数据
+            import numpy as np
             phone_numbers = [
                 f"13{np.random.randint(100000000, 999999999)}" for _ in range(100)
             ]
@@ -356,7 +357,6 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             items = ["词意测试", "发音评估", "拼图游戏"]
 
             # 生成模拟数据
-            import numpy as np
 
             data = {
                 "手机号码": phone_numbers,
