@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta, timezone
-import streamlit as st
-import pytz
+
+import numpy as np
 import pandas as pd
-from .st_helper import (
-    MAX_WORD_STUDY_TIME,
-)
 import plotly.express as px
+import plotly.graph_objects as go
+import pytz
+import streamlit as st
+from scipy.stats import norm
+
+from .st_helper import MAX_WORD_STUDY_TIME
 
 
 @st.cache_data(ttl=timedelta(days=1))
@@ -64,10 +67,10 @@ def get_performance_data(date):
             # 将得分信息保存到列表中
             performances_list.append(
                 {
-                    "phone_number": phone_number,
-                    "province": user_provinces.get(phone_number),
-                    "item": item,
-                    "score": score,
+                    "手机号码": phone_number,
+                    "省份": user_provinces.get(phone_number),
+                    "项目": item,
+                    "得分": score,
                 }
             )
 
@@ -75,9 +78,7 @@ def get_performance_data(date):
     df = pd.DataFrame(performances_list)
 
     # 计算每个人每一项的成绩
-    df_grouped = (
-        df.groupby(["phone_number", "province", "item"])["score"].mean().reset_index()
-    )
+    df_grouped = df.groupby(["手机号码", "省份", "项目"])["得分"].mean().reset_index()
 
     # 返回数据
     return df_grouped
@@ -438,3 +439,96 @@ def display_average_scores(
 
     st.markdown("#### 平均得分数据")
     st.dataframe(data_grouped)
+
+
+def plot_student_score_ranking(
+    df: pd.DataFrame, score: float, score_column: str = "得分"
+):
+    """
+    绘制学生项目得分的正态分布曲线，并在图上标出学生的得分位置，以显示其在区域内的排名。
+
+    参数:
+    df (pd.DataFrame): 包含学生得分的 DataFrame。
+    score (float): 学生的得分。
+    score_column (str): 得分列的名称。
+
+    返回:
+    None
+    """
+    # 计算得分的平均值和标准差
+    mu, std = df[score_column].mean(), df[score_column].std()
+
+    # 计算得分的中位数
+    median = df[score_column].median()
+
+    # 生成 x 值
+    x = np.linspace(mu - 3 * std, mu + 3 * std, 100)
+
+    # 创建一个图表
+    fig = go.Figure()
+
+    # 添加正态分布曲线
+    fig.add_trace(go.Scatter(x=x, y=norm.pdf(x, mu, std), mode="lines"))
+
+    # 添加一个垂直线来表示学生的得分
+    fig.add_shape(
+        type="line",
+        x0=score,
+        y0=0,
+        x1=score,
+        y1=1,
+        yref="paper",
+        line=dict(
+            color="Red",
+            width=4,
+            dash="dashdot",
+        ),
+    )
+
+    # 添加一个垂直线来表示得分的中位数
+    fig.add_shape(
+        type="line",
+        x0=median,
+        y0=0,
+        x1=median,
+        y1=1,
+        yref="paper",
+        line=dict(
+            color="Green",
+            width=4,
+            dash="dashdot",
+        ),
+    )
+
+    # 添加学生得分的标记文本
+    fig.add_annotation(
+        x=score,
+        y=0.02,
+        text="您的位置",
+        showarrow=True,
+        arrowhead=1,
+        ax=-30 if score < median else 30,
+        ay=-50 if score < median else 50,
+    )
+
+    # 添加得分中位数的标记文本
+    fig.add_annotation(
+        x=median,
+        y=0.02,
+        text="中位数",
+        showarrow=True,
+        arrowhead=1,
+        ax=30 if score < median else -30,
+        ay=50 if score < median else -50,
+    )
+
+    # 更新图表的布局
+    fig.update_layout(
+        title_text="项目得分的正态分布曲线",
+        xaxis_title="得分",
+        yaxis_title="概率密度",
+    )
+    # 设置 x 轴的范围
+    fig.update_xaxes(range=[-10, 110], title_text="得分")
+    # 显示图表
+    st.plotly_chart(fig)

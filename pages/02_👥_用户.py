@@ -35,6 +35,7 @@ from mypylib.statistics_report import (
     get_exercises,
     get_performances,
     get_valid_exercise_time,
+    plot_student_score_ranking,
 )
 from mypylib.utils import get_current_monday
 
@@ -235,6 +236,8 @@ with tabs[items.index(":key: 重置密码")]:
 
 # region 创建统计页面
 user_tz = st.session_state.dbi.cache["user_info"]["timezone"]
+phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
+province = st.session_state.dbi.cache["user_info"]["province"]
 now = datetime.datetime.now(pytz.timezone(user_tz))
 # st.write(f"当前时间：{now}")
 # 计算当前日期所在周的周一
@@ -244,7 +247,6 @@ start_date_default = get_current_monday(user_tz)
 with tabs[items.index(":bar_chart: 学习报告")]:
     st.subheader(":bar_chart: 学习报告")
     st.markdown("✨ :rainbow[数据每30分钟更新一次。]")
-    phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
 
     with st.sidebar:
         start_date = st.date_input("开始日期", value=start_date_default)
@@ -343,11 +345,42 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             "查阅[:eye:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
         ):
             utc_now = datetime.datetime.now(pytz.utc)
-            df = get_performance_data(utc_now)
+            # 获取性能数据
+            df1 = get_performance_data(utc_now)
+
+            # 临时添加的数据
+            phone_numbers = [
+                f"13{np.random.randint(100000000, 999999999)}" for _ in range(100)
+            ]
+            provinces = ["辽宁", "重庆", "广东"]
+            items = ["词意测试", "发音评估", "拼图游戏"]
+
+            # 生成模拟数据
+            import numpy as np
+
+            data = {
+                "手机号码": phone_numbers,
+                "省份": np.random.choice(provinces, 100),
+                "项目": np.random.choice(items, 100),
+                "得分": np.random.uniform(30, 100, 100).round(2),
+            }
+
+            # 创建 DataFrame
+            df2 = pd.DataFrame(data)
+
+            # 合并 df1 和 df2
+            df = pd.concat([df1, df2], ignore_index=True)
+
             if df.empty:
                 st.warning("当前期间内没有成绩记录。", icon="⚠️")
             else:
-                st.dataframe(df)
+                # 根据项目和省份对数据进行分组
+                grouped = df.groupby(["项目", "省份"])
+                # 对每个分组应用 plot_student_score_ranking 函数
+                for (item, province), group in grouped:
+                    st.write(f"项目：{item}，省份：{province}")
+                    st.dataframe(group)
+                    # plot_student_score_ranking(group, item, province)
 
 # endregion
 

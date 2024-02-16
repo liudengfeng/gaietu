@@ -28,3 +28,4 @@ moviepy==1.0.3
 werkzeug==3.0.1
 langdetect==1.0.9
 firebase-admin==6.4.0
+scipy==1.12.0
