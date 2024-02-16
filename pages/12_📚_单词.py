@@ -380,7 +380,7 @@ def play_word_audio(
     result = get_synthesis_speech(word, voice_style[0])
     t = result["audio_duration"].total_seconds()
     html = audio_autoplay_elem(result["audio_data"], fmt="mav")
-    components.html(html)
+    components.html(html, height=0)
     # 如果休眠，第二次重复时会播放二次
     if sleep:
         time.sleep(t)
