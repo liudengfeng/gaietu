@@ -113,7 +113,9 @@ def load_word_dict():
 
 
 # 使用手机号码防止缓存冲突
-@st.cache_data(show_spinner="单词概率抽样...", ttl=timedelta(days=1))  # 缓存有效期为24小时
+@st.cache_data(
+    show_spinner="单词概率抽样...", ttl=timedelta(days=1)
+)  # 缓存有效期为24小时
 def get_sampled_word(phone_number, words, num_words):
     """
     从给定的单词列表中根据概率进行抽样，返回抽样结果。
@@ -170,6 +172,7 @@ def generate_page_words(
     phone_number = st.session_state.dbi.cache["user_info"]["phone_number"]
     n = min(num_words, len(words))
     word_lib = get_sampled_word(phone_number, words, n * 10)
+    logger.info(f"{from_today_learned=} {word_lib}")
     # 随机选择单词
     st.session_state[key] = random.sample(word_lib, n)
     if not from_today_learned:
