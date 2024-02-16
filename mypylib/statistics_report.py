@@ -8,7 +8,8 @@ from .st_helper import (
 import plotly.express as px
 
 
-@st.cache_data(ttl=timedelta(days=1))
+# @st.cache_data(ttl=timedelta(days=1))
+@st.cache_data(ttl=timedelta(minutes=1))
 def calculate_rankings(date):
     # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
     # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
