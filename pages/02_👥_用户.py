@@ -82,11 +82,19 @@ item_names = ["学习报告", "更新信息", "重置密码", "问题反馈"]
 items = [f"{e} {n}" for e, n in zip(emojis, item_names)]
 tabs = st.tabs(items)
 
+
+def get_item_index(string):
+    for i, item in enumerate(item_names):
+        if item in string:
+            return i
+    return -1
+
+
 # endregion
 
 # region 创建更新信息页面
 
-with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
+with tabs[get_item_index("更新信息")]:
     st.subheader(":arrows_counterclockwise: 更新个人信息")
     CEFR = list(CEFR_LEVEL_MAPS.keys())
     COUNTRIES = ["中国"]
@@ -195,7 +203,7 @@ with tabs[items.index(":arrows_counterclockwise: 更新信息")]:
 
 # region 创建重置密码页面
 
-with tabs[items.index(":key: 重置密码")]:
+with tabs[get_item_index("重置密码")]:
     st.subheader(":key: 重置密码")
     user = st.session_state.dbi.get_user()
     # user = User.from_doc(user_doc)
@@ -244,7 +252,7 @@ now = datetime.datetime.now(pytz.timezone(user_tz))
 start_date_default = get_current_monday(user_tz)
 
 
-with tabs[items.index(":bar_chart: 学习报告")]:
+with tabs[get_item_index("学习报告")]:
     st.subheader(":bar_chart: 学习报告")
     st.markdown("✨ :rainbow[数据每30分钟更新一次。]")
 
@@ -350,6 +358,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 
             # 临时添加的数据
             import numpy as np
+
             phone_numbers = [
                 f"13{np.random.randint(100000000, 999999999)}" for _ in range(100)
             ]
@@ -387,7 +396,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
 # region 创建反馈页面
 
 
-with tabs[items.index(":memo: 问题反馈")]:
+with tabs[get_item_index("问题反馈")]:
     with st.form(key="feedback_form"):
         title = st.text_input("标题", key="title", help="✨ 请输入标题")
         content = st.text_area("问题描述", key="content", help="✨ 请输入内容")
