@@ -392,7 +392,6 @@ with tabs[get_item_index("学习报告")]:
                 for item in items:
                     try:
                         score = user_df[user_df["项目"] == item]["得分"].item()
-                        st.write(f"项目：{item} {score=}")
                         item_df = df[df["项目"] == item]
                         # 对每一项绘制其全国排名
                         plot_student_score_ranking(item_df, score, "得分", item)
