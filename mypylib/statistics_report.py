@@ -454,7 +454,7 @@ def calculate_statistics(df, score_column):
     return mu, std, median, x
 
 
-def plot_student_score_ranking(df, score: float, score_column):
+def plot_student_score_ranking(df, score: float, score_column, label):
     mu, std, median, x = calculate_statistics(df, score_column)
     # 创建一个图表
     fig = go.Figure()
@@ -516,7 +516,7 @@ def plot_student_score_ranking(df, score: float, score_column):
 
     # 更新图表的布局
     fig.update_layout(
-        title_text="项目得分的正态分布曲线",
+        title_text=f"{label}得分的正态分布曲线",
         xaxis_title="得分",
         yaxis_title="概率密度",
     )
