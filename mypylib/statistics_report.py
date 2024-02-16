@@ -362,11 +362,12 @@ def display_study_time(
     stats = df.groupby(["学习日期", "项目"]).agg({"时长": "sum"}).reset_index()
     fig2 = px.bar(
         stats,
-        x="学习日期",
-        y="时长",
+        y="学习日期",
+        x="时长",
         color="项目",
         title="分项目的学习时间",
         barmode="stack",
+        orientation='h',
     )
     st.plotly_chart(fig2, use_container_width=True)
 
