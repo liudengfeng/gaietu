@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import streamlit as st
 import pytz
 import pandas as pd
@@ -8,7 +8,66 @@ from .st_helper import (
 import plotly.express as px
 
 
-@st.cache_data(ttl=60 * 30)
+@st.cache_data(ttl=timedelta(days=1))
+def calculate_rankings(date):
+
+    dbi = st.session_state.dbi
+    db = dbi.db
+    # 获取所有用户文档
+    users = db.collection("users").stream()
+
+    # 创建一个字典来保存用户的省份信息
+    user_provinces = {}
+
+    for user in users:
+        # 获取用户的手机号码和省份信息
+        phone_number = user.id
+        province = user.to_dict().get("province")
+
+        # 将省份信息保存到字典中
+        user_provinces[phone_number] = province
+
+    # 获取所有 performances 文档
+    performances = db.collection("performances").stream()
+
+    # 创建一个列表来保存所有 performances 文档的信息
+    performances_list = []
+
+    for performance in performances:
+        # 获取用户的手机号码和得分历史
+        phone_number = performance.id
+        history = performance.to_dict().get("history")
+
+        # 按照日期筛选得分历史
+        history_filtered = [
+            record for record in history if record["record_time"].to_datetime() == date
+        ]
+
+        for record in history_filtered:
+            # 获取项目和得分信息
+            item = record["item"]
+            score = record["score"]
+
+            # 将得分信息保存到列表中
+            performances_list.append(
+                {
+                    "phone_number": phone_number,
+                    "province": user_provinces.get(phone_number),
+                    "item": item,
+                    "score": score,
+                }
+            )
+
+    # 将列表转换为数据框架
+    df = pd.DataFrame(performances_list)
+
+    # 按照省份、项目和得分对数据进行分组和排序
+    df["rank"] = df.groupby(["province", "item"])["score"].rank(ascending=False)
+
+    return df
+
+
+@st.cache_data(ttl=timedelta(minutes=30))
 def get_exercises(phone_number, start_date=None, end_date=None, previous_period=False):
     dbi = st.session_state.dbi
     db = dbi.db
@@ -56,7 +115,7 @@ def get_exercises(phone_number, start_date=None, end_date=None, previous_period=
     return record_list
 
 
-@st.cache_data(ttl=60 * 30)
+@st.cache_data(ttl=timedelta(minutes=30))
 def get_performances(
     phone_number, start_date=None, end_date=None, previous_period=False
 ):

@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import List, Union
 
+import pandas as pd
 import pytz
 
 # from cachetools import TTLCache
@@ -15,15 +16,10 @@ from faker import Faker
 from google.cloud import firestore
 from google.cloud.firestore import ArrayUnion, FieldFilter
 
-from .utils import combine_date_and_time_to_utc
 from .constants import FAKE_EMAIL_DOMAIN
-from .db_model import (
-    Payment,
-    PaymentStatus,
-    PurchaseType,  # LearningTime,
-    TokenUsageRecord,
-    User,
-)
+from .db_model import PurchaseType  # LearningTime,
+from .db_model import Payment, PaymentStatus, TokenUsageRecord, User
+from .utils import combine_date_and_time_to_utc
 
 # 创建或获取logger对象
 logger = logging.getLogger("streamlit")
@@ -70,6 +66,7 @@ class DbInterface:
             "display_name": user.display_name,
             "email": user.email,
             "user_role": user.user_role,
+            "province": user.province,
             "timezone": user.timezone,
             "current_level": user.current_level,
             "target_level": user.target_level,

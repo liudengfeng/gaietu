@@ -244,7 +244,7 @@ def generate_timestamp(key: str, type: str, idx: int):
 # region 处理反馈辅助函数
 
 
-@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+@st.cache_data(ttl=datetime.timedelta(hours=1))  # 缓存有效期为1小时
 def get_feedbacks():
     container_name = "feedback"
     container_client = get_blob_container_client(container_name)
@@ -280,12 +280,12 @@ def get_feedbacks():
 # region 统计分析辅助函数
 
 
-@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+@st.cache_data(ttl=datetime.timedelta(hours=1))  # 缓存有效期为1小时
 def get_phone_numbers():
     return st.session_state.dbi.list_usages_phone_number()
 
 
-@st.cache_data(ttl=60 * 60 * 1)  # 缓存有效期为1小时
+@st.cache_data(ttl=datetime.timedelta(hours=1))  # 缓存有效期为1小时
 def get_usage_records(phone_number, start_date, end_date):
     data = st.session_state.dbi.get_usage_records(phone_number, start_date, end_date)
     df = pd.DataFrame(data)

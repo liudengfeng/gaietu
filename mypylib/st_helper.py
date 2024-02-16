@@ -233,7 +233,7 @@ def google_translate(
     return res if is_list else res[0]
 
 
-@st.cache_data(ttl=60 * 60 * 24)  # 缓存有效期为24小时
+@st.cache_data(ttl=timedelta(days=1))  # 缓存有效期为24小时
 def translate_text(item_name, text: str, target_language_code, is_list: bool = False):
     return google_translate(item_name, text, target_language_code, is_list)
 
@@ -443,7 +443,7 @@ def is_aside(text):
     return re.match(r"^\(.*\)$", text) is not None
 
 
-@st.cache_data(max_entries=10000, ttl=60 * 60 * 24, show_spinner=False)
+@st.cache_data(max_entries=10000, ttl=timedelta(days=1), show_spinner=False)
 def get_synthesis_speech(text, voice):
     # 首先处理text，删除text中的空白行
     text = re.sub("\n\\s*\n*", "\n", text)
@@ -513,7 +513,7 @@ def load_mini_dict():
 
 
 @st.cache_resource(
-    show_spinner="提取简版词典单词信息...", ttl=60 * 60 * 24
+    show_spinner="提取简版词典单词信息...", ttl=timedelta(days=1)
 )  # 缓存有效期为24小时
 def get_mini_dict_doc(word):
     w = word.replace("/", " or ")
@@ -522,7 +522,7 @@ def get_mini_dict_doc(word):
 
 
 @st.cache_data(
-    ttl=timedelta(hours=24), max_entries=10000, show_spinner="获取单词图片网址..."
+    ttl=timedelta(days=1), max_entries=10000, show_spinner="获取单词图片网址..."
 )
 def select_word_image_urls(word: str):
     mini_dict_doc = get_mini_dict_doc(word)
@@ -552,12 +552,12 @@ def pronunciation_assessment_with_cost(
     )
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行发音评估，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在进行发音评估，请稍候...")
 def pronunciation_assessment_for(audio_info: dict, reference_text: str):
     return pronunciation_assessment_with_cost(audio_info, None, reference_text)
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在进行口语能力评估，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在进行口语能力评估，请稍候...")
 def oral_ability_assessment_for(audio_info: dict, topic: str):
     return pronunciation_assessment_with_cost(audio_info, topic, None)
 
@@ -594,7 +594,6 @@ def process_dialogue_text(reference_text):
     # 去掉空行
     reference_text = re.sub("\n\\s*\n*", "\n", reference_text)
     return reference_text.strip()
-
 
 
 def view_word_assessment(words):

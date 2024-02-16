@@ -268,7 +268,7 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         "⏰ 学习时间",
         "📈 学习进度",
         "📊 成绩趋势",
-        "🏆 个人排位",
+        "🏆 成绩排位",
     ]
     study_report_tabs = st.tabs(study_report_items)
 
@@ -324,6 +324,22 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         st.subheader("📊 成绩趋势", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
+        ):
+            df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
+            df_previous_period = pd.DataFrame(
+                get_performances(
+                    phone_number, start_date, end_date, previous_period=True
+                )
+            )
+            if df.empty:
+                st.warning("当前期间内没有成绩记录。", icon="⚠️")
+            else:
+                display_average_scores(df, df_previous_period, user_tz)
+
+    with study_report_tabs[study_report_items.index("🏆 成绩排位")]:
+        st.subheader("🏆 成绩排位", divider="rainbow")
+        if st.button(
+            "查阅[:eye:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
         ):
             df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
             df_previous_period = pd.DataFrame(

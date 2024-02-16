@@ -153,7 +153,7 @@ AI_TIPS = {
 # region 通用
 
 
-@st.cache_data(ttl=60 * 60 * 24)
+@st.cache_data(ttl=timedelta(days=1))
 def count_words_and_get_levels_for(text):
     mini_dict = load_mini_dict()
     return count_words_and_get_levels(text, mini_dict, True, True)
@@ -185,14 +185,14 @@ def display_dialogue_summary(container, dialogue, summarize):
 # endregion
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成听力测试题，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成听力测试题，请稍候...")
 def generate_listening_test_for(difficulty: str, conversation: str):
     return generate_listening_test(
         st.session_state["text_model"], difficulty, conversation, 5
     )
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解测试题，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成阅读理解测试题，请稍候...")
 def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]):
     test = generate_reading_comprehension_test(
         st.session_state["text_model"],
@@ -205,12 +205,12 @@ def generate_reading_test_for(difficulty: str, exercise_type, article: List[str]
     return test
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在加载场景类别，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在加载场景类别，请稍候...")
 def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成模拟场景，请稍候...")
+@st.cache_data(ttl=timedelta(days=1) show_spinner="正在生成模拟场景，请稍候...")
 def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
     boy_name = random.choice(NAMES["en-US"]["male"])
     girl_name = random.choice(NAMES["en-US"]["female"])
@@ -225,7 +225,7 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
     )
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成阅读理解练习文章，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成阅读理解练习文章，请稍候...")
 def generate_reading_comprehension_article_for(genre, contents, plot, difficulty):
     content = ",".join(contents)
     return generate_reading_comprehension_article(
@@ -237,7 +237,7 @@ def generate_reading_comprehension_article_for(genre, contents, plot, difficulty
     )
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="正在生成对话概要，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成对话概要，请稍候...")
 def summarize_in_one_sentence_for(dialogue: str):
     return summarize_in_one_sentence(st.session_state["text_model"], dialogue)
 

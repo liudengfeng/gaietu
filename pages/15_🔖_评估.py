@@ -156,7 +156,7 @@ def on_next_btn_click(key):
 #     return record
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成发音评估文本，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成发音评估文本，请稍候...")
 def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
     return generate_pronunciation_assessment_text(
         st.session_state["text_model"], scenario_category, difficulty
@@ -248,7 +248,7 @@ def display_assessment_text(pa_text_container):
 #         audio_obj.clear()  # 删除所有元素
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语讨论话题清单，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成口语讨论话题清单，请稍候...")
 def generate_oral_ability_topics_for(difficulty, scenario_category):
     text = generate_oral_ability_topics(
         st.session_state["text_model"], scenario_category, difficulty, 5
@@ -256,7 +256,7 @@ def generate_oral_ability_topics_for(difficulty, scenario_category):
     return [line for line in text.splitlines() if line.strip()]
 
 
-@st.cache_data(ttl=60 * 60 * 24, show_spinner="AI正在生成口语话题样例，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成口语话题样例，请稍候...")
 def generate_oral_statement_template_for(topic, difficulty):
     return generate_oral_statement_template(
         st.session_state["text_model"], topic, difficulty

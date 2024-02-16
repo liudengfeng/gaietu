@@ -104,7 +104,7 @@ VIDEO_DIR = CURRENT_CWD / "resource/video_tip"
 # region 通用函数
 
 
-@st.cache_data(show_spinner="提取词典...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
+@st.cache_data(show_spinner="提取词典...", ttl=timedelta(days=1))  # 缓存有效期为24小时
 def load_word_dict():
     with open(
         DICT_DIR / "word_lists_by_edition_grade.json", "r", encoding="utf-8"
@@ -113,7 +113,7 @@ def load_word_dict():
 
 
 # 使用手机号码防止缓存冲突
-@st.cache_data(show_spinner="单词概率抽样...", ttl=60 * 60 * 24)  # 缓存有效期为24小时
+@st.cache_data(show_spinner="单词概率抽样...", ttl=timedelta(days=1))  # 缓存有效期为24小时
 def get_sampled_word(phone_number, words, num_words):
     """
     从给定的单词列表中根据概率进行抽样，返回抽样结果。

@@ -1,3 +1,4 @@
+from datetime import timedelta
 import difflib
 import logging
 from functools import partial
@@ -141,7 +142,7 @@ Article:
 GRAMMAR_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
 
 
-@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查语法...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在检查语法...")
 def check_grammar(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
     detected_language = detect(article)
@@ -212,7 +213,7 @@ Article:
 WORD_SPELL_CHECK_CONFIG = {"max_output_tokens": 2048, "temperature": 0.0}
 
 
-@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查单词拼写...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在检查单词拼写...")
 def check_spelling(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
     detected_language = detect(article)
@@ -264,7 +265,7 @@ Article:
 ARTICLE_POLISH_CONFIG = {"max_output_tokens": 2048, "temperature": 0.75}
 
 
-@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在润色文章...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在润色文章...")
 def polish_article(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
     detected_language = detect(article)
@@ -312,7 +313,7 @@ Article:
 LOGIC_STRUCTURE_CONFIG = {"max_output_tokens": 2048, "temperature": 0.45}
 
 
-@st.cache_data(ttl=60 * 60 * 12, show_spinner="正在检查、修正文章逻辑结构...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在检查、修正文章逻辑结构...")
 def logic_article(article):
     # 检查 article 是否为英文文本 [字符数量少容易被错判]
     detected_language = detect(article)
