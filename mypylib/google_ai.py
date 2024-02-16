@@ -390,7 +390,7 @@ def generate_word_tests(model_name, model, words, level):
     )
     contents = [prompt]
     generation_config = GenerationConfig(
-        max_output_tokens=4096, temperature=0.0, top_k=1.0
+        max_output_tokens=8192, temperature=0.0, top_k=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
