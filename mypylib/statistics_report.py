@@ -280,14 +280,8 @@ def display_word_study(
     st.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("#### 统计数据")
-    column_config = {
-        "学习日期": "学习日期",
-        "学习时间": st.column_config.BarChartColumn("学习时间", y_min=0, y_max=1440.0),
-        "学习单词次数": st.column_config.BarChartColumn("学习单词次数", y_min=0, y_max=1000),
-    }
     st.dataframe(
         stats,
-        column_config=column_config,
         hide_index=True,
     )
 
