@@ -76,10 +76,14 @@ def calculate_rankings(date):
     df = pd.DataFrame(performances_list)
 
     # 计算每个人每一项的成绩
-    df_grouped = df.groupby(["phone_number", "item"])["score"].mean().reset_index()
+    df_grouped = (
+        df.groupby(["phone_number", "province", "item"])["score"].mean().reset_index()
+    )
 
     # 按照区域和成绩进行排名
-    df_grouped["rank"] = df_grouped.groupby("province")["score"].rank(ascending=False)
+    df_grouped["rank"] = df_grouped.groupby(["province", "item"])["score"].rank(
+        ascending=False
+    )
 
     # 返回排名结果
     return df_grouped
