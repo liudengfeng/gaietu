@@ -301,21 +301,24 @@ def display_average_scores(
     # 将时间列转换为日期并去掉时间部分
     data["date"] = pd.to_datetime(data["record_time"]).dt.tz_convert(user_tz).dt.date
     # 按天和项目分组，计算平均得分
-    data_grouped = data.groupby(["date", "item"])["score"].mean().reset_index()
-
-    st.dataframe(data_grouped)
+    data_grouped = data.groupby(["date", "item"])["score"].mean().round(2).reset_index()
 
     # 获取项目集合
     items = set(data_grouped["item"])
 
     # 如果上一周期的数据不为空，计算得分变化
     if not data_previous_period.empty:
-        data_previous_period["date"] = pd.to_datetime(
-            data_previous_period["record_time"]
-        ).dt.tz_convert(user_tz).dt.date
-        
+        data_previous_period["date"] = (
+            pd.to_datetime(data_previous_period["record_time"])
+            .dt.tz_convert(user_tz)
+            .dt.date
+        )
+
         data_previous_period_grouped = (
-            data_previous_period.groupby(["date", "item"])["score"].mean().reset_index()
+            data_previous_period.groupby(["date", "item"])["score"]
+            .mean()
+            .round(2)
+            .reset_index()
         )
 
         # 更新项目集合
@@ -348,8 +351,16 @@ def display_average_scores(
 
     # 使用 plotly 绘制折线图
     fig = px.line(
-        data_grouped, x="date", y="score", color="item", title="当前期间平均得分"
+        data_grouped, x="date", y="score", color="item", title="当前期间各项目平均得分"
     )
+
+    # 修改 x 轴和 y 轴的标签，以及日期的显示格式
+    fig.update_xaxes(title_text="日期")
+    fig.update_yaxes(title_text="平均得分")
+    fig.update_traces(xaxis=dict(type="date", tickformat="%Y-%m-%d"))
 
     # 在 streamlit 中显示图表
     st.plotly_chart(fig)
+
+    st.markdown("#### 平均得分数据")
+    st.dataframe(data_grouped)
