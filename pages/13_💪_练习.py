@@ -210,7 +210,7 @@ def generate_scenarios_for(category: str):
     return generate_scenarios(st.session_state["text_model"], category)
 
 
-@st.cache_data(ttl=timedelta(days=1) show_spinner="正在生成模拟场景，请稍候...")
+@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成模拟场景，请稍候...")
 def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
     boy_name = random.choice(NAMES["en-US"]["male"])
     girl_name = random.choice(NAMES["en-US"]["female"])
