@@ -261,7 +261,7 @@ def display_word_study(
     metric_cols[1].metric(
         label="学习单词次数",
         value=f"{total_word_count.sum()} 个",
-        delta=f"{delta_word_count} 个" if delta_word_count != "NA" else "NA",
+        delta=f"{delta_word_count} 个次" if delta_word_count != "NA" else "NA",
     )
 
     # 按 "学习日期" 分组并计算学习时间和单词数量
