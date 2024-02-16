@@ -940,6 +940,10 @@ class DbInterface:
         # 将文档转换为字典
         doc_dict = doc.to_dict()
 
+        # 检查文档是否存在
+        if doc_dict is None:
+            return {}
+
         # 从字典中获取word_pass_stats
         word_pass_stats = doc_dict.get("word_pass_stats")
 
@@ -978,7 +982,9 @@ class DbInterface:
 
         # 将文档转换为字典
         doc_dict = doc.to_dict()
-
+        # 检查文档是否存在
+        if doc_dict is None:
+            return {}
         # 从字典中获取word_pass_stats
         word_duration_stats = doc_dict.get("word_duration_stats")
 
