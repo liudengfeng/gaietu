@@ -449,7 +449,7 @@ def calculate_statistics(df, score_column):
     median = df[score_column].median()
 
     # 生成 x 值
-    x = np.linspace(mu - 3 * std, mu + 3 * std, 100)
+    x = np.linspace(max(0, mu - 3 * std), min(100, mu + 3 * std), 100)
 
     return mu, std, median, x
 

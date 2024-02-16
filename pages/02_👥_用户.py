@@ -397,24 +397,19 @@ with tabs[get_item_index("学习报告")]:
                         plot_student_score_ranking(item_df, score, "得分", item)
                     except ValueError:
                         continue
-                
+
                 st.markdown(f"#### {province}成绩排位")
                 for item in items:
                     try:
                         score = user_df[user_df["项目"] == item]["得分"].item()
-                        province_df = df[(df["项目"] == item) & (df["省份"] == province)]
+                        province_df = df[
+                            (df["项目"] == item) & (df["省份"] == province)
+                        ]
                         # 对每一项绘制其全省排名
                         plot_student_score_ranking(province_df, score, "得分", item)
                     except ValueError:
                         continue
 
-                # 根据项目和省份对数据进行分组
-                # grouped = df.groupby(["项目", "省份"])
-                # # 对每个分组应用 plot_student_score_ranking 函数
-                # for (item, province), group in grouped:
-                #     st.write(f"项目：{item}，省份：{province}")
-                #     st.dataframe(group)
-                # plot_student_score_ranking(group, item, province)
 
 # endregion
 
