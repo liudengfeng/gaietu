@@ -324,12 +324,21 @@ def display_average_scores(
 
     # 计算每个项目的得分变化
     for i, item in enumerate(items):
-        current_score = data_grouped[data_grouped["item"] == item]["score"].mean()
+        current_score = round(
+            data_grouped[data_grouped["item"] == item]["score"].mean(), 2
+        )
         if not data_previous_period.empty:
-            previous_score = data_previous_period_grouped[
-                data_previous_period_grouped["item"] == item
-            ]["score"].mean()
-            delta = current_score - previous_score if pd.notna(previous_score) else "NA"
+            previous_score = round(
+                data_previous_period_grouped[
+                    data_previous_period_grouped["item"] == item
+                ]["score"].mean(),
+                2,
+            )
+            delta = (
+                round(current_score - previous_score, 2)
+                if pd.notna(previous_score)
+                else "NA"
+            )
         else:
             delta = "NA"
 
