@@ -863,7 +863,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
 - 点击 '回放[▶️]' 按钮，可以回放用户的跟读录音。
 - 通过这种方式，用户可以得到关于其发音水平的反馈，从而有针对性地进行改进和提高。  """
             )
-        if len(st.session_state.conversation_scene["text"]) == 0:
+        if len(st.session_state.conversation_scene.get("text", [])) == 0:
             st.warning("请先配置场景")
             # st.stop()
 
@@ -900,22 +900,22 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             help="✨ 点击按钮，切换到下一轮对话。",
             on_click=on_next_btn_click,
             args=("listening-idx",),
-            disabled=len(st.session_state.conversation_scene["text"]) == 0
-            or (st.session_state["listening-idx"] != -1 and st.session_state["listening-idx"] == len(st.session_state.conversation_scene["text"]) - 1),  # type: ignore
+            disabled=len(st.session_state.conversation_scene.get("text", [])) == 0
+            or (st.session_state["listening-idx"] != -1 and st.session_state["listening-idx"] == len(st.session_state.conversation_scene.get("text", [])) - 1),  # type: ignore
         )
         replay_btn = ls_btn_cols[4].button(
             "重放[:headphones:]",
             key="listening-replay",
             help="✨ 点击按钮，重新播放当前对话。",
             disabled=st.session_state["listening-idx"] == -1
-            or len(st.session_state.conversation_scene["text"]) == 0,
+            or len(st.session_state.conversation_scene.get("text", [])) == 0,
         )
 
         full_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
             key="listening-full",
             help="✨ 点击按钮，收听对话全文。",
-            disabled=len(st.session_state.conversation_scene["text"]) == 0,
+            disabled=len(st.session_state.conversation_scene.get("text", [])) == 0,
         )
 
         audio_key = "listening-mic-recorder"
@@ -1079,7 +1079,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         if "listening-start-time" not in st.session_state:
             st.session_state["listening-start-time"] = None
 
-        if len(st.session_state.conversation_scene["text"]) == 0:
+        if len(st.session_state.conversation_scene.get("text", [])) == 0:
             st.warning("请先配置场景")
             # st.stop()
 
