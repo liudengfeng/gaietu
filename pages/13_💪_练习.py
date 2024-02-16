@@ -86,10 +86,6 @@ menu_names = ["听说练习", "阅读练习"]
 menu_opts = [e + " " + n for e, n in zip(menu_emoji, menu_names)]
 
 
-# def on_menu_changed():
-#     item = menu_names[menu_opts.index(st.session_state["menu-radio"])]
-
-
 item_menu = st.sidebar.radio(
     "菜单",
     menu_opts,
@@ -166,6 +162,23 @@ def display_text_word_count_summary(container, text):
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
 
 
+def get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, default_style):
+    # 如果是旁白，使用默认的声音
+    if is_aside(sentence):
+        return default_style
+
+    # 发言人姓名
+    speaker_name = sentence.split(':', 1)[0]
+
+    # 判断句子是否以男孩或女孩的姓名开头，然后返回相应的声音风格
+    if boy_name in speaker_name:
+        return m_voice_style[0]
+    elif girl_name in speaker_name:
+        return fm_voice_style[0]
+    else:
+        return default_style
+
+
 # endregion
 
 
@@ -215,7 +228,7 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
     boy_name = random.choice(NAMES["en-US"]["male"])
     girl_name = random.choice(NAMES["en-US"]["female"])
     scenario = selected_scenario.split(".")[1]
-    return generate_dialogue(
+    dialogue = generate_dialogue(
         st.session_state["text_model"],
         boy_name,
         girl_name,
@@ -223,9 +236,12 @@ def generate_dialogue_for(selected_scenario, interesting_plot, difficulty):
         interesting_plot if interesting_plot else "",
         difficulty,
     )
+    return {"text": dialogue, "boy_name": boy_name, "girl_name": girl_name}
 
 
-@st.cache_data(ttl=timedelta(days=1), show_spinner="正在生成阅读理解练习文章，请稍候...")
+@st.cache_data(
+    ttl=timedelta(days=1), show_spinner="正在生成阅读理解练习文章，请稍候..."
+)
 def generate_reading_comprehension_article_for(genre, contents, plot, difficulty):
     content = ",".join(contents)
     return generate_reading_comprehension_article(
@@ -243,7 +259,7 @@ def summarize_in_one_sentence_for(dialogue: str):
 
 
 def get_and_combine_audio_data():
-    dialogue = st.session_state.conversation_scene
+    dialogue = st.session_state.conversation_scene["text"]
     audio_data_list = []
     for i, sentence in enumerate(dialogue):
         voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
@@ -337,7 +353,7 @@ def process_play_and_record_article(
 
 
 def display_dialogue(dialogue_placeholder):
-    dialogue = st.session_state.conversation_scene
+    dialogue = st.session_state.conversation_scene["text"]
     if dialogue is None or len(dialogue) == 0:
         return
     idx = st.session_state["listening-idx"]
@@ -360,19 +376,20 @@ def display_dialogue(dialogue_placeholder):
         content_cols[1].markdown(cns[idx])
 
 
-def play_and_record_dialogue(
-    m_voice_style, fm_voice_style, difficulty, selected_scenario
-):
-    dialogue = st.session_state.conversation_scene
+def play_and_record_dialogue(m_voice_style, fm_voice_style):
+    dialogue = st.session_state.conversation_scene.get("text")
     if dialogue is None or len(dialogue) == 0:
         return
     idx = st.session_state["listening-idx"]
     if idx == -1:
         return
 
+    boy_name = st.session_state.conversation_scene["boy_name"]
+    girl_name = st.session_state.conversation_scene["girl_name"]
     sentence = dialogue[idx]
-    voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
-    style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+    # voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
+    # style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+    style = get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, "en-US-AnaNeural")
     sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
     with st.spinner(f"使用 Azure 将文本合成语音..."):
         result = get_synthesis_speech(sentence_without_speaker_name, style)
@@ -588,7 +605,7 @@ if "m_voices" not in st.session_state and "fm_voices" not in st.session_state:
     st.session_state["fm_voices"] = [v for v in voices if v[1] == "Female"]
 
 if "conversation_scene" not in st.session_state:
-    st.session_state["conversation_scene"] = []
+    st.session_state["conversation_scene"] = {}
 
 if "summarize_in_one" not in st.session_state:
     st.session_state["summarize_in_one"] = ""
@@ -803,17 +820,17 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 dialogue = generate_dialogue_for(
                     selected_scenario, interesting_plot, difficulty
                 )
-                summarize = summarize_in_one_sentence_for(dialogue)
+                summarize = summarize_in_one_sentence_for(dialogue["text"])
 
-                display_dialogue_summary(container, dialogue, summarize)
+                display_dialogue_summary(container, dialogue["text"], summarize)
 
                 st.session_state.conversation_scene = dialogue
                 st.session_state.summarize_in_one = summarize
 
-            elif len(st.session_state.conversation_scene) > 0:
+            elif len(st.session_state.conversation_scene["text"]) > 0:
                 display_dialogue_summary(
                     container,
-                    st.session_state.conversation_scene,
+                    st.session_state.conversation_scene["text"],
                     st.session_state.summarize_in_one,
                 )
 
@@ -842,7 +859,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
 - 点击 '回放[▶️]' 按钮，可以回放用户的跟读录音。
 - 通过这种方式，用户可以得到关于其发音水平的反馈，从而有针对性地进行改进和提高。  """
             )
-        if len(st.session_state.conversation_scene) == 0:
+        if len(st.session_state.conversation_scene["text"]) == 0:
             st.warning("请先配置场景")
             # st.stop()
 
@@ -879,22 +896,22 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             help="✨ 点击按钮，切换到下一轮对话。",
             on_click=on_next_btn_click,
             args=("listening-idx",),
-            disabled=len(st.session_state.conversation_scene) == 0
-            or (st.session_state["listening-idx"] != -1 and st.session_state["listening-idx"] == len(st.session_state.conversation_scene) - 1),  # type: ignore
+            disabled=len(st.session_state.conversation_scene["text"]) == 0
+            or (st.session_state["listening-idx"] != -1 and st.session_state["listening-idx"] == len(st.session_state.conversation_scene["text"]) - 1),  # type: ignore
         )
         replay_btn = ls_btn_cols[4].button(
             "重放[:headphones:]",
             key="listening-replay",
             help="✨ 点击按钮，重新播放当前对话。",
             disabled=st.session_state["listening-idx"] == -1
-            or len(st.session_state.conversation_scene) == 0,
+            or len(st.session_state.conversation_scene["text"]) == 0,
         )
 
         full_btn = ls_btn_cols[5].button(
             "全文[:film_frames:]",
             key="listening-full",
             help="✨ 点击按钮，收听对话全文。",
-            disabled=len(st.session_state.conversation_scene) == 0,
+            disabled=len(st.session_state.conversation_scene["text"]) == 0,
         )
 
         audio_key = "listening-mic-recorder"
@@ -926,7 +943,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         if pro_btn and audio_info is not None:
             on_project_changed("听说练习-发音评估")
             # 去掉发言者的名字
-            reference_text = st.session_state.conversation_scene[
+            reference_text = st.session_state.conversation_scene["text"][
                 st.session_state["listening-idx"]
             ]
             reference_text = reference_text.replace("**", "")
@@ -994,18 +1011,23 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         if prev_btn or next_btn or replay_btn:
             on_project_changed("听说练习-练习")
             play_and_record_dialogue(
-                m_voice_style, fm_voice_style, difficulty, selected_scenario
+                m_voice_style,
+                fm_voice_style,
             )
 
         if full_btn:
             dialogue = st.session_state.conversation_scene
+            text = dialogue["text"]
+            boy_name = dialogue["boy_name"]
+            girl_name = dialogue["girl_name"]
             audio_data_list = []
             duration_list = []
             total = 0
-            for i, sentence in enumerate(dialogue):
+            for i, sentence in enumerate(text):
                 # 如果是旁白，使用小女孩的声音
-                voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
-                style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+                # voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
+                # style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
+                style = get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, "en-US-AnaNeural")
                 sentence_without_speaker_name = re.sub(
                     r"^\w+:\s", "", sentence.replace("**", "")
                 )
@@ -1021,16 +1043,14 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 on_project_changed(f"听说练习-第{i:2d}轮")
                 st.session_state["listening-idx"] = i
                 display_dialogue(dialogue_placeholder)
-                play_and_record_dialogue(
-                    m_voice_style, fm_voice_style, difficulty, selected_scenario
-                )
+                play_and_record_dialogue(m_voice_style, fm_voice_style)
                 time.sleep(duration.total_seconds() + 0.5)
             # 恢复指针
             st.session_state["listening-idx"] = current_idx
             st.session_state["listening-learning-times"] = len(
-                st.session_state.conversation_scene
+                st.session_state.conversation_scene["text"]
             )
-            dialogue_text = " ".join(st.session_state.conversation_scene)
+            dialogue_text = " ".join(st.session_state.conversation_scene["text"])
             word_count = len(dialogue_text.split())
             # 防止重复播放
             st.rerun()
@@ -1048,7 +1068,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         if "listening-start-time" not in st.session_state:
             st.session_state["listening-start-time"] = None
 
-        if len(st.session_state.conversation_scene) == 0:
+        if len(st.session_state.conversation_scene["text"]) == 0:
             st.warning("请先配置场景")
             # st.stop()
 
@@ -1125,7 +1145,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
         if refresh_test_btn:
             on_project_changed(f"听说练习-测试题目")
             st.session_state["listening-test"] = generate_listening_test_for(
-                difficulty, st.session_state.conversation_scene
+                difficulty, st.session_state.conversation_scene["text"]
             )
             st.session_state["listening-test-idx"] = -1
             st.session_state["listening-test-answer"] = [None] * len(
