@@ -397,6 +397,7 @@ if item_menu and item_menu.endswith("发音评估"):
 
         reference_text = process_dialogue_text(st.session_state["pa-current-text"])
 
+        start = datetime.now(pytz.UTC)
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
@@ -411,6 +412,20 @@ if item_menu and item_menu.endswith("发音评估"):
         #     # 如果单词的发音错误，将它添加到待处理任务列表中
         #     if word.get("error_type") == "Mispronunciation":
         #         tasks.append(word.word)
+
+        test_dict = {
+            # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
+            "item": "发音评估",
+            "topic": scenario_category,
+            "level": f"{difficulty}-{len(reference_text.split())}",
+            "score": st.session_state["pa-assessment"]["pronunciation_result"][
+                "pronunciation_score"
+            ],
+            "duration": (datetime.now(pytz.UTC) - start).total_seconds(),
+            "record_time": datetime.now(pytz.UTC),
+        }
+        # st.session_state.dbi.save_daily_quiz_results(test_dict)
+        st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 
     if audio_playback_button and audio_info and st.session_state["pa-assessment"]:
         autoplay_audio_and_display_text(
