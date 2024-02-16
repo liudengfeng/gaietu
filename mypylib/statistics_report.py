@@ -271,14 +271,18 @@ def display_word_study(
     ).reset_index()
     # stats["学习时间"] = stats["学习时间"].round(2)
 
-    fig1 = px.bar(stats, x="学习日期", y="学习时间", title="学习时间")
+    fig1 = px.bar(stats, x="学习时间", y="学习日期", title="学习时间", orientation="h")
     if period == "天":
-        fig1.update_xaxes(tickformat="%Y-%m-%d")
+        fig1.update_yaxes(tickformat="%Y-%m-%d")
+
     st.plotly_chart(fig1, use_container_width=True)
 
-    fig2 = px.bar(stats, x="学习日期", y="学习单词次数", title="学习单词")
+    fig2 = px.bar(
+        stats, x="学习单词次数", y="学习日期", title="学习单词", orientation="h"
+    )
     if period == "天":
-        fig2.update_xaxes(tickformat="%Y-%m-%d")
+        fig2.update_yaxes(tickformat="%Y-%m-%d")
+
     st.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("#### 统计数据")
