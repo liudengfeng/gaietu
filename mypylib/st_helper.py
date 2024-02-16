@@ -596,43 +596,6 @@ def process_dialogue_text(reference_text):
     return reference_text.strip()
 
 
-# def pronunciation_assessment_word_format(word):
-#     error_type = word.error_type
-#     accuracy_score = round(word.accuracy_score)
-#     if error_type == "Mispronunciation":
-#         return annotation(word.word, label=str(accuracy_score), background="#d5d507ce")
-#     if error_type == "Omission":
-#         return annotation(f"[{word.word}]", color="white", background="#4a4943b7")
-#     if error_type == "Insertion":
-#         return annotation(word.word, border="2px dashed red")
-#     if word.is_unexpected_break:
-#         return annotation(
-#             f"{word.word}", label=str(accuracy_score), background="#FFC0CB"
-#         )
-#     if word.is_missing_break:
-#         return annotation(
-#             f"{word.word}", label=str(accuracy_score), background="#f2f2f2"
-#         )
-#     if word.is_monotone:
-#         return annotation(
-#             f"{word.word}",
-#             color="white",
-#             label=str(accuracy_score),
-#             background="#ac1882ce",
-#         )
-#     return f"{word.word}"
-
-
-# def view_word_assessment(words):
-#     res = []
-#     for word in words:
-#         if isinstance(word, str):
-#             res.append(word)
-#         else:
-#             res.append(pronunciation_assessment_word_format(word))
-#         res.append(" ")
-#     annotated_text(*res)
-
 
 def view_word_assessment(words):
     result = ""

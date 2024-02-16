@@ -318,6 +318,12 @@ with tabs[items.index(":bar_chart: 学习报告")]:
                     f"您的目标是需要 {hours} 小时的学习时间，您已经完成了 {total_time:.0f} 小时的学习。已经完成了目标的 {progress:.2%}。继续加油！",
                 )
 
+    with study_report_tabs[study_report_items.index("📊 成绩趋势")]:
+        st.subheader("📊 成绩趋势", divider="rainbow")
+        if st.button(
+            "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
+        ):
+            pass
 
 # endregion
 
