@@ -150,13 +150,13 @@ AI_TIPS = {
 
 
 @st.cache_data(ttl=timedelta(days=1))
-def count_words_and_get_levels_for(text):
+def count_words_and_get_levels_for(text, excluded_words=[]):
     mini_dict = load_mini_dict()
-    return count_words_and_get_levels(text, mini_dict, True, True)
+    return count_words_and_get_levels(text, mini_dict, True, True, excluded_words)
 
 
-def display_text_word_count_summary(container, text):
-    total_words, level_dict = count_words_and_get_levels_for(text)
+def display_text_word_count_summary(container, text, excluded_words=[]):
+    total_words, level_dict = count_words_and_get_levels_for(text, excluded_words)
     container.markdown(f"**字数统计：{len(text.split())}字**")
     level_dict.update({"单词总量": total_words})
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
@@ -190,10 +190,13 @@ def get_voice_style(
 def display_dialogue_summary(container, dialogue, summarize):
     container.markdown("**对话概要**")
     container.markdown(f"{summarize}")
-    dialogue_text = " ".join(dialogue)
-    display_text_word_count_summary(container, dialogue_text)
+    text = dialogue["text"]
+    dialogue_text = " ".join(text)
+    boy_name = dialogue["boy_name"]
+    girl_name = dialogue["girl_name"]
+    display_text_word_count_summary(container, dialogue_text, [boy_name, girl_name])
     container.markdown("**对话内容**")
-    for d in dialogue:
+    for d in text:
         container.markdown(d)
 
 
@@ -826,7 +829,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 )
                 summarize = summarize_in_one_sentence_for(dialogue["text"])
 
-                display_dialogue_summary(container, dialogue["text"], summarize)
+                display_dialogue_summary(container, dialogue, summarize)
 
                 st.session_state.conversation_scene = dialogue
                 st.session_state.summarize_in_one = summarize
@@ -834,7 +837,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
             elif len(st.session_state.conversation_scene.get("text", [])) > 0:
                 display_dialogue_summary(
                     container,
-                    st.session_state.conversation_scene["text"],
+                    st.session_state.conversation_scene,
                     st.session_state.summarize_in_one,
                 )
 

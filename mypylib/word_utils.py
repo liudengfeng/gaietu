@@ -94,9 +94,11 @@ def get_cefr_level(word, mini_dict):
 
 
 def count_words_and_get_levels(
-    text, mini_dict, percentage=False, exclude_persons=False
+    text, mini_dict, percentage=False, exclude_persons=False, excluded_words=[]
 ):
-    level_words = get_cefr_vocabulary_list([text], mini_dict, exclude_persons)
+    level_words = get_cefr_vocabulary_list(
+        [text], mini_dict, exclude_persons, excluded_words
+    )
     # 初始化字典
     levels = defaultdict(int)
     # 遍历分级词汇列表
@@ -198,18 +200,27 @@ def load_image_bytes_from_url(img_url: str) -> bytes:
     return img_byte_arr
 
 
-def get_cefr_vocabulary_list(texts: List[str], mini_dict: dict, exclude_persons=False):
+def get_cefr_vocabulary_list(
+    texts: List[str], mini_dict: dict, exclude_persons=False, excluded_words=[]
+):
     assert isinstance(texts, list), "texts must be a list of strings"
     model_name = "en_core_web_sm"
     nlp = spacy.load(model_name)
     cefr_vocabulary = {}
+    excluded_words = [
+        word.lower() for word in excluded_words
+    ]  # 将排除词汇列表转换为小写
     for text in texts:
         doc = nlp(text)
         if exclude_persons:
             tokens = [token for token in doc if token.ent_type_ != "PERSON"]
         else:
             tokens = doc
-        lemmatized_words = [token.lemma_ for token in tokens if token.is_alpha]
+        lemmatized_words = [
+            token.lemma_
+            for token in tokens
+            if token.is_alpha and token.lemma_.lower() not in excluded_words
+        ]  # 在这里排除词汇
         for lemma in lemmatized_words:
             cefr_level = get_cefr_level(lemma, mini_dict)
             if cefr_level is None:
