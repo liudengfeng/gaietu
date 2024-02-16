@@ -355,32 +355,32 @@ with tabs[get_item_index("学习报告")]:
         ):
             utc_now = datetime.datetime.now(pytz.utc)
             # 获取性能数据
-            df1 = get_performance_data(utc_now)
+            df = get_performance_data(utc_now)
 
-            # 临时添加的数据
-            import numpy as np
+            # # 临时添加的数据
+            # import numpy as np
 
-            n = 50
-            phone_numbers = [
-                f"13{np.random.randint(100000000, 999999999)}" for _ in range(n)
-            ]
-            provinces = ["辽宁", "重庆", "广东"]
-            items = ["词意测试", "发音评估", "拼图游戏"]
+            # n = 50
+            # phone_numbers = [
+            #     f"13{np.random.randint(100000000, 999999999)}" for _ in range(n)
+            # ]
+            # provinces = ["辽宁", "重庆", "广东"]
+            # items = ["词意测试", "发音评估", "拼图游戏"]
 
-            # 生成模拟数据
+            # # 生成模拟数据
 
-            data = {
-                "手机号码": phone_numbers,
-                "省份": np.random.choice(provinces, n),
-                "项目": np.random.choice(items, n),
-                "得分": np.random.uniform(0, 100, n).round(2),
-            }
+            # data = {
+            #     "手机号码": phone_numbers,
+            #     "省份": np.random.choice(provinces, n),
+            #     "项目": np.random.choice(items, n),
+            #     "得分": np.random.uniform(0, 100, n).round(2),
+            # }
 
-            # 创建 DataFrame
-            df2 = pd.DataFrame(data)
+            # # 创建 DataFrame
+            # df2 = pd.DataFrame(data)
 
             # 合并 df1 和 df2
-            df = pd.concat([df1, df2], ignore_index=True)
+            # df = pd.concat([df1, df2], ignore_index=True)
 
             if df.empty:
                 st.warning("当前期间内没有成绩记录。", icon="⚠️")
