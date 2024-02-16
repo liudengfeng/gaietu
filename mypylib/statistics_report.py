@@ -11,7 +11,7 @@ from scipy.stats import norm
 from .st_helper import MAX_WORD_STUDY_TIME
 
 
-@st.cache_data(ttl=timedelta(days=1))
+@st.cache_data(ttl=timedelta(hours=4))
 def get_performance_data(date):
     # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
     if not isinstance(date, datetime):
@@ -441,20 +441,7 @@ def display_average_scores(
     st.dataframe(data_grouped)
 
 
-def plot_student_score_ranking(
-    df: pd.DataFrame, score: float, score_column: str = "得分"
-):
-    """
-    绘制学生项目得分的正态分布曲线，并在图上标出学生的得分位置，以显示其在区域内的排名。
-
-    参数:
-    df (pd.DataFrame): 包含学生得分的 DataFrame。
-    score (float): 学生的得分。
-    score_column (str): 得分列的名称。
-
-    返回:
-    None
-    """
+def calculate_statistics(df, score_column):
     # 计算得分的平均值和标准差
     mu, std = df[score_column].mean(), df[score_column].std()
 
@@ -464,6 +451,11 @@ def plot_student_score_ranking(
     # 生成 x 值
     x = np.linspace(mu - 3 * std, mu + 3 * std, 100)
 
+    return mu, std, median, x
+
+
+def plot_student_score_ranking(df, score: float, score_column):
+    mu, std, median, x = calculate_statistics(df, score_column)
     # 创建一个图表
     fig = go.Figure()
 
