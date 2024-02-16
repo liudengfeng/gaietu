@@ -80,10 +80,15 @@ def calculate_rankings(date):
         df.groupby(["phone_number", "province", "item"])["score"].mean().reset_index()
     )
 
-    # 按照区域和成绩进行排名
-    df_grouped["rank"] = df_grouped.groupby(["province", "item"])["score"].rank(
+    # 按照全国和成绩进行排名
+    df_grouped["national_rank"] = df_grouped.groupby("item")["score"].rank(
         ascending=False
     )
+
+    # 按照区域和成绩进行排名
+    df_grouped["provincial_rank"] = df_grouped.groupby(["province", "item"])[
+        "score"
+    ].rank(ascending=False)
 
     # 返回排名结果
     return df_grouped
