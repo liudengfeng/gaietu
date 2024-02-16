@@ -367,7 +367,7 @@ def display_study_time(
         color="项目",
         title="分项目的学习时间",
         barmode="stack",
-        orientation='h',
+        orientation="h",
     )
     if period == "天":
         fig2.update_yaxes(tickformat="%Y-%m-%d")
