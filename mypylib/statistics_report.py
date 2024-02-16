@@ -369,6 +369,8 @@ def display_study_time(
         barmode="stack",
         orientation='h',
     )
+    if period == "天":
+        fig2.update_yaxes(tickformat="%Y-%m-%d")
     st.plotly_chart(fig2, use_container_width=True)
 
 
