@@ -893,17 +893,6 @@ def view_test_word(container):
 
 @st.cache_data(ttl=timedelta(hours=24), max_entries=100, show_spinner="获取基础词库...")
 def gen_base_lib(word_lib):
-    # words = st.session_state.word_dict[word_lib]
-    # data = []
-    # for word in words:
-    #     info = get_mini_dict_doc(word)
-    #     data.append(
-    #         {
-    #             "单词": word,
-    #             "CEFR最低分级": info.get("level", "") if info else "",
-    #             "翻译": info.get("translation", "") if info else "",
-    #         }
-    #     )
     data = st.session_state.dbi.find_docs_with_category(word_lib)
     return pd.DataFrame.from_records(data)
 
@@ -1471,6 +1460,7 @@ elif item_menu and item_menu.endswith("词意测试"):
 
     if next_test_btn:
         on_project_changed(get_word_test_project())
+        logger.info(st.session_state["test-words"])
 
     if refresh_btn:
         on_project_changed("Home")
