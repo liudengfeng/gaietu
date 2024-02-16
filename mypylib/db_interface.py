@@ -1024,7 +1024,9 @@ class DbInterface:
 
         # 将整个文档列表添加到 'history' 字段的数组中
         batch.set(doc_ref, {"history": firestore.ArrayUnion(documents)}, merge=True)
-
+        # 提交批处理
+        batch.commit()
+        
         if collection_name == "performances":
             word_results_total = {}
             for document in documents:
@@ -1090,7 +1092,6 @@ class DbInterface:
                 doc_ref.set({"word_duration_stats": current_word_duration_stats})
             # logger.info(f"已更新 word_duration_stats")
 
-        # 提交批处理
-        batch.commit()
+
 
     # endregion
