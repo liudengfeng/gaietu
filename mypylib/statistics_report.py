@@ -303,24 +303,43 @@ def display_average_scores(
     # 按天和项目分组，计算平均得分
     data_grouped = data.groupby(["date", "item"])["score"].mean().reset_index()
 
-    # 使用 plotly 绘制折线图
-    fig = px.line(
-        data_grouped, x="date", y="score", color="item", title="当前期间平均得分"
-    )
+    st.dataframe(data_grouped)
 
-    if data_previous_period.empty:
-        st.warning("无可用的对比数据")
-    else:
+    # 获取项目集合
+    items = set(data_grouped["item"])
+
+    # 如果上一周期的数据不为空，计算得分变化
+    if not data_previous_period.empty:
         data_previous_period["date"] = pd.to_datetime(
             data_previous_period["record_time"]
         ).dt.tz_convert(user_tz)
         data_previous_period_grouped = (
             data_previous_period.groupby(["date", "item"])["score"].mean().reset_index()
         )
-        fig.add_trace(
-            px.line(
-                data_previous_period_grouped, x="date", y="score", color="item"
-            ).data[0]
-        )
+
+        # 更新项目集合
+        items = items.union(data_previous_period_grouped["item"])
+
+    cols = st.columns(len(items))
+
+    # 计算每个项目的得分变化
+    for i, item in enumerate(items):
+        current_score = data_grouped[data_grouped["item"] == item]["score"].mean()
+        if not data_previous_period.empty:
+            previous_score = data_previous_period_grouped[
+                data_previous_period_grouped["item"] == item
+            ]["score"].mean()
+            delta = current_score - previous_score if pd.notna(previous_score) else "NA"
+        else:
+            delta = "NA"
+
+        # 在 Streamlit 应用中显示得分变化
+        cols[i].metric(label=f"{item} 得分变化", value=current_score, delta=delta)
+
+    # 使用 plotly 绘制折线图
+    fig = px.line(
+        data_grouped, x="date", y="score", color="item", title="当前期间平均得分"
+    )
+
     # 在 streamlit 中显示图表
     st.plotly_chart(fig)
