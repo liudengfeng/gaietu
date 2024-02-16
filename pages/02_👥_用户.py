@@ -28,6 +28,7 @@ from mypylib.st_helper import (
     setup_logger,
 )
 from mypylib.statistics_report import (
+    display_average_scores,
     display_study_time,
     display_word_study,
     get_exercises,
@@ -325,10 +326,16 @@ with tabs[items.index(":bar_chart: 学习报告")]:
             "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
         ):
             df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
+            df_previous_period = pd.DataFrame(
+                get_performances(
+                    phone_number, start_date, end_date, previous_period=True
+                )
+            )
             if df.empty:
                 st.warning("当前期间内没有成绩记录。", icon="⚠️")
             else:
-                st.dataframe(df)
+                display_average_scores(df, df_previous_period, user_tz)
+
 # endregion
 
 # region 创建反馈页面

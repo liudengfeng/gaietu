@@ -293,3 +293,34 @@ def display_study_time(
         barmode="stack",
     )
     st.plotly_chart(fig2, use_container_width=True)
+
+
+def display_average_scores(
+    data: pd.DataFrame, data_previous_period: pd.DataFrame, user_tz
+):
+    # 将时间列转换为日期
+    data["date"] = pd.to_datetime(data["record_time"]).dt.tz_convert(user_tz)
+    # 按天和项目分组，计算平均得分
+    data_grouped = data.groupby(["date", "item"]).mean().reset_index()
+
+    # 使用 plotly 绘制折线图
+    fig = px.line(
+        data_grouped, x="date", y="score", color="item", title="当前期间平均得分"
+    )
+
+    if data_previous_period.empty:
+        st.warning("无可用的对比数据")
+    else:
+        data_previous_period["date"] = pd.to_datetime(
+            data_previous_period["record_time"]
+        ).dt.tz_convert(user_tz)
+        data_previous_period_grouped = (
+            data_previous_period.groupby(["date", "item"]).mean().reset_index()
+        )
+        fig.add_trace(
+            px.line(
+                data_previous_period_grouped, x="date", y="score", color="item"
+            ).data[0]
+        )
+    # 在 streamlit 中显示图表
+    st.plotly_chart(fig)
