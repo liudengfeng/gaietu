@@ -390,19 +390,22 @@ with tabs[get_item_index("学习报告")]:
                 # 生成所有的项目名称
                 items = df["项目"].unique()
                 for item in items:
-                    score = user_df[user_df["项目"] == item]["得分"]
-                    st.write(f"项目：{item} {score=}")
-                    item_df = df[df["项目"] == item]
-                    # 对每一项绘制其全国排名
-                    plot_student_score_ranking(item_df, score, "得分")
-                
+                    try:
+                        score = user_df[user_df["项目"] == item]["得分"].item()
+                        st.write(f"项目：{item} {score=}")
+                        item_df = df[df["项目"] == item]
+                        # 对每一项绘制其全国排名
+                        plot_student_score_ranking(item_df, score, "得分")
+                    except ValueError:
+                        continue
+
                 # 根据项目和省份对数据进行分组
                 # grouped = df.groupby(["项目", "省份"])
                 # # 对每个分组应用 plot_student_score_ranking 函数
                 # for (item, province), group in grouped:
                 #     st.write(f"项目：{item}，省份：{province}")
                 #     st.dataframe(group)
-                    # plot_student_score_ranking(group, item, province)
+                # plot_student_score_ranking(group, item, province)
 
 # endregion
 
