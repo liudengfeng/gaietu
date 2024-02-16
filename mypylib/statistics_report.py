@@ -8,10 +8,8 @@ from .st_helper import (
 import plotly.express as px
 
 
-# @st.cache_data(ttl=timedelta(days=1))
-@st.cache_data(ttl=timedelta(minutes=1))
-def calculate_rankings(date):
-    # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
+@st.cache_data(ttl=timedelta(days=1))
+def get_performance_data(date):
     # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
     if not isinstance(date, datetime):
         try:
@@ -75,23 +73,13 @@ def calculate_rankings(date):
 
     # 将列表转换为数据框架
     df = pd.DataFrame(performances_list)
-    # TODO：删除
-    st.dataframe(df)
 
     # 计算每个人每一项的成绩
     df_grouped = (
         df.groupby(["phone_number", "province", "item"])["score"].mean().reset_index()
     )
 
-    # 按照全国和成绩进行排名
-    df_grouped["national_rank"] = df_grouped.groupby("item")["score"].rank(pct=True)
-
-    # 按照区域和成绩进行排名
-    df_grouped["provincial_rank"] = df_grouped.groupby(["province", "item"])[
-        "score"
-    ].rank(pct=True)
-
-    # 返回排名结果
+    # 返回数据
     return df_grouped
 
 
