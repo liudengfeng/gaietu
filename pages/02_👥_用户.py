@@ -360,7 +360,7 @@ with tabs[get_item_index("学习报告")]:
             # 临时添加的数据
             import numpy as np
 
-            n = 1000
+            n = 50
             phone_numbers = [
                 f"13{np.random.randint(100000000, 999999999)}" for _ in range(n)
             ]
