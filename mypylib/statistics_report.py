@@ -82,14 +82,12 @@ def calculate_rankings(date):
     )
 
     # 按照全国和成绩进行排名
-    df_grouped["national_rank"] = df_grouped.groupby("item")["score"].rank(
-        ascending=False
-    )
+    df_grouped["national_rank"] = df_grouped.groupby("item")["score"].rank(pct=True)
 
     # 按照区域和成绩进行排名
     df_grouped["provincial_rank"] = df_grouped.groupby(["province", "item"])[
         "score"
-    ].rank(ascending=False)
+    ].rank(pct=True)
 
     # 返回排名结果
     return df_grouped
