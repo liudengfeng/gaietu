@@ -56,6 +56,62 @@ def get_exercises(phone_number, start_date=None, end_date=None, previous_period=
     return record_list
 
 
+@st.cache_data(ttl=60 * 30)
+def get_performances(
+    phone_number, start_date=None, end_date=None, previous_period=False
+):
+    dbi = st.session_state.dbi
+    db = dbi.db
+
+    # 将日期转换为 Firestore 时间戳
+    if start_date is not None:
+        start_timestamp = datetime.combine(start_date, datetime.min.time())
+        start_timestamp = pytz.UTC.localize(start_timestamp)  # 转换为 UTC 时间
+    if end_date is not None:
+        end_timestamp = datetime.combine(end_date, datetime.max.time())
+        end_timestamp = pytz.UTC.localize(end_timestamp)  # 转换为 UTC 时间
+
+    if previous_period and start_date is not None and end_date is not None:
+        # 计算上一个周期的日期范围
+        period_length = end_timestamp - start_timestamp
+        start_timestamp -= period_length
+        end_timestamp -= period_length
+
+    # 获取指定 ID 的文档
+    doc = db.collection("performances").document(phone_number).get()
+
+    # 初始化一个空列表来保存查询结果
+    record_list = []
+
+    # 检查文档是否存在
+    if doc.exists:
+        # 获取文档的数据
+        data = doc.to_dict()
+
+        # 遍历 "history" 数组
+        for record in data.get("history", []):
+            # 获取 "record_time" 字段
+            timestamp = record.get("record_time")
+            timestamp = timestamp.astimezone(pytz.UTC)
+            # 如果 "record_time" 字段存在，并且在指定的范围内，则添加到查询结果中
+            if (
+                timestamp
+                and (start_date is None or start_timestamp <= timestamp)
+                and (end_date is None or timestamp <= end_timestamp)
+            ):
+                # 给 record 字典添加 phone_number 键值对
+                record_list.append(
+                    {
+                        "phone_number": phone_number,
+                        "item": record["item"],
+                        "record_time": record["record_time"],
+                        "score": record["score"],
+                    }
+                )
+
+    return record_list
+
+
 def get_valid_exercise_time(data, column_mapping):
     df = data.copy()
     df.rename(columns=column_mapping, inplace=True)

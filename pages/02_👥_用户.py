@@ -31,6 +31,7 @@ from mypylib.statistics_report import (
     display_study_time,
     display_word_study,
     get_exercises,
+    get_performances,
     get_valid_exercise_time,
 )
 from mypylib.utils import get_current_monday
@@ -323,8 +324,11 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         if st.button(
             "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
         ):
-            pass
-
+            df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
+            if df.empty:
+                st.warning("当前期间内没有成绩记录。", icon="⚠️")
+            else:
+                st.dataframe(df)
 # endregion
 
 # region 创建反馈页面
