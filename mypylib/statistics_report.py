@@ -11,6 +11,7 @@ import plotly.express as px
 @st.cache_data(ttl=timedelta(days=1))
 def calculate_rankings(date):
     # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
+    # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
     if not isinstance(date, datetime):
         try:
             date = datetime.strptime(date, "%b %d, %Y, %I:%M:%S.%f %p")
@@ -21,9 +22,6 @@ def calculate_rankings(date):
 
     # 将 date 转换为 UTC 时间
     date = date.astimezone(timezone.utc)
-
-    # 将 date 转换为 timestamp
-    timestamp = date.timestamp()
 
     dbi = st.session_state.dbi
     db = dbi.db
@@ -56,7 +54,10 @@ def calculate_rankings(date):
         history_filtered = [
             record
             for record in history
-            if datetime.fromtimestamp(record["record_time"]).date() == timestamp.date()
+            if (
+                record["record_time"]
+                and record["record_time"].date() == date.date()
+            )
         ]
 
         for record in history_filtered:
