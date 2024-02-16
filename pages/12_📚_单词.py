@@ -1167,7 +1167,7 @@ elif item_menu and item_menu.endswith("拼图游戏"):
 
     st.subheader(":jigsaw: 拼图游戏", divider="rainbow", anchor=False)
     st.markdown(
-        "✨ 单词拼图是一种记忆单词的游戏，玩家需根据打乱的字母和提示信息拼出正确的单词，有助于提高词汇量、拼写能力和解决问题能力。参考：[Cambridge Dictionary](https://dictionary.cambridge.org/)"
+        "✨ 单词拼图是一种寓教于乐的语言学习工具，它要求玩家根据乱序的字母和相关提示，拼凑出正确的单词。这种游戏的单词来源于当天所学的词汇，旨在通过重复和实践来加深记忆。通过这种方式，玩家可以在提升词汇量、拼写技巧的同时，也锻炼了他们的问题解决能力。参考：Cambridge Dictionary"
     )
 
     update_and_display_progress(
