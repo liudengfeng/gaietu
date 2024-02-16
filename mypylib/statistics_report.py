@@ -355,9 +355,8 @@ def display_average_scores(
     )
 
     # 修改 x 轴和 y 轴的标签，以及日期的显示格式
-    fig.update_xaxes(title_text="日期")
+    fig.update_xaxes(title_text="日期", tickformat="%Y-%m-%d")
     fig.update_yaxes(title_text="平均得分")
-    fig.update_traces(xaxis=dict(type="date", tickformat="%Y-%m-%d"))
 
     # 在 streamlit 中显示图表
     st.plotly_chart(fig)
