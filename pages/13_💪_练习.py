@@ -162,13 +162,15 @@ def display_text_word_count_summary(container, text):
     view_md_badges(container, level_dict, WORD_COUNT_BADGE_MAPS)
 
 
-def get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, default_style):
+def get_voice_style(
+    sentence, boy_name, girl_name, m_voice_style, fm_voice_style, default_style
+):
     # 如果是旁白，使用默认的声音
     if is_aside(sentence):
         return default_style
 
     # 发言人姓名
-    speaker_name = sentence.split(':', 1)[0]
+    speaker_name = sentence.split(":", 1)[0]
 
     # 判断句子是否以男孩或女孩的姓名开头，然后返回相应的声音风格
     if boy_name in speaker_name:
@@ -389,7 +391,9 @@ def play_and_record_dialogue(m_voice_style, fm_voice_style):
     sentence = dialogue[idx]
     # voice_style = m_voice_style if idx % 2 == 0 else fm_voice_style
     # style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
-    style = get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, "en-US-AnaNeural")
+    style = get_voice_style(
+        sentence, boy_name, girl_name, m_voice_style, fm_voice_style, "en-US-AnaNeural"
+    )
     sentence_without_speaker_name = re.sub(r"^\w+:\s", "", sentence.replace("**", ""))
     with st.spinner(f"使用 Azure 将文本合成语音..."):
         result = get_synthesis_speech(sentence_without_speaker_name, style)
@@ -827,7 +831,7 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 st.session_state.conversation_scene = dialogue
                 st.session_state.summarize_in_one = summarize
 
-            elif len(st.session_state.conversation_scene["text"]) > 0:
+            elif len(st.session_state.conversation_scene.get("text", [])) > 0:
                 display_dialogue_summary(
                     container,
                     st.session_state.conversation_scene["text"],
@@ -1027,7 +1031,14 @@ if item_menu is not None and item_menu.endswith("听说练习"):
                 # 如果是旁白，使用小女孩的声音
                 # voice_style = m_voice_style if i % 2 == 0 else fm_voice_style
                 # style = "en-US-AnaNeural" if is_aside(sentence) else voice_style[0]
-                style = get_voice_style(sentence, boy_name, girl_name, m_voice_style, fm_voice_style, "en-US-AnaNeural")
+                style = get_voice_style(
+                    sentence,
+                    boy_name,
+                    girl_name,
+                    m_voice_style,
+                    fm_voice_style,
+                    "en-US-AnaNeural",
+                )
                 sentence_without_speaker_name = re.sub(
                     r"^\w+:\s", "", sentence.replace("**", "")
                 )
