@@ -298,8 +298,8 @@ def display_study_time(
 def display_average_scores(
     data: pd.DataFrame, data_previous_period: pd.DataFrame, user_tz
 ):
-    # 将时间列转换为日期
-    data["date"] = pd.to_datetime(data["record_time"]).dt.tz_convert(user_tz)
+    # 将时间列转换为日期并去掉时间部分
+    data["date"] = pd.to_datetime(data["record_time"]).dt.tz_convert(user_tz).dt.date
     # 按天和项目分组，计算平均得分
     data_grouped = data.groupby(["date", "item"])["score"].mean().reset_index()
 
@@ -312,7 +312,8 @@ def display_average_scores(
     if not data_previous_period.empty:
         data_previous_period["date"] = pd.to_datetime(
             data_previous_period["record_time"]
-        ).dt.tz_convert(user_tz)
+        ).dt.tz_convert(user_tz).dt.date
+        
         data_previous_period_grouped = (
             data_previous_period.groupby(["date", "item"])["score"].mean().reset_index()
         )
