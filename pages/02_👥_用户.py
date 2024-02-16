@@ -360,8 +360,9 @@ with tabs[get_item_index("学习报告")]:
             # 临时添加的数据
             import numpy as np
 
+            n = 1000
             phone_numbers = [
-                f"13{np.random.randint(100000000, 999999999)}" for _ in range(100)
+                f"13{np.random.randint(100000000, 999999999)}" for _ in range(n)
             ]
             provinces = ["辽宁", "重庆", "广东"]
             items = ["词意测试", "发音评估", "拼图游戏"]
@@ -370,9 +371,9 @@ with tabs[get_item_index("学习报告")]:
 
             data = {
                 "手机号码": phone_numbers,
-                "省份": np.random.choice(provinces, 100),
-                "项目": np.random.choice(items, 100),
-                "得分": np.random.uniform(30, 100, 100).round(2),
+                "省份": np.random.choice(provinces, n),
+                "项目": np.random.choice(items, n),
+                "得分": np.random.uniform(0, 100, n).round(2),
             }
 
             # 创建 DataFrame
