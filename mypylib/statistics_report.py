@@ -56,7 +56,7 @@ def calculate_rankings(date):
         history_filtered = [
             record
             for record in history
-            if record["record_time"].to_datetime().date() == timestamp.date()
+            if record["record_time"].date() == timestamp.date()
         ]
 
         for record in history_filtered:
