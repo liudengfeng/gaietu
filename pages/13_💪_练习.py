@@ -355,8 +355,8 @@ def process_play_and_record_article(
 
 
 def display_dialogue(dialogue_placeholder):
-    dialogue = st.session_state.conversation_scene["text"]
-    if dialogue is None or len(dialogue) == 0:
+    dialogue = st.session_state.conversation_scene.get("text", [])
+    if len(dialogue) == 0:
         return
     idx = st.session_state["listening-idx"]
     if idx == -1:
