@@ -75,6 +75,8 @@ def calculate_rankings(date):
 
     # 将列表转换为数据框架
     df = pd.DataFrame(performances_list)
+    # TODO：删除
+    st.dataframe(df)
 
     # 计算每个人每一项的成绩
     df_grouped = (
