@@ -38,7 +38,7 @@ def move_words_between_containers(
         if src_cols[i % group_size].button(
             st.session_state["source-container-words"][i],
             key=f"word-src-{i}",
-            help="✨ Click the button to move the word to the target position.",
+            help="✨ 点击按钮将单词移动到目标位置。",
             # use_container_width=True,
         ):
             sw = st.session_state["source-container-words"][i]
@@ -52,7 +52,7 @@ def move_words_between_containers(
         if tgt_cols[i % group_size].button(
             st.session_state["target-container-words"][i],
             key=f"word-tgt-{i}",
-            help="✨ Click the button to move the word back to the target position.",
+            help="✨ 点击按钮将单词移动回目标位置。",
             # use_container_width=True,
         ):
             tw = st.session_state["target-container-words"][i]
