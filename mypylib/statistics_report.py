@@ -450,7 +450,7 @@ def calculate_statistics(df, score_column):
 
     # 生成 x 值
     # x = np.linspace(max(0, mu - 3 * std), min(100, mu + 3 * std), 100)
-    x = np.linspace(0, 100, 200)
+    x = np.linspace(0, 100, 1000)
 
     return mu, std, median, x
 
