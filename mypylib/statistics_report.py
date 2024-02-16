@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import streamlit as st
 import pytz
 import pandas as pd
@@ -10,6 +10,20 @@ import plotly.express as px
 
 @st.cache_data(ttl=timedelta(days=1))
 def calculate_rankings(date):
+    # 检查 date 是否是 datetime 对象，如果不是，尝试将其转换为 datetime 对象
+    if not isinstance(date, datetime):
+        try:
+            date = datetime.strptime(date, "%b %d, %Y, %I:%M:%S.%f %p")
+        except ValueError:
+            raise ValueError(
+                "date 必须是 datetime 对象或者可以转换为 datetime 对象的字符串"
+            )
+
+    # 将 date 转换为 UTC 时间
+    date = date.astimezone(timezone.utc)
+
+    # 将 date 转换为 timestamp
+    timestamp = date.timestamp()
 
     dbi = st.session_state.dbi
     db = dbi.db
@@ -40,7 +54,9 @@ def calculate_rankings(date):
 
         # 按照日期筛选得分历史
         history_filtered = [
-            record for record in history if record["record_time"].to_datetime() == date
+            record
+            for record in history
+            if record["record_time"].to_datetime().date() == timestamp.date()
         ]
 
         for record in history_filtered:
@@ -61,10 +77,14 @@ def calculate_rankings(date):
     # 将列表转换为数据框架
     df = pd.DataFrame(performances_list)
 
-    # 按照省份、项目和得分对数据进行分组和排序
-    df["rank"] = df.groupby(["province", "item"])["score"].rank(ascending=False)
+    # 计算每个省份每个项目的平均分
+    df_grouped = df.groupby(["province", "item"])["score"].mean().reset_index()
 
-    return df
+    # 按照省份和平均分进行排名
+    df_grouped["rank"] = df_grouped.groupby("province")["score"].rank(ascending=False)
+
+    # 返回排名结果
+    return df_grouped
 
 
 @st.cache_data(ttl=timedelta(minutes=30))

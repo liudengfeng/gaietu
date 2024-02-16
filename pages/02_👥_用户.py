@@ -28,6 +28,7 @@ from mypylib.st_helper import (
     setup_logger,
 )
 from mypylib.statistics_report import (
+    calculate_rankings,
     display_average_scores,
     display_study_time,
     display_word_study,
@@ -341,16 +342,12 @@ with tabs[items.index(":bar_chart: 学习报告")]:
         if st.button(
             "查阅[:eye:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
         ):
-            df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
-            df_previous_period = pd.DataFrame(
-                get_performances(
-                    phone_number, start_date, end_date, previous_period=True
-                )
-            )
+            utc_now = datetime.datetime.now(pytz.utc)
+            df = calculate_rankings(utc_now)
             if df.empty:
                 st.warning("当前期间内没有成绩记录。", icon="⚠️")
             else:
-                display_average_scores(df, df_previous_period, user_tz)
+                st.dataframe(df)
 
 # endregion
 
