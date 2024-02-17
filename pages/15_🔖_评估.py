@@ -803,7 +803,7 @@ if item_menu and item_menu.endswith("写作评估"):
         key="writing-evaluation-topic",
         placeholder="请选择能力要求",
     )
-    st.subheader("写作能力评估", divider="rainbow", anchor="写作能力评估")
+    st.subheader("🔖 写作能力评估", divider="rainbow", anchor="写作能力评估")
     exam_container = st.container()
     cols = st.columns(2)
     cols[0].markdown("写作内容")
