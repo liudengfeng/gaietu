@@ -872,7 +872,11 @@ if item_menu and item_menu.endswith("写作评估"):
         assessment = cefr_english_writing_ability_assessment_for(
             requirements, composition
         )
-        total_score = calculate_writing_total_score(assessment)
+        try:
+            total_score = calculate_writing_total_score(assessment)
+        except:
+            st.write(assessment)
+        
         display_writing_assessment_results(container_2, assessment)
 
         test_dict = {
