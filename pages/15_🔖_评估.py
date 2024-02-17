@@ -757,6 +757,13 @@ if item_menu and item_menu.endswith("口语能力"):
 
 # region 写作评估
 
+# region 写作评估辅助函数
+
+if st.session_state.get("composition-clear"):
+    st.session_state["composition"] = ""
+
+# endregion
+
 if item_menu and item_menu.endswith("写作评估"):
     on_project_changed("能力评估-写作评估")
     cols = st.columns(2)
@@ -772,7 +779,12 @@ if item_menu and item_menu.endswith("写作评估"):
         label_visibility="collapsed",
     )
     btn_cols = st.columns(8)
-    submit_btn = btn_cols[0].button(
+    clear_btn = btn_cols[0].button(
+        "清除[:wastebasket:]",
+        key="composition-clear",
+        help="✨ 点击按钮，清除你的写作内容。",
+    )
+    submit_btn = btn_cols[1].button(
         "评估[:pencil2:]",
         key="evaluate_composition",
         help="✨ 点击按钮，提交你的写作内容进行评估。",
