@@ -762,6 +762,7 @@ if item_menu and item_menu.endswith("口语能力"):
 if st.session_state.get("composition-clear"):
     st.session_state["composition"] = ""
 
+
 @st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成写作评估文本，请稍候...")
 def english_writing_assessment_for(composition):
     return generate_english_writing_assessment(
