@@ -266,7 +266,7 @@ col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown(
         """
-        ## `Gaietu`：AI助手
+        ## `Gaietu`：AI助学
         
         **你的全方位英语学习平台，开启沉浸式学习体验！**
         
