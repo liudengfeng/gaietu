@@ -121,7 +121,7 @@ Topic: {exam_topic}
 
 Requirements:
 1. Design detailed background information based on the topic. The complexity of the background information should match the student's current level.
-2. Propose at least three specific exam requirements. The difficulty of the questions should match the student's current level to ensure they can truly understand the question.
+2. Propose at least three specific exam requirements. 
 3. Set a minimum word count that is appropriate for the student's current level.
-4. Ensure the final output is presented in an appropriate Markdown format.
+4. Output in an appropriate Markdown format.
 """
