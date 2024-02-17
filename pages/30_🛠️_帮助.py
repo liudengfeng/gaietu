@@ -112,5 +112,5 @@ with st.expander(":loud_sound: 美式语音示例", expanded=False):
         # 获取文件名（不包括扩展名）
         file_name = wav_file.stem
         # 在列中添加文本和音频
-        cols[i % 2].header(file_name)
+        cols[i % 2].markdown(file_name)
         cols[i % 2].audio(str(wav_file))
