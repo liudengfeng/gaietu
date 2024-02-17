@@ -12,7 +12,13 @@ from mypylib.azure_pronunciation_assessment import (
     adjust_display_by_reference_text,
     read_audio_file,
 )
-from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP, ORAL_FP
+from mypylib.constants import (
+    CEFR_LEVEL_MAPS,
+    CEFR_LEVEL_TOPIC,
+    GENRES,
+    VOICES_FP,
+    ORAL_FP,
+)
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
@@ -774,6 +780,26 @@ def english_writing_assessment_for(composition):
 
 if item_menu and item_menu.endswith("写作评估"):
     on_project_changed("能力评估-写作评估")
+    level = st.sidebar.selectbox(
+        "CEFR分级",
+        CEFR_LEVEL_MAPS.keys(),
+        key="writing-evaluation-level",
+    )
+    genre = st.sidebar.selectbox(
+        "考察的文章体裁",
+        GENRES,
+        index=0,
+        key="writing-evaluation-genre",
+        placeholder="请选择文章体裁",
+    )
+    topic = st.sidebar.selectbox(
+        "考察的主题要求",
+        CEFR_LEVEL_TOPIC[level],
+        index=0,
+        key="writing-evaluation-topic",
+        placeholder="请选择能力要求",
+    )
+
     cols = st.columns(2)
     container_1 = cols[0].container(height=HEIGHT, border=True)
     container_2 = cols[1].container(height=HEIGHT, border=True)

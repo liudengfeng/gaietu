@@ -796,3 +796,50 @@ def from_chinese_to_english_topic(level, chinese_topic):
     # 使用索引找到对应的英语主题
     english_topic = english_topics[topic_index]
     return english_topic
+
+GENRES = [
+    "记叙文",
+    "说明文",
+    "议论文",
+    "应用文",
+    "新闻报道",
+    "人物传记",
+    "艺术评论",
+    "科研报告",
+]
+GENRES_EN = [
+    "Narrative",
+    "Expository",
+    "Argumentative",
+    "Practical",
+    "News Report",
+    "Biography",
+    "Art Review",
+    "Scientific Report",
+]
+
+CONTENTS = [
+    "社会",
+    "文化",
+    "科技",
+    "经济",
+    "历史",
+    "政治",
+    "艺术",
+    "自然",
+    "体育",
+    "教育",
+]
+
+CONTENTS_EN = [
+    "Society",
+    "Culture",
+    "Technology",
+    "Economy",
+    "History",
+    "Politics",
+    "Art",
+    "Nature",
+    "Sports",
+    "Education",
+]

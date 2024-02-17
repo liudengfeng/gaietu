@@ -17,6 +17,10 @@ from menu import menu
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
     CEFR_LEVEL_TOPIC,
+    CONTENTS,
+    CONTENTS_EN,
+    GENRES,
+    GENRES_EN,
     NAMES,
     SCENARIO_MAPS,
     TOPICS,
@@ -1247,51 +1251,7 @@ if item_menu is not None and item_menu.endswith("阅读练习"):
 
     # region "配置场景"
 
-    GENRES = [
-        "记叙文",
-        "说明文",
-        "议论文",
-        "应用文",
-        "新闻报道",
-        "人物传记",
-        "艺术评论",
-        "科研报告",
-    ]
-    CONTENTS = [
-        "社会",
-        "文化",
-        "科技",
-        "经济",
-        "历史",
-        "政治",
-        "艺术",
-        "自然",
-        "体育",
-        "教育",
-    ]
 
-    GENRES_EN = [
-        "Narrative",
-        "Expository",
-        "Argumentative",
-        "Practical",
-        "News Report",
-        "Biography",
-        "Art Review",
-        "Scientific Report",
-    ]
-    CONTENTS_EN = [
-        "Society",
-        "Culture",
-        "Technology",
-        "Economy",
-        "History",
-        "Politics",
-        "Art",
-        "Nature",
-        "Sports",
-        "Education",
-    ]
 
     with reading_tabs[0]:
         st.subheader("配置场景", divider="rainbow", anchor="配置场景")
