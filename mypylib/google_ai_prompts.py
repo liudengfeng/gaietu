@@ -53,54 +53,53 @@ As an expert in English composition instruction, it is your duty to evaluate you
     - The total score is 100 points, divided among various categories.
     - The detailed breakdown of scores for each category is as follows:
 
-- Content (Total: 40 points)
-    - Consistency between the theme of the title and the content of the article (Total: 10 points):
-        - Completely conforms to the meaning of the question, understands and answers the question accurately, score: 10.
-        - Basically meets the meaning of the question, but there are a few deviations from the question or missing key points. Score: 5-8.
-        - Deviates from the meaning of the question and fails to answer the question completely, score: 0-4.
-    - Complete content (Total: 10 points):
-        - Covers all key points and has substantial content. Score: 10.
-        - A few key points are missing, but the content is basically complete. Score: 5-8.
-        - Missing important points and incomplete content, score: 0-4.
-    - Clear point of view (Total: 10 points):
-        - The point is clear and the argument is sufficient. Score: 10.
-        - The point of view is basically clear, but the argument is insufficient. Score: 5-8.
-        - Vague views and insufficient arguments, score: 0-4.
-    - Logic (Total: 10 points):
-        - Clear thinking, reasonable structure, rigorous logic, score: 10.
-        - The ideas are basically clear, the structure is slightly loose, and the logic occasionally has flaws. Score: 5-8.
-        - The ideas are confusing, the structure is unreasonable, and there are many logical errors. Score: 0-4.
+- Content (Total: 45 points)
+    - Relevance to Theme (Total: 15 points):
+        - Completely adheres to the assigned theme, explores it thoughtfully, and answers the prompt fully: 15 points.
+        - Partially addresses the theme, may deviate slightly or miss minor points: 10-12 points.
+        - Deviates significantly from the theme or fails to answer the prompt adequately: 0-8 points.
+    - Completeness (Total: 10 points):
+        - Covers all key points and provides substantial content relevant to the theme: 10 points.
+        - Misses a few key points but maintains overall completeness: 7-9 points.
+        - Lacks important points or content is incomplete: 0-6 points.
+    - Clarity and Cohesion (Total: 10 points):
+        - The point of view is clear, arguments are well-developed, and the essay flows smoothly: 10 points.
+        - Point of view is somewhat clear, arguments might need improvement, and the essay has minor transitions: 7-9 points.
+        - Vague views, underdeveloped arguments, and lack of clear transitions significantly hinder understanding: 0-6 points.
+    - Body Restrictions (Total: 10 points):
+        - Adheres to all specified body restrictions (e.g., number of paragraphs, specific points to cover): 10 points.
+        - Minor deviations from or incomplete fulfillment of body restrictions: 7-9 points.
+        - Significant deviations from or major inconsistencies with body restrictions: 0-6 points.
 - Language (Total: 30 points)
-    - Vocabulary (Total: 10 points):
-        - Rich vocabulary, appropriate use, no obvious errors, score: 10.
-        - Vocabulary basically meets the requirements. Occasionally there are errors. Score: 5-8.
-        - Poor vocabulary and many errors, which affects understanding. Score: 0-4.
+
+    -Vocabulary (Total: 10 points):
+        - Rich and varied vocabulary used appropriately: 10 points.
+        - Meets vocabulary requirements with occasional errors: 7-9 points.
+        - Poor vocabulary significantly affecting understanding: 0-6 points.
     - Grammar (Total: 10 points):
-        - The grammar is accurate, the sentence structure is complete, and there are no obvious errors. Score: 10.
-        - Grammar is basically accurate, with occasional errors, which do not affect understanding. Score: 5-8.
-        - There are many grammatical errors, which affect understanding. Score: 0-4.
+        - Grammatically accurate with no major errors: 10 points.
+        - Occasional grammatical errors that do not impede understanding: 7-9 points.
+        - Frequent grammatical errors affecting understanding: 0-6 points.
     - Fluency (Total: 10 points):
-        - The sentences are fluent, the expression is natural, and it is easy to understand. Score: 10.
-        - The sentence structure is a bit stiff and the expression is not natural enough. Score: 5-8.
-        - The sentences are not fluent and the expression is unnatural, which affects understanding. Score: 0-4.
+        - Sentences are clear, natural, and engaging: 10 points.
+        - Minor awkwardness or stiffness in sentence structure or expression: 7-9 points.
+        - Sentences lack fluency and clarity, negatively impacting understanding: 0-6 points.
 - Structure (Total: 20 points)
-    - Paragraph division (Total: 10 points):
-        - The paragraphs are reasonably divided and hierarchical. Score: 10.
-        - The division of paragraphs is not reasonable enough, but the hierarchy is basically clear. Score: 5-8.
-        - The division of paragraphs is unreasonable and the hierarchy is confusing. Score: 0-4.
-    - Connection means (Total: 10 points):
-        - The cohesion means are rich, used appropriately, and the whole text is coherent. Score: 10.
-        - The connection methods basically meet the requirements, with occasional stiffness. Score: 5-8.
-        - Lack of cohesion means, the whole text is incoherent, affecting understanding, score: 0-4.
-- Others (Total: 10 points)
-    - Innovation (Total: 5 points):
-        - Novel and creative ideas, score: 5.
-        - The viewpoint is basically novel and has a certain degree of creativity. Score: 3-4.
-        - The ideas lack new ideas and have no obvious creativity. Score: 0-2.
-    - Language style (Total: 5 points):
-        - The language style is vivid and contagious. Score: 5.
-        - The language style is basically vivid and has a certain appeal. Score: 3-4.
-        - The language style is bland and lacks appeal. Score: 0-2.
+
+    - Organization (Total: 10 points):
+        - Logical and well-organized structure with clear introduction, body paragraphs, and conclusion: 10 points.
+        - Somewhat organized structure but may lack clarity or transitions: 7-9 points.
+        - Unorganized structure significantly impacting coherence and flow: 0-6 points.
+    - Cohesion (Total: 10 points):
+        - Effective use of transition words and phrases to connect ideas: 10 points.
+        - Some awkward transitions but overall coherence maintained: 7-9 points.
+        - Lack of clear transitions impacting understanding and flow: 0-6 points.
+- Bonus (Total: 5 points)
+    
+    - Title (Total: 5 points):
+        - Captivating and relevant to the content: 5 points.
+        - Somewhat relevant or informative: 3-4 points.
+        - Unclear or unrelated to the content: 0-2 points.
 
 Step by step:
 - For each sub-criterion under each main criterion, allocate scores based on the detailed grading rubric provided. Each sub-criterion should be scored separately, and the scores for the sub-criteria under a main criterion should be combined to form the total score for that main criterion.
@@ -112,4 +111,17 @@ Step by step:
 composition:
 
 {composition}
+"""
+
+CEFR_WRITING_EXAM_TEMPLATE = """
+As a CEFR writing examiner, you are tasked with creating a test. When designing the test, you should take into account the student's current level in all aspects, including the design of the background information, the formulation of the exam requirements, and the setting of the minimum word count.
+
+The student's current level is: CEFR {student_level}
+Topic: {exam_topic}
+
+Requirements:
+1. Design detailed background information based on the topic. The complexity of the background information should match the student's current level.
+2. Propose at least three specific exam requirements. The difficulty of the questions should match the student's current level to ensure they can truly understand the question.
+3. Set a minimum word count that is appropriate for the student's current level.
+4. Ensure the final output is presented in an appropriate Markdown format.
 """

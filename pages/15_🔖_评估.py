@@ -15,14 +15,15 @@ from mypylib.azure_pronunciation_assessment import (
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
     CEFR_LEVEL_TOPIC,
-    GENRES,
     VOICES_FP,
     ORAL_FP,
+    from_chinese_to_english_topic,
 )
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
     generate_english_writing_assessment,
+    generate_english_writing_exam_assessment,
     generate_oral_ability_topics,
     generate_oral_statement_template,
     generate_pronunciation_assessment_text,
@@ -768,6 +769,16 @@ if item_menu and item_menu.endswith("口语能力"):
 if st.session_state.get("composition-clear"):
     st.session_state["composition"] = ""
 
+if "writing-evaluation-exam" not in st.session_state:
+    st.session_state["writing-evaluation-exam"] = ""
+
+
+@st.cache_data(ttl=timedelta(days=1), show_spinner="AI 正在出题，请稍候...")
+def english_writing_exam_assessment_for(student_level, exam_topic):
+    return generate_english_writing_exam_assessment(
+        st.session_state["text_model"], student_level, exam_topic
+    )
+
 
 @st.cache_data(ttl=timedelta(days=1), show_spinner="AI 正在评估，请稍候...")
 def english_writing_assessment_for(composition):
@@ -785,13 +796,6 @@ if item_menu and item_menu.endswith("写作评估"):
         CEFR_LEVEL_MAPS.keys(),
         key="writing-evaluation-level",
     )
-    genre = st.sidebar.selectbox(
-        "考察的文章体裁",
-        GENRES,
-        index=0,
-        key="writing-evaluation-genre",
-        placeholder="请选择文章体裁",
-    )
     topic = st.sidebar.selectbox(
         "考察的主题要求",
         CEFR_LEVEL_TOPIC[level],
@@ -799,34 +803,51 @@ if item_menu and item_menu.endswith("写作评估"):
         key="writing-evaluation-topic",
         placeholder="请选择能力要求",
     )
-
+    st.subheader("写作能力评估", divider="rainbow", anchor="写作能力评估")
+    st.markdown(st.session_state["writing-evaluation-exam"])
     cols = st.columns(2)
     container_1 = cols[0].container(height=HEIGHT, border=True)
     container_2 = cols[1].container(height=HEIGHT, border=True)
-    container_1.subheader("写作内容", divider="rainbow", anchor="写作内容")
-    container_2.subheader("写作点评", divider="rainbow", anchor="写作点评")
+    container_1.markdown("写作内容")
+    container_2.markdown("写作点评")
     composition = container_1.text_area(
         "写作评估",
         help="✨ 输入你的写作内容。",
-        height=HEIGHT - 100,
+        height=HEIGHT - 20,
         key="composition",
         label_visibility="collapsed",
     )
     btn_cols = st.columns(8)
-    clear_btn = btn_cols[0].button(
+    question_btn = btn_cols[0].button(
+        "出题[:bulb:]",
+        key="composition-question",
+        help="✨ 点击按钮，生成新的写作题目。",
+    )
+    clear_btn = btn_cols[1].button(
         "清除[:wastebasket:]",
         key="composition-clear",
         help="✨ 点击按钮，清除你的写作内容。",
     )
-    submit_btn = btn_cols[1].button(
+    submit_btn = btn_cols[2].button(
         "评估[:pencil2:]",
         key="evaluate_composition",
         help="✨ 点击按钮，提交你的写作内容进行评估。",
     )
+    if question_btn:
+        en_topic = from_chinese_to_english_topic(level, topic)
+        st.session_state["writing-evaluation-exam"] = (
+            english_writing_exam_assessment_for(level, en_topic)
+        )
+        st.rerun()
+
     if submit_btn:
         if not composition:
             st.error("写作内容不能为空。")
             st.stop()
+        if not st.session_state["writing-evaluation-exam"]:
+            st.error("写作内容不能为空。")
+            st.stop()
+
         assessment = english_writing_assessment_for(composition)
         container_2.write(assessment)
 
