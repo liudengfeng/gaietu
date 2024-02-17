@@ -239,6 +239,28 @@ else:
         f"您已登录，{st.session_state.dbi.cache['user_info']['display_name']} 您好！"
     )
 
+step_cols = st.columns(3)
+with step_cols[0]:
+    img1 = Image.open(LOGO_DIR / "step-1.jpg")
+    st.image(img1, use_column_width=True)
+
+with step_cols[1]:
+    img2 = Image.open(LOGO_DIR / "step-2.jpg")
+    st.image(img2, use_column_width=True)
+
+with step_cols[2]:
+    img3 = Image.open(LOGO_DIR / "step-3.jpg")
+    st.image(img3, use_column_width=True)
+
+if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
+    st.switch_page("pages/00_📇_注册.py")
+
+if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
+    st.switch_page("pages/01_💰_订阅.py")
+
+if step_cols[2].button(":loud_sound: 试听美音", key="试听美音"):
+    st.switch_page("us_voices.py")
+
 col1, col2 = st.columns([3, 1])
 
 with col1:
@@ -249,10 +271,11 @@ with col1:
         **你的全方位英语学习平台，开启沉浸式学习体验！**
         
         **三大亮点，助你突破英语学习瓶颈：**
-        1. 👩‍🏫 优异AI老师资源
+        1. 👩‍🏫 优异AI老师
         
-        - 拥有智力超群、知识广博的AI虚拟教师，为你提供纯正的英语发音和专业的指导。
-        - 利用先进的语音合成技术，打造逼真的互动体验，让你仿佛置身于真实的英语场景。
+        - 智力超群、知识广博的AI虚拟教师。
+        - 纯正的英语发音。
+        - 利用微软先进的语音合成技术，打造逼真的互动体验，让你仿佛置身于真实的英语场景。
         
         2. ⏰ 贴心辅导
 
@@ -284,29 +307,6 @@ logo_image = Image.open(LOGO_DIR / "logo.jpg")
 with col2:
     st.image(logo_image, width=100)
 st.divider()
-
-
-step_cols = st.columns(3)
-with step_cols[0]:
-    img1 = Image.open(LOGO_DIR / "step-1.jpg")
-    st.image(img1, use_column_width=True)
-
-with step_cols[1]:
-    img2 = Image.open(LOGO_DIR / "step-2.jpg")
-    st.image(img2, use_column_width=True)
-
-with step_cols[2]:
-    img3 = Image.open(LOGO_DIR / "step-3.jpg")
-    st.image(img3, use_column_width=True)
-
-if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
-    st.switch_page("pages/00_📇_注册.py")
-
-if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
-    st.switch_page("pages/01_💰_订阅.py")
-
-if step_cols[2].button(":key: 登录使用", key="登录使用"):
-    st.switch_page("Home.py")
 
 
 if is_logged_in:
