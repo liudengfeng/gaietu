@@ -786,18 +786,18 @@ def get_cn_item_name(item):
 
 def display_writing_assessment_results(container, assessment):
     total_score = calculate_writing_total_score(assessment)
-    content = f"总分：{total_score}/100"
+    content = f"总分({total_score}/100)"
     for record in assessment["scoringRecords"]:
         item = record["criterion"]
         cn = get_cn_item_name(item)
         max_score = CN_WRITING_ASSESSMENT_ITEM_SCORE.get(cn, 0)
-        content += f"  {cn}：{record['score']}/{max_score}分"
-    content += "\n\n"
+        content += f"  {cn}({record['score']}/{max_score}) "
+    content += "\n\n解释：\n\n"
     for record in assessment["scoringRecords"]:
         item = record["criterion"]
         cn = get_cn_item_name(item)
         content += f" {cn} ：{record['justification']}\n\n"
-    content += "\n\n点评：\n\n"
+    content += "\n\n综评：\n\n"
     content += assessment["review"]
     with container:
         st.markdown(content)
