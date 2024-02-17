@@ -813,5 +813,5 @@ def cefr_english_writing_ability_assessment(model, requirements, composition):
         contents_info,
         generation_config,
         stream=False,
-        parser=json.loads,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
     )
