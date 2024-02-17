@@ -762,6 +762,13 @@ if item_menu and item_menu.endswith("口语能力"):
 if st.session_state.get("composition-clear"):
     st.session_state["composition"] = ""
 
+@st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成写作评估文本，请稍候...")
+def english_writing_assessment_for(composition):
+    return generate_english_writing_assessment(
+        st.session_state["text_model"], composition
+    )
+
+
 # endregion
 
 if item_menu and item_menu.endswith("写作评估"):
@@ -774,7 +781,7 @@ if item_menu and item_menu.endswith("写作评估"):
     composition = container_1.text_area(
         "写作评估",
         help="✨ 输入你的写作内容。",
-        height=HEIGHT - 40,
+        height=HEIGHT - 100,
         key="composition",
         label_visibility="collapsed",
     )
@@ -793,9 +800,7 @@ if item_menu and item_menu.endswith("写作评估"):
         if not composition:
             st.error("写作内容不能为空。")
             st.stop()
-        assessment = generate_english_writing_assessment(
-            load_vertex_model("gemini-pro"), composition
-        )
+        assessment = english_writing_assessment_for(composition)
         container_2.write(assessment)
 
 # endregion
