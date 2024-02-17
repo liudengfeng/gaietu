@@ -178,9 +178,9 @@ As a CEFR writing assessor, it's your duty to evaluate the students' written tas
 
 Step by step:
 - For each sub-criterion under each main criterion, allocate scores based on the detailed grading rubric provided. Each sub-criterion should be scored separately, and the scores for the sub-criteria under a main criterion should be combined to form the total score for that main criterion.
-- Compile scoring records, each record should be a dictionary with keys representing the specific criterion, the corresponding score, and a brief justification (in Markdown format). The output should be a list of these dictionaries.
+- Compile scoring records, each record should be a dictionary with keys representing the specific criterion (key name: 'criterion'), the corresponding score (key name: 'score'), and a brief justification (key name: 'justification', in Markdown format). The output should be a list of these dictionaries.
 - Furnish a comprehensive evaluation (in Markdown format) of the composition, highlighting its merits and identifying areas that require enhancement.
-- Ultimately, form a dictionary that includes the review and a list of scoring records.
+- Ultimately, form a dictionary that includes the review (key name: 'review') and a list of scoring records (key name: 'scoring_records').
 - Output in JSON.
 
 composition:
