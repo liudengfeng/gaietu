@@ -855,7 +855,8 @@ if item_menu and item_menu.endswith("写作评估"):
         st.session_state["writing-evaluation-exam"] = (
             english_writing_exam_assessment_for(level, en_topic)
         )
-        exam_container.markdown(st.session_state["writing-evaluation-exam"])
+    
+    exam_container.markdown(st.session_state["writing-evaluation-exam"])
 
     if submit_btn:
         if not composition:
