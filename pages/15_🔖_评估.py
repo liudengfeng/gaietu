@@ -804,7 +804,7 @@ if item_menu and item_menu.endswith("写作评估"):
         placeholder="请选择能力要求",
     )
     st.subheader("写作能力评估", divider="rainbow", anchor="写作能力评估")
-    st.markdown(st.session_state["writing-evaluation-exam"])
+    exam_container = st.container()
     cols = st.columns(2)
     cols[0].markdown("写作内容")
     cols[1].markdown("写作点评")
@@ -838,7 +838,7 @@ if item_menu and item_menu.endswith("写作评估"):
         st.session_state["writing-evaluation-exam"] = (
             english_writing_exam_assessment_for(level, en_topic)
         )
-        st.rerun()
+        exam_container.markdown(st.session_state["writing-evaluation-exam"])
 
     if submit_btn:
         if not composition:
