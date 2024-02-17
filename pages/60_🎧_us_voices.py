@@ -22,7 +22,7 @@ if "role" not in st.session_state:
 
 st.set_page_config(
     page_title="美音示例",
-    page_icon=":loud_sound:",
+    page_icon=":headphones:",
     layout="wide",
 )
 
@@ -31,8 +31,8 @@ on_project_changed("Home")
 add_exercises_to_db()
 
 # region 美音示例
-st.subheader(":loud_sound: 美式语音示例", divider="rainbow", anchor="美音示例")
-with st.expander(":loud_sound: 美式语音示例", expanded=False):
+st.subheader(":headphones: 美式语音示例", divider="rainbow", anchor="美音示例")
+with st.expander(":headphones: 美式语音示例", expanded=False):
     st.markdown(
         """
         以下是美式发音示例，点击按钮即可播放音频。
