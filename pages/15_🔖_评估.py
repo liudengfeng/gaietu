@@ -833,6 +833,7 @@ if item_menu and item_menu.endswith("写作评估"):
         height=HEIGHT,
         key="composition",
         label_visibility="collapsed",
+        max_chars=20000,
     )
     btn_cols = st.columns(8)
     question_btn = btn_cols[0].button(
