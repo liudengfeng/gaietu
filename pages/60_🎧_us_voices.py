@@ -35,11 +35,13 @@ st.subheader(":headphones: 美式语音示例", divider="rainbow", anchor="美�
 with st.expander(":headphones: 美式语音示例", expanded=False):
     st.markdown(
         """
-        以下是美式发音示例，点击按钮即可播放音频。
-        演示文本英文内容：
-        My name is Li Ming. I am from China. I am a student at Peking University. I am majoring in computer science. I am interested in artificial intelligence and machine learning. I am excited to be here today and I look forward to meeting all of you.
-        演示文本中文翻译：
-        我叫李明，来自中国。我在北京大学学习，主修计算机科学。我对人工智能和机器学习非常感兴趣。我很高兴今天能来到这里，期待与大家见面。
+以下是美式发音示例，点击按钮即可播放音频。
+        
+- 演示文本英文内容：
+>>> My name is Li Ming. I am from China. I am a student at Peking University. I am majoring in computer science. I am interested in artificial intelligence and machine learning. I am excited to be here today and I look forward to meeting all of you.
+
+- 演示文本中文翻译：
+>>> 我叫李明，来自中国。我在北京大学学习，主修计算机科学。我对人工智能和机器学习非常感兴趣。我很高兴今天能来到这里，期待与大家见面。
         """
     )
     wav_files = list(VOICES_DIR.glob("*.wav"))
