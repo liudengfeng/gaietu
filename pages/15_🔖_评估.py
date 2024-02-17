@@ -98,6 +98,8 @@ ORAL_ITEM_MAPS = {
 
 # region 发音评估会话
 
+add_exercises_to_db()
+
 if "pa-learning-times" not in st.session_state:
     st.session_state["pa-learning-times"] = 0
 
@@ -149,21 +151,6 @@ def on_next_btn_click(key):
     st.session_state[key] += 1
 
 
-# def create_learning_record(
-#     project,
-#     difficulty,
-#     selected_scenario,
-#     words,
-# ):
-#     record = LearningTime(
-#         phone_number=st.session_state.dbi.cache["user_info"]["phone_number"],
-#         project=project,
-#         content=f"{difficulty}-{selected_scenario}",
-#         word_count=words,
-#     )
-#     return record
-
-
 @st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成发音评估文本，请稍候...")
 def generate_pronunciation_assessment_text_for(scenario_category, difficulty):
     return generate_pronunciation_assessment_text(
@@ -212,14 +199,6 @@ def play_synthesized_audio(text, voice_style, difficulty, selected_scenario):
     audio_html = audio_autoplay_elem(result["audio_data"], fmt="wav")
     components.html(audio_html)
 
-    # 记录学习时长
-    # word_count = len(re.findall(r"\b\w+\b", text))
-    # record = create_learning_record(
-    #     "发音评估", difficulty, selected_scenario, word_count
-    # )
-    # record.duration = result["audio_duration"].total_seconds()
-    # st.session_state.dbi.add_record_to_cache(record)
-
 
 def display_assessment_text(pa_text_container):
     with pa_text_container:
@@ -250,12 +229,6 @@ def display_assessment_text(pa_text_container):
 # region 口语能力函数
 
 
-# def delete_recorded_audio(audio_obj, audio_key):
-#     st.session_state[audio_key] = None
-#     if audio_obj:
-#         audio_obj.clear()  # 删除所有元素
-
-
 @st.cache_data(
     ttl=timedelta(days=1), show_spinner="AI正在生成口语讨论话题清单，请稍候..."
 )
@@ -275,7 +248,6 @@ def generate_oral_statement_template_for(topic, difficulty):
 
 # endregion
 
-add_exercises_to_db()
 
 # region 发音评估页面
 
@@ -424,7 +396,6 @@ if item_menu and item_menu.endswith("发音评估"):
         #         tasks.append(word.word)
 
         test_dict = {
-            # "phone_number": st.session_state.dbi.cache["user_info"]["phone_number"],
             "item": "发音评估",
             "topic": scenario_category,
             "level": f"{difficulty}-{len(reference_text.split())}",
@@ -434,7 +405,6 @@ if item_menu and item_menu.endswith("发音评估"):
             "duration": (datetime.now(pytz.UTC) - start).total_seconds(),
             "record_time": datetime.now(pytz.UTC),
         }
-        # st.session_state.dbi.save_daily_quiz_results(test_dict)
         st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 
     if audio_playback_button and audio_info and st.session_state["pa-assessment"]:
@@ -722,10 +692,6 @@ if item_menu and item_menu.endswith("口语能力"):
 
     if example_button:
         audio = read_audio_file(ORAL_FP)
-        # st.session_state["oa-assessment"] = oral_ability_assessment_for(
-        #     audio,
-        #     "Describe someone you met recently and would like to know more",
-        # )
         st.session_state["oa-assessment"] = oral_ability_assessment_for(
             audio,
             "Describe your favorite animal",
@@ -839,6 +805,7 @@ if item_menu and item_menu.endswith("写作评估"):
             english_writing_exam_assessment_for(level, en_topic)
         )
         exam_container.markdown(st.session_state["writing-evaluation-exam"])
+        start = datetime.now()
 
     if submit_btn:
         if not composition:
@@ -848,8 +815,21 @@ if item_menu and item_menu.endswith("写作评估"):
             st.error("写作要求不能为空。")
             st.stop()
         requirements = st.session_state["writing-evaluation-exam"]
-        assessment = cefr_english_writing_ability_assessment_for(requirements, composition)
+        assessment = cefr_english_writing_ability_assessment_for(
+            requirements, composition
+        )
         st.write(type(assessment))
         container_2.write(assessment)
 
+        # test_dict = {
+        #     "item": "英语写作CEFR能力评估",
+        #     "topic": topic,
+        #     "level": level,
+        #     "score": st.session_state["pa-assessment"]["pronunciation_result"][
+        #         "pronunciation_score"
+        #     ],
+        #     "duration": (datetime.now() - start).total_seconds(),
+        #     "record_time": datetime.now(pytz.UTC),
+        # }
+        # st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 # endregion
