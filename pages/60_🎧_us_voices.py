@@ -45,13 +45,13 @@ with st.expander(":headphones: 美式语音示例", expanded=False):
         """
     )
     wav_files = list(VOICES_DIR.glob("*.wav"))
-    cols = st.columns(2)
+    cols = st.columns(3)
     # 在每列中添加音频文件
     for i, wav_file in enumerate(wav_files):
         # 获取文件名（不包括扩展名）
         file_name = wav_file.stem
         # 在列中添加文本和音频
-        cols[i % 2].markdown(file_name)
-        cols[i % 2].audio(str(wav_file))
+        cols[i % 3].markdown(file_name)
+        cols[i % 3].audio(str(wav_file))
 
 # endregion
