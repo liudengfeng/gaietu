@@ -1,13 +1,14 @@
 import json
 import re
+import string
 from datetime import datetime, timedelta
 
 import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_mic_recorder import mic_recorder
-from menu import menu
 
+from menu import menu
 from mypylib.azure_pronunciation_assessment import (
     adjust_display_by_reference_text,
     read_audio_file,
@@ -15,8 +16,8 @@ from mypylib.azure_pronunciation_assessment import (
 from mypylib.constants import (
     CEFR_LEVEL_MAPS,
     CEFR_LEVEL_TOPIC,
-    VOICES_FP,
     ORAL_FP,
+    VOICES_FP,
     from_chinese_to_english_topic,
 )
 
@@ -760,13 +761,32 @@ def calculate_writing_total_score(data):
     return total_score
 
 
+CN_WRITING_ASSESSMENT_ITEM_MAPS = {
+    "content": "内容",
+    "word count compliance": "字数",
+    "language": "语言",
+    "structure": "结构",
+    "bonus": "奖励",
+}
+
+
+def get_cn_item_name(item):
+    item = item.lower().strip()  # 转换为小写并去除前后空格
+    item = item.translate(str.maketrans('', '', string.punctuation))  # 去除标点符号
+    return CN_WRITING_ASSESSMENT_ITEM_MAPS.get(item, item)
+
+
 def display_writing_assessment_results(container, assessment):
     content = f":rainbow[总分]：{calculate_writing_total_score(assessment)}分"
     for record in assessment["scoringRecords"]:
-        content += f"\s:rainbow[{record['criterion']}] ：{record['score']}分"
+        item = record["criterion"]
+        cn = get_cn_item_name(item)
+        content += f"  :rainbow[{cn}] ：{record['score']}分"
     content += "\n\n"
     for record in assessment["scoringRecords"]:
-        content += f" :rainbow[{record['criterion']}] ：**{record['justification']}**\n"
+        item = record["criterion"]
+        cn = get_cn_item_name(item)
+        content += f" :rainbow[{cn}] ：**{record['justification']}**\n\n"
     content += "\n\n点评：\n\n"
     content += assessment["review"]
     with container:
