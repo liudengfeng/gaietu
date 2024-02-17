@@ -813,5 +813,5 @@ def cefr_english_writing_ability_assessment(model, requirements, composition):
         contents_info,
         generation_config,
         stream=False,
-        parser=lambda x: x,
+        parser=json.loads,
     )
