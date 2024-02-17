@@ -771,7 +771,16 @@ if item_menu and item_menu.endswith("写作评估"):
         key="composition",
         label_visibility="collapsed",
     )
-    if composition:
+    btn_cols = st.columns(8)
+    submit_btn = btn_cols[0].button(
+        "评估[:pencil2:]",
+        key="evaluate_composition",
+        help="✨ 点击按钮，提交你的写作内容进行评估。",
+    )
+    if submit_btn:
+        if not composition:
+            st.error("写作内容不能为空。")
+            st.stop()
         assessment = generate_english_writing_assessment(
             load_vertex_model("gemini-pro"), composition
         )
