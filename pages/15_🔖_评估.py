@@ -769,24 +769,34 @@ CN_WRITING_ASSESSMENT_ITEM_MAPS = {
     "bonus": "奖励",
 }
 
+CN_WRITING_ASSESSMENT_ITEM_SCORE = {
+    "内容": 30,
+    "字数": 10,
+    "语言": 30,
+    "结构": 20,
+    "奖励": 10,
+}
+
 
 def get_cn_item_name(item):
     item = item.lower().strip()  # 转换为小写并去除前后空格
-    item = item.translate(str.maketrans('', '', string.punctuation))  # 去除标点符号
+    item = item.translate(str.maketrans("", "", string.punctuation))  # 去除标点符号
     return CN_WRITING_ASSESSMENT_ITEM_MAPS.get(item, item)
 
 
 def display_writing_assessment_results(container, assessment):
-    content = f":rainbow[总分]：{calculate_writing_total_score(assessment)}分"
+    total_score = calculate_writing_total_score(assessment)
+    content = f"总分：{total_score}/100"
     for record in assessment["scoringRecords"]:
         item = record["criterion"]
         cn = get_cn_item_name(item)
-        content += f"  :rainbow[{cn}] ：{record['score']}分"
+        max_score = CN_WRITING_ASSESSMENT_ITEM_SCORE.get(cn, 0)
+        content += f"  {cn}：{record['score']}/{max_score}分"
     content += "\n\n"
     for record in assessment["scoringRecords"]:
         item = record["criterion"]
         cn = get_cn_item_name(item)
-        content += f" :rainbow[{cn}] ：**{record['justification']}**\n\n"
+        content += f" {cn} ：{record['justification']}\n\n"
     content += "\n\n点评：\n\n"
     content += assessment["review"]
     with container:
