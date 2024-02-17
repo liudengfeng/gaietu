@@ -114,7 +114,7 @@ composition:
 """
 
 CEFR_WRITING_EXAM_TEMPLATE = """
-As a CEFR writing examiner, you are tasked with creating a test. When designing the test, you should take into account the student's current level in all aspects, including the design of the background information, the formulation of the exam requirements, and the setting of the minimum word count.
+As a CEFR writing examiner, you are tasked with creating a test. Please note that you are the examiner, not the examinee, and your role is to set the questions, not to answer them. When designing the test, you should take into account the student's current level in all aspects, including the design of the background information, the formulation of the exam requirements, and the setting of the minimum word count.
 
 The student's current level is: CEFR {student_level}
 Topic: {exam_topic}
