@@ -806,14 +806,14 @@ if item_menu and item_menu.endswith("写作评估"):
     st.subheader("写作能力评估", divider="rainbow", anchor="写作能力评估")
     st.markdown(st.session_state["writing-evaluation-exam"])
     cols = st.columns(2)
+    cols[0].markdown("写作内容")
+    cols[1].markdown("写作点评")
     container_1 = cols[0].container(height=HEIGHT, border=True)
     container_2 = cols[1].container(height=HEIGHT, border=True)
-    container_1.markdown("写作内容")
-    container_2.markdown("写作点评")
     composition = container_1.text_area(
         "写作评估",
         help="✨ 输入你的写作内容。",
-        height=HEIGHT - 20,
+        height=HEIGHT,
         key="composition",
         label_visibility="collapsed",
     )
