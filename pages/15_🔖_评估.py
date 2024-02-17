@@ -871,13 +871,13 @@ if item_menu and item_menu.endswith("写作评估"):
         total_score = calculate_writing_total_score(assessment)
         display_writing_assessment_results(container_2, assessment)
 
-        # test_dict = {
-        #     "item": "英语写作CEFR能力评估",
-        #     "topic": topic,
-        #     "level": level,
-        #     "score": total_score,
-        #     "duration": (datetime.now() - start).total_seconds(),
-        #     "record_time": datetime.now(pytz.UTC),
-        # }
-        # st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
+        test_dict = {
+            "item": "英语写作CEFR能力评估",
+            "topic": topic,
+            "level": level,
+            "score": total_score,
+            "duration": (datetime.now() - start).total_seconds(),
+            "record_time": datetime.now(pytz.UTC),
+        }
+        st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
 # endregion
