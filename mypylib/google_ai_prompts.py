@@ -113,6 +113,82 @@ composition:
 {composition}
 """
 
+CEFR_WRITING_SCORING_TEMPLATE = """
+As a CEFR writing assessor, it's your duty to evaluate the students' written tasks in accordance with the given grading criteria and the stipulations of the composition requirements.
+
+# Exam Requirements
+
+- Requirements: {requirements}
+
+# Grading Criteria
+
+- Scoring Overview
+    - Each criterion will be scored individually, based on specific circumstances.
+    - The total score is 100 points, divided among various categories.
+    - The detailed breakdown of scores for each category is as follows:
+
+- Content (Total: 30 points)
+    - Relevance to Theme and Requirements (Total: 10 points):
+        - Completely adheres to the assigned theme and meets all requirements: 10 points.
+        - Partially addresses the theme or requirements: 5-7 points.
+        - Deviates significantly from the theme or requirements: 0-4 points.
+    - Completeness (Total: 10 points):
+        - Covers all key points and provides substantial content relevant to the theme: 10 points.
+        - Misses a few key points but maintains overall completeness: 5-7 points.
+        - Lacks important points or content is incomplete: 0-4 points.
+    - Clarity and Cohesion (Total: 10 points):
+        - The point of view is clear, arguments are well-developed, and the essay flows smoothly: 10 points.
+        - Point of view is somewhat clear, arguments might need improvement, and the essay has minor transitions: 5-7 points.
+        - Vague views, underdeveloped arguments, and lack of clear transitions significantly hinder understanding: 0-4 points.
+- Word Count Compliance (Total: 10 points):
+    - The essay meets or exceeds the word count requirement: 10 points.
+    - The essay's word count is between 70% and 100% of the requirement: 5-7 points.
+    - The essay's word count is less than 70% of the requirement: 0-4 points.
+- Language (Total: 30 points)
+    - Vocabulary (Total: 10 points):
+        - Rich and varied vocabulary used appropriately: 10 points.
+        - Meets vocabulary requirements with occasional errors: 5-7 points.
+        - Poor vocabulary significantly affecting understanding: 0-4 points.
+    - Grammar (Total: 10 points):
+        - Grammatically accurate with no major errors: 10 points.
+        - Occasional grammatical errors that do not impede understanding: 5-7 points.
+        - Frequent grammatical errors affecting understanding: 0-4 points.
+    - Fluency (Total: 10 points):
+        - Sentences are clear, natural, and engaging: 10 points.
+        - Minor awkwardness or stiffness in sentence structure or expression: 5-7 points.
+        - Sentences lack fluency and clarity, negatively impacting understanding: 0-4 points.
+- Structure (Total: 20 points)
+    - Organization (Total: 10 points):
+        - Logical and well-organized structure with clear introduction, body paragraphs, and conclusion: 10 points.
+        - Somewhat organized structure but may lack clarity or transitions: 5-7 points.
+        - Unorganized structure significantly impacting coherence and flow: 0-4 points.
+    - Cohesion (Total: 10 points):
+        - Effective use of transition words and phrases to connect ideas: 10 points.
+        - Some awkward transitions but overall coherence maintained: 5-7 points.
+        - Lack of clear transitions impacting understanding and flow: 0-4 points.
+- Bonus (Total: 10 points)
+    - Title (Total: 5 points):
+        - Captivating and relevant to the content: 5 points.
+        - Somewhat relevant or informative: 3-4 points.
+        - Unclear or unrelated to the content: 0-2 points.
+    - Creativity (Total: 5 points):
+        - Demonstrates originality and creativity in addressing the theme and requirements: 5 points.
+        - Some creativity shown but could be improved: 3-4 points.
+        - Little to no creativity shown: 0-2 points.
+
+Step by step:
+- For each sub-criterion under each main criterion, allocate scores based on the detailed grading rubric provided. Each sub-criterion should be scored separately, and the scores for the sub-criteria under a main criterion should be combined to form the total score for that main criterion.
+- Compile scoring records, each record should be a dictionary with keys representing the specific criterion, the corresponding score, and a brief justification (in Markdown format). The output should be a list of these dictionaries.
+- Furnish a comprehensive evaluation (in Markdown format) of the composition, highlighting its merits and identifying areas that require enhancement.
+- Ultimately, form a dictionary that includes the review and a list of scoring records.
+- Output in JSON.
+
+composition:
+
+{composition}
+"""
+
+
 CEFR_WRITING_EXAM_TEMPLATE = """
 As a CEFR writing examiner, you are tasked with creating a test. Please note that you are the examiner, not the examinee, and your role is to set the questions, not to answer them. When designing the test, you should take into account the student's current level in all aspects, including the design of the background information, the formulation of the exam requirements, and the setting of the minimum word count.
 
