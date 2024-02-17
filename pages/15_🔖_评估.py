@@ -856,7 +856,7 @@ if item_menu and item_menu.endswith("写作评估"):
         st.session_state["writing-evaluation-exam"] = (
             english_writing_exam_assessment_for(level, en_topic)
         )
-    
+
     exam_container.markdown(st.session_state["writing-evaluation-exam"])
 
     if submit_btn:
@@ -866,7 +866,7 @@ if item_menu and item_menu.endswith("写作评估"):
         if not st.session_state["writing-evaluation-exam"]:
             st.error("写作要求不能为空。")
             st.stop()
-        
+
         start = datetime.now()
         requirements = st.session_state["writing-evaluation-exam"]
         assessment = cefr_english_writing_ability_assessment_for(
@@ -874,9 +874,13 @@ if item_menu and item_menu.endswith("写作评估"):
         )
         try:
             total_score = calculate_writing_total_score(assessment)
-        except:
-            st.write(assessment)
-        
+        except KeyError:
+            # "scoring_records":[]
+            # 不满足要求时没有评分记录
+            # st.write(assessment)
+            st.error("评估失败：未找到满足当前要求的评分记录。可能是因为您更改了考察等级或测试主题，忘记删除之前的写作文本。")
+            st.stop()
+
         display_writing_assessment_results(container_2, assessment)
 
         test_dict = {
