@@ -103,7 +103,7 @@ As an expert in English composition instruction, it is your duty to evaluate you
         - The language style is bland and lacks appeal. Score: 0-2.
 
 Step by step:
-- For each criterion, allocate scores based on the comprehensive grading rubric provided.
+- For each sub-criterion under each main criterion, allocate scores based on the detailed grading rubric provided. Each sub-criterion should be scored separately, and the scores for the sub-criteria under a main criterion should be combined to form the total score for that main criterion.
 - Compile scoring records, each record should be a dictionary with keys representing the specific criterion, the corresponding score, and a brief justification (in Markdown format). The output should be a list of these dictionaries.
 - Furnish a comprehensive evaluation (in Markdown format) of the composition, highlighting its merits and identifying areas that require enhancement.
 - Ultimately, form a dictionary that includes the review and a list of scoring records.
