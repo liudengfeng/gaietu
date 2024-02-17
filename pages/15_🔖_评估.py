@@ -753,6 +753,26 @@ def cefr_english_writing_ability_assessment_for(requirements, composition):
     )
 
 
+def calculate_writing_total_score(data):
+    total_score = 0
+    for record in data["scoringRecords"]:
+        total_score += record["score"]
+    return total_score
+
+
+def display_writing_assessment_results(container, assessment):
+    content = f":rainbow[总分]：{calculate_writing_total_score(assessment)}分"
+    for record in data["scoringRecords"]:
+        content += f" :rainbow[{record['criterion']}] ：{record['score']}分"
+    content += "\n"
+    for record in data["scoringRecords"]:
+        content += f" :rainbow[{record['criterion']}] ：**{record['justification']}**\n"
+    content += "\n\n点评：\n\n"
+    content += assessment["review"]
+    with container:
+        st.markdown(content)
+
+
 # endregion
 
 if item_menu and item_menu.endswith("写作评估"):
@@ -818,16 +838,14 @@ if item_menu and item_menu.endswith("写作评估"):
         assessment = cefr_english_writing_ability_assessment_for(
             requirements, composition
         )
-        st.write(type(assessment))
-        container_2.write(assessment)
+        total_score = calculate_writing_total_score(assessment)
+        display_writing_assessment_results(container_2, assessment)
 
         # test_dict = {
         #     "item": "英语写作CEFR能力评估",
         #     "topic": topic,
         #     "level": level,
-        #     "score": st.session_state["pa-assessment"]["pronunciation_result"][
-        #         "pronunciation_score"
-        #     ],
+        #     "score": total_score,
         #     "duration": (datetime.now() - start).total_seconds(),
         #     "record_time": datetime.now(pytz.UTC),
         # }
