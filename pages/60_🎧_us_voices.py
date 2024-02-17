@@ -14,7 +14,7 @@ from mypylib.st_helper import (
 logger = logging.getLogger("streamlit")
 setup_logger(logger)
 
-CURRENT_CWD: Path = Path(__file__).parent
+CURRENT_CWD: Path = Path(__file__).parent.parent
 VOICES_DIR = CURRENT_CWD / "resource/us_voices"
 # Initialize st.session_state.role to None
 if "role" not in st.session_state:
