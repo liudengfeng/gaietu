@@ -849,6 +849,7 @@ if item_menu and item_menu.endswith("写作评估"):
             st.stop()
         requirements = st.session_state["writing-evaluation-exam"]
         assessment = cefr_english_writing_ability_assessment_for(requirements, composition)
+        st.write(type(assessment))
         container_2.write(assessment)
 
 # endregion
