@@ -44,7 +44,7 @@ from mypylib.utils import calculate_audio_duration
 from mypylib.word_utils import audio_autoplay_elem
 
 # region 配置
-
+HEIGHT = 600
 st.set_page_config(
     page_title="能力评估",
     page_icon=":bookmark:",
@@ -760,9 +760,17 @@ if item_menu and item_menu.endswith("口语能力"):
 if item_menu and item_menu.endswith("写作评估"):
     on_project_changed("能力评估-写作评估")
     cols = st.columns(2)
-    container_1 = cols[0].container(height=600, border=True)
-    container_2 = cols[1].container(height=600, border=True)
-    composition = container_1.text_area("写作评估", help="✨ 输入你的写作内容。")
+    container_1 = cols[0].container(height=HEIGHT, border=True)
+    container_2 = cols[1].container(height=HEIGHT, border=True)
+    container_1.subheader("写作内容", divider="rainbow", anchor="写作内容")
+    container_2.subheader("写作点评", divider="rainbow", anchor="写作点评")
+    composition = container_1.text_area(
+        "写作评估",
+        help="✨ 输入你的写作内容。",
+        height=HEIGHT,
+        key="composition",
+        label_visibility="collapsed",
+    )
     if composition:
         assessment = generate_english_writing_assessment(
             load_vertex_model("gemini-pro"), composition
