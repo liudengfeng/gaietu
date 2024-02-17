@@ -300,7 +300,7 @@ if step_cols[0].button(":bust_in_silhouette: 注册用户", key="注册用户"):
 if step_cols[1].button(":package: 订阅续费", key="订阅续费"):
     st.switch_page("pages/01_💰_订阅.py")
 
-if step_cols[2].button(":headphones: 试听美音", key="试听美音"):
+if step_cols[2].button(":headphones: 试听", key="试听美音"):
     st.switch_page("pages/60_🎧_us_voices.py")
 
 # col1, col2 = st.columns([3, 1])
