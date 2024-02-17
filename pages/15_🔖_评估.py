@@ -767,7 +767,7 @@ if item_menu and item_menu.endswith("写作评估"):
     composition = container_1.text_area(
         "写作评估",
         help="✨ 输入你的写作内容。",
-        height=HEIGHT - 20,
+        height=HEIGHT - 40,
         key="composition",
         label_visibility="collapsed",
     )
