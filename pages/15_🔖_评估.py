@@ -16,6 +16,7 @@ from mypylib.constants import CEFR_LEVEL_MAPS, CEFR_LEVEL_TOPIC, VOICES_FP, ORAL
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
+    generate_english_writing_assessment,
     generate_oral_ability_topics,
     generate_oral_statement_template,
     generate_pronunciation_assessment_text,
@@ -248,7 +249,9 @@ def display_assessment_text(pa_text_container):
 #         audio_obj.clear()  # 删除所有元素
 
 
-@st.cache_data(ttl=timedelta(days=1), show_spinner="AI正在生成口语讨论话题清单，请稍候...")
+@st.cache_data(
+    ttl=timedelta(days=1), show_spinner="AI正在生成口语讨论话题清单，请稍候..."
+)
 def generate_oral_ability_topics_for(difficulty, scenario_category):
     text = generate_oral_ability_topics(
         st.session_state["text_model"], scenario_category, difficulty, 5
@@ -756,5 +759,14 @@ if item_menu and item_menu.endswith("口语能力"):
 
 if item_menu and item_menu.endswith("写作评估"):
     on_project_changed("能力评估-写作评估")
+    cols = st.columns(2)
+    container_1 = cols[0].container(height=600, border=True)
+    container_2 = cols[1].container(height=600, border=True)
+    composition = container_1.text_area("写作评估", help="✨ 输入你的写作内容。")
+    if composition:
+        assessment = generate_english_writing_assessment(
+            load_vertex_model("gemini-pro"), composition
+        )
+        container_2.write(assessment)
 
 # endregion

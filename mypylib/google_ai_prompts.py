@@ -43,9 +43,16 @@ Reading Comprehension Fill in the Blank Question Guidelines:
 """
 
 
-# 问题：总分、明细不一致
-ENGLISH_ESSAY_SCORING_TEMPLATE = """
-As an educator specializing in English composition, your task is to evaluate your students' essays according to the following criteria.
+ENGLISH_WRITING_SCORING_TEMPLATE = """
+As an expert in English composition instruction, it is your duty to evaluate your students' writing assignments in accordance with the subsequent grading criteria.
+
+# Grading Criteria
+
+- Scoring Overview
+    - Each criterion will be scored individually, based on specific circumstances.
+    - The total score is 100 points, divided among various categories.
+    - The detailed breakdown of scores for each category is as follows:
+
 - Content (Total: 40 points)
     - Consistency between the theme of the title and the content of the article (Total: 10 points):
         - Completely conforms to the meaning of the question, understands and answers the question accurately, score: 10.
@@ -95,19 +102,14 @@ As an educator specializing in English composition, your task is to evaluate you
         - The language style is basically vivid and has a certain appeal. Score: 3-4.
         - The language style is bland and lacks appeal. Score: 0-2.
 
-- Scoring details
-    - Scores will be given for each criterion based on the specific circumstances.
-    - The full score is 100 points.
-
 Step by step:
-- For each criterion, evaluate the specific aspects according to the detailed grading rubric. Generate score records, each record including the specific aspect, score, and explanation.
-- Ensure that the total score for each criterion does not exceed the total possible points for that criterion.
-- Calculate the score for each criterion by summing up the scores of its specific aspects.
-- The total score is equal to the sum of the scores of each criterion.
-- The output key is a dictionary with total points, scoring details for each criterion, and scoring details for each specific aspect.
-- Output format is JSON.
+- For each criterion, allocate scores based on the comprehensive grading rubric provided.
+- Compile scoring records, each record should be a dictionary with keys representing the specific criterion, the corresponding score, and a brief justification (in Markdown format). The output should be a list of these dictionaries.
+- Furnish a comprehensive evaluation (in Markdown format) of the composition, highlighting its merits and identifying areas that require enhancement.
+- Ultimately, form a dictionary that includes the review and a list of scoring records.
+- Output in JSON.
 
-Composition:
+composition:
 
 {composition}
 """
