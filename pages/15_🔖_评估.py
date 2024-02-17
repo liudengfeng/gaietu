@@ -762,10 +762,10 @@ def calculate_writing_total_score(data):
 
 def display_writing_assessment_results(container, assessment):
     content = f":rainbow[总分]：{calculate_writing_total_score(assessment)}分"
-    for record in data["scoringRecords"]:
+    for record in assessment["scoringRecords"]:
         content += f" :rainbow[{record['criterion']}] ：{record['score']}分"
     content += "\n"
-    for record in data["scoringRecords"]:
+    for record in assessment["scoringRecords"]:
         content += f" :rainbow[{record['criterion']}] ：**{record['justification']}**\n"
     content += "\n\n点评：\n\n"
     content += assessment["review"]
