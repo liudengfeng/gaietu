@@ -62,6 +62,7 @@ menu()
 check_access(False)
 configure_google_apis()
 
+start = datetime.now()
 menu_items = ["发音评估", "口语能力", "写作评估"]
 menu_emojis = ["🔊", "🗣️", "✍️"]
 menu_opts = [f"{e} {i}" for i, e in zip(menu_items, menu_emojis)]
@@ -380,7 +381,7 @@ if item_menu and item_menu.endswith("发音评估"):
 
         reference_text = process_dialogue_text(st.session_state["pa-current-text"])
 
-        start = datetime.now(pytz.UTC)
+        start = datetime.now()
         st.session_state["pa-assessment"] = pronunciation_assessment_for(
             audio_info,
             reference_text,
@@ -403,7 +404,7 @@ if item_menu and item_menu.endswith("发音评估"):
             "score": st.session_state["pa-assessment"]["pronunciation_result"][
                 "pronunciation_score"
             ],
-            "duration": (datetime.now(pytz.UTC) - start).total_seconds(),
+            "duration": (datetime.now() - start).total_seconds(),
             "record_time": datetime.now(pytz.UTC),
         }
         st.session_state.dbi.add_documents_to_user_history("performances", [test_dict])
