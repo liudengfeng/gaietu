@@ -62,7 +62,7 @@ menu()
 check_access(False)
 configure_google_apis()
 
-start = datetime.now()
+
 menu_items = ["发音评估", "口语能力", "写作评估"]
 menu_emojis = ["🔊", "🗣️", "✍️"]
 menu_opts = [f"{e} {i}" for i, e in zip(menu_items, menu_emojis)]
@@ -856,7 +856,6 @@ if item_menu and item_menu.endswith("写作评估"):
             english_writing_exam_assessment_for(level, en_topic)
         )
         exam_container.markdown(st.session_state["writing-evaluation-exam"])
-        start = datetime.now()
 
     if submit_btn:
         if not composition:
@@ -865,6 +864,8 @@ if item_menu and item_menu.endswith("写作评估"):
         if not st.session_state["writing-evaluation-exam"]:
             st.error("写作要求不能为空。")
             st.stop()
+        
+        start = datetime.now()
         requirements = st.session_state["writing-evaluation-exam"]
         assessment = cefr_english_writing_ability_assessment_for(
             requirements, composition
