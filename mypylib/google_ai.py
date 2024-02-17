@@ -25,6 +25,7 @@ from vertexai.preview.generative_models import (
 from .constants import USD_TO_CNY_EXCHANGE_RATE, from_chinese_to_english_topic
 from .google_ai_prompts import (
     CEFR_WRITING_EXAM_TEMPLATE,
+    CEFR_WRITING_SCORING_TEMPLATE,
     ENGLISH_WRITING_SCORING_TEMPLATE,
     MULTIPLE_CHOICE_QUESTION,
     READING_COMPREHENSION_FILL_IN_THE_BLANK_QUESTION,
@@ -758,6 +759,7 @@ def pick_a_phrase(model, phrase):
 
 
 def generate_english_writing_exam_assessment(model, student_level, exam_topic):
+    # 英语写作考题
     prompt = CEFR_WRITING_EXAM_TEMPLATE.format(
         student_level=student_level, exam_topic=exam_topic
     )
@@ -777,15 +779,35 @@ def generate_english_writing_exam_assessment(model, student_level, exam_topic):
     )
 
 
-def generate_english_writing_assessment(model, composition):
-    prompt = ENGLISH_WRITING_SCORING_TEMPLATE.format(composition=composition)
+# def generate_english_writing_assessment(model, composition):
+#     prompt = ENGLISH_WRITING_SCORING_TEMPLATE.format(composition=composition)
+#     contents = [prompt]
+#     generation_config = GenerationConfig(
+#         max_output_tokens=4096, temperature=0.1, top_p=1.0
+#     )
+#     contents_info = to_contents_info(contents)
+#     return parse_generated_content_and_update_token(
+#         "英语写作能力评估",
+#         "gemini-pro",
+#         model.generate_content,
+#         contents_info,
+#         generation_config,
+#         stream=False,
+#         parser=lambda x: x,
+#     )
+
+
+def cefr_english_writing_ability_assessment(model, requirements, composition):
+    prompt = CEFR_WRITING_SCORING_TEMPLATE.format(
+        requirements=requirements, composition=composition
+    )
     contents = [prompt]
     generation_config = GenerationConfig(
         max_output_tokens=4096, temperature=0.1, top_p=1.0
     )
     contents_info = to_contents_info(contents)
     return parse_generated_content_and_update_token(
-        "英语写作能力评估",
+        "英语写作CEFR能力评估",
         "gemini-pro",
         model.generate_content,
         contents_info,

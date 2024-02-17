@@ -22,7 +22,7 @@ from mypylib.constants import (
 
 # from mypylib.db_model import LearningTime
 from mypylib.google_ai import (
-    generate_english_writing_assessment,
+    cefr_english_writing_ability_assessment,
     generate_english_writing_exam_assessment,
     generate_oral_ability_topics,
     generate_oral_statement_template,
@@ -781,9 +781,9 @@ def english_writing_exam_assessment_for(student_level, exam_topic):
 
 
 @st.cache_data(ttl=timedelta(days=1), show_spinner="AI 正在评估，请稍候...")
-def english_writing_assessment_for(composition):
-    return generate_english_writing_assessment(
-        st.session_state["text_model"], composition
+def cefr_english_writing_ability_assessment_for(requirements, composition):
+    return cefr_english_writing_ability_assessment(
+        st.session_state["text_model"], requirements, composition
     )
 
 
@@ -845,10 +845,10 @@ if item_menu and item_menu.endswith("写作评估"):
             st.error("写作内容不能为空。")
             st.stop()
         if not st.session_state["writing-evaluation-exam"]:
-            st.error("写作内容不能为空。")
+            st.error("写作要求不能为空。")
             st.stop()
-
-        assessment = english_writing_assessment_for(composition)
+        requirements = st.session_state["writing-evaluation-exam"]
+        assessment = cefr_english_writing_ability_assessment_for(requirements, composition)
         container_2.write(assessment)
 
 # endregion
