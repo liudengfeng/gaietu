@@ -269,11 +269,6 @@ with tabs[get_item_index("学习报告")]:
         "phone_number": "手机号码",
     }
 
-    df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
-    df_previous_period = pd.DataFrame(
-        get_exercises(phone_number, start_date, end_date, previous_period=True)
-    )
-
     study_report_items = [
         "📚 单词",
         "⏰ 时间",
@@ -286,8 +281,14 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("📚 单词")]:
         st.subheader("📚 单词练习", divider="rainbow")
         if st.button(
-            "查阅[:eyes:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
+            "查阅[:eyes:]",
+            key="study_word_button",
+            help="✨ 点击查看学习单词分析报告。",
         ):
+            df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
+            df_previous_period = pd.DataFrame(
+                get_exercises(phone_number, start_date, end_date, previous_period=True)
+            )
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
@@ -298,8 +299,14 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("⏰ 时间")]:
         st.subheader("⏰ 学习时间", divider="rainbow")
         if st.button(
-            "查阅[:eyes:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
+            "查阅[:eyes:]",
+            key="study_time_button",
+            help="✨ 点击查看学习时间分析报告。",
         ):
+            df = pd.DataFrame(get_exercises(phone_number, start_date, end_date))
+            df_previous_period = pd.DataFrame(
+                get_exercises(phone_number, start_date, end_date, previous_period=True)
+            )
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
             else:
@@ -310,7 +317,9 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("📈 进度")]:
         st.subheader("📈 学习进度", divider="rainbow")
         if st.button(
-            "查阅[:eyes:]", key="study_progress_button", help="✨ 点击查看学习进度报告。"
+            "查阅[:eyes:]",
+            key="study_progress_button",
+            help="✨ 点击查看学习进度报告。",
         ):
             df = pd.DataFrame(get_exercises(phone_number))
             if df.empty:
@@ -356,31 +365,6 @@ with tabs[get_item_index("学习报告")]:
             utc_now = datetime.datetime.now(pytz.utc)
             # 获取性能数据
             df = get_performance_data(utc_now)
-
-            # # 临时添加的数据
-            # import numpy as np
-
-            # n = 50
-            # phone_numbers = [
-            #     f"13{np.random.randint(100000000, 999999999)}" for _ in range(n)
-            # ]
-            # provinces = ["辽宁", "重庆", "广东"]
-            # items = ["词意测试", "发音评估", "拼图游戏"]
-
-            # # 生成模拟数据
-
-            # data = {
-            #     "手机号码": phone_numbers,
-            #     "省份": np.random.choice(provinces, n),
-            #     "项目": np.random.choice(items, n),
-            #     "得分": np.random.uniform(0, 100, n).round(2),
-            # }
-
-            # # 创建 DataFrame
-            # df2 = pd.DataFrame(data)
-
-            # 合并 df1 和 df2
-            # df = pd.concat([df1, df2], ignore_index=True)
 
             if df.empty:
                 st.warning("当前期间内没有成绩记录。", icon="⚠️")
