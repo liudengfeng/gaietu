@@ -436,7 +436,7 @@ sidebar_status = st.sidebar.empty()
 
 
 if item_menu == "支付管理":
-    items = ["订阅登记", "支付管理"]
+    items = ["订阅登记", "支付管理", "权限设置"]
     tabs = st.tabs(items)
     with tabs[items.index("订阅登记")]:
         st.subheader("订阅登记")
@@ -794,6 +794,99 @@ if item_menu == "支付管理":
                 st.toast(f"删除支付记录，订单号：{order_id}", icon="⚠️")
             # 清除删除的行
             users_payments["deleted_rows"] = []
+
+    # with tabs[items.index("权限设置")]:
+    #     st.subheader("查询参数")
+    #     # with st.form(key="query_form", clear_on_submit=True):
+    #     with st.form(key="query_form-2"):
+    #         payment_0_cols = st.columns(2)
+    #         payment_0_cols[0].text_input(label="手机号码", key="phone-number-2")
+    #         payment_0_cols[1].text_input(label="用户姓名", key="user-name-2")
+    #         query_button = st.form_submit_button(label="查询")
+
+    #         if query_button:
+    #             kwargs = {}
+    #             kwargs.update(
+    #                 {
+    #                     "phone_number": st.session_state.get(
+    #                         "phone-number-2", None
+    #                     ),
+    #                     "user-name": st.session_state.get("user-name-2", None),
+    #                 }
+    #             )
+    #             # 删除字典中的空值部分【None ""】
+    #             kwargs = {k: v for k, v in kwargs.items() if v}
+    #             st.write(f"{kwargs=}")
+
+    #             results = st.session_state.dbi.query_payments(kwargs)
+    #             # 将每个文档转换为字典
+    #             dicts = [{"order_id": doc.id, **doc.to_dict()} for doc in results]
+    #             st.write(f"{dicts=}")
+    #             st.session_state["queried_payments"] = dicts
+
+    #     st.subheader("支付清单")
+    #     df = pd.DataFrame(st.session_state.get("queried_payments", {}))
+
+    #     placeholder = st.empty()
+    #     status = st.empty()
+    #     pay_cols = st.columns([1, 1, 8])
+    #     upd_btn = pay_cols[0].button(
+    #         "更新", key="upd_btn", help="✨ 更新数据库中选中的支付记录"
+    #     )
+    #     del_btn = pay_cols[1].button(
+    #         "删除", key="del_btn", help="✨ 在数据库中删除选中的支付记录"
+    #     )
+    #     # # st.divider()
+    #     if df.empty:
+    #         placeholder.info("没有记录")
+    #     else:
+    #         # 将时间列转换为本地时区
+    #         for col in PAYMENT_TIME_COLS:
+    #             if col in df.columns:
+    #                 df[col] = df[col].dt.tz_convert(tz)
+    #         edited_df = placeholder.data_editor(
+    #             df,
+    #             column_config=PAYMENT_COLUMN_CONFIG,
+    #             column_order=PAYMENT_COLUMN_ORDER,
+    #             hide_index=True,
+    #             num_rows="dynamic",
+    #             key="users_payments",
+    #             disabled=[
+    #                 col for col in df.columns if col not in PAYMENT_EDITABLE_COLS
+    #             ],
+    #         )
+
+    #     # # Access edited data
+    #     if upd_btn and st.session_state.get("users_payments", None):
+    #         users_payments = st.session_state["users_payments"]
+    #         # st.write(f"{users_payments=}")
+    #         for idx, d in users_payments["edited_rows"].items():
+    #             order_id = df.iloc[idx]["order_id"]  # type: ignore
+    #             for key in d.keys():
+    #                 if key in PAYMENT_TIME_COLS:
+    #                     # 检查返回的对象的类型及其值
+    #                     # st.write(f"{type(d[key])=}, {d[key]=}")
+    #                     value = d[key]
+    #                     # 将 'Z' 替换为 '+00:00'
+    #                     value = value.replace("Z", "+00:00")
+    #                     # 将字符串转换为 datetime 对象
+    #                     timestamp = datetime.datetime.fromisoformat(value).astimezone(
+    #                         datetime.timezone.utc
+    #                     )
+    #                     d[key] = timestamp
+    #             st.session_state.dbi.update_payment(order_id, d)
+    #             st.toast(f"更新支付记录，订单号：{order_id}", icon="🎉")
+    #         users_payments["edited_rows"] = {}
+
+    #     if del_btn and st.session_state.get("users_payments", None):
+    #         users_payments = st.session_state["users_payments"]
+    #         # st.write(f'{users_payments["deleted_rows"]=}')
+    #         for idx in users_payments["deleted_rows"]:
+    #             order_id = df.iloc[idx]["order_id"]  # type: ignore
+    #             st.session_state.dbi.delete_payment(order_id)
+    #             st.toast(f"删除支付记录，订单号：{order_id}", icon="⚠️")
+    #         # 清除删除的行
+    #         users_payments["deleted_rows"] = []
 
 
 # endregion
