@@ -18,7 +18,7 @@
 | `:wastebasket:`               | 🗑️     | 清除文本   |
 | `:heavy_plus_sign:`           | ➕     | 添加       |
 | `:heavy_minus_sign:`          | ➖     | 删除       |
-| `:chipmunk:`                  | 👀     | 查看       |
+| `:eyes:`                  | 👀     | 查看       |
 | `:eye:`                       | 👁️     | 查看       |
 | `:headphones:`                | 🎧     | 耳机       |
 | `:loud_sound:`                | 🔊     | 收听       |
