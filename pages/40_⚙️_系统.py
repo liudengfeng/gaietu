@@ -535,7 +535,8 @@ if item_menu == "支付管理":
 
     with tabs[items.index("支付管理")]:
         st.subheader("查询参数")
-        with st.form(key="query_form", clear_on_submit=True):
+        # with st.form(key="query_form", clear_on_submit=True):
+        with st.form(key="query_form"):
             # 精确匹配
             t_0_cols = st.columns(4)
             t_0_cols[0].markdown(":rainbow[精确匹配查询]")
