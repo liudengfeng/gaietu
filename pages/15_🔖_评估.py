@@ -824,7 +824,7 @@ if item_menu and item_menu.endswith("写作评估"):
     exam_container = st.container()
     cols = st.columns(2)
     cols[0].markdown("写作内容")
-    cols[1].markdown("写作点评")
+    cols[1].markdown("AI老师点评")
     container_1 = cols[0].container(height=HEIGHT, border=True)
     container_2 = cols[1].container(height=HEIGHT, border=True)
     composition = container_1.text_area(
