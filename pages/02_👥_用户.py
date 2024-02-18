@@ -275,16 +275,16 @@ with tabs[get_item_index("学习报告")]:
     )
 
     study_report_items = [
-        "📚 学习单词",
-        "⏰ 学习时间",
-        "📈 学习进度",
-        "📊 成绩趋势",
-        "🏆 成绩排位",
+        "📚 单词",
+        "⏰ 时间",
+        "📈 进度",
+        "📊 成绩",
+        "🏆 排名",
     ]
     study_report_tabs = st.tabs(study_report_items)
 
-    with study_report_tabs[study_report_items.index("📚 学习单词")]:
-        st.subheader("📚 学习单词", divider="rainbow")
+    with study_report_tabs[study_report_items.index("📚 单词")]:
+        st.subheader("📚 单词练习", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
         ):
@@ -295,7 +295,7 @@ with tabs[get_item_index("学习报告")]:
                     df, df_previous_period, column_mapping, user_tz, period
                 )
 
-    with study_report_tabs[study_report_items.index("⏰ 学习时间")]:
+    with study_report_tabs[study_report_items.index("⏰ 时间")]:
         st.subheader("⏰ 学习时间", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
@@ -331,8 +331,8 @@ with tabs[get_item_index("学习报告")]:
                     f"您的目标是需要 {hours} 小时的学习时间，您已经完成了 {total_time:.0f} 小时的学习。已经完成了目标的 {progress:.2%}。继续加油！",
                 )
 
-    with study_report_tabs[study_report_items.index("📊 成绩趋势")]:
-        st.subheader("📊 成绩趋势", divider="rainbow")
+    with study_report_tabs[study_report_items.index("📊 成绩")]:
+        st.subheader("📊 成绩走势", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
         ):
@@ -347,8 +347,8 @@ with tabs[get_item_index("学习报告")]:
             else:
                 display_average_scores(df, df_previous_period, user_tz)
 
-    with study_report_tabs[study_report_items.index("🏆 成绩排位")]:
-        st.subheader("🏆 成绩排位", divider="rainbow")
+    with study_report_tabs[study_report_items.index("🏆 排名")]:
+        st.subheader("🏆 成绩排名", divider="rainbow")
         st.markdown("✨ :rainbow[数据每4小时更新一次。]")
         if st.button(
             "查阅[:eye:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
