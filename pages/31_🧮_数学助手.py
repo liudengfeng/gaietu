@@ -86,10 +86,10 @@ def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
-        temperature=st.session_state["temperature-vision"],
-        top_p=st.session_state["top-p-vision"],
-        top_k=st.session_state["top-k-vision"],
-        max_output_tokens=st.session_state["max-output-tokens-vision"],
+        temperature=0.0,
+        top_p=1.0,
+        top_k=32,
+        max_output_tokens=2048,
     )
     display_generated_content_and_update_token(
         "多模态AI",
