@@ -41,24 +41,20 @@ def authenticated_menu():
     st.sidebar.page_link(
         "pages/29_♊_GAI.py", label="智能AI", icon="♊", help="✨ 进入智能AI页面。"
     )
-    if "role" not in st.session_state and st.session_state.role in [
-        "超级用户",
-        "管理员",
-    ]:
-        st.sidebar.page_link(
-            "pages/31_🧮_数学助手.py",
-            label="数学解题助手",
-            icon="🧮",
-            help="✨ 数学助手。",
-        )
+    st.sidebar.page_link(
+        "pages/31_🧮_数学助手.py",
+        label="数学解题助手",
+        icon="🧮",
+        help="✨ 数学助手。",
+        disabled=st.session_state.role
+        not in [
+            "超级用户",
+            "管理员",
+        ],
+    )
     help_page()
     if st.session_state.role in ["管理员"]:
         st.sidebar.page_link("pages/40_⚙️_系统.py", label="系统管理", icon="⚙️")
-        # st.sidebar.page_link(
-        #     "pages/super-admin.py",
-        #     label="Manage admin access",
-        #     disabled=st.session_state.role != "super-admin",
-        # )
 
 
 def unauthenticated_menu():
@@ -93,14 +89,6 @@ def menu():
     if "role" not in st.session_state or st.session_state.role is None:
         unauthenticated_menu()
         return
-    # pages = [
-    #     "pages/02_👥_用户.py",
-    #     "pages/12_📚_单词.py",
-    #     "pages/13_💪_练习.py",
-    #     "pages/14_🏄‍♀️_写作.py",
-    #     "pages/15_🔖_评估.py",
-    #     "pages/40_⚙️_系统.py",
-    # ]
     authenticated_menu()
 
 
