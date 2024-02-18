@@ -307,7 +307,7 @@ with tabs[get_item_index("学习报告")]:
                     df, df_previous_period, column_mapping, user_tz, period
                 )
 
-    with study_report_tabs[study_report_items.index("📈 学习进度")]:
+    with study_report_tabs[study_report_items.index("📈 进度")]:
         st.subheader("📈 学习进度", divider="rainbow")
         if st.button(
             "查阅[:eye:]", key="study_progress_button", help="✨ 点击查看学习进度报告。"
