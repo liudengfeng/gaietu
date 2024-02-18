@@ -876,9 +876,7 @@ if item_menu and item_menu.endswith("写作评估"):
             total_score = calculate_writing_total_score(assessment)
         except KeyError:
             # "scoring_records":[]
-            # 不满足要求时没有评分记录
-            # st.write(assessment)
-            st.error("评估失败：未找到满足当前要求的评分记录。可能是因为您更改了考察等级或测试主题，忘记删除之前的写作文本。")
+            st.error("评估未能完成：未能找到符合当前要求的评分记录。这可能是由于您更改了CEFR等级或主题，但未删除之前的写作文本。")
             st.stop()
 
         display_writing_assessment_results(container_2, assessment)
