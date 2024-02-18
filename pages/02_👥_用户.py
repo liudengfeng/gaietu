@@ -286,7 +286,7 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("📚 单词")]:
         st.subheader("📚 单词练习", divider="rainbow")
         if st.button(
-            "查阅[:eye:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
+            "查阅[:chipmunk:]", key="study_word_button", help="✨ 点击查看学习单词分析报告。"
         ):
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
@@ -298,7 +298,7 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("⏰ 时间")]:
         st.subheader("⏰ 学习时间", divider="rainbow")
         if st.button(
-            "查阅[:eye:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
+            "查阅[:chipmunk:]", key="study_time_button", help="✨ 点击查看学习时间分析报告。"
         ):
             if df.empty:
                 st.warning("当前期间内没有学习记录。", icon="⚠️")
@@ -310,7 +310,7 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("📈 进度")]:
         st.subheader("📈 学习进度", divider="rainbow")
         if st.button(
-            "查阅[:eye:]", key="study_progress_button", help="✨ 点击查看学习进度报告。"
+            "查阅[:chipmunk:]", key="study_progress_button", help="✨ 点击查看学习进度报告。"
         ):
             df = pd.DataFrame(get_exercises(phone_number))
             if df.empty:
@@ -334,7 +334,7 @@ with tabs[get_item_index("学习报告")]:
     with study_report_tabs[study_report_items.index("📊 成绩")]:
         st.subheader("📊 成绩走势", divider="rainbow")
         if st.button(
-            "查阅[:eye:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
+            "查阅[:chipmunk:]", key="score_trend_button", help="✨ 点击查看成绩趋势报告。"
         ):
             df = pd.DataFrame(get_performances(phone_number, start_date, end_date))
             df_previous_period = pd.DataFrame(
@@ -351,7 +351,7 @@ with tabs[get_item_index("学习报告")]:
         st.subheader("🏆 成绩排名", divider="rainbow")
         st.markdown("✨ :rainbow[数据每4小时更新一次。]")
         if st.button(
-            "查阅[:eye:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
+            "查阅[:chipmunk:]", key="score_rank_button", help="✨ 点击查看成绩排位报告。"
         ):
             utc_now = datetime.datetime.now(pytz.utc)
             # 获取性能数据

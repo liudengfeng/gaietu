@@ -1540,7 +1540,7 @@ elif item_menu and item_menu.endswith("词库管理"):
         help="✨ 点击按钮，将'可删列表'中选定单词从'个人词库'中删除。",
     )
     view_lib_btn = lib_cols[2].button(
-        "查看[:eye:]", key="view-lib-btn", help="✨ 点击按钮，查看'个人词库'最新数据。"
+        "查看[:chipmunk:]", key="view-lib-btn", help="✨ 点击按钮，查看'个人词库'最新数据。"
     )
 
     content_cols = st.columns(3)

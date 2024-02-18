@@ -585,7 +585,7 @@ elif item_menu == "多模态AI":
             key="add_text_btn",
         )
         view_ex_btn = tab0_ex_btn_cols[2].button(
-            ":eye:", help="✨ 查看全部样本", key="view_example"
+            ":chipmunk:", help="✨ 查看全部样本", key="view_example"
         )
         del_text_btn = tab0_ex_btn_cols[3].button(
             ":wastebasket:",
@@ -676,7 +676,7 @@ elif item_menu == "多模态AI":
             args=("user_prompt_key",),
         )
         view_all_btn = tab0_btn_cols[1].button(
-            ":eye:", help="✨ 查看全部样本", key="view_example-2"
+            ":chipmunk:", help="✨ 查看全部样本", key="view_example-2"
         )
         submitted = tab0_btn_cols[2].button("提交")
 
