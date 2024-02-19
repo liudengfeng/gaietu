@@ -75,7 +75,7 @@ def unauthenticated_menu():
     help_page()
     st.sidebar.page_link(
         "pages/60_🎧_us_voices.py",
-        label="美音示例",
+        label="美式发音",
         help="✨ 美式发音示例。",
         icon="🎧",
     )
