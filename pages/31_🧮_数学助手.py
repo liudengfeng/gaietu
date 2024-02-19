@@ -205,3 +205,6 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
 | 矩阵 | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | (a c b d) |
 """
     st.markdown(table)
+
+    url = "https://jupyterbook.org/en/stable/content/math.html"
+    st.markdown(f"更多数学公式编辑，请参考 [Jupyter Book]( {url} )。")
