@@ -183,7 +183,11 @@ if submitted:
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.subheader("数学公式编辑")
     demo_cols = st.columns(2)
-    math_text = demo_cols[0].text_input("输入数学公式", value="$x^2 + y^2 = z^2$")
+    demo_cols[0].markdown("输入数学公式文本")
+    math_text = demo_cols[0].text_input(
+        "输入数学公式", value="$x^2 + y^2 = z^2$", label_visibility="collapsed"
+    )
+    demo_cols[1].markdown("显示的公式")
     demo_cols[1].markdown(math_text)
 
     st.subheader("数学公式演示")
