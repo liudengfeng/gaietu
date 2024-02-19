@@ -43,7 +43,7 @@ def authenticated_menu():
     )
     st.sidebar.page_link(
         "pages/31_🧮_数学助手.py",
-        label="数学解题助手",
+        label="数学助手",
         icon="🧮",
         help="✨ 数学助手。",
         disabled=st.session_state.role
