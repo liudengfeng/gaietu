@@ -4,13 +4,8 @@ import mimetypes
 import tempfile
 from pathlib import Path
 
-import cv2
-import numpy as np
-import pytesseract
 import streamlit as st
 from moviepy.editor import VideoFileClip
-from PIL import Image
-from pytesseract import Output
 from vertexai.preview.generative_models import GenerationConfig, Part
 
 from menu import menu
@@ -148,33 +143,7 @@ response_container = st.container()
 
 if fix_btn:
     if uploaded_file is not None:
-        # 将上传的文件对象转换为 PIL 图像
-        img = Image.open(uploaded_file)
-        # 将 PIL 图像转换为 OpenCV 图像
-        img = np.array(img)
-
-        # 使用 pytesseract 检测文本
-        d = pytesseract.image_to_data(img, output_type=Output.DICT)
-
-        # 遍历所有检测到的文本区域
-        for i in range(len(d["text"])):
-            # 如果文本区域的置信度足够高
-            if int(d["conf"][i]) > 60:
-                # 获取文本区域的坐标
-                (x, y, w, h) = (
-                    d["left"][i],
-                    d["top"][i],
-                    d["width"][i],
-                    d["height"][i],
-                )
-                # 将文本区域填充为白色
-                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 255), -1)
-
-        # 将处理后的 OpenCV 图像转换回 PIL 图像
-        img = Image.fromarray(img)
-
-        # 显示处理后的图像
-        st.image(img, caption="处理后的图像")
+        pass
 
 if submitted:
     if uploaded_file is None:
