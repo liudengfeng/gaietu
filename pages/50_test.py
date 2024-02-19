@@ -19,22 +19,17 @@ check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 
-llm = ChatVertexAI(
-    model_name="gemini-pro-vision",
-)
+human = "Translate this sentence from English to Chinese. I love programming."
+messages = [HumanMessage(content=human)]
 
-# example
-message = HumanMessage(
-    content=[
-        {
-            "type": "text",
-            "text": "What's in this image?",
-        },  # You can optionally provide text parts
-        {"type": "image_url", "image_url": "https://picsum.photos/seed/picsum/200/300"},
-    ]
+chat = ChatVertexAI(
+    model_name="gemini-pro",
+    safety_settings={
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
+    },
 )
 
 
 if st.button("Generate"):
-    result = llm.invoke([message])
-    st.write(result)
+    result = chat.generate([messages])
+    st.write(result.generations[0][0].generation_info)
