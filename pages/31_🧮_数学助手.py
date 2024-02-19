@@ -107,7 +107,14 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
-st.markdown("✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。")
+st.markdown(
+    """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。
+- 模型对分数的识别效果不好
+- 过程计算能力弱
+- 如果确定试题文本提炼出错，请首先修复问题文本，最后再让模型尝试解答。
+:warning: 模型只能帮助解析数学问题，但不能完全依赖。
+"""
+)
 uploaded_file = st.file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
