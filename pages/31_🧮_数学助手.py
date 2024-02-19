@@ -121,7 +121,12 @@ uploaded_file = st.file_uploader(
 
 prompt = st.text_area(
     "您的提示词",
-    value="您是一位优秀的数学老师，请分步指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。",
+    value="""您是数学专业老师，按照指示完成以下任务：
+1. 提取图中的试题文本。
+2. 分步做答，必要时指出知识点。
+
+要求：
+markdown格式，数学公式正确标记 $ 或 $$。""",
     key="user_prompt_key",
     placeholder="请输入提示词，例如：'您是一位优秀的数学老师，分步指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。'",
     max_chars=12288,
@@ -130,14 +135,18 @@ prompt = st.text_area(
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
 cls_btn = tab0_btn_cols[0].button(
-    ":wastebasket:",
+    "清除[:wastebasket:]",
     help="✨ 清空提示词",
     key="clear_prompt",
     on_click=clear_prompt,
     args=("user_prompt_key",),
 )
-fix_btn = tab0_btn_cols[1].button(":wrench:", help="✨ 点击修复", key="fix_button-2")
-submitted = tab0_btn_cols[2].button("提交")
+fix_btn = tab0_btn_cols[1].button(
+    "修复[:wrench:]", help="✨ 点击按钮，修复从图片提取的试题文本", key="fix_button-2"
+)
+submitted = tab0_btn_cols[2].button(
+    "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
+)
 
 response_container = st.container()
 
@@ -163,3 +172,36 @@ if submitted:
     update_sidebar_status(sidebar_status)
 
 # endregion
+
+with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
+    st.subheader("数学公式编辑")
+    demo_cols = st.columns(2)
+    math_text = demo_cols[0].text_input("输入数学公式", value="$x^2 + y^2 = z^2$")
+    demo_cols[1].markdown(math_text)
+
+    st.subheader("数学公式演示")
+    table = """
+| 名称 | LaTeX 代码 | Markdown 代码 | 示例 |
+| --- | --- | --- | --- |
+| 加号 | `+` | `+` | a+b |
+| 减号 | `-` | `-` | a−b |
+| 乘号 | `\times` | `\times` | a×b |
+| 除号 | `/` | `/` | a/b |
+| 等号 | `=` | `=` | a=b |
+| 大于号 | `>` | `>` | a>b |
+| 小于号 | `<` | `<` | a<b |
+| 大于等于号 | `\ge` | `\ge` | a≥b |
+| 小于等于号 | `\le` | `\le` | a≤b |
+| 不等于号 | `\neq` | `\neq` | a≠b |
+| 正方形 | `\sqrt{x}` | `\sqrt{x}` | √x |
+| 立方根 | `\sqrt[3]{x}` | `\sqrt[3]{x}` | ∛x |
+| 平方 | `x^2` | `x^2` | x² |
+| 立方 | `x^3` | `x^3` | x³ |
+| 分数 | `\frac{a}{b}` | `\frac{a}{b}` | a/b |
+| 求和 | `\sum_{i=1}^n a_i` | `\sum_{i=1}^n a_i` | ∑aᵢ |
+| 积分 | `\int_a^b f(x) dx` | `\int_a^b f(x) dx` | ∫f(x)dx |
+| 箭头 | `\rightarrow` | `\rightarrow` | a→b |
+| 向量 | `\vec{a}` | `\vec{a}` | a |
+| 矩阵 | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | (a c b d) |
+"""
+    st.markdown(table)
