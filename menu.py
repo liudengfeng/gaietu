@@ -55,6 +55,12 @@ def authenticated_menu():
     help_page()
     if st.session_state.role in ["管理员"]:
         st.sidebar.page_link("pages/40_⚙️_系统.py", label="系统管理", icon="⚙️")
+        st.sidebar.page_link(
+            "pages/50_test.py",
+            label="测试",
+            icon="🧮",
+            help="✨ 测试",
+        )
 
 
 def unauthenticated_menu():
