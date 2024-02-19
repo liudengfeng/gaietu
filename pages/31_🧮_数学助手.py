@@ -106,33 +106,28 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
-st.markdown(
-    "请上传所需的多媒体文件，并在下方的文本框中输入您的提示词。完成后，请点击 `提交` 按钮以启动模型。如果您已添加示例，它们也将一同提交。"
-)
+st.markdown("✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。")
 uploaded_files = st.file_uploader(
     "插入多媒体文件【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=True,
     key="uploaded_files",
-    type=["png", "jpg", "mkv", "mov", "mp4", "webm"],
+    type=["png", "jpg"],
     help="""
 支持的格式
 - 图片：PNG、JPG
-- 视频：
-- 您可以上传视频，支持以下格式：MKV、MOV、MP4、WEBM（最大 7MB）
-- 该模型将分析长达 2 分钟的视频。 请注意，它将处理从视频中获取的一组不连续的图像帧。
 """,
 )
 
 prompt = st.text_area(
     "您的提示词",
+    value="您是一位优秀的数学老师，请分步骤指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。",
     key="user_prompt_key",
-    placeholder="请输入关于多媒体的提示词，例如：'描述这张风景图片'",
+    placeholder="请输入关于多媒体的提示词，例如：'您是一位优秀的数学老师，请分步骤指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。'",
     max_chars=12288,
     height=300,
 )
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 7])
-# help="模型可以接受多个输入，以用作示例来了解您想要的输出。添加这些样本有助于模型识别模式，并将指定图片和响应之间的关系应用于新样本。这也称为少量样本学习。示例之间，添加'<>'符号用于分隔。"
 cls_btn = tab0_btn_cols[0].button(
     ":wastebasket:",
     help="✨ 清空提示词",
