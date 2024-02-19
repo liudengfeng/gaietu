@@ -105,7 +105,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 # endregion
 
 # region 主页
-st.subheader(":bulb: :blue[提示词]", divider="rainbow", anchor=False)
+st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 st.markdown(
     "请上传所需的多媒体文件，并在下方的文本框中输入您的提示词。完成后，请点击 `提交` 按钮以启动模型。如果您已添加示例，它们也将一同提交。"
 )
@@ -167,12 +167,6 @@ if submitted:
     response_container.empty()
     col1, col2 = response_container.columns([1, 1])
     view_example(contents, col1)
-    config = {
-        "temperature": 0.0,  # st.session_state["temperature-vision"],
-        "top_p": 1.0,  # st.session_state["top-p-vision"],
-        "top_k": 32,  # st.session_state["top-k-vision"],
-        "max_output_tokens": 2048,  # st.session_state["max-output-tokens-vision"],
-    }
     with st.spinner(f"正在运行多模态模型..."):
         generate_content_from_files_and_prompt(
             contents,
