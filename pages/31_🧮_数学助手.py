@@ -1,10 +1,17 @@
+import io
 import logging
 import mimetypes
 import tempfile
 from pathlib import Path
-from vertexai.preview.generative_models import GenerationConfig, Part
+
+import cv2
+import numpy as np
+import pytesseract
 import streamlit as st
 from moviepy.editor import VideoFileClip
+from PIL import Image
+from pytesseract import Output
+from vertexai.preview.generative_models import GenerationConfig, Part
 
 from menu import menu
 from mypylib.google_ai import (
@@ -59,12 +66,11 @@ def _process_media(uploaded_file):
     return {"mime_type": mime_type, "part": p, "duration": duration}
 
 
-def process_files_and_prompt(uploaded_files, prompt):
+def process_file_and_prompt(uploaded_file, prompt):
     # 没有案例
     contents_info = []
-    if uploaded_files is not None:
-        for m in uploaded_files:
-            contents_info.append(_process_media(m))
+    if uploaded_file is not None:
+        contents_info.append(_process_media(uploaded_file))
     contents_info.append(
         {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
     )
@@ -107,10 +113,10 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 st.markdown("✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。")
-uploaded_files = st.file_uploader(
-    "插入多媒体文件【点击`Browse files`按钮，从本地上传文件】",
-    accept_multiple_files=True,
-    key="uploaded_files",
+uploaded_file = st.file_uploader(
+    "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
+    accept_multiple_files=False,
+    key="uploaded_file",
     type=["png", "jpg"],
     help="""
 支持的格式
@@ -127,7 +133,7 @@ prompt = st.text_area(
     height=300,
 )
 status = st.empty()
-tab0_btn_cols = st.columns([1, 1, 1, 7])
+tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
 cls_btn = tab0_btn_cols[0].button(
     ":wastebasket:",
     help="✨ 清空提示词",
@@ -135,30 +141,48 @@ cls_btn = tab0_btn_cols[0].button(
     on_click=clear_prompt,
     args=("user_prompt_key",),
 )
-view_all_btn = tab0_btn_cols[1].button(
-    ":eyes:", help="✨ 查看全部样本", key="view_example-2"
-)
+fix_btn = tab0_btn_cols[1].button(":wrench:", help="✨ 点击修复", key="fix_button-2")
 submitted = tab0_btn_cols[2].button("提交")
 
 response_container = st.container()
 
-if view_all_btn:
-    response_container.empty()
-    contents = process_files_and_prompt(uploaded_files, prompt)
-    response_container.subheader(
-        f":clipboard: :blue[完整提示词（{len(contents)}）]",
-        divider="rainbow",
-        anchor=False,
-    )
-    view_example(contents, response_container)
+if fix_btn:
+    if uploaded_file is not None:
+        # 将上传的文件对象转换为 PIL 图像
+        img = Image.open(uploaded_file)
+        # 将 PIL 图像转换为 OpenCV 图像
+        img = np.array(img)
+
+        # 使用 pytesseract 检测文本
+        d = pytesseract.image_to_data(img, output_type=Output.DICT)
+
+        # 遍历所有检测到的文本区域
+        for i in range(len(d["text"])):
+            # 如果文本区域的置信度足够高
+            if int(d["conf"][i]) > 60:
+                # 获取文本区域的坐标
+                (x, y, w, h) = (
+                    d["left"][i],
+                    d["top"][i],
+                    d["width"][i],
+                    d["height"][i],
+                )
+                # 将文本区域填充为白色
+                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 255), -1)
+
+        # 将处理后的 OpenCV 图像转换回 PIL 图像
+        img = Image.fromarray(img)
+
+        # 显示处理后的图像
+        st.image(img, caption="处理后的图像")
 
 if submitted:
-    if uploaded_files is None or len(uploaded_files) == 0:  # type: ignore
+    if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
     if not prompt:
         status.error("请添加提示词")
         st.stop()
-    contents = process_files_and_prompt(uploaded_files, prompt)
+    contents = process_file_and_prompt(uploaded_file, prompt)
     response_container.empty()
     col1, col2 = response_container.columns([1, 1])
     view_example(contents, col1)
