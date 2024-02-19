@@ -1,22 +1,28 @@
-import streamlit as st
 import logging
+
+import streamlit as st
 from langchain_core.messages import HumanMessage
 from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
 
 logger = logging.getLogger("streamlit")
 
 
-human = "Translate this sentence from English to French. I love programming."
-messages = [HumanMessage(content=human)]
-
-
-chat = ChatVertexAI(
-    model_name="gemini-pro",
-    safety_settings={
-        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
-    },
+llm = ChatVertexAI(
+    model="gemini-pro-vision",
 )
 
+# example
+message = HumanMessage(
+    content=[
+        {
+            "type": "text",
+            "text": "What's in this image?",
+        },  # You can optionally provide text parts
+        {"type": "image_url", "image_url": "https://picsum.photos/seed/picsum/200/300"},
+    ]
+)
+
+
 if st.button("Generate"):
-    result = chat.generate([messages])
-    st.write(result.generations[0][0].generation_info)
+    result = llm.invoke([message])
+    st.write(result)
