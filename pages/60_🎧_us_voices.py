@@ -31,7 +31,7 @@ on_project_changed("Home")
 add_exercises_to_db()
 
 # region 美音示例
-st.subheader(":headphones: 美式语音示例", divider="rainbow", anchor="美音示例")
+st.subheader(":headphones: 美式语音示例", divider="rainbow", anchor="美式发音")
 with st.expander(":headphones: 美式语音示例", expanded=False):
     st.markdown(
         """
