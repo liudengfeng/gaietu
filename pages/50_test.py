@@ -3,7 +3,7 @@ import logging
 import streamlit as st
 from langchain_core.messages import HumanMessage
 from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
-
+from langchain_google_vertexai import VertexAI
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 
@@ -19,17 +19,10 @@ check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 
-human = "Translate this sentence from English to Chinese. I love programming."
-messages = [HumanMessage(content=human)]
 
-chat = ChatVertexAI(
-    model_name="gemini-pro",
-    safety_settings={
-        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
-    },
-)
+model = VertexAI(model_name="gemini-pro")
 
 
 if st.button("Generate"):
-    result = chat.generate([messages])
-    st.write(result.generations[0][0].generation_info)
+    message = "What are some of the pros and cons of Python as a programming language?"
+    st.write(model.invoke(message))
