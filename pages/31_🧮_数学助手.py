@@ -161,8 +161,8 @@ cls_btn = tab0_btn_cols[0].button(
     help="✨ 清空提示词",
     key="clear_prompt",
 )
-fix_btn = tab0_btn_cols[1].button(
-    "修复[:wrench:]", help="✨ 点击按钮，修复从图片提取的试题文本", key="fix_button-2"
+qst_btn = tab0_btn_cols[1].button(
+    "文本[:mag:]", help="✨ 点击按钮，从图片提取试题文本", key="extract_text"
 )
 submitted = tab0_btn_cols[2].button(
     "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
@@ -175,7 +175,7 @@ if cls_btn:
     st.session_state["math-question"] = ""
     st.rerun()
 
-if fix_btn:
+if qst_btn:
     if uploaded_file is not None:
         pass
 
