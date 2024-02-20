@@ -201,7 +201,7 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     math_symbols = [
         ["加号", "+", "+", "a+b"],
         ["减号", "-", "-", "a-b"],
-        ["乘号", "\\times", "\\times", "a\\timesb"],
+        ["乘号", "\\times", "\\times", "a \\times b"],
         ["除号", "/", "/", "a/b"],
         ["等号", "=", "=", "a=b"],
         ["大于号", ">", ">", "a>b"],
