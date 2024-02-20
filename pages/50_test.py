@@ -26,7 +26,7 @@ configure_google_apis()
 add_exercises_to_db()
 
 
-llm = VertexAI(model_name="gemini-pro-vision")
+llm = ChatVertexAI(model_name="gemini-pro-vision")
 image_message = {
     "type": "image_url",
     "image_url": {"url": "dog.png"},
