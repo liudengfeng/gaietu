@@ -197,6 +197,7 @@ demo_cols[1].markdown("显示的数学公式")
 demo_cols[1].markdown(math_text)
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
+    st.markdown("常用的数学公式符号")
     # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
     math_symbols = [
         ["加号", "+", "+", "a+b"],
@@ -233,8 +234,8 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     math_demo_cols[3].markdown("显示效果")
     for symbol in math_symbols:
         math_demo_cols[0].markdown(symbol[0])
-        math_demo_cols[1].code(symbol[1], language="latex")
-        math_demo_cols[2].code(symbol[2], language="markdown")
+        math_demo_cols[1].text(symbol[1])
+        math_demo_cols[2].code(symbol[2])
         math_demo_cols[3].markdown(f"${symbol[3]}$")
 
     url = "https://jupyterbook.org/en/stable/content/math.html"
