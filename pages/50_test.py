@@ -38,7 +38,7 @@ llm = ChatVertexAI(model_name="gemini-pro-vision")
 image_message = {
     "type": "image_url",
     "image_url": {
-        "url": "https://python.langchain.com/assets/images/cell-18-output-1-0c7fb8b94ff032d51bfe1880d8370104.png",
+        "url": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.jczhijia.com%2Fart%2F22718.html&psig=AOvVaw2G0NClgL5OB_NHY_leH6YK&ust=1708488102597000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCMDMsKWEuYQDFQAAAAAdAAAAABAE",
     },
 }
 text_message = {
