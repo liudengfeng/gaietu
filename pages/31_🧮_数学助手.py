@@ -235,7 +235,7 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     for symbol in math_symbols:
         math_demo_cols[0].markdown(symbol[0])
         math_demo_cols[1].text(symbol[1])
-        math_demo_cols[2].code(symbol[2])
+        math_demo_cols[2].text(symbol[2])
         math_demo_cols[3].markdown(f"${symbol[3]}$")
 
     url = "https://jupyterbook.org/en/stable/content/math.html"
