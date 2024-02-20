@@ -111,10 +111,10 @@ st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False
 
 st.markdown(
     """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。
-- 模型对分数的识别效果不好
-- 过程计算能力弱
-- 如果确定试题文本提炼出错，请首先修复问题文本，最后再让模型尝试解答。
-:warning: 模型只能帮助解析数学问题，但不能完全依赖。
+- 模型对分数的识别效果不好，这可能导致计算结果的不准确
+- 在处理计算过程中，即使是最简单的计算也可能出现错误。
+- 如果发现从试题文本中提取的信息有误，请首先修正文本中的问题，然后再让模型尝试进行解答。
+- :warning: 模型只能帮助解析数学问题，但不能完全依赖。
 """
 )
 uploaded_file = st.file_uploader(
@@ -200,31 +200,11 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown("常用的数学公式符号")
     # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
     math_symbols = [
-        ["加号", "+", "+", "a+b"],
-        ["减号", "-", "-", "a-b"],
-        ["乘号", "\\times", "\\times", "a \\times b"],
-        ["除号", "/", "/", "a/b"],
-        ["等号", "=", "=", "a=b"],
-        ["大于号", ">", ">", "a>b"],
-        ["小于号", "<", "<", "a<b"],
-        ["大于等于号", "\\ge", "\\ge", "a\\ge b"],
-        ["小于等于号", "\\le", "\\le", "a\\le b"],
-        ["不等于号", "\\neq", "\\neq", "a\\neq b"],
-        ["正方形", "\\sqrt{x}", "\\sqrt{x}", "\\sqrt{x}"],
-        ["立方根", "\\sqrt[3]{x}", "\\sqrt[3]{x}", "\\sqrt[3]{x}"],
+        ["分数", "\\frac{a}{b}", "\\frac{a}{b}", "\\frac{a}{b}"],
         ["平方", "x^2", "x^2", "x^2"],
         ["立方", "x^3", "x^3", "x^3"],
-        ["分数", "\\frac{a}{b}", "\\frac{a}{b}", "\\frac{a}{b}"],
         ["求和", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i"],
         ["积分", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx"],
-        ["箭头", "\\rightarrow", "\\rightarrow", "a\\rightarrow b"],
-        ["向量", "\\vec{a}", "\\vec{a}", "\\vec{a}"],
-        [
-            "矩阵",
-            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
-            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
-            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
-        ],
     ]
 
     math_demo_cols = st.columns(4)
