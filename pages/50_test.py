@@ -32,7 +32,7 @@ add_exercises_to_db()
 
 img_path = IMAGE_DIR / "math/高中/定积分.png"
 i = Image.load_from_file(str(img_path))
-st.image(i, caption="定积分", use_column_width=True)
+st.image(str(img_path), caption="定积分", use_column_width=True)
 
 llm = ChatVertexAI(model_name="gemini-pro-vision")
 image_message = {
