@@ -98,9 +98,22 @@ def view_example(examples, container):
         if mime_type.startswith("text"):
             container.markdown(p["part"].text)
         elif mime_type.startswith("image"):
-            container.image(p["part"].inline_data.data, width=300)
+            # container.image(p["part"].inline_data.data, width=300)
+            container.image(p["part"].inline_data.data)
         elif mime_type.startswith("video"):
             container.video(p["part"].inline_data.data)
+
+
+def view_example_v0(examples):
+    for i, p in enumerate(examples):
+        mime_type = p["mime_type"]
+        if mime_type.startswith("text"):
+            st.markdown(p["part"].text)
+        elif mime_type.startswith("image"):
+            # container.image(p["part"].inline_data.data, width=300)
+            st.image(p["part"].inline_data.data)
+        elif mime_type.startswith("video"):
+            st.video(p["part"].inline_data.data)
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
@@ -215,6 +228,8 @@ if smt_btn:
     update_sidebar_status(sidebar_status)
 
 if test_btn:
+    contents = process_file_and_prompt(uploaded_file, prompt)
+    view_example_v0(contents)
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm = ChatVertexAI(
         temperature=0, top_p=0.5, top_k=20, model_name="gemini-pro-vision"
