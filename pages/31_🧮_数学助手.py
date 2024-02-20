@@ -218,7 +218,7 @@ if test_btn:
     llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
     message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
-    st.markdown(llm.invoke(prompt))
+    st.markdown(llm.invoke(message))
 
 # endregion
 
