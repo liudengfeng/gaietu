@@ -17,6 +17,8 @@ from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
 from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.tools.tavily_search import TavilySearchResults
+
 
 logger = logging.getLogger("streamlit")
 CURRENT_CWD: Path = Path(__file__).parent.parent
@@ -59,17 +61,16 @@ llm = ChatVertexAI(model_name="gemini-pro-vision")
 
 
 if st.button("执行"):
-    text_message = {
-        "type": "text",
-        "text": "What is shown in this image?",
-    }
-    img_path = IMAGE_DIR / "math/高中/定积分.png"
-    i = Image.load_from_file(str(img_path))
-    st.image(str(img_path), caption="定积分", use_column_width=True)
-    message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
-    output = llm([message])
+    # text_message = {
+    #     "type": "text",
+    #     "text": "What is shown in this image?",
+    # }
+    # img_path = IMAGE_DIR / "math/高中/定积分.png"
+    # i = Image.load_from_file(str(img_path))
+    # st.image(str(img_path), caption="定积分", use_column_width=True)
+    # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
+    # output = llm([message])
 
-    loader = WebBaseLoader("https://docs.smith.langchain.com")
-    docs = loader.load()
-    
-    st.write(output.content)
+    search = TavilySearchResults()
+
+    st.write(search.invoke("what is the weather in SF"))
