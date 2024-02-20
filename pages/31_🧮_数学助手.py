@@ -187,13 +187,13 @@ if submitted:
 st.subheader("数学公式编辑", divider="rainbow", anchor="数学公式编辑")
 
 demo_cols = st.columns(2)
-demo_cols[0].markdown("数学公式文本")
+demo_cols[0].markdown("在此输入数学公式文本")
 math_text = demo_cols[0].text_input(
     "输入数学公式",
     value=r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
     label_visibility="collapsed",
 )
-demo_cols[1].markdown("显示的数学公式")
+demo_cols[1].markdown("检查数学公式是否正确")
 demo_cols[1].markdown(math_text)
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
@@ -218,7 +218,20 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
         math_demo_cols[2].text(symbol[2])
         math_demo_cols[3].markdown(f"${symbol[3]}$")
 
-    url = "https://jupyterbook.org/en/stable/content/math.html"
-    st.markdown(f"更多数学公式编辑，请参考 [Jupyter Book]( {url} )。")
+    url = "https://cloud.tencent.com/developer/article/2349331"
+    st.markdown(f"更多数学公式编辑，请参考 [数学公式语法集]( {url} )。")
 
 # endregion
+
+from scipy.special import comb
+
+# 从 5 个红球中选 3 个
+red_comb = comb(5, 3)
+
+# 从 10 个白球中选 2 个
+white_comb = comb(10, 2)
+
+# 计算总的组合数
+total_comb = red_comb * white_comb
+
+print(total_comb)
