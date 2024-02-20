@@ -26,17 +26,18 @@ configure_google_apis()
 add_exercises_to_db()
 
 
-model = VertexAI(model_name="gemini-pro")
-template = """Question: {question}
+llm = VertexAI(model_name="gemini-pro-vision")
+image_message = {
+    "type": "image_url",
+    "image_url": {"url": "dog.png"},
+}
+text_message = {
+    "type": "text",
+    "text": "What is shown in this image?",
+}
+message = HumanMessage(content=[text_message, image_message])
 
-Answer: Let's think step by step."""
-prompt = PromptTemplate.from_template(template)
 
-chain = prompt | model
-
-question = """
-I have five apples. I throw two away. I eat one. How many apples do I have left?
-"""
-
-if st.button("Generate"):
-    st.write(chain.invoke({"question": question}))
+if st.button("执行"):
+    output = llm([message])
+    st.write(output.content)

@@ -127,8 +127,10 @@ uploaded_file = st.file_uploader(
 - 图片：PNG、JPG
 """,
 )
-
-prompt = st.text_area(
+content_cols = st.columns([2, 1])
+prompt_container = content_cols[0].container(height=300)
+question_container = content_cols[1].container(height=300)
+prompt = prompt_container.text_area(
     "您的提示词",
     value="""您是数学专业老师，按照指示完成以下任务：
 1. 提取图中的试题文本。
@@ -141,6 +143,7 @@ markdown格式，数学公式正确标记 $ 或 $$。""",
     max_chars=12288,
     height=300,
 )
+
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
 cls_btn = tab0_btn_cols[0].button(
