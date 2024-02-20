@@ -1,3 +1,4 @@
+import base64
 import logging
 from pathlib import Path
 
@@ -30,24 +31,38 @@ check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 
-img_path = IMAGE_DIR / "math/高中/定积分.png"
-i = Image.load_from_file(str(img_path))
-st.image(str(img_path), caption="定积分", use_column_width=True)
+
+# region 函数
+
+
+def image_to_dict(image_path):
+    with open(image_path, "rb") as image_file:
+        image_bytes = image_file.read()
+
+    image_message = {
+        "type": "image_url",
+        "image_url": {
+            "url": f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+        },
+    }
+
+    return image_message
+
+
+# endregion
+
 
 llm = ChatVertexAI(model_name="gemini-pro-vision")
-image_message = {
-    "type": "image_url",
-    "image_url": {
-        "url": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.jczhijia.com%2Fart%2F22718.html&psig=AOvVaw2G0NClgL5OB_NHY_leH6YK&ust=1708488102597000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCMDMsKWEuYQDFQAAAAAdAAAAABAE",
-    },
-}
-text_message = {
-    "type": "text",
-    "text": "What is shown in this image?",
-}
-message = HumanMessage(content=[text_message, image_message])
 
 
 if st.button("执行"):
+    text_message = {
+        "type": "text",
+        "text": "What is shown in this image?",
+    }
+    img_path = IMAGE_DIR / "math/高中/定积分.png"
+    i = Image.load_from_file(str(img_path))
+    st.image(str(img_path), caption="定积分", use_column_width=True)
+    message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     output = llm([message])
     st.write(output.content)
