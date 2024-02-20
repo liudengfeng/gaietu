@@ -4,12 +4,14 @@ import logging
 import mimetypes
 import tempfile
 from pathlib import Path
-from langchain_google_vertexai import VertexAI
 
 import streamlit as st
+from langchain.chains import LLMMathChain
+from langchain_core.messages import HumanMessage
+from langchain_google_vertexai import VertexAI
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
-from langchain.chains import LLMMathChain
+
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -215,6 +217,7 @@ if smt_btn:
 if test_btn:
     llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
     st.markdown(llm.invoke(prompt))
 
 # endregion
