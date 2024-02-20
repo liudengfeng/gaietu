@@ -1,13 +1,15 @@
+import base64
 import io
 import logging
 import mimetypes
 import tempfile
 from pathlib import Path
+from langchain_google_vertexai import VertexAI
 
 import streamlit as st
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
-
+from langchain.chains import LLMMathChain
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -20,6 +22,7 @@ from mypylib.st_helper import (
     setup_logger,
     update_sidebar_status,
 )
+from mypylib.st_setting import general_config
 
 logger = logging.getLogger("streamlit")
 setup_logger(logger)
@@ -36,7 +39,7 @@ menu()
 check_access(False)
 configure_google_apis()
 add_exercises_to_db()
-
+general_config()
 sidebar_status = st.sidebar.empty()
 
 # region 会话状态
@@ -64,6 +67,16 @@ def _process_media(uploaded_file):
             duration = clip.duration  # 获取视频时长，单位为秒
 
     return {"mime_type": mime_type, "part": p, "duration": duration}
+
+
+def image_to_dict(uploaded_file):
+    image_message = {
+        "type": "image_url",
+        "image_url": {
+            "url": f"data:image/jpeg;base64,{base64.b64encode(uploaded_file.getvalue()).decode('utf-8')}"
+        },
+    }
+    return image_message
 
 
 def process_file_and_prompt(uploaded_file, prompt):
@@ -164,8 +177,11 @@ cls_btn = tab0_btn_cols[0].button(
 qst_btn = tab0_btn_cols[1].button(
     "文本[:mag:]", help="✨ 点击按钮，从图片提取试题文本", key="extract_text"
 )
-submitted = tab0_btn_cols[2].button(
+smt_btn = tab0_btn_cols[2].button(
     "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
+)
+test_btn = tab0_btn_cols[3].button(
+    "测试[:heavy_check_mark:]", key="test_button", help="✨ 临时测试"
 )
 
 response_container = st.container()
@@ -179,7 +195,7 @@ if qst_btn:
     if uploaded_file is not None:
         pass
 
-if submitted:
+if smt_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
     if not prompt:
@@ -195,6 +211,12 @@ if submitted:
             col2.empty(),
         )
     update_sidebar_status(sidebar_status)
+
+if test_btn:
+    llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
+    llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    llm_math.run(prompt)
+    st.markdown(llm_math.run(prompt))
 
 # endregion
 
