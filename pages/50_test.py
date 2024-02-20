@@ -15,6 +15,8 @@ from langchain_google_vertexai import (
 from vertexai.preview.generative_models import Image
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
+from mypylib.st_setting import general_config
+from langchain_community.document_loaders import WebBaseLoader
 
 logger = logging.getLogger("streamlit")
 CURRENT_CWD: Path = Path(__file__).parent.parent
@@ -29,6 +31,7 @@ st.set_page_config(
 menu()
 check_access(False)
 configure_google_apis()
+general_config()
 add_exercises_to_db()
 
 
@@ -65,4 +68,8 @@ if st.button("执行"):
     st.image(str(img_path), caption="定积分", use_column_width=True)
     message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     output = llm([message])
+
+    loader = WebBaseLoader("https://docs.smith.langchain.com")
+    docs = loader.load()
+    
     st.write(output.content)

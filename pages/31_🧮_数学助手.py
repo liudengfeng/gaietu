@@ -128,6 +128,7 @@ uploaded_file = st.file_uploader(
 """,
 )
 content_cols = st.columns([2, 1])
+content_cols[0].markdown("您的提示词")
 prompt_container = content_cols[0].container(height=300)
 question_container = content_cols[1].container(height=300)
 prompt = prompt_container.text_area(
@@ -142,6 +143,7 @@ markdown格式，数学公式正确标记 $ 或 $$。""",
     placeholder="请输入提示词，例如：'您是一位优秀的数学老师，分步指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。'",
     max_chars=12288,
     height=300,
+    label_visibility="collapsed",
 )
 
 status = st.empty()
