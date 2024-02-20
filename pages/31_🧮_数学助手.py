@@ -8,7 +8,7 @@ from pathlib import Path
 import streamlit as st
 from langchain.chains import LLMMathChain
 from langchain_core.messages import HumanMessage
-from langchain_google_vertexai import VertexAI
+from langchain_google_vertexai import ChatVertexAI, VertexAI
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
 
@@ -215,10 +215,11 @@ if smt_btn:
     update_sidebar_status(sidebar_status)
 
 if test_btn:
-    llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
+    # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
+    llm = ChatVertexAI(model_name="gemini-pro-vision")
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
     message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
-    output = llm.generate([message])
+    output = llm.invoke([message])
     st.markdown(output.content)
 
 # endregion
