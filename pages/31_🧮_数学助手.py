@@ -39,6 +39,11 @@ add_exercises_to_db()
 
 sidebar_status = st.sidebar.empty()
 
+# region 会话状态
+if "math-question" not in st.session_state:
+    st.session_state["math-question"] = ""
+# endregion
+
 
 # region 函数
 def clear_prompt(key):
@@ -129,6 +134,7 @@ uploaded_file = st.file_uploader(
 )
 content_cols = st.columns([2, 1])
 content_cols[0].markdown("您的提示词")
+content_cols[1].markdown("提取的试题文本")
 prompt_container = content_cols[0].container(height=300)
 question_container = content_cols[1].container(height=300)
 prompt = prompt_container.text_area(
@@ -145,6 +151,8 @@ markdown格式，数学公式正确标记 $ 或 $$。""",
     height=300,
     label_visibility="collapsed",
 )
+question_container.markdown(st.session_state["math-question"])
+
 
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
@@ -152,8 +160,6 @@ cls_btn = tab0_btn_cols[0].button(
     "清除[:wastebasket:]",
     help="✨ 清空提示词",
     key="clear_prompt",
-    on_click=clear_prompt,
-    args=("user_prompt_key",),
 )
 fix_btn = tab0_btn_cols[1].button(
     "修复[:wrench:]", help="✨ 点击按钮，修复从图片提取的试题文本", key="fix_button-2"
@@ -163,6 +169,11 @@ submitted = tab0_btn_cols[2].button(
 )
 
 response_container = st.container()
+
+if cls_btn:
+    clear_prompt("user_prompt_key")
+    st.session_state["math-question"] = ""
+    st.rerun()
 
 if fix_btn:
     if uploaded_file is not None:
@@ -227,16 +238,3 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown(f"更多数学公式编辑，请参考 [数学公式语法集]( {url} )。")
 
 # endregion
-
-from scipy.special import comb
-
-# 从 5 个红球中选 3 个
-red_comb = comb(5, 3)
-
-# 从 10 个白球中选 2 个
-white_comb = comb(10, 2)
-
-# 计算总的组合数
-total_comb = red_comb * white_comb
-
-print(total_comb)
