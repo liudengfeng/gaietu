@@ -216,7 +216,9 @@ if smt_btn:
 
 if test_btn:
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
-    llm = ChatVertexAI(model_name="gemini-pro-vision")
+    llm = ChatVertexAI(
+        temperature=0, top_p=0.5, top_k=20, model_name="gemini-pro-vision"
+    )
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
     message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
     output = llm.invoke([message])
