@@ -107,6 +107,8 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
+
+
 st.markdown(
     """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。
 - 模型对分数的识别效果不好
@@ -180,42 +182,63 @@ if submitted:
 
 # endregion
 
+
+# region 数学公式编辑
+st.subheader("数学公式编辑", divider="rainbow", anchor="数学公式编辑")
+
+demo_cols = st.columns(2)
+demo_cols[0].markdown("数学公式文本")
+math_text = demo_cols[0].text_input(
+    "输入数学公式",
+    value="$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
+    label_visibility="collapsed",
+)
+demo_cols[1].markdown("显示的数学公式")
+demo_cols[1].markdown(math_text)
+
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.subheader("数学公式编辑")
-    demo_cols = st.columns(2)
-    demo_cols[0].markdown("输入数学公式文本")
-    math_text = demo_cols[0].text_input(
-        "输入数学公式", value="$x^2 + y^2 = z^2$", label_visibility="collapsed"
-    )
-    demo_cols[1].markdown("显示的公式")
-    demo_cols[1].markdown(math_text)
 
     st.subheader("数学公式演示")
-    table = """
-| 名称 | LaTeX 代码 | Markdown 代码 | 示例 |
-| --- | --- | --- | --- |
-| 加号 | `+` | `+` | a+b |
-| 减号 | `-` | `-` | a−b |
-| 乘号 | `\times` | `\times` | a×b |
-| 除号 | `/` | `/` | a/b |
-| 等号 | `=` | `=` | a=b |
-| 大于号 | `>` | `>` | a>b |
-| 小于号 | `<` | `<` | a<b |
-| 大于等于号 | `\ge` | `\ge` | a≥b |
-| 小于等于号 | `\le` | `\le` | a≤b |
-| 不等于号 | `\neq` | `\neq` | a≠b |
-| 正方形 | `\sqrt{x}` | `\sqrt{x}` | √x |
-| 立方根 | `\sqrt[3]{x}` | `\sqrt[3]{x}` | ∛x |
-| 平方 | `x^2` | `x^2` | x² |
-| 立方 | `x^3` | `x^3` | x³ |
-| 分数 | `\frac{a}{b}` | `\frac{a}{b}` | a/b |
-| 求和 | `\sum_{i=1}^n a_i` | `\sum_{i=1}^n a_i` | ∑aᵢ |
-| 积分 | `\int_a^b f(x) dx` | `\int_a^b f(x) dx` | ∫f(x)dx |
-| 箭头 | `\rightarrow` | `\rightarrow` | a→b |
-| 向量 | `\vec{a}` | `\vec{a}` | a |
-| 矩阵 | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` | (a c b d) |
-"""
-    st.markdown(table)
+    # 创建一个列表，每一项只包括名称、LaTeX 代码、Markdown 代码
+    math_symbols = [
+        ["加号", "+", "+"],
+        ["减号", "-", "-"],
+        ["乘号", "\\times", "\\times"],
+        ["除号", "/", "/"],
+        ["等号", "=", "="],
+        ["大于号", ">", ">"],
+        ["小于号", "<", "<"],
+        ["大于等于号", "\\ge", "\\ge"],
+        ["小于等于号", "\\le", "\\le"],
+        ["不等于号", "\\neq", "\\neq"],
+        ["正方形", "\\sqrt{x}", "\\sqrt{x}"],
+        ["立方根", "\\sqrt[3]{x}", "\\sqrt[3]{x}"],
+        ["平方", "x^2", "x^2"],
+        ["立方", "x^3", "x^3"],
+        ["分数", "\\frac{a}{b}", "\\frac{a}{b}"],
+        ["求和", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i"],
+        ["积分", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx"],
+        ["箭头", "\\rightarrow", "\\rightarrow"],
+        ["向量", "\\vec{a}", "\\vec{a}"],
+        [
+            "矩阵",
+            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+        ],
+    ]
+    math_demo_cols = st.columns(4)
+    math_demo_cols[0].markdown("名称")
+    math_demo_cols[1].markdown("LaTeX")
+    math_demo_cols[2].markdown("Markdown")
+    math_demo_cols[3].markdown("显示效果")
+    for symbol in math_symbols:
+        math_demo_cols[0].markdown(symbol[0])
+        math_demo_cols[1].code(symbol[1])
+        math_demo_cols[2].code(symbol[2])
+        math_demo_cols[3].markdown(symbol[1])
 
     url = "https://jupyterbook.org/en/stable/content/math.html"
     st.markdown(f"更多数学公式编辑，请参考 [Jupyter Book]( {url} )。")
+
+# endregion
