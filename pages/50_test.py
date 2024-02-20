@@ -18,6 +18,9 @@ from mypylib.st_helper import add_exercises_to_db, check_access, configure_googl
 from mypylib.st_setting import general_config
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.vectorstores import FAISS
 
 
 logger = logging.getLogger("streamlit")
@@ -71,6 +74,4 @@ if st.button("执行"):
     # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     # output = llm([message])
 
-    search = TavilySearchResults()
-
-    st.write(search.invoke("what is the weather in SF"))
+    st.write(llm.invoke("Hello, world!"))
