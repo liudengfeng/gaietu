@@ -190,16 +190,13 @@ demo_cols = st.columns(2)
 demo_cols[0].markdown("数学公式文本")
 math_text = demo_cols[0].text_input(
     "输入数学公式",
-    value="$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
+    value=r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
     label_visibility="collapsed",
 )
 demo_cols[1].markdown("显示的数学公式")
 demo_cols[1].markdown(math_text)
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
-    st.subheader("数学公式编辑")
-
-    st.subheader("数学公式演示")
     # 创建一个列表，每一项只包括名称、LaTeX 代码、Markdown 代码
     math_symbols = [
         ["加号", "+", "+"],
@@ -236,7 +233,7 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
         math_demo_cols[0].markdown(symbol[0])
         math_demo_cols[1].code(symbol[1])
         math_demo_cols[2].code(symbol[2])
-        math_demo_cols[3].markdown(symbol[1])
+        math_demo_cols[3].markdown(f"${symbol[1]}$")
 
     url = "https://jupyterbook.org/en/stable/content/math.html"
     st.markdown(f"更多数学公式编辑，请参考 [Jupyter Book]( {url} )。")
