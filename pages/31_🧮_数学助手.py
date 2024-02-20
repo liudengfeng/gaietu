@@ -215,8 +215,7 @@ if smt_btn:
 if test_btn:
     llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
-    llm_math.run(prompt)
-    st.markdown(llm_math.run(prompt))
+    st.markdown(llm.invoke(prompt))
 
 # endregion
 
