@@ -197,33 +197,35 @@ demo_cols[1].markdown("显示的数学公式")
 demo_cols[1].markdown(math_text)
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
-    # 创建一个列表，每一项只包括名称、LaTeX 代码、Markdown 代码
+    # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
     math_symbols = [
-        ["加号", "+", "+"],
-        ["减号", "-", "-"],
-        ["乘号", "\\times", "\\times"],
-        ["除号", "/", "/"],
-        ["等号", "=", "="],
-        ["大于号", ">", ">"],
-        ["小于号", "<", "<"],
-        ["大于等于号", "\\ge", "\\ge"],
-        ["小于等于号", "\\le", "\\le"],
-        ["不等于号", "\\neq", "\\neq"],
-        ["正方形", "\\sqrt{x}", "\\sqrt{x}"],
-        ["立方根", "\\sqrt[3]{x}", "\\sqrt[3]{x}"],
-        ["平方", "x^2", "x^2"],
-        ["立方", "x^3", "x^3"],
-        ["分数", "\\frac{a}{b}", "\\frac{a}{b}"],
-        ["求和", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i"],
-        ["积分", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx"],
-        ["箭头", "\\rightarrow", "\\rightarrow"],
-        ["向量", "\\vec{a}", "\\vec{a}"],
+        ["加号", "+", "+", "a+b"],
+        ["减号", "-", "-", "a-b"],
+        ["乘号", "\\times", "\\times", "a\\timesb"],
+        ["除号", "/", "/", "a/b"],
+        ["等号", "=", "=", "a=b"],
+        ["大于号", ">", ">", "a>b"],
+        ["小于号", "<", "<", "a<b"],
+        ["大于等于号", "\\ge", "\\ge", "a\\ge b"],
+        ["小于等于号", "\\le", "\\le", "a\\le b"],
+        ["不等于号", "\\neq", "\\neq", "a\\neq b"],
+        ["正方形", "\\sqrt{x}", "\\sqrt{x}", "\\sqrt{x}"],
+        ["立方根", "\\sqrt[3]{x}", "\\sqrt[3]{x}", "\\sqrt[3]{x}"],
+        ["平方", "x^2", "x^2", "x^2"],
+        ["立方", "x^3", "x^3", "x^3"],
+        ["分数", "\\frac{a}{b}", "\\frac{a}{b}", "\\frac{a}{b}"],
+        ["求和", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i"],
+        ["积分", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx"],
+        ["箭头", "\\rightarrow", "\\rightarrow", "a\\rightarrow b"],
+        ["向量", "\\vec{a}", "\\vec{a}", "\\vec{a}"],
         [
             "矩阵",
             "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
             "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+            "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
         ],
     ]
+
     math_demo_cols = st.columns(4)
     math_demo_cols[0].markdown("名称")
     math_demo_cols[1].markdown("LaTeX")
@@ -233,7 +235,7 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
         math_demo_cols[0].markdown(symbol[0])
         math_demo_cols[1].code(symbol[1])
         math_demo_cols[2].code(symbol[2])
-        math_demo_cols[3].markdown(f"${symbol[1]}$")
+        math_demo_cols[3].markdown(f"${symbol[3]}$")
 
     url = "https://jupyterbook.org/en/stable/content/math.html"
     st.markdown(f"更多数学公式编辑，请参考 [Jupyter Book]( {url} )。")
