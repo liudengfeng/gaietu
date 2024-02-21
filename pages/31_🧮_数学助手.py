@@ -60,6 +60,20 @@ Use $ or $$ to correctly identify mathematical formulas.
 If the content is presented in a tabular format, it should be written using the HTML table syntax in Markdown.
 Output in markdown."""
 
+SOLUTION_THOUGHT_PROMPT = """请按照以下格式提供解答图中测试题的解题思路：
+1. 确定问题的类型和需要解决的关键点。
+2. 描述解决问题的步骤和使用的方法。
+3. 提供必要的数学公式和计算过程。
+4. 总结解题思路。
+5. 不要提供答案。
+使用 $ 或 $$ 来正确标识数学公式。
+如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法编写。
+输出为 markdown 格式。"""
+
+ANSWER_MATH_QUESTION_PROMPT = """您是数学专业老师，分步做答图中的试题。
+要求：
+使用markdown格式，使用 $ 或 $$，正确标记数学变量和公式。"""
+
 # endregion
 
 
@@ -201,12 +215,7 @@ uploaded_file = st.file_uploader(
 st.markdown("您的提示词")
 prompt = st.text_area(
     "您的提示词",
-    value="""您是数学专业老师，按照指示完成以下任务：
-1. 提取图中的试题文本。
-2. 分步做答，必要时指出知识点。
-
-要求：
-使用markdown格式，使用 $ 或 $$，正确标记数学变量和公式。""",
+    value=ANSWER_MATH_QUESTION_PROMPT,
     key="user_prompt_key",
     placeholder="请输入提示词，例如：'您是一位优秀的数学老师，分步指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。'",
     max_chars=12288,
@@ -215,7 +224,7 @@ prompt = st.text_area(
 )
 
 status = st.empty()
-tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
+tab0_btn_cols = st.columns([1, 1, 1, 1, 1, 5])
 cls_btn = tab0_btn_cols[0].button(
     "清除[:wastebasket:]",
     help="✨ 清空提示词",
@@ -228,10 +237,15 @@ qst_btn = tab0_btn_cols[1].button(
     help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
     key="extract_text",
 )
-smt_btn = tab0_btn_cols[2].button(
+solution_btn = tab0_btn_cols[2].button(
+    "思路[:bulb:]",
+    help="✨ 点击按钮，提供解题思路。",
+    key="provide_solution",
+)
+smt_btn = tab0_btn_cols[3].button(
     "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
 )
-test_btn = tab0_btn_cols[3].button(
+test_btn = tab0_btn_cols[4].button(
     "测试[:heavy_check_mark:]", key="test_button", help="✨ 临时测试"
 )
 
@@ -256,6 +270,26 @@ if qst_btn:
     st.markdown("##### 显示的试题文本")
     st.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
+
+if solution_btn:
+    if uploaded_file is None:
+        status.warning("您是否忘记了上传图片或视频？")
+        st.stop()
+    contents = process_file_and_prompt(uploaded_file, SOLUTION_THOUGHT_PROMPT)
+    view_example_v0(contents)
+    # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
+    llm = ChatVertexAI(
+        temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
+    )
+    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
+    message = HumanMessage(
+        content=[SOLUTION_THOUGHT_PROMPT, image_to_dict(uploaded_file)]
+    )
+    output = llm.invoke([message])
+    # output = llm_symbolic_math.invoke([message])
+    st.markdown("##### 解题思路")
+    st.markdown(output.content)
 
 if smt_btn:
     if uploaded_file is None:
