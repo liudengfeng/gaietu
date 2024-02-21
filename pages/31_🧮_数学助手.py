@@ -238,7 +238,7 @@ def create_math_chat():
             message,
             # HumanMessagePromptTemplate.from_template("{input}"),
         ],
-        validate_template=True,
+        # validate_template=True,
     )
     memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     st.session_state["math-chat"] = ConversationChain(
