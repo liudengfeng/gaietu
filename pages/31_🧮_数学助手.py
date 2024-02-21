@@ -225,7 +225,7 @@ def create_math_chat():
         },
     )
     message = HumanMessage(
-        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
+        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file)]
     )
     prompt = ChatPromptTemplate(
         messages=[
@@ -234,7 +234,7 @@ def create_math_chat():
             ),
             MessagesPlaceholder(variable_name="history"),
             message,
-            # HumanMessagePromptTemplate.from_template("{input}"),
+            HumanMessagePromptTemplate.from_template("{input}"),
         ],
         # validate_template=True,
     )
