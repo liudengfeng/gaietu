@@ -118,6 +118,7 @@ def view_example(examples, container):
 
 
 def view_example_v0(examples):
+    st.markdown("##### 显示试题图片")
     for i, p in enumerate(examples):
         mime_type = p["mime_type"]
         if mime_type.startswith("text"):
@@ -249,9 +250,9 @@ if qst_btn:
     st.session_state["math-question"] = extract_test_question_text_for(
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
     )
-    st.markdown("试题markdown代码")
+    st.markdown("##### 试题markdown代码")
     st.code(f'{st.session_state["math-question"]}', language="markdown")
-    st.markdown("显示的试题文本")
+    st.markdown("##### 显示的试题文本")
     st.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
 
