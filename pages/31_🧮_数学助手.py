@@ -213,11 +213,11 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 # region langchain
 
 
-def create_math_chat(uploaded_file, key=None):
-    if uploaded_file is None:
-        uploaded_file = st.session_state[key]
-        # 测试
-        st.image(uploaded_file.getvalue(), "试题图片")
+def create_math_chat():
+    # if uploaded_file is None:
+    #     uploaded_file = st.session_state[key]
+    #     # 测试
+    st.image(uploaded_file.getvalue(), "试题图片")
 
     model = ChatVertexAI(
         model_name="gemini-pro-vision",
@@ -268,10 +268,10 @@ uploaded_file = test_cols[1].file_uploader(
     key="uploaded_file",
     type=["png", "jpg"],
     on_change=create_math_chat,
-    args=(
-        None,
-        "uploaded_file",
-    ),
+    # args=(
+    #     None,
+    #     "uploaded_file",
+    # ),
     help="""
 支持的格式
 - 图片：PNG、JPG
@@ -386,7 +386,7 @@ if test_btn:
         st.stop()
 
     if "math-chat" not in st.session_state:
-        create_math_chat(uploaded_file)
+        create_math_chat()
 
     view_example_v1(uploaded_file, prompt)
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
