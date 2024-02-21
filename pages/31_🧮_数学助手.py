@@ -300,15 +300,15 @@ FRACTION_DEMO = "$\\frac{a}{b}$"  # 分数，a/b
 SUBSCRIPT_DEMO = "$a_{i}$"  # 下标，a_i
 FORMULA_DEMO = "$a^2 + b^2 = c^2$"  # 公式，勾股定理
 INTEGRAL_DEMO = r"$$\int_0^\infty \frac{1}{x^2}\,dx$$"  # 积分
-DEMO = f"""
+DEMO = f"""\
 #### 数学公式编辑演示
 ##### 行内数学公式
-- 行内变量代码 ```{MATH_VARIABLE_DEMO}``` 显示效果：{MATH_VARIABLE_DEMO}
-- 分数代码 ```{FRACTION_DEMO}``` 显示效果：{FRACTION_DEMO}
-- 下标代码 ```{SUBSCRIPT_DEMO}``` 显示效果：{SUBSCRIPT_DEMO}
-- 公式代码 ```{FORMULA_DEMO}``` 显示效果：{FORMULA_DEMO}
+- 行内变量代码 ```{MATH_VARIABLE_DEMO}``` 显示：{MATH_VARIABLE_DEMO}
+- 分数代码 ```{FRACTION_DEMO}``` 显示：{FRACTION_DEMO}
+- 下标代码 ```{SUBSCRIPT_DEMO}``` 显示：{SUBSCRIPT_DEMO}
+- 公式代码 ```{FORMULA_DEMO}``` 显示：{FORMULA_DEMO}
 ##### 块级数学公式
-- 积分代码 ```{INTEGRAL_DEMO}``` 显示效果：{INTEGRAL_DEMO}
+- 积分代码 ```{INTEGRAL_DEMO}``` 显示：{INTEGRAL_DEMO}
 """
 math_text = demo_cols[0].text_area(
     "输入数学公式",
