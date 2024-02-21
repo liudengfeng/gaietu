@@ -60,9 +60,21 @@ def image_to_dict(image_path):
 # endregion
 
 
-llm = ChatVertexAI(model_name="gemini-pro-vision")
-
-
+# llm = VertexAI(model_name="gemini-pro-vision")
+llm = VertexAI(model_name="gemini-pro")
+question_1 = """Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+Each can has 3 tennis balls. How many tennis balls does he have now?
+A: The answer is 11.
+Q: The cafeteria had 23 apples.
+If they used 20 to make lunch and bought 6 more, how many apples do they have?
+A:"""
+question_2 = """Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+Each can has 3 tennis balls. How many tennis balls does he have now?
+A: Roger started with 5 balls. 2 cans of 3 tennis balls
+each is 6 tennis balls. 5 + 6 = 11. The answer is 11.
+Q: The cafeteria had 23 apples.
+If they used 20 to make lunch and bought 6 more, how many apples do they have?
+A:"""
 if st.button("执行"):
     # text_message = {
     #     "type": "text",
@@ -73,5 +85,7 @@ if st.button("执行"):
     # st.image(str(img_path), caption="定积分", use_column_width=True)
     # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     # output = llm([message])
-
-    st.write(llm.invoke("Hello, world!"))
+    st.markdown("### 问题 1")
+    st.write(llm.invoke(question_1))
+    st.markdown("### 问题 2")
+    st.write(llm.invoke(question_2))
