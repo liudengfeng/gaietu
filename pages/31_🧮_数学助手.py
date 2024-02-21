@@ -299,7 +299,7 @@ MATH_VARIABLE_DEMO = "$x$"
 FRACTION_DEMO = "$\\frac{a}{b}$"  # 分数，a/b
 SUBSCRIPT_DEMO = "$a_{i}$"  # 下标，a_i
 FORMULA_DEMO = "$a^2 + b^2 = c^2$"  # 公式，勾股定理
-INTEGRAL_DEMO = "$$\int_0^\infty \frac{1}{x^2}\,dx$$"  # 积分，∫_a^b f(x) dx
+INTEGRAL_DEMO = "\int_0^\infty \frac{1}{x^2}\,dx"  # 积分
 DEMO = f"""
 #### 数学公式编辑演示
 ##### 行内数学公式
