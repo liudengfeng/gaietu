@@ -245,7 +245,7 @@ qst_btn = tab0_btn_cols[1].button(
 )
 solution_btn = tab0_btn_cols[2].button(
     "思路[:bulb:]",
-    help="✨ 点击按钮，提供解题思路。",
+    help="✨ 点击按钮，让AI为您展示解题思路。",
     key="provide_solution",
 )
 smt_btn = tab0_btn_cols[3].button(
