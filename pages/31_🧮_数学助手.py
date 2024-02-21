@@ -1,4 +1,5 @@
 import base64
+from datetime import timedelta
 import io
 import logging
 import mimetypes
@@ -17,6 +18,7 @@ from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
+    parse_generated_content_and_update_token,
 )
 from mypylib.st_helper import (
     add_exercises_to_db,
@@ -127,6 +129,26 @@ def view_example_v0(examples):
             st.video(p["part"].inline_data.data)
 
 
+@st.cache_data(ttl=timedelta(hours=1))
+def extract_test_question_text_for(contents):
+    model_name = "gemini-pro-vision"
+    model = load_vertex_model(model_name)
+    generation_config = GenerationConfig(
+        temperature=0.0,
+        top_p=1.0,
+        top_k=32,
+        max_output_tokens=2048,
+    )
+    return parse_generated_content_and_update_token(
+        "多模态AI提取数学题文本",
+        model_name,
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+    )
+
+
 def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
@@ -137,7 +159,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
         max_output_tokens=2048,
     )
     display_generated_content_and_update_token(
-        "多模态AI",
+        "多模态AI解答数学题",
         model_name,
         model.generate_content,
         contents,
@@ -171,12 +193,9 @@ uploaded_file = st.file_uploader(
 - 图片：PNG、JPG
 """,
 )
-content_cols = st.columns([2, 1])
-content_cols[0].markdown("您的提示词")
-content_cols[1].markdown("提取的试题文本")
-prompt_container = content_cols[0].container(height=300)
-question_container = content_cols[1].container(height=300)
-prompt = prompt_container.text_area(
+
+st.markdown("您的提示词")
+prompt = st.text_area(
     "您的提示词",
     value="""您是数学专业老师，按照指示完成以下任务：
 1. 提取图中的试题文本。
@@ -190,8 +209,6 @@ markdown格式，数学公式正确标记 $ 或 $$。""",
     height=300,
     label_visibility="collapsed",
 )
-question_container.markdown(st.session_state["math-question"])
-
 
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
@@ -224,13 +241,11 @@ if qst_btn:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    # st.session_state["math-question"]
-    question_container.empty()
-    with st.spinner(f"正在运行多模态模型..."):
-        generate_content_from_files_and_prompt(
-            contents,
-            question_container,
-        )
+    view_example_v0(contents)
+    st.session_state["math-question"]
+    with st.spinner(f"正在运行多模态模型，提取数学试题..."):
+        st.session_state["math-question"] = extract_test_question_text_for(contents)
+    st.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
 
 if smt_btn:
