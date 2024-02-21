@@ -243,7 +243,7 @@ if test_btn:
 
 
 # region 数学公式编辑
-st.subheader("数学公式编辑", divider="rainbow", anchor="数学公式编辑")
+st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑")
 
 demo_cols = st.columns(2)
 demo_cols[0].markdown("在此输入数学公式文本")
