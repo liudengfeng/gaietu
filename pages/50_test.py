@@ -1,9 +1,16 @@
 import base64
 import logging
+from operator import itemgetter
 from pathlib import Path
 
 import streamlit as st
-from langchain_community.document_loaders import MathpixPDFLoader
+from langchain.prompts import PromptTemplate
+from langchain.schema import StrOutputParser
+from langchain.schema.runnable import RunnablePassthrough
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import MathpixPDFLoader, WebBaseLoader
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.vectorstores import FAISS
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_google_vertexai import (
@@ -13,15 +20,10 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from vertexai.preview.generative_models import Image
+
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import FAISS
-
 
 logger = logging.getLogger("streamlit")
 CURRENT_CWD: Path = Path(__file__).parent.parent
@@ -61,20 +63,25 @@ def image_to_dict(image_path):
 
 
 # llm = VertexAI(model_name="gemini-pro-vision")
-llm = VertexAI(model_name="gemini-pro")
-question_1 = """Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
-Each can has 3 tennis balls. How many tennis balls does he have now?
-A: The answer is 11.
-Q: The cafeteria had 23 apples.
-If they used 20 to make lunch and bought 6 more, how many apples do they have?
-A:"""
-question_2 = """Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
-Each can has 3 tennis balls. How many tennis balls does he have now?
-A: The answer is 11.
+# llm = VertexAI(model_name="gemini-pro")
 
-Q: The cafeteria had 23 apples.
-If they used 20 to make lunch and bought 6 more, how many apples do they have?
-A: Let's think step by step."""
+
+question = """The cafeteria had 23 apples.
+If they used 20 to make lunch and bought 6 more, how many apples do they have?"""
+
+context = """Answer questions showing the full math and reasoning.
+Follow the pattern in the example.
+"""
+
+one_shot_exemplar = """Example Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+Each can has 3 tennis balls. How many tennis balls does he have now?
+A: Roger started with 5 balls. 2 cans of 3 tennis balls
+each is 6 tennis balls. 5 + 6 = 11.
+The answer is 11.
+
+Q: """
+
+
 if st.button("执行"):
     # text_message = {
     #     "type": "text",
@@ -85,7 +92,50 @@ if st.button("执行"):
     # st.image(str(img_path), caption="定积分", use_column_width=True)
     # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     # output = llm([message])
-    st.markdown("### 问题 1")
-    st.write(llm.invoke(question_1))
-    st.markdown("### 问题 2")
-    st.write(llm.invoke(question_2))
+    planner = (
+        PromptTemplate.from_template(context + one_shot_exemplar + " {input}")
+        | VertexAI(model_name="gemini-pro")
+        | StrOutputParser()
+        | {"base_response": RunnablePassthrough()}
+    )
+
+    answer_1 = (
+        PromptTemplate.from_template("{base_response} A: 33")
+        | VertexAI(model_name="gemini-pro", temperature=0, max_output_tokens=400)
+        | StrOutputParser()
+    )
+
+    answer_2 = (
+        PromptTemplate.from_template("{base_response} A:")
+        | VertexAI(model_name="gemini-pro", temperature=0.1, max_output_tokens=400)
+        | StrOutputParser()
+    )
+
+    answer_3 = (
+        PromptTemplate.from_template("{base_response} A:")
+        | VertexAI(model_name="gemini-pro", temperature=0.7, max_output_tokens=400)
+        | StrOutputParser()
+    )
+
+    final_responder = (
+        PromptTemplate.from_template(
+            "Output all the final results in this markdown format: Result 1: {results_1} \n Result 2:{results_2} \n Result 3: {results_3}"
+        )
+        | VertexAI(model_name="gemini-pro", max_output_tokens=1024)
+        | StrOutputParser()
+    )
+
+    chain = (
+        planner
+        | {
+            "results_1": answer_1,
+            "results_2": answer_2,
+            "results_3": answer_3,
+            "original_response": itemgetter("base_response"),
+        }
+        | final_responder
+    )
+
+    answers = chain.invoke({"input": question})
+
+    st.write(answers)
