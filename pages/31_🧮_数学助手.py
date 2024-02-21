@@ -385,9 +385,8 @@ if test_btn:
     message = HumanMessage(
         content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
     )
-    st.session_state["math-chat"].invoke(
     st.markdown("##### 解答")
-    st.markdown(output.content)
+    st.markdown(st.session_state["math-chat"].invoke(input="提供解题思路"))
 
 
 # endregion
