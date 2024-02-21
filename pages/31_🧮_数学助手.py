@@ -233,10 +233,10 @@ def create_math_chat():
                 "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
             ),
             MessagesPlaceholder(variable_name="history"),
-            message,
+            # message,
             HumanMessagePromptTemplate.from_template("{input}"),
         ],
-        # validate_template=True,
+        validate_template=True,
     )
     memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     st.session_state["math-chat"] = ConversationChain(
@@ -386,7 +386,7 @@ if test_btn:
         content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
     )
     st.markdown("##### 解答")
-    st.markdown(st.session_state["math-chat"].invoke(input="提供解题思路"))
+    st.markdown(st.session_state["math-chat"].invoke(input=message))
 
 
 # endregion
