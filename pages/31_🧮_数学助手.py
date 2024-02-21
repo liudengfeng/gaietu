@@ -50,6 +50,16 @@ if "math-question" not in st.session_state:
     st.session_state["math-question"] = ""
 # endregion
 
+# region 提示词
+
+EXTRACT_TEST_QUESTION_PROMPT = """Extract the test question text from the image.
+The layout according to the format in the picture. Add necessary blank lines to keep things nice.
+Use $ or $$ to correctly identify mathematical formulas.
+If the content is presented in a tabular format, it should be written using the HTML table syntax in Markdown.
+Output in markdown."""
+
+# endregion
+
 
 # region 函数
 def clear_prompt(key):
@@ -191,7 +201,9 @@ cls_btn = tab0_btn_cols[0].button(
     key="clear_prompt",
 )
 qst_btn = tab0_btn_cols[1].button(
-    "文本[:mag:]", help="✨ 点击按钮，从图片提取试题文本", key="extract_text"
+    "试题[:toolbox:]",
+    help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
+    key="extract_text",
 )
 smt_btn = tab0_btn_cols[2].button(
     "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
@@ -208,8 +220,18 @@ if cls_btn:
     st.rerun()
 
 if qst_btn:
-    if uploaded_file is not None:
-        pass
+    if uploaded_file is None:
+        status.warning("您是否忘记了上传图片或视频？")
+        st.stop()
+    contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
+    # st.session_state["math-question"]
+    question_container.empty()
+    with st.spinner(f"正在运行多模态模型..."):
+        generate_content_from_files_and_prompt(
+            contents,
+            question_container,
+        )
+    update_sidebar_status(sidebar_status)
 
 if smt_btn:
     if uploaded_file is None:
