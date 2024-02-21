@@ -60,14 +60,14 @@ Use $ or $$ to correctly identify mathematical formulas.
 If the content is presented in a tabular format, it should be written using the HTML table syntax in Markdown.
 Output in markdown."""
 
-SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下格式提供解答图中数学题的解题思路：
+SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供解答图中数学题的解题思路：
 1. 确定问题的类型。
 2. 简要描述解决问题的步骤和使用的方法。
 3. 只提供必要的数学公式和计算步骤，避免进行具体的运算。
 4. 总结解题思路。
 5. 不要提供答案。
-6. 使用`$`或`$$`来正确标识数学公式。
-7. 输出为 markdown 格式。"""
+使用`$`或`$$`来正确标识数学公式。
+输出为 markdown 格式。"""
 
 ANSWER_MATH_QUESTION_PROMPT = """您是数学专业老师，分步做答图中的试题。
 要求：
