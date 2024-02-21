@@ -233,7 +233,8 @@ def create_math_chat():
                 "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
             ),
             MessagesPlaceholder(variable_name="history"),
-            HumanMessagePromptTemplate.from_template("{input}"),
+            message,
+            # HumanMessagePromptTemplate.from_template("{input}"),
         ],
         # validate_template=True,
     )
@@ -381,16 +382,10 @@ if test_btn:
     if "math-chat" not in st.session_state:
         create_math_chat()
 
-    view_example_v1(uploaded_file, prompt)
-    # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
-    llm = ChatVertexAI(
-        temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
+    message = HumanMessage(
+        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
     )
-    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
-    # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
-    message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
-    output = llm.invoke([message])
-    # output = llm_symbolic_math.invoke([message])
+    st.session_state["math-chat"].invoke(
     st.markdown("##### 解答")
     st.markdown(output.content)
 
