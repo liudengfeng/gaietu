@@ -303,12 +303,12 @@ INTEGRAL_DEMO = "$$\\int_a^b f(x)\\,dx$$"  # 积分，∫_a^b f(x) dx
 DEMO = f"""
 #### 数学公式编辑演示
 ##### 行内数学公式
-- 行内变量代码 ```markdown 变量{MATH_VARIABLE_DEMO}``` 显示效果：{MATH_VARIABLE_DEMO}
-- 分数代码 ```markdown {FRACTION_DEMO}``` 显示效果：{FRACTION_DEMO}
-- 下标代码 ```markdown {SUBSCRIPT_DEMO}``` 显示效果：{SUBSCRIPT_DEMO}
-- 公式代码 ```markdown {FORMULA_DEMO}``` 显示效果：{FORMULA_DEMO}
+- 行内变量代码 ```{MATH_VARIABLE_DEMO}``` 显示效果：{MATH_VARIABLE_DEMO}
+- 分数代码 ```{FRACTION_DEMO}``` 显示效果：{FRACTION_DEMO}
+- 下标代码 ```{SUBSCRIPT_DEMO}``` 显示效果：{SUBSCRIPT_DEMO}
+- 公式代码 ```{FORMULA_DEMO}``` 显示效果：{FORMULA_DEMO}
 ##### 块级数学公式
-- 积分代码 ```markdown {INTEGRAL_DEMO}``` 显示效果：{INTEGRAL_DEMO}
+- 积分代码 ```{INTEGRAL_DEMO}``` 显示效果：{INTEGRAL_DEMO}
 """
 math_text = demo_cols[0].text_area(
     "输入数学公式",
