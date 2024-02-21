@@ -291,7 +291,7 @@ if test_btn:
 
 
 # region 数学公式编辑
-st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑")
+st.subheader("数学公式编辑演示", divider="rainbow", anchor="数学公式编辑")
 
 demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入包含数学公式的markdown格式文本")
@@ -299,7 +299,7 @@ MATH_VARIABLE_DEMO = "$x$"
 FRACTION_DEMO = "$\\frac{a}{b}$"  # 分数，a/b
 SUBSCRIPT_DEMO = "$a_{i}$"  # 下标，a_i
 FORMULA_DEMO = "$a^2 + b^2 = c^2$"  # 公式，勾股定理
-INTEGRAL_DEMO = "$$\\int_a^b f(x)\\,dx$$"  # 积分，∫_a^b f(x) dx
+INTEGRAL_DEMO = "$$\int_0^\infty \frac{1}{x^2}\,dx$$"  # 积分，∫_a^b f(x) dx
 DEMO = f"""
 #### 数学公式编辑演示
 ##### 行内数学公式
@@ -324,9 +324,13 @@ demo_cols[2].markdown(math_text)
 edit_btn_cols = demo_cols[0].columns(4)
 cls_edit_btn = edit_btn_cols[0].button("清除[:wastebasket:]", key="clear_math_text")
 copy_btn = edit_btn_cols[1].button("复制[:clipboard:]", key="copy_math_text")
+if cls_edit_btn:
+    clear_prompt("demo-math_text")
+    st.rerun()
+
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
-    st.markdown("常用的数学公式符号")
+    st.markdown("常用数学符号示例代码")
     # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
     math_symbols = [
         ["分数", "\\frac{a}{b}", "\\frac{a}{b}", "\\frac{a}{b}"],
