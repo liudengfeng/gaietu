@@ -250,7 +250,7 @@ if qst_btn:
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
     )
     st.markdown("试题markdown代码")
-    st.markdown(f'```markdown\n{st.session_state["math-question"]}\n```')
+    st.code(f'{st.session_state["math-question"]}', language="markdown")
     st.markdown("显示的试题文本")
     st.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
