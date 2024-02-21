@@ -220,6 +220,8 @@ cls_btn = tab0_btn_cols[0].button(
     "清除[:wastebasket:]",
     help="✨ 清空提示词",
     key="clear_prompt",
+    on_click=clear_prompt,
+    args=("user_prompt_key",),
 )
 qst_btn = tab0_btn_cols[1].button(
     "试题[:toolbox:]",
@@ -236,9 +238,8 @@ test_btn = tab0_btn_cols[3].button(
 response_container = st.container()
 
 if cls_btn:
-    clear_prompt("user_prompt_key")
-    st.session_state["math-question"] = ""
-    st.rerun()
+    pass
+    # st.rerun()
 
 if qst_btn:
     if uploaded_file is None:
@@ -322,11 +323,16 @@ demo_cols[2].markdown("检查数学公式是否正确")
 demo_cols[2].markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
-cls_edit_btn = edit_btn_cols[0].button("清除[:wastebasket:]", key="clear_math_text")
+cls_edit_btn = edit_btn_cols[0].button(
+    "清除[:wastebasket:]",
+    key="clear_math_text",
+    help="✨ 清空数学公式",
+    on_click=clear_prompt,
+    args=("demo-math_text",),
+)
 copy_btn = edit_btn_cols[1].button("复制[:clipboard:]", key="copy_math_text")
 if cls_edit_btn:
-    clear_prompt("demo-math_text")
-    st.rerun()
+    pass
 
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
