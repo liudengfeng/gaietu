@@ -1,16 +1,29 @@
 import base64
-from datetime import timedelta
 import io
 import logging
 import mimetypes
 import tempfile
+from datetime import timedelta
 from pathlib import Path
 
 import streamlit as st
-from langchain.chains import LLMMathChain
-from langchain_core.messages import HumanMessage
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.chains import ConversationChain, LLMMathChain
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+)
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
-from langchain_google_vertexai import ChatVertexAI, VertexAI
+from langchain_google_vertexai import (
+    ChatVertexAI,
+    HarmBlockThreshold,
+    HarmCategory,
+    VertexAI,
+)
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
 
@@ -73,7 +86,7 @@ SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供
 
 ANSWER_MATH_QUESTION_PROMPT = """您是数学专业老师，分步做答图中的试题。
 要求：
-使用`$`或`$$`来正确标识行内或块级数学变量及公式"。""
+使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
 
 # endregion
 
@@ -197,6 +210,45 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 # endregion
 
+# region langchain
+
+
+def create_math_chat(uploaded_file, key=None):
+    if uploaded_file is None:
+        uploaded_file = st.session_state[key]
+        # 测试
+        st.image(uploaded_file.getvalue(), "试题图片")
+
+    model = ChatVertexAI(
+        model_name="gemini-pro-vision",
+        convert_system_message_to_human=True,
+        safety_settings={
+            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
+        },
+    )
+    message = HumanMessage(
+        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
+    )
+    prompt = ChatPromptTemplate(
+        messages=[
+            SystemMessagePromptTemplate.from_template(
+                "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
+            ),
+            MessagesPlaceholder(variable_name="history"),
+            message,
+            # HumanMessagePromptTemplate.from_template("{input}"),
+        ],
+        validate_template=True,
+    )
+    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    st.session_state["math-chat"] = ConversationChain(
+        llm=model, prompt=prompt, verbose=True, memory=memory
+    )
+
+
+# endregion
+
+
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
@@ -215,6 +267,11 @@ uploaded_file = test_cols[1].file_uploader(
     accept_multiple_files=False,
     key="uploaded_file",
     type=["png", "jpg"],
+    on_change=create_math_chat,
+    args=(
+        None,
+        "uploaded_file",
+    ),
     help="""
 支持的格式
 - 图片：PNG、JPG
@@ -258,11 +315,13 @@ test_btn = tab0_btn_cols[4].button(
     "测试[:heavy_check_mark:]", key="test_button", help="✨ 临时测试"
 )
 
+# if prompt := st.chat_input("与AI对话", key="math-chat-input"):
+#     pass
+
 response_container = st.container()
 
 if cls_btn:
     pass
-    # st.rerun()
 
 if qst_btn:
     if uploaded_file is None:
@@ -293,7 +352,10 @@ if solution_btn:
     # llm_math = LLMMathChain.from_llm(llm, verbose=True)
     # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
     message = HumanMessage(
-        content=[SOLUTION_THOUGHT_PROMPT.format(grade=grade), image_to_dict(uploaded_file)]
+        content=[
+            SOLUTION_THOUGHT_PROMPT.format(grade=grade),
+            image_to_dict(uploaded_file),
+        ]
     )
     output = llm.invoke([message])
     # output = llm_symbolic_math.invoke([message])
@@ -306,6 +368,7 @@ if smt_btn:
     if not prompt:
         status.error("请添加提示词")
         st.stop()
+
     contents = process_file_and_prompt(uploaded_file, prompt)
     response_container.empty()
     col1, col2 = response_container.columns([1, 1])
@@ -318,8 +381,14 @@ if smt_btn:
     update_sidebar_status(sidebar_status)
 
 if test_btn:
-    contents = process_file_and_prompt(uploaded_file, prompt)
-    view_example_v0(contents)
+    if uploaded_file is None:
+        status.warning("您是否忘记了上传图片或视频？")
+        st.stop()
+
+    if "math-chat" not in st.session_state:
+        create_math_chat(uploaded_file)
+
+    view_example_v1(uploaded_file, prompt)
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
@@ -331,6 +400,7 @@ if test_btn:
     # output = llm_symbolic_math.invoke([message])
     st.markdown("##### 解答")
     st.markdown(output.content)
+
 
 # endregion
 
