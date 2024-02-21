@@ -129,7 +129,8 @@ def view_example_v0(examples):
             st.video(p["part"].inline_data.data)
 
 
-@st.cache_data(ttl=timedelta(hours=1))
+# 对象不能缓存，更改参数类型后再缓存
+# @st.cache_data(ttl=timedelta(hours=1))
 def extract_test_question_text_for(contents):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
