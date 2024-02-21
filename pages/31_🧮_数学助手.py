@@ -294,9 +294,12 @@ st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑
 
 demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入包含数学公式的markdown格式文本")
-math_text = demo_cols[0].code(
-    "$\int_{a}^{b} \frac{\partial f(x)}{\partial x} dx$",
-    language="markdown",
+math_text = demo_cols[0].text_area(
+    "输入数学公式",
+    value=r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
+    label_visibility="collapsed",
+    key="demo-math_text",
+    height=200,
 )
 # demo_cols[1].markdown("=>")
 demo_cols[2].markdown("检查数学公式是否正确")
