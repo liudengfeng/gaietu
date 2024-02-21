@@ -95,7 +95,8 @@ if st.button("执行"):
     # output = llm([message])
     planner = (
         PromptTemplate.from_template(context + one_shot_exemplar + " {input}")
-        | VertexAI(model_name="gemini-pro", callbacks=[st_cb])
+        # | VertexAI(model_name="gemini-pro", callbacks=[st_cb])
+        | VertexAI(model_name="gemini-pro")
         | StrOutputParser()
         | {"base_response": RunnablePassthrough()}
     )
@@ -106,7 +107,7 @@ if st.button("执行"):
             model_name="gemini-pro",
             temperature=0,
             max_output_tokens=400,
-            callbacks=[st_cb],
+            # callbacks=[st_cb],
         )
         | StrOutputParser()
     )
@@ -117,7 +118,7 @@ if st.button("执行"):
             model_name="gemini-pro",
             temperature=0.1,
             max_output_tokens=400,
-            callbacks=[st_cb],
+            # callbacks=[st_cb],
         )
         | StrOutputParser()
     )
@@ -128,7 +129,7 @@ if st.button("执行"):
             model_name="gemini-pro",
             temperature=0.7,
             max_output_tokens=400,
-            callbacks=[st_cb],
+            # callbacks=[st_cb],
         )
         | StrOutputParser()
     )
@@ -137,7 +138,8 @@ if st.button("执行"):
         PromptTemplate.from_template(
             "Output all the final results in this markdown format: Result 1: {results_1} \n Result 2:{results_2} \n Result 3: {results_3}"
         )
-        | VertexAI(model_name="gemini-pro", max_output_tokens=1024, callbacks=[st_cb])
+        # | VertexAI(model_name="gemini-pro", max_output_tokens=1024, callbacks=[st_cb])
+        | VertexAI(model_name="gemini-pro", max_output_tokens=1024)
         | StrOutputParser()
     )
 
