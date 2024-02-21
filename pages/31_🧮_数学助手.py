@@ -281,13 +281,13 @@ if test_btn:
     llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
     )
-    llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
     # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
     message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
-    output = llm_math.invoke([message])
+    output = llm.invoke([message])
     # output = llm_symbolic_math.invoke([message])
     st.markdown("##### 解答")
-    st.markdown(output)
+    st.markdown(output.content)
 
 # endregion
 
