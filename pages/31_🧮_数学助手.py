@@ -232,9 +232,8 @@ def create_math_chat():
             SystemMessagePromptTemplate.from_template(
                 "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
             ),
-            # MessagesPlaceholder(variable_name="history"),
-            message,
-            # HumanMessagePromptTemplate.from_template("{input}"),
+            MessagesPlaceholder(variable_name="history"),
+            HumanMessagePromptTemplate.from_template("{input}"),
         ],
         # validate_template=True,
     )
