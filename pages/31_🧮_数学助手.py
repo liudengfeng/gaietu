@@ -383,7 +383,11 @@ if test_btn:
         create_math_chat()
 
     message = HumanMessage(
-        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file), "{input}"]
+        content=[
+            "这是一张包含数学题的图片。",
+            image_to_dict(uploaded_file),
+            "提供解题思路",
+        ]
     )
     st.markdown("##### 解答")
     st.markdown(st.session_state["math-chat"].invoke(input=message))
