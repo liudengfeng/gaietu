@@ -321,6 +321,10 @@ math_text = demo_cols[0].text_area(
 demo_cols[2].markdown("检查数学公式是否正确")
 demo_cols[2].markdown(math_text)
 
+edit_btn_cols = demo_cols[0].columns(4)
+cls_edit_btn = edit_btn_cols[0].button("清除[:wastebasket:]", key="clear_math_text")
+copy_btn = edit_btn_cols[1].button("复制[:clipboard:]", key="copy_math_text")
+
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown("常用的数学公式符号")
     # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
