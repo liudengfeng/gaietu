@@ -63,9 +63,11 @@ Output in markdown."""
 SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供解答图中数学题的解题思路：
 1. 确定问题的类型。
 2. 简要描述解决问题的步骤和使用的方法。
-3. 仅提供关键的数学公式和计算流程，不进行详细的数值运算。
+3. 仅列出关键的数学公式和计算流程，不进行数值运算。
 
-**不要提供答案。**
+注意：
+1. **不要提供答案。**
+2. 您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
 
 要求使用`$`或`$$`来正确标识数学变量及公式。输出为 markdown 格式。"""
 
@@ -198,7 +200,6 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
-
 st.markdown(
     """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。
 - 模型对分数的识别效果不好，这可能导致计算结果的不准确
@@ -207,7 +208,9 @@ st.markdown(
 - :warning: 模型只能帮助解析数学问题，但不能完全依赖。
 """
 )
-uploaded_file = st.file_uploader(
+test_cols = st.columns(2)
+grade = test_cols[0].selectbox("年级", ["小学", "初中", "高中", "大学"])
+uploaded_file = test_cols[1].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
     key="uploaded_file",
@@ -282,7 +285,7 @@ if solution_btn:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
 
-    view_example_v1(uploaded_file, SOLUTION_THOUGHT_PROMPT)
+    view_example_v1(uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade))
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
@@ -290,7 +293,7 @@ if solution_btn:
     # llm_math = LLMMathChain.from_llm(llm, verbose=True)
     # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
     message = HumanMessage(
-        content=[SOLUTION_THOUGHT_PROMPT, image_to_dict(uploaded_file)]
+        content=[SOLUTION_THOUGHT_PROMPT.format(grade=grade), image_to_dict(uploaded_file)]
     )
     output = llm.invoke([message])
     # output = llm_symbolic_math.invoke([message])
