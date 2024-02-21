@@ -238,8 +238,8 @@ if test_btn:
     llm_math = LLMMathChain.from_llm(llm, verbose=True)
     llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
     message = HumanMessage(content=[prompt, image_to_dict(uploaded_file)])
-    output = llm_math.invoke([message])
-    # output = llm_symbolic_math.invoke([message])
+    # output = llm_math.invoke([message])
+    output = llm_symbolic_math.invoke([message])
     st.markdown(output.content)
 
 # endregion
