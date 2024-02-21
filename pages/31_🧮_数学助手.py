@@ -214,10 +214,8 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 
 def create_math_chat():
-    # if uploaded_file is None:
-    #     uploaded_file = st.session_state[key]
-    #     # 测试
-    st.image(uploaded_file.getvalue(), "试题图片")
+    if uploaded_file is None:
+        return
 
     model = ChatVertexAI(
         model_name="gemini-pro-vision",
@@ -234,7 +232,7 @@ def create_math_chat():
             SystemMessagePromptTemplate.from_template(
                 "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
             ),
-            MessagesPlaceholder(variable_name="history"),
+            # MessagesPlaceholder(variable_name="history"),
             message,
             # HumanMessagePromptTemplate.from_template("{input}"),
         ],
@@ -268,10 +266,6 @@ uploaded_file = test_cols[1].file_uploader(
     key="uploaded_file",
     type=["png", "jpg"],
     on_change=create_math_chat,
-    # args=(
-    #     None,
-    #     "uploaded_file",
-    # ),
     help="""
 支持的格式
 - 图片：PNG、JPG
