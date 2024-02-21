@@ -64,8 +64,8 @@ Output in markdown."""
 
 
 # region 函数
-def clear_prompt(key):
-    st.session_state[key] = ""
+def reset_text_value(key, value=""):
+    st.session_state[key] = value
 
 
 def _process_media(uploaded_file):
@@ -219,8 +219,8 @@ tab0_btn_cols = st.columns([1, 1, 1, 1, 6])
 cls_btn = tab0_btn_cols[0].button(
     "清除[:wastebasket:]",
     help="✨ 清空提示词",
-    key="clear_prompt",
-    on_click=clear_prompt,
+    key="reset_text_value",
+    on_click=reset_text_value,
     args=("user_prompt_key",),
 )
 qst_btn = tab0_btn_cols[1].button(
@@ -313,7 +313,6 @@ DEMO = f"""\
 """
 math_text = demo_cols[0].text_area(
     "输入数学公式",
-    value=DEMO,
     label_visibility="collapsed",
     key="demo-math_text",
     height=200,
@@ -323,14 +322,23 @@ demo_cols[2].markdown("检查数学公式是否正确")
 demo_cols[2].markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
-cls_edit_btn = edit_btn_cols[0].button(
+
+demo_btn = edit_btn_cols[0].button(
+    "演示[:play_or_pause_button:]",
+    key="demo_math_text",
+    help="✨ 演示数学公式",
+    on_click=reset_text_value,
+    args=("demo-math_text", DEMO),
+)
+cls_edit_btn = edit_btn_cols[1].button(
     "清除[:wastebasket:]",
     key="clear_math_text",
     help="✨ 清空数学公式",
-    on_click=clear_prompt,
+    on_click=reset_text_value,
     args=("demo-math_text",),
 )
-copy_btn = edit_btn_cols[1].button("复制[:clipboard:]", key="copy_math_text")
+copy_btn = edit_btn_cols[2].button("复制[:clipboard:]", key="copy_math_text")
+
 if cls_edit_btn:
     pass
 
