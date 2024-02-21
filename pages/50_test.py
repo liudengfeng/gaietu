@@ -2,7 +2,7 @@ import base64
 import logging
 from operator import itemgetter
 from pathlib import Path
-
+from langchain.callbacks import StreamlitCallbackHandler
 import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
@@ -65,6 +65,7 @@ def image_to_dict(image_path):
 # llm = VertexAI(model_name="gemini-pro-vision")
 # llm = VertexAI(model_name="gemini-pro")
 
+st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
 
 question = """The cafeteria had 23 apples.
 If they used 20 to make lunch and bought 6 more, how many apples do they have?"""
@@ -94,26 +95,41 @@ if st.button("执行"):
     # output = llm([message])
     planner = (
         PromptTemplate.from_template(context + one_shot_exemplar + " {input}")
-        | VertexAI(model_name="gemini-pro")
+        | VertexAI(model_name="gemini-pro", callbacks=[st_cb])
         | StrOutputParser()
         | {"base_response": RunnablePassthrough()}
     )
 
     answer_1 = (
         PromptTemplate.from_template("{base_response} A: 33")
-        | VertexAI(model_name="gemini-pro", temperature=0, max_output_tokens=400)
+        | VertexAI(
+            model_name="gemini-pro",
+            temperature=0,
+            max_output_tokens=400,
+            callbacks=[st_cb],
+        )
         | StrOutputParser()
     )
 
     answer_2 = (
         PromptTemplate.from_template("{base_response} A:")
-        | VertexAI(model_name="gemini-pro", temperature=0.1, max_output_tokens=400)
+        | VertexAI(
+            model_name="gemini-pro",
+            temperature=0.1,
+            max_output_tokens=400,
+            callbacks=[st_cb],
+        )
         | StrOutputParser()
     )
 
     answer_3 = (
         PromptTemplate.from_template("{base_response} A:")
-        | VertexAI(model_name="gemini-pro", temperature=0.7, max_output_tokens=400)
+        | VertexAI(
+            model_name="gemini-pro",
+            temperature=0.7,
+            max_output_tokens=400,
+            callbacks=[st_cb],
+        )
         | StrOutputParser()
     )
 
@@ -121,7 +137,7 @@ if st.button("执行"):
         PromptTemplate.from_template(
             "Output all the final results in this markdown format: Result 1: {results_1} \n Result 2:{results_2} \n Result 3: {results_3}"
         )
-        | VertexAI(model_name="gemini-pro", max_output_tokens=1024)
+        | VertexAI(model_name="gemini-pro", max_output_tokens=1024, callbacks=[st_cb])
         | StrOutputParser()
     )
 
