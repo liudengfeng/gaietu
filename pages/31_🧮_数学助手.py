@@ -144,6 +144,13 @@ def view_example_v0(examples):
             st.video(p["part"].inline_data.data)
 
 
+def view_example_v1(uploaded_file, prompt):
+    st.markdown("##### 显示试题图片")
+    st.image(uploaded_file.getvalue(), "试题图片")
+    st.markdown("##### 提示词")
+    st.markdown(prompt)
+
+
 @st.cache_data(
     ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，提取数学试题..."
 )
@@ -275,8 +282,8 @@ if solution_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
-    contents = process_file_and_prompt(uploaded_file, SOLUTION_THOUGHT_PROMPT)
-    view_example_v0(contents)
+
+    view_example_v1(uploaded_file, SOLUTION_THOUGHT_PROMPT)
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
