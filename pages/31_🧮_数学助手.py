@@ -224,24 +224,43 @@ def create_math_chat():
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
         },
     )
-    message = HumanMessage(
-        content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file)]
-    )
+    # message = HumanMessage(
+    #     content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file)]
+    # )
+    # prompt = ChatPromptTemplate(
+    #     messages=[
+    #         SystemMessagePromptTemplate.from_template(
+    #             "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
+    #         ),
+    #         MessagesPlaceholder(variable_name="history"),
+    #         # message,
+    #         HumanMessagePromptTemplate.from_template("{input}"),
+    #     ],
+    #     validate_template=True,
+    # )
+    # memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    # st.session_state["math-chat"] = ConversationChain(
+    #     llm=model, prompt=prompt, verbose=True, memory=memory
+    # )
+
     prompt = ChatPromptTemplate(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
+                "You are a helpful assistant who is good at language translation."
             ),
             MessagesPlaceholder(variable_name="history"),
-            # message,
             HumanMessagePromptTemplate.from_template("{input}"),
-        ],
-        validate_template=True,
+        ]
     )
+
     memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     st.session_state["math-chat"] = ConversationChain(
         llm=model, prompt=prompt, verbose=True, memory=memory
     )
+
+    # conversation.invoke(
+    #     input="Translate this sentence from Chinese to English. I love programming."
+    # )
 
 
 # endregion
@@ -382,15 +401,16 @@ if test_btn:
     if "math-chat" not in st.session_state:
         create_math_chat()
 
-    message = HumanMessage(
-        content=[
-            "这是一张包含数学题的图片。",
-            image_to_dict(uploaded_file),
-            "提供解题思路",
-        ]
-    )
+    # message = HumanMessage(
+    #     content=[
+    #         "这是一张包含数学题的图片。",
+    #         image_to_dict(uploaded_file),
+    #         "提供解题思路",
+    #     ]
+    # )
+    
     st.markdown("##### 解答")
-    st.markdown(st.session_state["math-chat"].invoke(input=message))
+    st.markdown(st.session_state["math-chat"].invoke(input=prompt))
 
 
 # endregion
