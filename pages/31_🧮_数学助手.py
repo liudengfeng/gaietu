@@ -129,9 +129,11 @@ def view_example_v0(examples):
             st.video(p["part"].inline_data.data)
 
 
-# 对象不能缓存，更改参数类型后再缓存
-# @st.cache_data(ttl=timedelta(hours=1))
-def extract_test_question_text_for(contents):
+@st.cache_data(
+    ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，提取数学试题..."
+)
+def extract_test_question_text_for(uploaded_file, prompt):
+    contents = process_file_and_prompt(uploaded_file, prompt)
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
@@ -244,8 +246,12 @@ if qst_btn:
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
     view_example_v0(contents)
     st.session_state["math-question"]
-    with st.spinner(f"正在运行多模态模型，提取数学试题..."):
-        st.session_state["math-question"] = extract_test_question_text_for(contents)
+    st.session_state["math-question"] = extract_test_question_text_for(
+        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+    )
+    st.markdown("试题markdown代码")
+    st.markdown(f'```markdown\n{st.session_state["math-question"]}\n```')
+    st.markdown("显示的试题文本")
     st.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
 
