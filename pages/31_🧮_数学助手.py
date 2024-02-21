@@ -295,7 +295,7 @@ st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑
 demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入包含数学公式的markdown格式文本")
 math_text = demo_cols[0].code(
-    r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
+    "$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
     language="markdown",
 )
 # demo_cols[1].markdown("=>")
