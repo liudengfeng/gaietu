@@ -295,9 +295,24 @@ st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑
 
 demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入包含数学公式的markdown格式文本")
+MATH_VARIABLE_DEMO = "$x$"
+FRACTION_DEMO = "$\\frac{a}{b}$"  # 分数，a/b
+SUBSCRIPT_DEMO = "$a_{i}$"  # 下标，a_i
+FORMULA_DEMO = "$a^2 + b^2 = c^2$"  # 公式，勾股定理
+INTEGRAL_DEMO = "$$\\int_a^b f(x)\\,dx$$"  # 积分，∫_a^b f(x) dx
+DEMO = f"""
+#### 数学公式编辑演示
+##### 行内数学公式
+- 行内变量代码 ```markdown 变量{MATH_VARIABLE_DEMO}``` 显示效果：{MATH_VARIABLE_DEMO}
+- 分数代码 ```markdown {FRACTION_DEMO}``` 显示效果：{FRACTION_DEMO}
+- 下标代码 ```markdown {SUBSCRIPT_DEMO}``` 显示效果：{SUBSCRIPT_DEMO}
+- 公式代码 ```markdown {FORMULA_DEMO}``` 显示效果：{FORMULA_DEMO}
+##### 块级数学公式
+- 积分代码 ```markdown {INTEGRAL_DEMO}``` 显示效果：{INTEGRAL_DEMO}
+"""
 math_text = demo_cols[0].text_area(
     "输入数学公式",
-    value=r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
+    value=DEMO,
     label_visibility="collapsed",
     key="demo-math_text",
     height=200,
