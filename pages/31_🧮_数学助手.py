@@ -8,6 +8,7 @@ from pathlib import Path
 import streamlit as st
 from langchain.chains import LLMMathChain
 from langchain_core.messages import HumanMessage
+from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
 from langchain_google_vertexai import ChatVertexAI, VertexAI
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
@@ -245,15 +246,18 @@ if test_btn:
 # region 数学公式编辑
 st.subheader("编辑数学公式", divider="rainbow", anchor="数学公式编辑")
 
-demo_cols = st.columns(2)
+demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入数学公式文本")
-math_text = demo_cols[0].text_input(
+math_text = demo_cols[0].text_area(
     "输入数学公式",
     value=r"$\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}$",
     label_visibility="collapsed",
+    key="demo-math_text",
+    height=200,
 )
-demo_cols[1].markdown("检查数学公式是否正确")
-demo_cols[1].markdown(math_text)
+demo_cols[1].markdown("=>")
+demo_cols[2].markdown("检查数学公式是否正确")
+demo_cols[2].markdown(math_text)
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown("常用的数学公式符号")
