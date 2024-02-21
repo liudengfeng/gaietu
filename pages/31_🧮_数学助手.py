@@ -324,7 +324,7 @@ demo_cols[2].markdown(math_text)
 edit_btn_cols = demo_cols[0].columns(4)
 
 demo_btn = edit_btn_cols[0].button(
-    "演示[:play_or_pause_button:]",
+    "演示[:eyes:]",
     key="demo_math_text",
     help="✨ 演示数学公式",
     on_click=reset_text_value,
