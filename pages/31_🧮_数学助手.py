@@ -70,7 +70,7 @@ if "math-question" not in st.session_state:
     st.session_state["math-question"] = ""
 
 if "math-chat-history" not in st.session_state:
-    st.session_state["math-chat-history"] = []
+    st.session_state["math-chat-history"] = ChatMessageHistory()
 
 # endregion
 
@@ -258,7 +258,6 @@ def create_math_chat():
 
     # if uploaded_file is None:
     #     return
-    st.session_state["math-chat-history"] = []
     chat = ChatVertexAI(
         model_name="gemini-pro-vision",
         convert_system_message_to_human=True,
@@ -278,11 +277,12 @@ def create_math_chat():
         ],
         # validate_template=True,
     )
-    chat_history_for_chain = ChatMessageHistory()
+    st.session_state["math-chat-history"] = ChatMessageHistory()
+    st.session_state["math-chat-history"].clear()
     chain = prompt | chat
     chain_with_message_history = RunnableWithMessageHistory(
         chain,
-        lambda session_id: chat_history_for_chain,
+        lambda session_id: st.session_state["math-chat-history"],
         input_messages_key="input",
         history_messages_key="chat_history",
     )
@@ -443,15 +443,16 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
         st.stop()
     response_container.empty()
     view_example_v1(uploaded_file, prompt, response_container)
-    if len(st.session_state["math-chat-history"]) == 0:
+    if len(st.session_state["math-chat-history"].messages) == 0:
         create_math_chat()
-        response = run_chain(prompt, uploaded_file)
-    else:
-        response = run_chain(prompt)
-    st.session_state["math-chat-history"].append(prompt)
-    st.session_state["math-chat-history"].append(response.content)
-    st.markdown("##### AI回答")
-    response_container.markdown(response.content)
+        st.write(st.session_state["math-chat-history"].messages)
+    #     response = run_chain(prompt, uploaded_file)
+    # else:
+    #     response = run_chain(prompt)
+    # st.session_state["math-chat-history"].add_user_message(prompt)
+    # st.session_state["math-chat-history"].add_ai_message(response.content)
+    # st.markdown("##### AI回答")
+    # response_container.markdown(response.content)
 
 # endregion
 
