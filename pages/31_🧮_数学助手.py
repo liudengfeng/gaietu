@@ -223,26 +223,6 @@ def extract_test_question_text_for(uploaded_file, prompt):
     )
 
 
-@st.cache_data(ttl=timedelta(hours=1))
-def run_chain(prompt, uploaded_file=None):
-    text_message = {
-        "type": "text",
-        "text": prompt,
-    }
-    if uploaded_file is not None:
-        message = HumanMessage(
-            content=[
-                text_message,
-                image_to_dict(uploaded_file),
-            ]
-        )
-    else:
-        message = HumanMessage(content=[text_message])
-    return st.session_state["math-assistant"].invoke(
-        [message],
-    )
-
-
 def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-pro-vision"
     model = load_vertex_model(model_name)
@@ -277,6 +257,26 @@ def create_math_chat():
         safety_settings={
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
         },
+    )
+
+
+@st.cache_data(ttl=timedelta(hours=1))
+def run_chain(prompt, uploaded_file=None):
+    text_message = {
+        "type": "text",
+        "text": prompt,
+    }
+    if uploaded_file is not None:
+        message = HumanMessage(
+            content=[
+                text_message,
+                image_to_dict(uploaded_file),
+            ]
+        )
+    else:
+        message = HumanMessage(content=[text_message])
+    return st.session_state["math-assistant"](
+        message,
     )
 
 
