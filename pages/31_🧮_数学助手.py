@@ -215,24 +215,19 @@ def extract_test_question_text_for(uploaded_file, prompt):
 
 @st.cache_data(ttl=timedelta(hours=1))
 def run_chain(prompt, uploaded_file=None):
+    text_message = {
+        "type": "text",
+        "text": prompt,
+    }
     if uploaded_file is not None:
         message = HumanMessage(
             content=[
-                prompt,
+                text_message,
                 image_to_dict(uploaded_file),
             ]
         )
     else:
-        message = HumanMessage(content=[prompt])
-    # st.session_state["math-chat-history"].add_user_message(message)
-    # return st.session_state["math-chat"].invoke(
-    #     {"input": [message]}, {"configurable": {"session_id": "unused"}}
-    # )
-    # return st.session_state["math-chat"].invoke(
-    #     {
-    #         "messages": st.session_state["math-chat-history"].messages,
-    #     }
-    # )
+        message = HumanMessage(content=[text_message])
     return st.session_state["math-chat"].invoke(
         input=[message],
     )
