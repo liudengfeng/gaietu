@@ -360,11 +360,10 @@ if cls_btn:
 
 if qst_btn:
     if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
+        status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
         st.stop()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example_v0(contents)
-    st.session_state["math-question"]
+    view_example_v1(uploaded_file, prompt, response_container)
     st.session_state["math-question"] = extract_test_question_text_for(
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
     )
