@@ -70,7 +70,21 @@ EXTRACT_TEST_QUESTION_PROMPT = """Extract the test question text from the image.
 The layout according to the format in the picture. Add necessary blank lines to keep things nice.
 Use $ or $$ to correctly identify mathematical formulas.
 If the content is presented in a tabular format, it should be written using the HTML table syntax in Markdown.
-Output in markdown."""
+Output in markdown.
+"""
+
+SINGLE_CHOICE_QUESTION_PROMPT = """您是数学专业老师，按照以下要求提供解答单选题的解题思路：
+1. 阅读并理解题目。
+2. 分析每个选项，确定可能的正确答案。
+3. 使用适当的数学方法或公式来验证你的选择。
+4. 选择最有可能的答案。
+
+注意：
+1. **不要直接给出答案。**
+2. 您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
+
+使用`$`或`$$`来正确标识行内或块级数学变量及公式
+"""
 
 SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供解答图中数学题的解题思路：
 1. 确定问题的类型。
