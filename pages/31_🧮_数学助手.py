@@ -138,11 +138,23 @@ def _process_media(uploaded_file):
 
 
 def image_to_dict(uploaded_file):
+    image_bytes = uploaded_file.getvalue()
+    mime_type = uploaded_file.type
+
+    if mime_type == "image/jpeg":
+        data_url = (
+            f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+        )
+    elif mime_type == "image/png":
+        data_url = (
+            f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+        )
+    else:
+        raise ValueError("Unsupported file type")
+
     image_message = {
         "type": "image_url",
-        "image_url": {
-            "url": f"data:image/jpeg;base64,{base64.b64encode(uploaded_file.getvalue()).decode('utf-8')}"
-        },
+        "image_url": {"url": data_url},
     }
     return image_message
 
