@@ -384,7 +384,7 @@ if test_btn:
         create_math_chat()
 
     st.markdown("##### 解答")
-    st.markdown(st.session_state["math-chat"].invoke(input=prompt))
+    st.markdown(st.session_state["math-chat"].invoke(input=prompt).response)
 
 
 # endregion
