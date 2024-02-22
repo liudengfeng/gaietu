@@ -5,7 +5,6 @@ import mimetypes
 import tempfile
 from datetime import timedelta
 from pathlib import Path
-
 import streamlit as st
 from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chains import ConversationChain, LLMMathChain
@@ -220,9 +219,10 @@ def create_math_chat():
     if uploaded_file is None:
         return
 
-    model = ChatVertexAI(
+    # model = ChatVertexAI(
+    model = VertexAI(
         model_name="gemini-pro-vision",
-        convert_system_message_to_human=True,
+        # convert_system_message_to_human=True,
         safety_settings={
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
         },
@@ -255,7 +255,7 @@ def create_math_chat():
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
 st.markdown(
-    """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `提交` 按钮开始解答。
+    """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `解答` 按钮开始解答。
 - 模型对分数的识别效果不好，这可能导致计算结果的不准确
 - 在处理计算过程中，即使是最简单的计算也可能出现错误。
 - 如果发现从试题文本中提取的信息有误，请首先修正文本中的问题，然后再让模型尝试进行解答。
@@ -307,7 +307,7 @@ solution_btn = tab0_btn_cols[2].button(
     key="provide_solution",
 )
 smt_btn = tab0_btn_cols[3].button(
-    "提交[:heavy_check_mark:]", key="submit_button", help="✨ 点击提交"
+    "解答[:black_nib:]", key="submit_button", help="✨ 点击按钮，让AI为您提供解答。"
 )
 test_btn = tab0_btn_cols[4].button(
     "测试[:heavy_check_mark:]", key="test_button", help="✨ 临时测试"
