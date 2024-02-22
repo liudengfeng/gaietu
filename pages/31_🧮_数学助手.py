@@ -27,7 +27,6 @@ from langchain_google_vertexai import (
     HarmCategory,
     VertexAI,
 )
-from langchain_google_genai import ChatGoogleGenerativeAI
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
 
@@ -384,7 +383,7 @@ if solution_btn:
         uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade), response_container
     )
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
-    llm = ChatGoogleGenerativeAI(
+    llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
     )
     # llm_math = LLMMathChain.from_llm(llm, verbose=True)
