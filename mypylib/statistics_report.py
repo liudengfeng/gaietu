@@ -74,6 +74,10 @@ def get_performance_data(date):
                 }
             )
 
+    # 检查列表是否为空
+    if not performances_list:
+        return pd.DataFrame()
+
     # 将列表转换为数据框架
     df = pd.DataFrame(performances_list)
 
