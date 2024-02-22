@@ -215,15 +215,15 @@ def extract_test_question_text_for(uploaded_file, prompt):
 
 @st.cache_data(ttl=timedelta(hours=1))
 def run_chain(prompt, uploaded_file=None):
-    # if uploaded_file is not None:
-    #     message = HumanMessage(
-    #         content=[
-    #             prompt,
-    #             image_to_dict(uploaded_file),
-    #         ]
-    #     )
-    # else:
-    #     message = HumanMessage(content=[prompt])
+    if uploaded_file is not None:
+        message = HumanMessage(
+            content=[
+                prompt,
+                image_to_dict(uploaded_file),
+            ]
+        )
+    else:
+        message = HumanMessage(content=[prompt])
     # st.session_state["math-chat-history"].add_user_message(message)
     # return st.session_state["math-chat"].invoke(
     #     {"input": [message]}, {"configurable": {"session_id": "unused"}}
@@ -234,7 +234,7 @@ def run_chain(prompt, uploaded_file=None):
     #     }
     # )
     return st.session_state["math-chat"].invoke(
-        input=prompt,
+        input=[message],
     )
 
 
@@ -264,11 +264,9 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 
 def create_math_chat():
-    # uploaded_file = st.session_state["uploaded_file"]
-    # st.image(uploaded_file.getvalue(), "试题图片")
-
     # if uploaded_file is None:
     #     return
+    st.session_state["math-chat-started"] = False
     chat = ChatVertexAI(
         model_name="gemini-pro-vision",
         convert_system_message_to_human=True,
@@ -310,7 +308,7 @@ def create_math_chat():
     prompt = ChatPromptTemplate.from_messages(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                "You are a helpful assistant who is good at language translation."
+                "You are a helpful assistant who is proficient in mathematics."
             ),
             MessagesPlaceholder(variable_name="history"),
             HumanMessagePromptTemplate.from_template("{input}"),
@@ -470,9 +468,10 @@ if test_btn:
     # response_container.markdown(response.content)
 
 if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
-    # if uploaded_file is None:
-    #     status.warning("您是否忘记了上传图片或视频？")
-    #     st.stop()
+    if uploaded_file is None:
+        status.warning("您是否忘记了上传图片或视频？")
+        # st.stop()
+
     response_container.empty()
     view_example_v1(uploaded_file, prompt, response_container)
     if "math-chat" not in st.session_state:
@@ -480,15 +479,16 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
 
     # if len(st.session_state["math-chat-history"].messages) == 0:
 
-    # if not st.session_state["math-chat-started"]:
-    #     response = run_chain(prompt, uploaded_file)
-    # else:
-    #     response = run_chain(prompt)
-    response = run_chain(prompt)
+    if not st.session_state["math-chat-started"]:
+        response = run_chain(prompt, uploaded_file if uploaded_file else None)
+        st.session_state["math-chat-started"] = True
+    else:
+        response = run_chain(prompt)
+    # response = run_chain(prompt)
     # st.session_state["math-chat-history"].add_ai_message(response)
     st.markdown("##### AI回答")
     # response_container.markdown(response.content)
-    response_container.write(response)
+    response_container.markdown(response["response"])
 
 # endregion
 
