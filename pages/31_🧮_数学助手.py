@@ -418,18 +418,19 @@ if smt_btn:
 
 if test_btn:
     if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
-        st.stop()
+        status.warning(
+            "您是否忘记了上传包含数学问题的图片或视频？或者，您是否想要直接输入数学问题？"
+        )
 
     if "math-assistant" not in st.session_state:
         create_math_chat()
 
-    # response_container.empty()
-    # view_example_v1(uploaded_file, prompt, response_container)
+    response_container.empty()
+    view_example_v1(uploaded_file, prompt, response_container)
 
-    # st.markdown("##### 解答")
-    # response = run_chain(ANSWER_MATH_QUESTION_PROMPT, grade, uploaded_file)
-    # response_container.markdown(response.content)
+    st.markdown("##### 解答")
+    response = run_chain(ANSWER_MATH_QUESTION_PROMPT.format(grade=grade), uploaded_file)
+    response_container.markdown(response.content)
 
 if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     if uploaded_file is None:
