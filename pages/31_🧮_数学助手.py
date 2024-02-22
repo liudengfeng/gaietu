@@ -296,7 +296,8 @@ st.markdown(
 """
 )
 test_cols = st.columns(2)
-grade = test_cols[0].selectbox("年级", ["小学", "初中", "高中", "大学"])
+grade_cols = test_cols[0].columns(4)
+grade = grade_cols[0].selectbox("年级", ["小学", "初中", "高中", "大学"])
 uploaded_file = test_cols[1].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
