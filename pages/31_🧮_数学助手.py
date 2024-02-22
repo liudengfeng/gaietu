@@ -27,6 +27,7 @@ from langchain_google_vertexai import (
     HarmCategory,
     VertexAI,
 )
+from langchain_google_genai import ChatGoogleGenerativeAI
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import GenerationConfig, Part
 
@@ -137,8 +138,9 @@ def _process_media(uploaded_file):
 
 def image_to_dict(uploaded_file):
     image_bytes = uploaded_file.getvalue()
-    mime_type = uploaded_file.type
-
+    # mime_type = uploaded_file.type
+    mime_type = mimetypes.guess_type(uploaded_file.name)[0]
+    st.warning(f"mime_type: {mime_type}")
     if mime_type == "image/jpeg":
         data_url = (
             f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
@@ -251,7 +253,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 def create_math_chat():
     # if uploaded_file is None:
     #     return
-    st.session_state["math-assistant"] = ChatVertexAI(
+    st.session_state["math-assistant"] = ChatG(
         model_name="gemini-pro-vision",
         # convert_system_message_to_human=True,
         safety_settings={
@@ -382,7 +384,7 @@ if solution_btn:
         uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade), response_container
     )
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
-    llm = ChatVertexAI(
+    llm = ChatGoogleGenerativeAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
     )
     # llm_math = LLMMathChain.from_llm(llm, verbose=True)
