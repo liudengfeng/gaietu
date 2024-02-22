@@ -442,8 +442,6 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     if "math-assistant" not in st.session_state:
         create_math_chat()
 
-    # if len(st.session_state["math-chat-history"].messages) == 0:
-
     response = run_chain(prompt, uploaded_file if uploaded_file else None)
     # response = run_chain(prompt)
     # st.session_state["math-chat-history"].add_ai_message(response)
