@@ -222,8 +222,14 @@ def run_chain(prompt, uploaded_file=None):
         )
     else:
         message = HumanMessage(content=[prompt])
+    st.session_state["math-chat-history"].add_user_message(message)
+    # return st.session_state["math-chat"].invoke(
+    #     {"input": [message]}, {"configurable": {"session_id": "unused"}}
+    # )
     return st.session_state["math-chat"].invoke(
-        {"input": [message]}, {"configurable": {"session_id": "unused"}}
+        {
+            "messages": st.session_state["math-chat-history"].messages,
+        }
     )
 
 
@@ -272,21 +278,21 @@ def create_math_chat():
                 "system",
                 "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。",
             ),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{input}"),
+            MessagesPlaceholder(variable_name="messages"),
         ],
         # validate_template=True,
     )
     st.session_state["math-chat-history"] = ChatMessageHistory()
     st.session_state["math-chat-history"].clear()
     chain = prompt | chat
-    chain_with_message_history = RunnableWithMessageHistory(
-        chain,
-        lambda session_id: st.session_state["math-chat-history"],
-        input_messages_key="input",
-        history_messages_key="chat_history",
-    )
-    st.session_state["math-chat"] = chain_with_message_history
+    st.session_state["math-chat"] = chain
+    # chain_with_message_history = RunnableWithMessageHistory(
+    #     chain,
+    #     lambda session_id: st.session_state["math-chat-history"],
+    #     input_messages_key="input",
+    #     history_messages_key="chat_history",
+    # )
+    # st.session_state["math-chat"] = chain_with_message_history
 
 
 # endregion
@@ -446,13 +452,12 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     if len(st.session_state["math-chat-history"].messages) == 0:
         create_math_chat()
         st.write(st.session_state["math-chat-history"].messages)
-    #     response = run_chain(prompt, uploaded_file)
-    # else:
-    #     response = run_chain(prompt)
-    # st.session_state["math-chat-history"].add_user_message(prompt)
-    # st.session_state["math-chat-history"].add_ai_message(response.content)
-    # st.markdown("##### AI回答")
-    # response_container.markdown(response.content)
+        response = run_chain(prompt, uploaded_file)
+    else:
+        response = run_chain(prompt)
+    st.session_state["math-chat-history"].add_ai_message(response)
+    st.markdown("##### AI回答")
+    response_container.markdown(response.content)
 
 # endregion
 
