@@ -437,13 +437,12 @@ if test_btn:
 
 # messages = st.container(height=300)
 
-if prompt := prompt_elem.chat_input("Say something"):
+if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
     response_container.empty()
     view_example_v1(uploaded_file, prompt, response_container)
-    st.markdown("##### 解答")
     if len(st.session_state["math-chat-history"]) == 0:
         create_math_chat()
         response = run_chain(prompt, uploaded_file)
@@ -451,6 +450,7 @@ if prompt := prompt_elem.chat_input("Say something"):
         response = run_chain(prompt)
     st.session_state["math-chat-history"].append(prompt)
     st.session_state["math-chat-history"].append(response.content)
+    st.markdown("##### AI回答")
     response_container.markdown(response.content)
 
 # endregion
