@@ -227,38 +227,37 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 
 def create_math_chat():
-    uploaded_file = st.session_state["uploaded_file"]
+    # uploaded_file = st.session_state["uploaded_file"]
     # st.image(uploaded_file.getvalue(), "试题图片")
 
-    if uploaded_file is None:
-        return
+    # if uploaded_file is None:
+    #     return
 
-    # model = ChatVertexAI(
-    model = VertexAI(
+    chat = ChatVertexAI(
         model_name="gemini-pro-vision",
-        # convert_system_message_to_human=True,
+        convert_system_message_to_human=True,
         safety_settings={
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
         },
     )
+
     sys_message = SystemMessage(
         content=[
-            image_to_dict(uploaded_file),
+            # image_to_dict(uploaded_file),
             "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。",
         ]
     )
     prompt = ChatPromptTemplate(
         messages=[
             sys_message,
-            MessagesPlaceholder(variable_name="history"),
-            HumanMessagePromptTemplate.from_template("{input}"),
+            MessagesPlaceholder(variable_name="messages"),
         ],
         validate_template=True,
     )
-    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
-    st.session_state["math-chat"] = ConversationChain(
-        llm=model, prompt=prompt, verbose=True, memory=memory
-    )
+
+    chain = prompt | chat
+
+    st.session_state["math-chat"] = chain
     logger.info("创建数学助手成功！")
 
 
