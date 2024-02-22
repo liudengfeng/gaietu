@@ -271,7 +271,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 def create_math_chat():
     # if uploaded_file is None:
     #     return
-    st.session_state["math-assistant"] = VertexAI(
+    st.session_state["math-assistant"] = ChatVertexAI(
         model_name="gemini-pro-vision",
         # convert_system_message_to_human=True,
         safety_settings={
