@@ -383,7 +383,7 @@ if solution_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
-
+    response_container.empty()
     view_example_v1(
         uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade), response_container
     )
