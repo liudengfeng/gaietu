@@ -224,43 +224,24 @@ def create_math_chat():
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
         },
     )
-    # message = HumanMessage(
-    #     content=["这是一张包含数学题的图片。", image_to_dict(uploaded_file)]
-    # )
-    # prompt = ChatPromptTemplate(
-    #     messages=[
-    #         SystemMessagePromptTemplate.from_template(
-    #             "你是一个擅长数学的助手，你的任务是帮助用户解决图中的数学问题。"
-    #         ),
-    #         MessagesPlaceholder(variable_name="history"),
-    #         # message,
-    #         HumanMessagePromptTemplate.from_template("{input}"),
-    #     ],
-    #     validate_template=True,
-    # )
-    # memory = ConversationBufferMemory(memory_key="history", return_messages=True)
-    # st.session_state["math-chat"] = ConversationChain(
-    #     llm=model, prompt=prompt, verbose=True, memory=memory
-    # )
-
-    prompt = ChatPromptTemplate(
-        messages=[
-            SystemMessagePromptTemplate.from_template(
-                "You are a helpful assistant who is good at language translation."
-            ),
-            MessagesPlaceholder(variable_name="history"),
-            HumanMessagePromptTemplate.from_template("{input}"),
+    sys_message = SystemMessage(
+        content=[
+            image_to_dict(uploaded_file),
+            "你是一个擅长数学的助手，你的任务是帮助用户解答图中的数学问题。",
         ]
     )
-
+    prompt = ChatPromptTemplate(
+        messages=[
+            sys_message,
+            MessagesPlaceholder(variable_name="history"),
+            HumanMessagePromptTemplate.from_template("{input}"),
+        ],
+        validate_template=True,
+    )
     memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     st.session_state["math-chat"] = ConversationChain(
         llm=model, prompt=prompt, verbose=True, memory=memory
     )
-
-    # conversation.invoke(
-    #     input="Translate this sentence from Chinese to English. I love programming."
-    # )
 
 
 # endregion
