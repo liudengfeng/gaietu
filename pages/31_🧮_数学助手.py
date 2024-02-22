@@ -215,15 +215,15 @@ def extract_test_question_text_for(uploaded_file, prompt):
 
 @st.cache_data(ttl=timedelta(hours=1))
 def run_chain(prompt, uploaded_file=None):
-    if uploaded_file is not None:
-        message = HumanMessage(
-            content=[
-                prompt,
-                image_to_dict(uploaded_file),
-            ]
-        )
-    else:
-        message = HumanMessage(content=[prompt])
+    # if uploaded_file is not None:
+    #     message = HumanMessage(
+    #         content=[
+    #             prompt,
+    #             image_to_dict(uploaded_file),
+    #         ]
+    #     )
+    # else:
+    #     message = HumanMessage(content=[prompt])
     # st.session_state["math-chat-history"].add_user_message(message)
     # return st.session_state["math-chat"].invoke(
     #     {"input": [message]}, {"configurable": {"session_id": "unused"}}
@@ -234,7 +234,7 @@ def run_chain(prompt, uploaded_file=None):
     #     }
     # )
     return st.session_state["math-chat"].invoke(
-        input=message,
+        input=prompt,
     )
 
 
@@ -292,10 +292,25 @@ def create_math_chat():
     # chain = prompt | chat
     # st.session_state["math-chat"] = chain
 
+    # prompt = ChatPromptTemplate.from_messages(
+    #     messages=[
+    #         SystemMessagePromptTemplate.from_template(
+    #             "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。"
+    #         ),
+    #         MessagesPlaceholder(variable_name="history"),
+    #         HumanMessagePromptTemplate.from_template("{input}"),
+    #     ]
+    # )
+
+    # memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    # st.session_state["math-chat"] = ConversationChain(
+    #     llm=chat, prompt=prompt, verbose=True, memory=memory
+    # )
+
     prompt = ChatPromptTemplate.from_messages(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。"
+                "You are a helpful assistant who is good at language translation."
             ),
             MessagesPlaceholder(variable_name="history"),
             HumanMessagePromptTemplate.from_template("{input}"),
@@ -462,14 +477,15 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     view_example_v1(uploaded_file, prompt, response_container)
     if "math-chat" not in st.session_state:
         create_math_chat()
-    
+
     # if len(st.session_state["math-chat-history"].messages) == 0:
 
-    if not st.session_state["math-chat-started"]:
-        response = run_chain(prompt, uploaded_file)
-    else:
-        response = run_chain(prompt)
-    st.session_state["math-chat-history"].add_ai_message(response)
+    # if not st.session_state["math-chat-started"]:
+    #     response = run_chain(prompt, uploaded_file)
+    # else:
+    #     response = run_chain(prompt)
+    response = run_chain(prompt)
+    # st.session_state["math-chat-history"].add_ai_message(response)
     st.markdown("##### AI回答")
     response_container.markdown(response.content)
 
