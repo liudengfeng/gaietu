@@ -397,9 +397,9 @@ if test_btn:
 
     if "math-chat" not in st.session_state:
         create_math_chat()
-    
+
     view_example_v1(uploaded_file, prompt)
-    
+
     st.markdown("##### 解答")
     message = HumanMessage(
         content=[
