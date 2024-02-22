@@ -312,9 +312,9 @@ prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
 prompt = prompt_cols[0].text_area(
     "您的提示词",
-    value=ANSWER_MATH_QUESTION_PROMPT.format(grade=grade),
+    # value=ANSWER_MATH_QUESTION_PROMPT.format(grade=grade),
     key="user_prompt_key",
-    placeholder="请输入提示词，例如：'您是一位优秀的数学老师，分步指导学生解答图中的试题。注意：请提供解题思路、解题知识点，并正确标识数学公式。'",
+    placeholder=f"请输入提示词，例如：{ANSWER_MATH_QUESTION_PROMPT.format(grade=grade)}",
     max_chars=12288,
     height=300,
     label_visibility="collapsed",
