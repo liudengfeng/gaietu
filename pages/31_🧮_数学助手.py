@@ -277,7 +277,7 @@ def run_chain(prompt, uploaded_file=None):
     else:
         message = HumanMessage(content=[text_message])
     return st.session_state["math-assistant"](
-        message,
+        [message],
     )
 
 
