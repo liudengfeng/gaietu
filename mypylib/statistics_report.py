@@ -344,7 +344,7 @@ def display_study_time(
     metric_cols[0].metric(
         label="学习时间",
         value=f"{total_study_time.sum():.2f} 分钟",
-        delta=f"{delta_study_time} 小时" if delta_study_time != "NA" else "NA",
+        delta=f"{delta_study_time:.2f} 小时" if delta_study_time != "NA" else "NA",
     )
 
     project_time = df.groupby("项目")["时长"].sum().reset_index()

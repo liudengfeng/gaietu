@@ -76,11 +76,11 @@ if "math-question" not in st.session_state:
 
 # region 提示词
 
-EXTRACT_TEST_QUESTION_PROMPT = """Extract the test question text from the image.
-The layout according to the format in the picture. Add necessary blank lines to keep things nice.
-Use $ or $$ to correctly identify mathematical formulas.
-If the content is presented in a tabular format, it should be written using the HTML table syntax in Markdown.
-Output in markdown.
+EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取测试问题的文本。只提取图中的文本，不包含示意图、插图。
+根据图片中的格式进行布局。添加必要的空行以保持整洁。
+使用 $ 或 $$ 来正确标识数学公式。
+如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
+以 Markdown 格式输出。
 """
 
 SINGLE_CHOICE_QUESTION_PROMPT = """您是数学专业老师，按照以下要求提供解答单选题的解题思路：
