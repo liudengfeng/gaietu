@@ -487,7 +487,8 @@ if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
     response = run_chain(prompt)
     # st.session_state["math-chat-history"].add_ai_message(response)
     st.markdown("##### AI回答")
-    response_container.markdown(response.content)
+    # response_container.markdown(response.content)
+    response_container.write(response)
 
 # endregion
 
