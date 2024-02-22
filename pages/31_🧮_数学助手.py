@@ -242,7 +242,7 @@ def create_math_chat():
     st.session_state["math-chat"] = ConversationChain(
         llm=model, prompt=prompt, verbose=True, memory=memory
     )
-    st.success("创建数学助手成功！")
+    logger.info("创建数学助手成功！")
 
 
 # endregion
