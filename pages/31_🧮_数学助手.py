@@ -258,8 +258,6 @@ def create_math_chat():
     chain = prompt | chat
 
     st.session_state["math-chat"] = chain
-    # logger.info("创建数学助手成功！")
-    st.warning("创建数学助手成功！")
 
 
 # endregion
@@ -401,7 +399,13 @@ if test_btn:
         create_math_chat()
 
     st.markdown("##### 解答")
-    st.markdown(st.session_state["math-chat"].invoke(input=prompt)["response"])
+    message = HumanMessage(
+        content=[
+            SOLUTION_THOUGHT_PROMPT.format(grade=grade),
+            image_to_dict(uploaded_file),
+        ]
+    )
+    st.write(st.session_state["math-chat"].invoke({"messages": [message]}))
 
 
 # endregion
