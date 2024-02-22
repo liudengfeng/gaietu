@@ -258,7 +258,8 @@ def create_math_chat():
     chain = prompt | chat
 
     st.session_state["math-chat"] = chain
-    logger.info("创建数学助手成功！")
+    # logger.info("创建数学助手成功！")
+    st.warning("创建数学助手成功！")
 
 
 # endregion
