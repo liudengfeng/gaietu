@@ -227,7 +227,7 @@ def create_math_chat():
     sys_message = SystemMessage(
         content=[
             image_to_dict(uploaded_file),
-            "你是一个擅长数学的助手，你的任务是帮助用户解答图中的数学问题。",
+            "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。",
         ]
     )
     prompt = ChatPromptTemplate(
