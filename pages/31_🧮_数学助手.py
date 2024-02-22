@@ -267,7 +267,7 @@ def create_math_chat():
         },
     )
 
-    prompt = ChatPromptTemplate(
+    prompt = ChatPromptTemplate.from_messages(
         messages=[
             (
                 "system",
