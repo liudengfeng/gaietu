@@ -397,7 +397,9 @@ if test_btn:
 
     if "math-chat" not in st.session_state:
         create_math_chat()
-
+    
+    view_example_v1(uploaded_file, prompt)
+    
     st.markdown("##### 解答")
     message = HumanMessage(
         content=[
@@ -405,7 +407,9 @@ if test_btn:
             image_to_dict(uploaded_file),
         ]
     )
-    st.write(st.session_state["math-chat"].invoke({"messages": [message]}))
+    response = st.session_state["math-chat"].invoke({"messages": [message]})
+    response_container.empty()
+    response_container.markdown(response.content)
 
 
 # endregion
