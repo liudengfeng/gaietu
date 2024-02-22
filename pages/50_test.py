@@ -4,7 +4,10 @@ from operator import itemgetter
 from pathlib import Path
 from langchain_core.prompts import ChatPromptTemplate
 import streamlit as st
-from langchain.callbacks import StreamlitCallbackHandler
+
+from langchain_community.callbacks import StreamlitCallbackHandler
+
+# from langchain.callbacks import StreamlitCallbackHandler
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
@@ -87,7 +90,7 @@ def image_to_dict(image_path):
 # llm = VertexAI(model_name="gemini-pro-vision")
 # llm = VertexAI(model_name="gemini-pro")
 
-st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
+# st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
 
 question = """The cafeteria had 23 apples.
 If they used 20 to make lunch and bought 6 more, how many apples do they have?"""
@@ -178,7 +181,7 @@ if st.button("执行"):
 
     # answers = chain.invoke({"input": question})
 
-    with st_cb:
+    with StreamlitCallbackHandler(st.container(), expand_new_thoughts=False) as st_cb:
         output = RunnableLambda(parse_or_fix).invoke(
             "{foo: bar}", {"tags": ["my-tag"], "callbacks": [st_cb]}
         )
