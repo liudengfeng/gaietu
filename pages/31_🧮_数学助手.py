@@ -215,7 +215,7 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 def create_math_chat():
     uploaded_file = st.session_state["uploaded_file"]
-    st.image(uploaded_file.getvalue(), "试题图片")
+    # st.image(uploaded_file.getvalue(), "试题图片")
 
     if uploaded_file is None:
         return
