@@ -171,11 +171,11 @@ def view_example_v0(examples):
             st.video(p["part"].inline_data.data)
 
 
-def view_example_v1(uploaded_file, prompt):
-    st.markdown("##### 试题图片")
-    st.image(uploaded_file.getvalue(), "试题图片")
-    st.markdown("##### 提示词")
-    st.markdown(prompt)
+def view_example_v1(uploaded_file, prompt, container):
+    container.markdown("##### 试题图片")
+    container.image(uploaded_file.getvalue(), "试题图片")
+    container.markdown("##### 提示词")
+    container.markdown(prompt)
 
 
 @st.cache_data(
@@ -354,7 +354,9 @@ if solution_btn:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
 
-    view_example_v1(uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade))
+    view_example_v1(
+        uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade), response_container
+    )
     # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
     llm = ChatVertexAI(
         temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
@@ -398,7 +400,8 @@ if test_btn:
     if "math-chat" not in st.session_state:
         create_math_chat()
 
-    view_example_v1(uploaded_file, prompt)
+    response_container.empty()
+    view_example_v1(uploaded_file, prompt, response_container)
 
     st.markdown("##### 解答")
     message = HumanMessage(
@@ -408,7 +411,6 @@ if test_btn:
         ]
     )
     response = st.session_state["math-chat"].invoke({"messages": [message]})
-    response_container.empty()
     response_container.markdown(response.content)
 
 
