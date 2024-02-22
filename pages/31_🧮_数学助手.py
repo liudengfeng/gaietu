@@ -97,8 +97,8 @@ SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供
 
 使用`$`或`$$`来正确标识行内或块级数学变量及公式"""
 
-ANSWER_MATH_QUESTION_PROMPT = """您是数学专业老师，分步做答图中的试题。
-要求：
+ANSWER_MATH_QUESTION_PROMPT = """
+您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
 使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
 
 # endregion
@@ -199,6 +199,19 @@ def extract_test_question_text_for(uploaded_file, prompt):
         generation_config,
         stream=False,
     )
+
+
+def run_chain(template, grade, uploaded_file):
+    if uploaded_file is not None:
+        message = HumanMessage(
+            content=[
+                template.format(grade=grade),
+                image_to_dict(uploaded_file),
+            ]
+        )
+    else:
+        message = HumanMessage(content=[template.format(grade=grade)])
+    return st.session_state["math-chat"].invoke({"messages": [message]})
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
@@ -404,13 +417,7 @@ if test_btn:
     view_example_v1(uploaded_file, prompt, response_container)
 
     st.markdown("##### 解答")
-    message = HumanMessage(
-        content=[
-            SOLUTION_THOUGHT_PROMPT.format(grade=grade),
-            image_to_dict(uploaded_file),
-        ]
-    )
-    response = st.session_state["math-chat"].invoke({"messages": [message]})
+    response = run_chain(ANSWER_MATH_QUESTION_PROMPT, grade, uploaded_file)
     response_container.markdown(response.content)
 
 
