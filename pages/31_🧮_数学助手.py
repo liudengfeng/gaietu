@@ -470,9 +470,9 @@ if test_btn:
     # response_container.markdown(response.content)
 
 if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
-    if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
-        st.stop()
+    # if uploaded_file is None:
+    #     status.warning("您是否忘记了上传图片或视频？")
+    #     st.stop()
     response_container.empty()
     view_example_v1(uploaded_file, prompt, response_container)
     if "math-chat" not in st.session_state:
