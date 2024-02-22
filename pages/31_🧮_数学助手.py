@@ -358,6 +358,7 @@ test_btn = tab0_btn_cols[4].button(
 
 
 response_container = st.container(height=300)
+prompt_elem = st.empty()
 
 if cls_btn:
     pass
@@ -438,7 +439,7 @@ if test_btn:
 
 # messages = st.container(height=300)
 
-if prompt := st.chat_input("Say something"):
+if prompt := prompt_elem.chat_input("Say something"):
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
