@@ -242,7 +242,7 @@ def create_math_chat():
     st.session_state["math-chat"] = ConversationChain(
         llm=model, prompt=prompt, verbose=True, memory=memory
     )
-    status.success("创建数学助手成功！")
+    st.success("创建数学助手成功！")
 
 
 # endregion
@@ -382,14 +382,6 @@ if test_btn:
 
     if "math-chat" not in st.session_state:
         create_math_chat()
-
-    # message = HumanMessage(
-    #     content=[
-    #         "这是一张包含数学题的图片。",
-    #         image_to_dict(uploaded_file),
-    #         "提供解题思路",
-    #     ]
-    # )
 
     st.markdown("##### 解答")
     st.markdown(st.session_state["math-chat"].invoke(input=prompt))
