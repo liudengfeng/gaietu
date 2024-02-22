@@ -276,7 +276,7 @@ def create_math_chat():
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
         ],
-        validate_template=True,
+        # validate_template=True,
     )
     chat_history_for_chain = ChatMessageHistory()
     chain = prompt | chat
