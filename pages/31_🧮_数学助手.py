@@ -201,6 +201,7 @@ def extract_test_question_text_for(uploaded_file, prompt):
     )
 
 
+@st.cache_data(ttl=timedelta(hours=1))
 def run_chain(template, grade, uploaded_file):
     if uploaded_file is not None:
         message = HumanMessage(
