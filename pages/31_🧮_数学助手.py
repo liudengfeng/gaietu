@@ -214,8 +214,8 @@ def generate_content_from_files_and_prompt(contents, placeholder):
 
 
 def create_math_chat():
-    if uploaded_file is None:
-        return
+    # if uploaded_file is None:
+    #     return
 
     model = ChatVertexAI(
         model_name="gemini-pro-vision",
