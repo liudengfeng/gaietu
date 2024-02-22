@@ -267,14 +267,12 @@ def create_math_chat():
         },
     )
 
-    sys_message = SystemMessage(
-        content=[
-            "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。",
-        ]
-    )
     prompt = ChatPromptTemplate(
         messages=[
-            sys_message,
+            (
+                "system",
+                "你是一个擅长数学的助手，你的任务是帮助解答图中的数学问题。",
+            ),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
         ],
