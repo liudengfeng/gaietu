@@ -2,6 +2,7 @@ import base64
 import io
 import logging
 import mimetypes
+import re
 import tempfile
 from datetime import timedelta
 from pathlib import Path
@@ -163,6 +164,16 @@ def view_example(container, prompt, uploaded_file=None):
         container.image(uploaded_file.getvalue(), "试题图片")
     container.markdown("##### 提示词")
     container.markdown(prompt)
+
+
+def replace_brackets_with_dollar(content):
+    content = re.sub(r"\\\(", "$", content)
+    content = re.sub(r"\\\)", "$", content)
+    return content
+
+
+def display_in_container(container, content):
+    container.markdown(replace_brackets_with_dollar(content))
 
 
 @st.cache_data(
@@ -384,8 +395,8 @@ if tip_btn:
 
     response = run_chain(prompt, uploaded_file)
     st.markdown("##### 解题思路")
-    response_container.markdown(response.content)
-    st.code(response.content,language="markdown")
+    display_in_container(response_container, response.content)
+    st.code(response.content, language="markdown")
 
 if smt_btn:
     if uploaded_file is None:
