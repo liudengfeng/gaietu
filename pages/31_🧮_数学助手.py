@@ -10,10 +10,7 @@ from pathlib import Path
 import streamlit as st
 from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chains import ConversationChain, LLMMathChain
-from langchain.memory import ConversationBufferMemory
-from langchain.memory import ChatMessageHistory
-from langchain_core.runnables.history import RunnableWithMessageHistory
-
+from langchain.memory import ChatMessageHistory, ConversationBufferMemory
 from langchain.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
@@ -21,6 +18,7 @@ from langchain.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
 from langchain_google_vertexai import (
     ChatVertexAI,
@@ -29,7 +27,7 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from moviepy.editor import VideoFileClip
-from vertexai.preview.generative_models import GenerationConfig, Part
+from vertexai.preview.generative_models import Content, GenerationConfig, Part
 
 from menu import menu
 from mypylib.google_ai import (
@@ -71,6 +69,24 @@ if "math-question" not in st.session_state:
 
 if "math-question-prompt" not in st.session_state:
     st.session_state["math-question-prompt"] = ""
+
+
+def initialize_writing_chat():
+    model_name = "gemini-pro"
+    model = load_vertex_model(model_name)
+    history = [
+        Content(
+            role="user",
+            parts=[
+                Part.from_text(
+                    """作为一个精通Markdown数学语法的AI，你的任务是根据用户的请求，提供正确的数学变量或表达式的Markdown代码。如果用户提出与此无关的问题，你需要婉转地引导他们回到主题。"""
+                )
+            ],
+        ),
+        Content(role="model", parts=[Part.from_text("Alright, let's proceed.")]),
+    ]
+    st.session_state["AI-Formula-Assistant"] = model.start_chat(history=history)
+
 
 # endregion
 
@@ -459,12 +475,33 @@ math_text = demo_cols[0].text_area(
     height=200,
 )
 
+Assistant_Configuration = {
+    "temperature": 0.0,
+    "top_k": 32,
+    "top_p": 1.0,
+    "max_output_tokens": 1024,
+}
+assistant_config = GenerationConfig(**Assistant_Configuration)
+
 with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
     ai_tip_container = st.container(border=True, height=200)
     with ai_tip_container:
-        if prompt := st.chat_input("在这里输入你的提问"):
-            pass
+        if prompt := st.chat_input("向AI提问数学公式的写法"):
+            contents_info = [
+                {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+            ]
+            if "AI-Formula-Assistant" not in st.session_state:
+                initialize_writing_chat()
+            display_generated_content_and_update_token(
+                "AI math formula demo",
+                "gemini-pro",
+                st.session_state["AI-Formula-Assistant"].send_message,
+                contents_info,
+                assistant_config,
+                stream=True,
+                placeholder=ai_tip_container.empty(),
+            )
         st.markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
