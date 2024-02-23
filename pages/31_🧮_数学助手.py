@@ -479,9 +479,9 @@ with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
     ai_tip_container = st.container(border=True, height=200)
     with ai_tip_container:
-        st.markdown(math_text)
         if prompt := st.chat_input("在这里输入你的提问"):
             pass
+        st.markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
 
