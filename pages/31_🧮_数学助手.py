@@ -327,7 +327,9 @@ prompt = prompt_cols[0].text_area(
     label_visibility="collapsed",
 )
 
-prompt_cols[1].markdown("显示验证提示词中的数学公式")
+prompt_cols[1].markdown(
+    "显示验证", help="✨ 显示验证提示词中的数学公式"
+)
 view_prompt_container = prompt_cols[1].container(height=300)
 view_prompt_container.markdown(prompt)
 
@@ -383,7 +385,7 @@ if qst_btn:
 if tip_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
-        st.stop()
+        # st.stop()
     response_container.empty()
     view_example(
         response_container,
