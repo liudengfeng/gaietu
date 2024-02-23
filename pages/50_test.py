@@ -137,7 +137,7 @@ if st.button("执行"):
                 "type": "text",
                 "text": "What's in this image?",
             },  # You can optionally provide text parts
-            {"type": "image_url", "image_url": image_url},
+            {"type": "image_url", "image_url": {"url": image_url}},
         ]
     )
     st.write(llm.invoke([message]))
