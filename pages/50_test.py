@@ -8,6 +8,7 @@ from operator import itemgetter
 from pathlib import Path
 
 import streamlit as st
+from langchain.agents import AgentExecutor, BaseMultiActionAgent, Tool
 
 # from langchain.callbacks import StreamlitCallbackHandler
 from langchain.prompts import PromptTemplate
@@ -17,6 +18,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_community.document_loaders import MathpixPDFLoader, WebBaseLoader
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.utilities import SerpAPIWrapper
 from langchain_community.vectorstores import FAISS
 from langchain_core.messages import HumanMessage
 from langchain_core.output_parsers import StrOutputParser
@@ -117,20 +119,6 @@ def image_to_file(uploaded_file):
 
 # st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
 
-question = """The cafeteria had 23 apples.
-If they used 20 to make lunch and bought 6 more, how many apples do they have?"""
-
-context = """Answer questions showing the full math and reasoning.
-Follow the pattern in the example.
-"""
-
-one_shot_exemplar = """Example Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
-Each can has 3 tennis balls. How many tennis balls does he have now?
-A: Roger started with 5 balls. 2 cans of 3 tennis balls
-each is 6 tennis balls. 5 + 6 = 11.
-The answer is 11.
-
-Q: """
 
 ANSWER_MATH_QUESTION_PROMPT = """
 Let's think step by step. You are proficient in mathematics, calculate the math problems in the image step by step.
@@ -148,23 +136,97 @@ uploaded_file = st.file_uploader(
 """,
 )
 
-from langchain.agents import AgentType, initialize_agent, load_tools
+
+def random_word(query: str) -> str:
+    print("\nNow I'm doing this!")
+    return "foo"
+
+
+search = SerpAPIWrapper()
+tools = [
+    Tool(
+        name="Search",
+        func=search.run,
+        description="useful for when you need to answer questions about current events",
+    ),
+    Tool(
+        name="RandomWord",
+        func=random_word,
+        description="call this to get a random word.",
+    ),
+]
+from typing import Any, List, Tuple, Union
+
+from langchain_core.agents import AgentAction, AgentFinish
+
+
+class FakeAgent(BaseMultiActionAgent):
+    """Fake Custom Agent."""
+
+    @property
+    def input_keys(self):
+        return ["input"]
+
+    def plan(
+        self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
+    ) -> Union[List[AgentAction], AgentFinish]:
+        """Given input, decided what to do.
+
+        Args:
+            intermediate_steps: Steps the LLM has taken to date,
+                along with observations
+            **kwargs: User inputs.
+
+        Returns:
+            Action specifying what tool to use.
+        """
+        if len(intermediate_steps) == 0:
+            return [
+                AgentAction(tool="Search", tool_input=kwargs["input"], log=""),
+                AgentAction(tool="RandomWord", tool_input=kwargs["input"], log=""),
+            ]
+        else:
+            return AgentFinish(return_values={"output": "bar"}, log="")
+
+    async def aplan(
+        self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
+    ) -> Union[List[AgentAction], AgentFinish]:
+        """Given input, decided what to do.
+
+        Args:
+            intermediate_steps: Steps the LLM has taken to date,
+                along with observations
+            **kwargs: User inputs.
+
+        Returns:
+            Action specifying what tool to use.
+        """
+        if len(intermediate_steps) == 0:
+            return [
+                AgentAction(tool="Search", tool_input=kwargs["input"], log=""),
+                AgentAction(tool="RandomWord", tool_input=kwargs["input"], log=""),
+            ]
+        else:
+            return AgentFinish(return_values={"output": "bar"}, log="")
+
 
 if st.button("执行"):
     llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0)
-    tools = load_tools(["ddg-search", "llm-math"], llm=llm)
-    agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
-
-    text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
-    message = HumanMessage(
-        content=[
-            {
-                "type": "text",
-                "text": text,
-            },  # You can optionally provide text parts
-            # image_to_file(uploaded_file),
-        ]
+    agent = FakeAgent()
+    agent_executor = AgentExecutor.from_agent_and_tools(
+        agent=agent, tools=tools, verbose=True
     )
+    agent_executor.run("How many people live in canada as of 2023?")
+    # text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
+    # message = HumanMessage(
+    #     content=[
+    #         {
+    #             "type": "text",
+    #             "text": text,
+    #         },  # You can optionally provide text parts
+    #         # image_to_file(uploaded_file),
+    #     ]
+    # )
 
-    res = agent.invoke([message])
-    st.markdown(res.content)
+    # res = agent.invoke([message])
+    # st.markdown(res.content)
