@@ -302,7 +302,7 @@ def run_chain(prompt, uploaded_file=None):
         )
     else:
         message = HumanMessage(content=[text_message])
-    return st.session_state["math-assistant"](
+    return st.session_state["math-assistant"].invoke(
         [message],
     )
 
@@ -472,13 +472,11 @@ if smt_btn:
         st.stop()
     response_container.empty()
     view_example(response_container, prompt)
-    # with st.spinner(f"正在运行多模态模型..."):
-    #     generate_content_from_files_and_prompt(
-    #         contents,
-    #         col2.empty(),
-    #     )
+    with st.spinner(f"正在运行多模态模型解答数学题..."):
+        response = run_chain(prompt, uploaded_file)
+    st.markdown("##### 解题思路")
+    display_in_container(response_container, response.content)
     update_sidebar_status(sidebar_status)
-
 
 # endregion
 
