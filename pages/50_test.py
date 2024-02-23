@@ -1,5 +1,6 @@
 import base64
 import logging
+import mimetypes
 from operator import itemgetter
 from pathlib import Path
 from langchain_core.prompts import ChatPromptTemplate
@@ -70,17 +71,26 @@ def parse_or_fix(text: str, config: RunnableConfig):
     return "Failed to parse"
 
 
-def image_to_dict(image_path):
-    with open(image_path, "rb") as image_file:
-        image_bytes = image_file.read()
+def image_to_dict(uploaded_file):
+    image_bytes = uploaded_file.getvalue()
+    mime_type = uploaded_file.type
+    # mime_type = mimetypes.guess_type(uploaded_file.name)[0]
+    st.warning(f"mime_type: {mime_type}")
+    if mime_type == "image/jpeg":
+        data_url = (
+            f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+        )
+    elif mime_type == "image/png":
+        data_url = (
+            f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+        )
+    else:
+        raise ValueError("Unsupported file type")
 
     image_message = {
         "type": "image_url",
-        "image_url": {
-            "url": f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-        },
+        "image_url": {"url": data_url},
     }
-
     return image_message
 
 
@@ -137,7 +147,7 @@ if st.button("执行"):
                 "type": "text",
                 "text": "What's in this image?",
             },  # You can optionally provide text parts
-            {"type": "image_url", "image_url": {"url": uploaded_file}},
+            image_to_dict(uploaded_file),
         ]
     )
     st.write(llm.invoke([message]))
