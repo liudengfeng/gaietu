@@ -413,7 +413,7 @@ cls_btn = tab0_btn_cols[0].button(
 demo_btn = tab0_btn_cols[1].button(
     "演示[:eyes:]",
     key="demo_prompt_text",
-    help="✨ 演示数学公式",
+    help="✨ 演示当前使用的提示词模板",
     on_click=reset_text_value,
     args=("user_prompt_key", get_prompt_templature(operation, checked)),
 )
