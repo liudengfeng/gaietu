@@ -508,12 +508,11 @@ with demo_cols[2]:
     ai_tip_container = st.container(border=True, height=300)
     with ai_tip_container:
         if math_prompt := st.chat_input("向AI提问数学公式的写法"):
-
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
             math_code = gen_tip_for(math_prompt)
             st.code(
-                f"```{ensure_math_code_wrapped_with_dollar(math_code)}```",
+                f"{math_code}",
                 language="markdown",
             )
 
