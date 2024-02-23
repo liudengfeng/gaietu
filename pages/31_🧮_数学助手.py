@@ -92,6 +92,10 @@ def initialize_writing_chat():
 
 # region 提示词
 
+CORRECTION_PROMPT_TEMPLATE = """
+**现在已经更新了题目和要求，你只需要参考图中的示意图或插图。**
+"""
+
 EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含示意图、插图。
 使用 $ 或 $$ 来正确标识变量和数学表达式。
 如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
@@ -108,9 +112,14 @@ SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是按照以下要求
 **不得提供具体的答案。**
 """
 
-ANSWER_MATH_QUESTION_PROMPT = """
-您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
-使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
+ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下要求解答图中的数学题：
+1. 这是一道{question_type}。
+2. 您的受众是{grade}学生，需要提供与其学习阶段相匹配的解题思路和方法。
+3. 使用`$`或`$$`来正确标识行内或块级数学变量及公式。
+
+Let's think step by step.
+"""
+
 
 # endregion
 
@@ -321,7 +330,13 @@ question_type = grade_cols[1].selectbox(
 
 prompt_templature = grade_cols[2].selectbox(
     "提示词",
-    ["提供解题思路", "提取数学题目", "生成解答"],
+    [
+        "提供解题思路",
+        "提取数学题目",
+        "生成解答",
+        "提供解题思路【修订】",
+        "生成解答【修订】",
+    ],
     # index=None,
     key="prompt_templature",
     help="选择提示词模板",
@@ -337,6 +352,16 @@ def update_prompt_templature():
         st.session_state["math-question-prompt"] = EXTRACT_TEST_QUESTION_PROMPT
     elif prompt_templature == "生成解答":
         st.session_state["math-question-prompt"] = ANSWER_MATH_QUESTION_PROMPT
+    elif prompt_templature == "提供解题思路【修订】":
+        st.session_state["math-question-prompt"] = (
+            SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+            + "\n"
+            + CORRECTION_PROMPT_TEMPLATE
+        )
+    elif prompt_templature == "生成解答【修订】":
+        st.session_state["math-question-prompt"] = (
+            ANSWER_MATH_QUESTION_PROMPT + "\n" + CORRECTION_PROMPT_TEMPLATE
+        )
 
 
 update_prompt_templature()
@@ -395,9 +420,6 @@ tip_btn = tab0_btn_cols[2].button(
 smt_btn = tab0_btn_cols[3].button(
     "解答[:black_nib:]", key="submit_button", help="✨ 点击按钮，让AI为您提供解答。"
 )
-test_btn = tab0_btn_cols[4].button(
-    "测试[:heavy_check_mark:]", key="test_button", help="✨ 临时测试"
-)
 
 
 response_container = st.container(height=300)
@@ -452,22 +474,6 @@ if smt_btn:
     #         col2.empty(),
     #     )
     update_sidebar_status(sidebar_status)
-
-if test_btn:
-    if uploaded_file is None:
-        status.warning(
-            "您是否忘记了上传包含数学问题的图片或视频？或者，您是否想要直接输入数学问题？"
-        )
-
-    if "math-assistant" not in st.session_state:
-        create_math_chat()
-
-    response_container.empty()
-    view_example(response_container, prompt)
-
-    st.markdown("##### 解答")
-    response = run_chain(ANSWER_MATH_QUESTION_PROMPT.format(grade=grade), uploaded_file)
-    response_container.markdown(response.content)
 
 
 # endregion
