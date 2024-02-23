@@ -491,17 +491,20 @@ with demo_cols[2]:
             contents_info = [
                 {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
             ]
+            
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
-            display_generated_content_and_update_token(
-                "AI math formula demo",
+
+            math_code = parse_generated_content_and_update_token(
+                "AI Formula Assistant",
                 "gemini-pro",
                 st.session_state["AI-Formula-Assistant"].send_message,
                 contents_info,
                 assistant_config,
-                stream=True,
-                placeholder=ai_tip_container.empty(),
+                stream=False,
             )
+            st.code(f"{math_code}",language="markdown")
+        
         st.markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
