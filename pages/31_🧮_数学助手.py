@@ -351,7 +351,9 @@ def update_prompt_templature():
     elif prompt_templature == "提取数学题目":
         st.session_state["math-question-prompt"] = EXTRACT_TEST_QUESTION_PROMPT
     elif prompt_templature == "生成解答":
-        st.session_state["math-question-prompt"] = ANSWER_MATH_QUESTION_PROMPT
+        st.session_state["math-question-prompt"] = ANSWER_MATH_QUESTION_PROMPT.format(
+            grade=grade, question_type=question_type
+        )
     elif prompt_templature == "提供解题思路【修订】":
         st.session_state["math-question-prompt"] = (
             SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
@@ -360,7 +362,9 @@ def update_prompt_templature():
         )
     elif prompt_templature == "生成解答【修订】":
         st.session_state["math-question-prompt"] = (
-            ANSWER_MATH_QUESTION_PROMPT + "\n" + CORRECTION_PROMPT_TEMPLATE
+            ANSWER_MATH_QUESTION_PROMPT.format(grade=grade, question_type=question_type)
+            + "\n"
+            + CORRECTION_PROMPT_TEMPLATE
         )
 
 
