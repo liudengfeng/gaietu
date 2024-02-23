@@ -334,7 +334,6 @@ prompt_templature = grade_cols[2].selectbox(
     "提示词",
     [
         "提供解题思路",
-        "提取数学题目",
         "生成解答",
         "提供解题思路【修订】",
         "生成解答【修订】",
@@ -438,13 +437,12 @@ if qst_btn:
     if uploaded_file is None:
         status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
         st.stop()
-    if prompt_templature not in ["提取数学题目"]:
-        status.error("您是否错误地选择了提示词？")
-        st.stop()
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example(response_container, prompt)
-    question = extract_test_question_text_for(uploaded_file, prompt)
+    view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT)
+    question = extract_test_question_text_for(
+        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+    )
     response_container.markdown("##### 试题markdown代码")
     display_in_container(response_container, question, True)
     response_container.markdown("##### 显示的试题文本")
