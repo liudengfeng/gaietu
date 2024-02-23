@@ -134,25 +134,28 @@ def _process_media(uploaded_file):
     return {"mime_type": mime_type, "part": p, "duration": duration}
 
 
+@st.cache_data(ttl=timedelta(hours=1))
 def image_to_dict(uploaded_file):
+    # 获取图片数据
     image_bytes = uploaded_file.getvalue()
-    mime_type = uploaded_file.type
-    mime_type = mimetypes.guess_type(uploaded_file.name)[0]
-    st.warning(f"mime_type: {mime_type}")
-    if mime_type == "image/jpeg":
-        data_url = (
-            f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-        )
-    elif mime_type == "image/png":
-        data_url = (
-            f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-        )
-    else:
-        raise ValueError("Unsupported file type")
 
+    # 获取文件的 MIME 类型
+    mime_type = uploaded_file.type
+
+    # 根据 MIME 类型获取文件扩展名
+    ext = mimetypes.guess_extension(mime_type)
+
+    # 创建一个临时文件，使用正确的文件扩展名
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+
+    # 将图片数据写入临时文件
+    temp_file.write(image_bytes)
+    temp_file.close()
+
+    # 返回临时文件的路径
     image_message = {
         "type": "image_url",
-        "image_url": {"url": data_url},
+        "image_url": {"url": temp_file.name},
     }
     return image_message
 
@@ -168,34 +171,10 @@ def process_file_and_prompt(uploaded_file, prompt):
     return contents_info
 
 
-def view_example(examples, container):
-    for i, p in enumerate(examples):
-        mime_type = p["mime_type"]
-        if mime_type.startswith("text"):
-            container.markdown(p["part"].text)
-        elif mime_type.startswith("image"):
-            # container.image(p["part"].inline_data.data, width=300)
-            container.image(p["part"].inline_data.data)
-        elif mime_type.startswith("video"):
-            container.video(p["part"].inline_data.data)
-
-
-def view_example_v0(examples):
-    st.markdown("##### 显示试题图片")
-    for i, p in enumerate(examples):
-        mime_type = p["mime_type"]
-        if mime_type.startswith("text"):
-            st.markdown(p["part"].text)
-        elif mime_type.startswith("image"):
-            # container.image(p["part"].inline_data.data, width=300)
-            st.image(p["part"].inline_data.data)
-        elif mime_type.startswith("video"):
-            st.video(p["part"].inline_data.data)
-
-
-def view_example_v1(uploaded_file, prompt, container):
-    container.markdown("##### 试题图片")
-    container.image(uploaded_file.getvalue(), "试题图片")
+def view_example(container, prompt, uploaded_file=None):
+    if uploaded_file is not None:
+        container.markdown("##### 试题图片")
+        container.image(uploaded_file.getvalue(), "试题图片")
     container.markdown("##### 提示词")
     container.markdown(prompt)
 
@@ -296,7 +275,23 @@ st.markdown(
 )
 test_cols = st.columns(2)
 grade_cols = test_cols[0].columns(4)
-grade = grade_cols[0].selectbox("年级", ["小学", "初中", "高中", "大学"])
+grade = grade_cols[0].selectbox(
+    "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
+)
+question_type = grade_cols[1].selectbox(
+    "题型",
+    ["选择题", "填空题", "计算题", "证明题", "解答题"],
+    index=None,
+    key="question_type",
+    help="选择题型",
+)
+prompt_templature = grade_cols[2].selectbox(
+    "提示词",
+    ["提供解题策略", "提取数学题目", "生成解答"],
+    index=None,
+    key="prompt_templature",
+    help="选择提示词模板",
+)
 uploaded_file = test_cols[1].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
@@ -402,19 +397,16 @@ if solution_btn:
 if smt_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
-    # if not prompt:
-    #     status.error("请添加提示词")
-    #     st.stop()
-
-    # contents = process_file_and_prompt(uploaded_file, prompt)
+    if not prompt:
+        status.error("请添加提示词")
+        st.stop()
     response_container.empty()
-    col1, col2 = response_container.columns([1, 1])
-    view_example(contents, col1)
-    with st.spinner(f"正在运行多模态模型..."):
-        generate_content_from_files_and_prompt(
-            contents,
-            col2.empty(),
-        )
+    view_example(response_container, prompt, uploaded_file)
+    # with st.spinner(f"正在运行多模态模型..."):
+    #     generate_content_from_files_and_prompt(
+    #         contents,
+    #         col2.empty(),
+    #     )
     update_sidebar_status(sidebar_status)
 
 if test_btn:
