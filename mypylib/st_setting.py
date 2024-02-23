@@ -12,5 +12,5 @@ def general_config():
         os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
     if "TAVILY_API_KEY" not in os.environ:
         os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
-    if "SERP_API_KEY" not in os.environ:
-        os.environ["SERP_API_KEY"] = st.secrets["SERP_API_KEY"]
+    if "SERPAPI_API_KEY" not in os.environ:
+        os.environ["SERPAPI_API_KEY"] = st.secrets["SERPAPI_API_KEY"]
