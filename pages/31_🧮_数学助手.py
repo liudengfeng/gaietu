@@ -371,18 +371,17 @@ question_type = grade_cols[1].selectbox(
     key="question_type",
     help="选择题型",
 )
-
-content_cols = st.columns([10, 1, 10])
-if uploaded_file is not None:
-    content_cols[0].image(uploaded_file.getvalue(), "试题图片")
-operation = content_cols[2].radio(
+operation = grade_cols[2].selectbox(
     "您的操作",
     ["思路", "解答", "题目"],
-    captions=["提供解题思路", "生成解答", "提取数学题目"],
 )
-checked = content_cols[2].checkbox(
+checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
+
+
+if uploaded_file is not None:
+    st.image(uploaded_file.getvalue(), "试题图片")
 
 
 prompt_cols = st.columns([1, 1])
