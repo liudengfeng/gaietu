@@ -173,10 +173,7 @@ def process_file_and_prompt(uploaded_file, prompt):
     return contents_info
 
 
-def view_example(container, prompt, uploaded_file=None):
-    if uploaded_file is not None:
-        container.markdown("##### 试题图片")
-        container.image(uploaded_file.getvalue(), "试题图片")
+def view_example(container, prompt):
     container.markdown("##### 提示词")
     container.markdown(prompt)
 
@@ -415,7 +412,7 @@ if qst_btn:
         st.stop()
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example(response_container, prompt, uploaded_file)
+    view_example(response_container, prompt)
     question = extract_test_question_text_for(uploaded_file, prompt)
     response_container.markdown("##### 试题markdown代码")
     display_in_container(response_container, question, True)
@@ -432,7 +429,6 @@ if tip_btn:
     view_example(
         response_container,
         prompt,
-        uploaded_file,
     )
     if "math-assistant" not in st.session_state:
         create_math_chat()
@@ -449,7 +445,7 @@ if smt_btn:
         status.error("请添加提示词")
         st.stop()
     response_container.empty()
-    view_example(response_container, prompt, uploaded_file)
+    view_example(response_container, prompt)
     # with st.spinner(f"正在运行多模态模型..."):
     #     generate_content_from_files_and_prompt(
     #         contents,
@@ -467,7 +463,7 @@ if test_btn:
         create_math_chat()
 
     response_container.empty()
-    view_example(response_container, prompt, uploaded_file)
+    view_example(response_container, prompt)
 
     st.markdown("##### 解答")
     response = run_chain(ANSWER_MATH_QUESTION_PROMPT.format(grade=grade), uploaded_file)
