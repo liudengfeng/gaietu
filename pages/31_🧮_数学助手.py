@@ -234,6 +234,27 @@ def generate_content_from_files_and_prompt(contents, placeholder):
     )
 
 
+def gen_tip_for(question):
+    Assistant_Configuration = {
+        "temperature": 0.0,
+        "top_k": 32,
+        "top_p": 1.0,
+        "max_output_tokens": 1024,
+    }
+    assistant_config = GenerationConfig(**Assistant_Configuration)
+    contents_info = [
+        {"mime_type": "text", "part": Part.from_text(question), "duration": None}
+    ]
+    return parse_generated_content_and_update_token(
+        "AI Formula Assistant",
+        "gemini-pro",
+        st.session_state["AI-Formula-Assistant"].send_message,
+        contents_info,
+        assistant_config,
+        stream=False,
+    )
+
+
 # endregion
 
 # region langchain
@@ -475,36 +496,18 @@ math_text = demo_cols[0].text_area(
     height=300,
 )
 
-Assistant_Configuration = {
-    "temperature": 0.0,
-    "top_k": 32,
-    "top_p": 1.0,
-    "max_output_tokens": 1024,
-}
-assistant_config = GenerationConfig(**Assistant_Configuration)
 
 with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
     ai_tip_container = st.container(border=True, height=300)
     with ai_tip_container:
-        if prompt := st.chat_input("向AI提问数学公式的写法"):
-            contents_info = [
-                {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
-            ]
-            
+        if math_prompt := st.chat_input("向AI提问数学公式的写法"):
+
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
+            math_code = gen_tip_for(math_prompt)
+            st.code(f"{math_code}", language="markdown")
 
-            math_code = parse_generated_content_and_update_token(
-                "AI Formula Assistant",
-                "gemini-pro",
-                st.session_state["AI-Formula-Assistant"].send_message,
-                contents_info,
-                assistant_config,
-                stream=False,
-            )
-            st.code(f"{math_code}",language="markdown")
-        
         st.markdown(math_text)
 
 edit_btn_cols = demo_cols[0].columns(4)
