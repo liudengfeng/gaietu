@@ -472,7 +472,7 @@ math_text = demo_cols[0].text_area(
     "输入数学公式",
     label_visibility="collapsed",
     key="demo-math_text",
-    height=200,
+    height=300,
 )
 
 Assistant_Configuration = {
@@ -485,7 +485,7 @@ assistant_config = GenerationConfig(**Assistant_Configuration)
 
 with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
-    ai_tip_container = st.container(border=True, height=200)
+    ai_tip_container = st.container(border=True, height=300)
     with ai_tip_container:
         if prompt := st.chat_input("向AI提问数学公式的写法"):
             contents_info = [
