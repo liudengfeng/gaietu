@@ -556,8 +556,6 @@ code_btn = edit_btn_cols[2].button(
     "代码[:clipboard:]",
     key="code_math_text",
     help="✨ 点击按钮，将原始文本转换为Markdown格式的代码，并在右侧显示，以便复制。",
-    on_click=reset_text_value,
-    args=("demo-math-text", f"```{math_text}```"),
 )
 
 if cls_edit_btn:
