@@ -189,6 +189,38 @@ def view_example(container, prompt):
     container.markdown(prompt)
 
 
+def get_prompt_templature(op, checked):
+    if op == "思路":
+        return SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+    elif op == "题目":
+        return EXTRACT_TEST_QUESTION_PROMPT
+    elif op == "解答":
+        if not checked:
+            return ANSWER_MATH_QUESTION_PROMPT.format(
+                grade=grade, question_type=question_type
+            )
+        else:
+            return (
+                ANSWER_MATH_QUESTION_PROMPT.format(
+                    grade=grade, question_type=question_type
+                )
+                + "\n"
+                + CORRECTION_PROMPT_TEMPLATE
+            )
+    elif op == "思路":
+        if not checked:
+            return SOLUTION_THOUGHT_PROMPT.format(
+                grade=grade, question_type=question_type
+            )
+        else:
+            return (
+                SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+                + "\n"
+                + CORRECTION_PROMPT_TEMPLATE
+            )
+    return ""
+
+
 def replace_brackets_with_dollar(content):
     content = re.sub(r"\\\(", "$", content)
     content = re.sub(r"\\\)", "$", content)
@@ -330,48 +362,6 @@ question_type = grade_cols[1].selectbox(
 )
 
 
-prompt_templature = grade_cols[2].selectbox(
-    "提示词",
-    [
-        "提供解题思路",
-        "生成解答",
-        "提供解题思路【修订】",
-        "生成解答【修订】",
-    ],
-    # index=None,
-    key="prompt_templature",
-    help="选择提示词模板",
-)
-
-
-def update_prompt_templature():
-    if prompt_templature == "提供解题思路":
-        st.session_state["math-question-prompt"] = SOLUTION_THOUGHT_PROMPT.format(
-            grade=grade, question_type=question_type
-        )
-    elif prompt_templature == "提取数学题目":
-        st.session_state["math-question-prompt"] = EXTRACT_TEST_QUESTION_PROMPT
-    elif prompt_templature == "生成解答":
-        st.session_state["math-question-prompt"] = ANSWER_MATH_QUESTION_PROMPT.format(
-            grade=grade, question_type=question_type
-        )
-    elif prompt_templature == "提供解题思路【修订】":
-        st.session_state["math-question-prompt"] = (
-            SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
-            + "\n"
-            + CORRECTION_PROMPT_TEMPLATE
-        )
-    elif prompt_templature == "生成解答【修订】":
-        st.session_state["math-question-prompt"] = (
-            ANSWER_MATH_QUESTION_PROMPT.format(grade=grade, question_type=question_type)
-            + "\n"
-            + CORRECTION_PROMPT_TEMPLATE
-        )
-
-
-update_prompt_templature()
-
-
 uploaded_file = test_cols[1].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
@@ -384,14 +374,25 @@ uploaded_file = test_cols[1].file_uploader(
 """,
 )
 
+content_cols = st.columns(2)
+operation = content_cols[0].radio(
+    "您的操作",
+    ["思路", "解答", "题目"],
+    captions=["提供解题思路", "生成解答", "提取数学题目"],
+)
+checked = content_cols[0].checkbox(
+    "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
+)
+
+
 if uploaded_file is not None:
-    st.image(uploaded_file.getvalue(), "试题图片")
+    content_cols[1].image(uploaded_file.getvalue(), "试题图片")
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
 prompt = prompt_cols[0].text_area(
     "您的提示词",
-    value=st.session_state["math-question-prompt"],
+    # value=st.session_state["math-question-prompt"],
     key="user_prompt_key",
     placeholder="请提示词模板",
     max_chars=12288,
@@ -412,17 +413,24 @@ cls_btn = tab0_btn_cols[0].button(
     on_click=reset_text_value,
     args=("user_prompt_key",),
 )
-qst_btn = tab0_btn_cols[1].button(
+demo_btn = tab0_btn_cols[1].button(
+    "演示[:eyes:]",
+    key="demo_prompt_text",
+    help="✨ 演示数学公式",
+    on_click=reset_text_value,
+    args=("user_prompt_key", get_prompt_templature(operation, checked)),
+)
+qst_btn = tab0_btn_cols[2].button(
     "试题[:toolbox:]",
     help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
     key="extract_text",
 )
-tip_btn = tab0_btn_cols[2].button(
+tip_btn = tab0_btn_cols[3].button(
     "思路[:bulb:]",
     help="✨ 点击按钮，让AI为您展示解题思路。",
     key="provide_tip",
 )
-ans_btn = tab0_btn_cols[3].button(
+ans_btn = tab0_btn_cols[4].button(
     "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，让AI为您提供解答。"
 )
 
@@ -455,9 +463,6 @@ if tip_btn:
         status.warning("您是否忘记了上传图片或视频？")
         # st.stop()
 
-    if prompt_templature not in ["提供解题思路", "提供解题思路【修订】"]:
-        status.error("您是否错误地选择了提示词？")
-        st.stop()
     response_container.empty()
     view_example(
         response_container,
@@ -476,9 +481,6 @@ if ans_btn:
         status.warning("您是否忘记了上传图片或视频？")
     if not prompt:
         status.error("请添加提示词")
-        st.stop()
-    if prompt_templature not in ["生成解答", "生成解答【修订】"]:
-        status.error("您是否错误地选择了提示词？")
         st.stop()
     response_container.empty()
     view_example(response_container, prompt)
