@@ -251,14 +251,7 @@ def run_chain(prompt, uploaded_file=None):
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
-st.markdown(
-    """✨ 请上传清晰、正面、未旋转的数学试题图片，然后点击 `解答` 按钮开始解答。
-- 模型对分数的识别效果不好，这可能导致计算结果的不准确
-- 在处理计算过程中，即使是最简单的计算也可能出现错误。
-- 如果发现从试题文本中提取的信息有误，请首先修正文本中的问题，然后再让模型尝试进行解答。
-- :warning: 模型只能帮助解析数学问题，但不能完全依赖。
-"""
-)
+st.markdown("""✨ 请上传清晰、正面、未旋转的数学试题图片。""")
 test_cols = st.columns(2)
 grade_cols = test_cols[0].columns(4)
 grade = grade_cols[0].selectbox(
@@ -495,6 +488,14 @@ copy_btn = edit_btn_cols[2].button("复制[:clipboard:]", key="copy_math_text")
 if cls_edit_btn:
     pass
 
+with st.expander(":bulb: 怎样有效利用数学助手？", expanded=False):
+    st.markdown(
+        """
+- 提供清晰、正面、未旋转的数学试题图片，有助于模型更准确地识别数学公式和解答。
+- 如果模型对分数的识别效果不好或从试题文本中提取的信息有误，修正文本中的问题后再尝试让模型进行解答。
+- :warning: 虽然模型可以帮助解析数学问题，但它并不完美，不能替代人的判断和理解。
+"""
+    )
 
 with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown("常用数学符号示例代码")
