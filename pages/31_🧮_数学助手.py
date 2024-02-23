@@ -98,7 +98,7 @@ CORRECTION_PROMPT_TEMPLATE = """
 ...在此处输入修订后的题目...
 """
 
-EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含示意图、插图。
+EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，包括数学表达式，但不包含示意图、插图。
 使用 $ 或 $$ 来正确标识变量和数学表达式。
 如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
 输出 Markdown 代码。
