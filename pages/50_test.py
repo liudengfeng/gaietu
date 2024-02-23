@@ -154,16 +154,17 @@ if st.button("执行"):
     llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0)
     tools = load_tools(["ddg-search", "llm-math"], llm=llm)
     agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
+
+    text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
     message = HumanMessage(
         content=[
             {
                 "type": "text",
-                "text": ANSWER_MATH_QUESTION_PROMPT,
+                "text": text,
             },  # You can optionally provide text parts
-            image_to_file(uploaded_file),
+            # image_to_file(uploaded_file),
         ]
     )
-    res = agent.invoke(
-        "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
-    )
+
+    res = agent.invoke([message])
     st.markdown(res.content)
