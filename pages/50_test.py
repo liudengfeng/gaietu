@@ -1,35 +1,35 @@
 import base64
+import json
 import logging
 import mimetypes
+import os
+import tempfile
 from operator import itemgetter
 from pathlib import Path
-from langchain_core.prompts import ChatPromptTemplate
-import streamlit as st
 
-from langchain_community.callbacks import StreamlitCallbackHandler
+import streamlit as st
 
 # from langchain.callbacks import StreamlitCallbackHandler
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_community.document_loaders import MathpixPDFLoader, WebBaseLoader
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.vectorstores import FAISS
 from langchain_core.messages import HumanMessage
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import PromptTemplate
-from langchain_core.runnables import RunnableConfig
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_core.runnables import RunnableConfig, RunnableLambda
 from langchain_google_vertexai import (
     ChatVertexAI,
     HarmBlockThreshold,
     HarmCategory,
     VertexAI,
 )
-from langchain_core.runnables import RunnableLambda
-
 from vertexai.preview.generative_models import Image
-import json
+
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
@@ -101,6 +101,31 @@ def image_to_dict(uploaded_file):
     return image_message
 
 
+def image_to_file(uploaded_file):
+    # 获取图片数据
+    image_bytes = uploaded_file.getvalue()
+
+    # 获取文件的 MIME 类型
+    mime_type = uploaded_file.type
+
+    # 根据 MIME 类型获取文件扩展名
+    ext = mimetypes.guess_extension(mime_type)
+
+    # 创建一个临时文件，使用正确的文件扩展名
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+
+    # 将图片数据写入临时文件
+    temp_file.write(image_bytes)
+    temp_file.close()
+
+    # 返回临时文件的路径
+    image_message = {
+        "type": "image_url",
+        "image_url": {"url": temp_file.name},
+    }
+    return image_message
+
+
 # endregion
 
 
@@ -154,7 +179,7 @@ if st.button("执行"):
                 "type": "text",
                 "text": EXTRACT_TEST_QUESTION_PROMPT,
             },  # You can optionally provide text parts
-            image_to_dict(uploaded_file),
+            image_to_file(uploaded_file),
         ]
     )
     st.markdown(llm.invoke([message]).content)
