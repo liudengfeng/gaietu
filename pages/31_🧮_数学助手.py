@@ -338,10 +338,10 @@ qst_btn = tab0_btn_cols[1].button(
     help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
     key="extract_text",
 )
-solution_btn = tab0_btn_cols[2].button(
+tip_btn = tab0_btn_cols[2].button(
     "思路[:bulb:]",
     help="✨ 点击按钮，让AI为您展示解题思路。",
-    key="provide_solution",
+    key="provide_tip",
 )
 smt_btn = tab0_btn_cols[3].button(
     "解答[:black_nib:]", key="submit_button", help="✨ 点击按钮，让AI为您提供解答。"
@@ -373,30 +373,22 @@ if qst_btn:
     response_container.markdown(st.session_state["math-question"])
     update_sidebar_status(sidebar_status)
 
-if solution_btn:
+if tip_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         st.stop()
     response_container.empty()
-    view_example_v1(
-        uploaded_file, SOLUTION_THOUGHT_PROMPT.format(grade=grade), response_container
+    view_example(
+        response_container,
+        prompt,
+        uploaded_file,
     )
-    # llm = VertexAI(temperature=0, model_name="gemini-pro-vision")
-    llm = ChatVertexAI(
-        temperature=0, top_p=0.9, top_k=32, model_name="gemini-pro-vision"
-    )
-    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
-    # llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
-    message = HumanMessage(
-        content=[
-            SOLUTION_THOUGHT_PROMPT.format(grade=grade),
-            image_to_dict(uploaded_file),
-        ]
-    )
-    output = llm.invoke([message])
-    # output = llm_symbolic_math.invoke([message])
+    if "math-assistant" not in st.session_state:
+        create_math_chat()
+
+    response = run_chain(prompt, uploaded_file)
     st.markdown("##### 解题思路")
-    st.markdown(output.content)
+    response_container.markdown(response.content)
 
 if smt_btn:
     if uploaded_file is None:
@@ -423,7 +415,7 @@ if test_btn:
         create_math_chat()
 
     response_container.empty()
-    view_example_v1(uploaded_file, prompt, response_container)
+    view_example(response_container, prompt, uploaded_file)
 
     st.markdown("##### 解答")
     response = run_chain(ANSWER_MATH_QUESTION_PROMPT.format(grade=grade), uploaded_file)
