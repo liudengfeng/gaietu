@@ -107,6 +107,17 @@ The answer is 11.
 
 Q: """
 
+uploaded_file = st.file_uploader(
+    "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
+    accept_multiple_files=False,
+    key="uploaded_file",
+    type=["png", "jpg"],
+    # on_change=create_math_chat,
+    help="""
+支持的格式
+- 图片：PNG、JPG
+""",
+)
 
 if st.button("执行"):
     # text_message = {
@@ -118,72 +129,15 @@ if st.button("执行"):
     # st.image(str(img_path), caption="定积分", use_column_width=True)
     # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
     # output = llm([message])
-    # planner = (
-    #     PromptTemplate.from_template(context + one_shot_exemplar + " {input}")
-    #     # | VertexAI(model_name="gemini-pro", callbacks=[st_cb])
-    #     | VertexAI(model_name="gemini-pro")
-    #     | StrOutputParser()
-    #     | {"base_response": RunnablePassthrough()}
-    # )
-
-    # answer_1 = (
-    #     PromptTemplate.from_template("{base_response} A: 33")
-    #     | VertexAI(
-    #         model_name="gemini-pro",
-    #         temperature=0,
-    #         max_output_tokens=400,
-    #         # callbacks=[st_cb],
-    #     )
-    #     | StrOutputParser()
-    # )
-
-    # answer_2 = (
-    #     PromptTemplate.from_template("{base_response} A:")
-    #     | VertexAI(
-    #         model_name="gemini-pro",
-    #         temperature=0.1,
-    #         max_output_tokens=400,
-    #         # callbacks=[st_cb],
-    #     )
-    #     | StrOutputParser()
-    # )
-
-    # answer_3 = (
-    #     PromptTemplate.from_template("{base_response} A:")
-    #     | VertexAI(
-    #         model_name="gemini-pro",
-    #         temperature=0.7,
-    #         max_output_tokens=400,
-    #         # callbacks=[st_cb],
-    #     )
-    #     | StrOutputParser()
-    # )
-
-    # final_responder = (
-    #     PromptTemplate.from_template(
-    #         "Output all the final results in this markdown format: Result 1: {results_1} \n Result 2:{results_2} \n Result 3: {results_3}"
-    #     )
-    #     # | VertexAI(model_name="gemini-pro", max_output_tokens=1024, callbacks=[st_cb])
-    #     | VertexAI(model_name="gemini-pro", max_output_tokens=1024)
-    #     | StrOutputParser()
-    # )
-
-    # chain = (
-    #     planner
-    #     | {
-    #         "results_1": answer_1,
-    #         "results_2": answer_2,
-    #         "results_3": answer_3,
-    #         "original_response": itemgetter("base_response"),
-    #     }
-    #     | final_responder
-    # )
-
-    # answers = chain.invoke({"input": question})
-
-    with StreamlitCallbackHandler(st.container(), expand_new_thoughts=False) as st_cb:
-        output = RunnableLambda(parse_or_fix).invoke(
-            "{foo: bar}", {"tags": ["my-tag"], "callbacks": [st_cb]}
-        )
-        st.write(output)
-        st.write(st_cb)
+    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0)
+    image_url = "https://picsum.photos/seed/picsum/300/300"
+    message = HumanMessage(
+        content=[
+            {
+                "type": "text",
+                "text": "What's in this image?",
+            },  # You can optionally provide text parts
+            {"type": "image_url", "image_url": image_url},
+        ]
+    )
+    st.write(llm.invoke([message]))
