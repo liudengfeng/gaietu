@@ -385,6 +385,7 @@ if tip_btn:
     response = run_chain(prompt, uploaded_file)
     st.markdown("##### 解题思路")
     response_container.markdown(response.content)
+    st.code(response.content,language="markdown")
 
 if smt_btn:
     if uploaded_file is None:
