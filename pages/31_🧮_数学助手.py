@@ -68,9 +68,8 @@ sidebar_status = st.sidebar.empty()
 if "math-question" not in st.session_state:
     st.session_state["math-question"] = ""
 
-
-# if "math-chat-history" not in st.session_state:
-#     st.session_state["math-chat-history"] = ChatMessageHistory()
+if "math-question-prompt" not in st.session_state:
+    st.session_state["math-question-prompt"] = ""
 
 # endregion
 
@@ -82,29 +81,16 @@ EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含�
 输出 Markdown 代码。
 """
 
-SINGLE_CHOICE_QUESTION_PROMPT = """您是数学专业老师，按照以下要求提供解答单选题的解题思路：
-1. 阅读并理解题目。
-2. 分析每个选项，确定可能的正确答案。
-3. 使用适当的数学方法或公式来验证你的选择。
-4. 选择最有可能的答案。
+SOLUTION_THOUGHT_PROMPT = """作为一个数学助手，你需要按照以下要求为图中的数学题提供解题思路：
+1. 简要描述解决问题的步骤和使用的方法。
+2. 列出必要的数学公式和计算流程，但不需要进行具体的数值运算。
+3. 你的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
+4. 这是一道{question_type}题。
 
 注意：
-1. **不要直接给出答案。**
-2. 您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
+**不得提供具体的答案。**
 
-使用`$`或`$$`来正确标识行内或块级数学变量及公式
-"""
-
-SOLUTION_THOUGHT_PROMPT = """您是数学专业老师，按照以下要求提供解答图中数学题的解题思路：
-1. 确定问题的类型。
-2. 简要描述解决问题的步骤和使用的方法。
-3. 仅需列出关键的数学公式和计算流程，不得进行数值运算。
-
-注意：
-1. **不要提供答案。**
-2. 您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
-
-使用`$`或`$$`来正确标识行内或块级数学变量及公式"""
+使用`$`或`$$`来正确标识行内或块级数学变量及公式。"""
 
 ANSWER_MATH_QUESTION_PROMPT = """
 您的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
@@ -281,17 +267,35 @@ grade = grade_cols[0].selectbox(
 question_type = grade_cols[1].selectbox(
     "题型",
     ["选择题", "填空题", "计算题", "证明题", "解答题"],
-    index=None,
+    # index=None,
     key="question_type",
     help="选择题型",
 )
+
+
 prompt_templature = grade_cols[2].selectbox(
     "提示词",
-    ["提供解题策略", "提取数学题目", "生成解答"],
-    index=None,
+    ["提供解题思路", "提取数学题目", "生成解答"],
+    # index=None,
     key="prompt_templature",
     help="选择提示词模板",
 )
+
+
+def update_prompt_templature():
+    if prompt_templature == "提供解题思路":
+        st.session_state["math-question-prompt"] = SOLUTION_THOUGHT_PROMPT.format(
+            grade=grade, question_type=question_type
+        )
+    elif prompt_templature == "提取数学题目":
+        st.session_state["math-question-prompt"] = EXTRACT_TEST_QUESTION_PROMPT
+    elif prompt_templature == "生成解答":
+        st.session_state["math-question-prompt"] = ANSWER_MATH_QUESTION_PROMPT
+
+
+update_prompt_templature()
+
+
 uploaded_file = test_cols[1].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
@@ -308,9 +312,9 @@ prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
 prompt = prompt_cols[0].text_area(
     "您的提示词",
-    # value=ANSWER_MATH_QUESTION_PROMPT.format(grade=grade),
+    value=st.session_state["math-question-prompt"],
     key="user_prompt_key",
-    placeholder=f"请输入提示词，例如：{ANSWER_MATH_QUESTION_PROMPT.format(grade=grade)}",
+    placeholder="请提示词模板",
     max_chars=12288,
     height=300,
     label_visibility="collapsed",
@@ -359,7 +363,7 @@ if qst_btn:
         st.stop()
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example_v1(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT, response_container)
+    view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT, uploaded_file)
     st.session_state["math-question"] = extract_test_question_text_for(
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
     )
