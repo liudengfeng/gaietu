@@ -380,7 +380,7 @@ operation = content_cols[2].radio(
     ["思路", "解答", "题目"],
     captions=["提供解题思路", "生成解答", "提取数学题目"],
 )
-checked = content_cols[1].checkbox(
+checked = content_cols[2].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
 
