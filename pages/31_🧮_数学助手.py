@@ -552,9 +552,17 @@ cls_edit_btn = edit_btn_cols[1].button(
     on_click=reset_text_value,
     args=("demo-math_text",),
 )
-copy_btn = edit_btn_cols[2].button("复制[:clipboard:]", key="copy_math_text")
+code_btn = edit_btn_cols[2].button(
+    "代码[:clipboard:]",
+    key="code_math_text",
+    on_click=reset_text_value,
+    args=("demo-math_text", f"""```{math_text}```"""),
+)
 
 if cls_edit_btn:
+    pass
+
+if code_btn:
     pass
 
 with st.expander(":bulb: 怎样有效利用数学助手？", expanded=False):
