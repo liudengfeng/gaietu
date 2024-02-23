@@ -150,8 +150,8 @@ The answer is 11.
 Q: """
 
 ANSWER_MATH_QUESTION_PROMPT = """
-您精通数学，分步计算图中的数学题。
-使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
+Let's think step by step. You are proficient in mathematics, calculate the math problems in the image step by step.
+Use `$` or `$$` to correctly identify inline or block-level mathematical variables and formulas."""
 
 uploaded_file = st.file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
