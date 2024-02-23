@@ -326,9 +326,7 @@ prompt = prompt_cols[0].text_area(
     label_visibility="collapsed",
 )
 
-prompt_cols[1].markdown(
-    "显示验证", help="✨ 显示验证提示词中的数学公式"
-)
+prompt_cols[1].markdown("显示验证", help="✨ 显示验证提示词中的数学公式")
 view_prompt_container = prompt_cols[1].container(height=300)
 view_prompt_container.markdown(prompt)
 
@@ -397,7 +395,7 @@ if tip_btn:
     response = run_chain(prompt, uploaded_file)
     st.markdown("##### 解题思路")
     display_in_container(response_container, response.content)
-    st.code(response.content, language="markdown")
+    # st.code(response.content, language="markdown")
 
 if smt_btn:
     if uploaded_file is None:
@@ -476,9 +474,14 @@ math_text = demo_cols[0].text_area(
     key="demo-math_text",
     height=200,
 )
-# demo_cols[1].markdown("=>")
-demo_cols[2].markdown("检查数学公式是否正确")
-demo_cols[2].markdown(math_text)
+
+with demo_cols[2]:
+    st.markdown("检查数学公式是否正确")
+    ai_tip_container = st.container(border=True, height=200)
+    with ai_tip_container:
+        st.markdown(math_text)
+        if prompt := st.chat_input("在这里输入你的提问"):
+            pass
 
 edit_btn_cols = demo_cols[0].columns(4)
 
