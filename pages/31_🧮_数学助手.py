@@ -348,7 +348,7 @@ def run_chain(prompt, uploaded_file=None):
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
 st.markdown("""✨ :red[请上传清晰、正面、未旋转的数学试题图片。]""")
-elem_cols = st.columns(2)
+elem_cols = st.columns([10, 1, 10])
 uploaded_file = elem_cols[0].file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
@@ -360,7 +360,7 @@ uploaded_file = elem_cols[0].file_uploader(
 - 图片：PNG、JPG
 """,
 )
-grade_cols = elem_cols[1].columns(4)
+grade_cols = elem_cols[2].columns(4)
 grade = grade_cols[0].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
