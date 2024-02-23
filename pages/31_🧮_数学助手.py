@@ -191,6 +191,12 @@ def display_in_container(container, content):
     container.markdown(replace_brackets_with_dollar(content))
 
 
+def ensure_math_code_wrapped_with_dollar(math_code):
+    if not (math_code.startswith("$") and math_code.endswith("$")):
+        math_code = f"${math_code}$"
+    return math_code
+
+
 @st.cache_data(
     ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，提取数学试题..."
 )
@@ -506,7 +512,10 @@ with demo_cols[2]:
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
             math_code = gen_tip_for(math_prompt)
-            st.code(f"{math_code}", language="markdown")
+            st.code(
+                f"```{ensure_math_code_wrapped_with_dollar(math_code)}```",
+                language="markdown",
+            )
 
         st.markdown(math_text)
 
