@@ -150,7 +150,7 @@ The answer is 11.
 Q: """
 
 ANSWER_MATH_QUESTION_PROMPT = """
-您精通数学，解答图中的数学题。
+您精通数学，分步计算图中的数学题。
 使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
 
 uploaded_file = st.file_uploader(
