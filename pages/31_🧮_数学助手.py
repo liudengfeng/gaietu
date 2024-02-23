@@ -308,6 +308,9 @@ uploaded_file = test_cols[1].file_uploader(
 """,
 )
 
+if uploaded_file is not None:
+    st.image(uploaded_file.getvalue(), "试题图片")
+
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
 prompt = prompt_cols[0].text_area(
