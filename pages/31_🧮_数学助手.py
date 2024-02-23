@@ -379,7 +379,6 @@ checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
 
-
 if uploaded_file is not None:
     st.image(uploaded_file.getvalue(), "试题图片")
 
@@ -416,18 +415,18 @@ demo_btn = tab0_btn_cols[1].button(
     on_click=reset_text_value,
     args=("user_prompt_key", get_prompt_templature(operation, checked)),
 )
-qst_btn = tab0_btn_cols[2].button(
-    "试题[:toolbox:]",
-    help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
-    key="extract_text",
-)
-tip_btn = tab0_btn_cols[3].button(
-    "思路[:bulb:]",
-    help="✨ 点击按钮，让AI为您展示解题思路。",
-    key="provide_tip",
-)
-ans_btn = tab0_btn_cols[4].button(
-    "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，让AI为您提供解答。"
+# qst_btn = tab0_btn_cols[2].button(
+#     "试题[:toolbox:]",
+#     help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
+#     key="extract_text",
+# )
+# tip_btn = tab0_btn_cols[3].button(
+#     "思路[:bulb:]",
+#     help="✨ 点击按钮，让AI为您展示解题思路。",
+#     key="provide_tip",
+# )
+ans_btn = tab0_btn_cols[2].button(
+    "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
 
 
@@ -437,40 +436,40 @@ prompt_elem = st.empty()
 if cls_btn:
     pass
 
-if qst_btn:
-    if uploaded_file is None:
-        status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
-        st.stop()
-    response_container.empty()
-    contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT)
-    question = extract_test_question_text_for(
-        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
-    )
-    response_container.markdown("##### 试题markdown代码")
-    display_in_container(response_container, question, True)
-    response_container.markdown("##### 显示的试题文本")
-    # response_container.markdown(st.session_state["math-question"])
-    display_in_container(response_container, question)
-    update_sidebar_status(sidebar_status)
+# if qst_btn:
+#     if uploaded_file is None:
+#         status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
+#         st.stop()
+#     response_container.empty()
+#     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
+#     view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT)
+#     question = extract_test_question_text_for(
+#         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+#     )
+#     response_container.markdown("##### 试题markdown代码")
+#     display_in_container(response_container, question, True)
+#     response_container.markdown("##### 显示的试题文本")
+#     # response_container.markdown(st.session_state["math-question"])
+#     display_in_container(response_container, question)
+#     update_sidebar_status(sidebar_status)
 
-if tip_btn:
-    if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
-        # st.stop()
+# if tip_btn:
+#     if uploaded_file is None:
+#         status.warning("您是否忘记了上传图片或视频？")
+#         # st.stop()
 
-    response_container.empty()
-    view_example(
-        response_container,
-        prompt,
-    )
-    if "math-assistant" not in st.session_state:
-        create_math_chat()
-    with st.spinner(f"正在运行多模态模型提供解题思路..."):
-        response = run_chain(prompt, uploaded_file)
-    st.markdown("##### 解题思路")
-    display_in_container(response_container, response.content)
-    # st.code(response.content, language="markdown")
+#     response_container.empty()
+#     view_example(
+#         response_container,
+#         prompt,
+#     )
+#     if "math-assistant" not in st.session_state:
+#         create_math_chat()
+#     with st.spinner(f"正在运行多模态模型提供解题思路..."):
+#         response = run_chain(prompt, uploaded_file)
+#     st.markdown("##### 解题思路")
+#     display_in_container(response_container, response.content)
+#     # st.code(response.content, language="markdown")
 
 if ans_btn:
     if uploaded_file is None:
@@ -480,9 +479,9 @@ if ans_btn:
         st.stop()
     response_container.empty()
     view_example(response_container, prompt)
-    with st.spinner(f"正在运行多模态模型解答数学题..."):
+    with st.spinner(f"正在运行多模态模型获取{operation}..."):
         response = run_chain(prompt, uploaded_file)
-    st.markdown("##### 解题思路")
+    st.markdown("##### AI响应")
     display_in_container(response_container, response.content)
     update_sidebar_status(sidebar_status)
 
