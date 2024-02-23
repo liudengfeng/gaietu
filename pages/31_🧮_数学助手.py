@@ -251,7 +251,7 @@ def run_chain(prompt, uploaded_file=None):
 # region 主页
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
-st.markdown("""✨ 请上传清晰、正面、未旋转的数学试题图片。""")
+st.markdown("""✨ :red[请上传清晰、正面、未旋转的数学试题图片。]""")
 test_cols = st.columns(2)
 grade_cols = test_cols[0].columns(4)
 grade = grade_cols[0].selectbox(
