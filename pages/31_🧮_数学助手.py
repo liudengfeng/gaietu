@@ -360,7 +360,7 @@ uploaded_file = elem_cols[0].file_uploader(
 - 图片：PNG、JPG
 """,
 )
-grade_cols = elem_cols[2].columns(4)
+grade_cols = elem_cols[2].columns(3)
 grade = grade_cols[0].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
@@ -372,10 +372,10 @@ question_type = grade_cols[1].selectbox(
     help="选择题型",
 )
 
-content_cols = st.columns(2)
+content_cols = st.columns([10, 1, 10])
 if uploaded_file is not None:
     content_cols[0].image(uploaded_file.getvalue(), "试题图片")
-operation = content_cols[1].radio(
+operation = content_cols[2].radio(
     "您的操作",
     ["思路", "解答", "题目"],
     captions=["提供解题思路", "生成解答", "提取数学题目"],
