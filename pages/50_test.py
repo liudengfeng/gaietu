@@ -71,6 +71,13 @@ def parse_or_fix(text: str, config: RunnableConfig):
     return "Failed to parse"
 
 
+EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含示意图、插图。
+使用 $ 或 $$ 来正确标识变量和数学表达式。
+如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
+输出 Markdown 代码。
+"""
+
+
 def image_to_dict(uploaded_file):
     image_bytes = uploaded_file.getvalue()
     mime_type = uploaded_file.type
@@ -145,9 +152,9 @@ if st.button("执行"):
         content=[
             {
                 "type": "text",
-                "text": "What's in this image?",
+                "text": EXTRACT_TEST_QUESTION_PROMPT,
             },  # You can optionally provide text parts
             image_to_dict(uploaded_file),
         ]
     )
-    st.write(llm.invoke([message]))
+    st.markdown(llm.invoke([message]).content)
