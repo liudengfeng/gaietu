@@ -428,22 +428,6 @@ if test_btn:
     response = run_chain(ANSWER_MATH_QUESTION_PROMPT.format(grade=grade), uploaded_file)
     response_container.markdown(response.content)
 
-if prompt := prompt_elem.chat_input("请教AI，输入您的问题..."):
-    if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
-        # st.stop()
-
-    response_container.empty()
-    view_example_v1(uploaded_file, prompt, response_container)
-    if "math-assistant" not in st.session_state:
-        create_math_chat()
-
-    response = run_chain(prompt, uploaded_file if uploaded_file else None)
-    # response = run_chain(prompt)
-    # st.session_state["math-chat-history"].add_ai_message(response)
-    st.markdown("##### AI回答")
-    response_container.write(response)
-    # response_container.markdown(response["response"])
 
 # endregion
 
