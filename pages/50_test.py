@@ -54,23 +54,6 @@ add_exercises_to_db()
 # region 函数
 
 
-def parse_or_fix(text: str, config: RunnableConfig):
-    fixing_chain = (
-        ChatPromptTemplate.from_template(
-            "Fix the following text:\n\n```text\n{input}\n```\nError: {error}"
-            " Don't narrate, just respond with the fixed data."
-        )
-        | ChatVertexAI(model_name="gemini-pro")
-        | StrOutputParser()
-    )
-    for _ in range(3):
-        try:
-            return json.loads(text)
-        except Exception as e:
-            text = fixing_chain.invoke({"input": text, "error": e}, config)
-    return "Failed to parse"
-
-
 EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含示意图、插图。
 使用 $ 或 $$ 来正确标识变量和数学表达式。
 如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
@@ -165,18 +148,12 @@ uploaded_file = st.file_uploader(
 """,
 )
 
+from langchain.agents import AgentType, initialize_agent, load_tools
+
 if st.button("执行"):
-    # text_message = {
-    #     "type": "text",
-    #     "text": "What is shown in this image?",
-    # }
-    # img_path = IMAGE_DIR / "math/高中/定积分.png"
-    # i = Image.load_from_file(str(img_path))
-    # st.image(str(img_path), caption="定积分", use_column_width=True)
-    # message = HumanMessage(content=[text_message, image_to_dict(str(img_path))])
-    # output = llm([message])
     llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0)
-    image_url = "https://picsum.photos/seed/picsum/300/300"
+    tools = load_tools(["ddg-search", "llm-math"], llm=llm)
+    agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
     message = HumanMessage(
         content=[
             {
@@ -186,4 +163,7 @@ if st.button("执行"):
             image_to_file(uploaded_file),
         ]
     )
-    st.markdown(llm.invoke([message]).content)
+    res = agent.invoke(
+        "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
+    )
+    st.markdown(res.content)
