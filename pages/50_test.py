@@ -149,6 +149,10 @@ The answer is 11.
 
 Q: """
 
+ANSWER_MATH_QUESTION_PROMPT = """
+您精通数学，解答图中的数学题。
+使用`$`或`$$`来正确标识行内或块级数学变量及公式"。"""
+
 uploaded_file = st.file_uploader(
     "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
     accept_multiple_files=False,
@@ -177,9 +181,9 @@ if st.button("执行"):
         content=[
             {
                 "type": "text",
-                "text": EXTRACT_TEST_QUESTION_PROMPT,
+                "text": ANSWER_MATH_QUESTION_PROMPT,
             },  # You can optionally provide text parts
             image_to_file(uploaded_file),
         ]
     )
-    st.code(llm.invoke([message]).content, language="markdown")
+    st.markdown(llm.invoke([message]).content)
