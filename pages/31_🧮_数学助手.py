@@ -187,8 +187,11 @@ def replace_brackets_with_dollar(content):
     return content
 
 
-def display_in_container(container, content):
-    container.markdown(replace_brackets_with_dollar(content))
+def display_in_container(container, content, code_fmt=False):
+    if not code_fmt:
+        container.markdown(replace_brackets_with_dollar(content))
+    else:
+        container.code(replace_brackets_with_dollar(content), language="markdown")
 
 
 def ensure_math_code_wrapped_with_dollar(math_code):
@@ -413,13 +416,12 @@ if qst_btn:
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
     view_example(response_container, prompt, uploaded_file)
-    st.session_state["math-question"] = extract_test_question_text_for(
-        uploaded_file, prompt
-    )
+    question = extract_test_question_text_for(uploaded_file, prompt)
     response_container.markdown("##### 试题markdown代码")
-    response_container.code(f'{st.session_state["math-question"]}', language="markdown")
+    display_in_container(response_container, question, True)
     response_container.markdown("##### 显示的试题文本")
-    response_container.markdown(st.session_state["math-question"])
+    # response_container.markdown(st.session_state["math-question"])
+    display_in_container(response_container, question)
     update_sidebar_status(sidebar_status)
 
 if tip_btn:
@@ -434,8 +436,8 @@ if tip_btn:
     )
     if "math-assistant" not in st.session_state:
         create_math_chat()
-
-    response = run_chain(prompt, uploaded_file)
+    with st.spinner(f"正在运行多模态模型提供解题思路..."):
+        response = run_chain(prompt, uploaded_file)
     st.markdown("##### 解题思路")
     display_in_container(response_container, response.content)
     # st.code(response.content, language="markdown")
