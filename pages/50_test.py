@@ -182,4 +182,4 @@ if st.button("执行"):
             image_to_file(uploaded_file),
         ]
     )
-    st.markdown(llm.invoke([message]).content)
+    st.code(llm.invoke([message]).content, language="markdown")
