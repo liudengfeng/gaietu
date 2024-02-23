@@ -93,7 +93,9 @@ def initialize_writing_chat():
 # region 提示词
 
 CORRECTION_PROMPT_TEMPLATE = """
-**现在已经更新了题目和要求，你只需要参考图中的示意图或插图。**
+**现在已经更新了题目，你只需要参考图中的示意图或插图。**
+修订后的题目：
+...在此处输入修订后的题目...
 """
 
 EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含示意图、插图。
@@ -421,8 +423,8 @@ tip_btn = tab0_btn_cols[2].button(
     help="✨ 点击按钮，让AI为您展示解题思路。",
     key="provide_tip",
 )
-smt_btn = tab0_btn_cols[3].button(
-    "解答[:black_nib:]", key="submit_button", help="✨ 点击按钮，让AI为您提供解答。"
+ans_btn = tab0_btn_cols[3].button(
+    "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，让AI为您提供解答。"
 )
 
 
@@ -435,6 +437,9 @@ if cls_btn:
 if qst_btn:
     if uploaded_file is None:
         status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
+        st.stop()
+    if prompt_templature not in ["提取数学题目"]:
+        status.error("您是否错误地选择了提示词？")
         st.stop()
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
@@ -451,6 +456,10 @@ if tip_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
         # st.stop()
+
+    if prompt_templature not in ["提供解题思路", "提供解题思路【修订】"]:
+        status.error("您是否错误地选择了提示词？")
+        st.stop()
     response_container.empty()
     view_example(
         response_container,
@@ -464,11 +473,14 @@ if tip_btn:
     display_in_container(response_container, response.content)
     # st.code(response.content, language="markdown")
 
-if smt_btn:
+if ans_btn:
     if uploaded_file is None:
         status.warning("您是否忘记了上传图片或视频？")
     if not prompt:
         status.error("请添加提示词")
+        st.stop()
+    if prompt_templature not in ["生成解答", "生成解答【修订】"]:
+        status.error("您是否错误地选择了提示词？")
         st.stop()
     response_container.empty()
     view_example(response_container, prompt)
