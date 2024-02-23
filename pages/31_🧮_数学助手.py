@@ -412,9 +412,9 @@ if qst_btn:
         st.stop()
     response_container.empty()
     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-    view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT, uploaded_file)
+    view_example(response_container, prompt, uploaded_file)
     st.session_state["math-question"] = extract_test_question_text_for(
-        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+        uploaded_file, prompt
     )
     response_container.markdown("##### 试题markdown代码")
     response_container.code(f'{st.session_state["math-question"]}', language="markdown")
