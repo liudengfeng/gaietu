@@ -348,8 +348,19 @@ def run_chain(prompt, uploaded_file=None):
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
 st.markdown("""✨ :red[请上传清晰、正面、未旋转的数学试题图片。]""")
-test_cols = st.columns(2)
-grade_cols = test_cols[0].columns(4)
+elem_cols = st.columns(2)
+uploaded_file = elem_cols[0].file_uploader(
+    "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
+    accept_multiple_files=False,
+    key="uploaded_file",
+    type=["png", "jpg"],
+    on_change=create_math_chat,
+    help="""
+支持的格式
+- 图片：PNG、JPG
+""",
+)
+grade_cols = elem_cols[1].columns(4)
 grade = grade_cols[0].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
@@ -361,32 +372,18 @@ question_type = grade_cols[1].selectbox(
     help="选择题型",
 )
 
-
-uploaded_file = test_cols[1].file_uploader(
-    "上传数学试题图片【点击`Browse files`按钮，从本地上传文件】",
-    accept_multiple_files=False,
-    key="uploaded_file",
-    type=["png", "jpg"],
-    on_change=create_math_chat,
-    help="""
-支持的格式
-- 图片：PNG、JPG
-""",
-)
-
 content_cols = st.columns(2)
-operation = content_cols[0].radio(
+if uploaded_file is not None:
+    content_cols[0].image(uploaded_file.getvalue(), "试题图片")
+operation = content_cols[1].radio(
     "您的操作",
     ["思路", "解答", "题目"],
     captions=["提供解题思路", "生成解答", "提取数学题目"],
 )
-checked = content_cols[0].checkbox(
+checked = content_cols[1].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
 
-
-if uploaded_file is not None:
-    content_cols[1].image(uploaded_file.getvalue(), "试题图片")
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
