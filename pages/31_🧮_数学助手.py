@@ -516,7 +516,7 @@ DEMO = f"""\
 math_text = demo_cols[0].text_area(
     "输入数学公式",
     label_visibility="collapsed",
-    key="demo-math_text",
+    key="demo-math-text",
     height=300,
 )
 
@@ -543,27 +543,28 @@ demo_btn = edit_btn_cols[0].button(
     key="demo_math_text",
     help="✨ 演示数学公式",
     on_click=reset_text_value,
-    args=("demo-math_text", DEMO),
+    args=("demo-math-text", DEMO),
 )
 cls_edit_btn = edit_btn_cols[1].button(
     "清除[:wastebasket:]",
     key="clear_math_text",
     help="✨ 清空数学公式",
     on_click=reset_text_value,
-    args=("demo-math_text",),
+    args=("demo-math-text",),
 )
 code_btn = edit_btn_cols[2].button(
     "代码[:clipboard:]",
     key="code_math_text",
+    help="✨ 点击按钮，将原始文本转换为Markdown格式的代码，并在右侧显示，以便复制。",
     on_click=reset_text_value,
-    args=("demo-math_text", f"""```{math_text}```"""),
+    args=("demo-math-text", f"```{math_text}```"),
 )
 
 if cls_edit_btn:
     pass
 
 if code_btn:
-    pass
+    st.code(f"{math_text}", language="markdown")
 
 with st.expander(":bulb: 怎样有效利用数学助手？", expanded=False):
     st.markdown(
