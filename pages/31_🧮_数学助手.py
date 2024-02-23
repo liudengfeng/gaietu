@@ -287,7 +287,7 @@ def create_math_chat():
     )
 
 
-@st.cache_data(ttl=timedelta(hours=1))
+@st.cache_data(ttl=timedelta(hours=1), show_spinner=False)
 def run_chain(prompt, uploaded_file=None):
     text_message = {
         "type": "text",
