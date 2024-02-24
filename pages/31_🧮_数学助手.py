@@ -395,11 +395,12 @@ prompt = prompt_cols[0].text_area(
     label_visibility="collapsed",
 )
 
-prompt_cols[1].markdown(
-    "显示验证", help="✨ 显示验证提示词中的数学公式", unsafe_allow_html=True
-)
+prompt_cols[1].markdown("显示验证", help="✨ 显示验证提示词中的数学公式")
 view_prompt_container = prompt_cols[1].container(height=300)
-view_prompt_container.markdown(prompt)
+# TODO:删除
+text = "Perform the indicated operation and simplify.\n3) \\( \\frac{2 p-2}{p} \\div \\frac{4 p-4}{9 p^{2}} \\)"
+view_prompt_container.markdown(text, unsafe_allow_html=True)
+# view_prompt_container.markdown(prompt, unsafe_allow_html=True)
 
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 1, 5])
