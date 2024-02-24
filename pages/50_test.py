@@ -186,7 +186,12 @@ text = st.text_input("输入问题")
 from langchain.agents import AgentType, initialize_agent, load_tools
 
 if st.button("执行"):
-    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
+    llm = ChatVertexAI(
+        model_name="gemini-pro-vision",
+        temperature=0.0,
+        max_retries=1,
+        convert_system_message_to_human=True,
+    )
     t_get_current_date = StructuredTool.from_function(get_current_date)
 
     tools = [
@@ -204,4 +209,4 @@ if st.button("执行"):
         verbose=True,
     )
     # res = chain.invoke(text)
-    st.write(agent.run("What's today's date?"))
+    st.markdown(agent.run(text))
