@@ -31,7 +31,7 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from vertexai.preview.generative_models import Image
-
+from langchain.chains import LLMMathChain
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
@@ -210,23 +210,20 @@ class FakeAgent(BaseMultiActionAgent):
             return AgentFinish(return_values={"output": "bar"}, log="")
 
 
-if st.button("执行"):
-    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0)
-    agent = FakeAgent()
-    agent_executor = AgentExecutor.from_agent_and_tools(
-        agent=agent, tools=tools, verbose=True
-    )
-    agent_executor.run("How many people live in canada as of 2023?")
-    # text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
-    # message = HumanMessage(
-    #     content=[
-    #         {
-    #             "type": "text",
-    #             "text": text,
-    #         },  # You can optionally provide text parts
-    #         # image_to_file(uploaded_file),
-    #     ]
-    # )
+text = st.text_input("输入问题")
 
-    # res = agent.invoke([message])
-    # st.markdown(res.content)
+if st.button("执行"):
+    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
+    llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    # text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
+    message = HumanMessage(
+        content=[
+            {
+                "type": "text",
+                "text": text,
+            },  # You can optionally provide text parts
+            # image_to_file(uploaded_file),
+        ]
+    )
+    res = llm_math.invoke([message])
+    st.markdown(res.content)
