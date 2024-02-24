@@ -144,8 +144,8 @@ def random_word(query: str) -> str:
     return "foo"
 
 
-from langchain_core.tools import tool
 from langchain.output_parsers import JsonOutputToolsParser
+from langchain_core.tools import tool
 
 
 @tool
@@ -154,11 +154,36 @@ def multiply(first_int: int, second_int: int) -> int:
     return first_int * second_int
 
 
+def length_function(text):
+    return len(text)
+
+
+def _multiple_length_function(text1, text2):
+    return len(text1) * len(text2)
+
+
+def multiple_length_function(_dict):
+    return _multiple_length_function(_dict["text1"], _dict["text2"])
+
+
+prompt = ChatPromptTemplate.from_template("what is {a} + {b}")
+
 text = st.text_input("输入问题")
+
 
 if st.button("执行"):
     model = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
-    model_with_tools = model.bind_tools([multiply], tool_choice="multiply")
-    chain = model_with_tools | JsonOutputToolsParser()
-    res = chain.invoke(text)
+    # chain1 = prompt | model
+    chain = (
+        {
+            "a": itemgetter("foo") | RunnableLambda(length_function),
+            "b": {"text1": itemgetter("foo"), "text2": itemgetter("bar")}
+            | RunnableLambda(multiple_length_function),
+        }
+        | prompt
+        | model
+    )
+    # model_with_tools = model.bind_tools([multiply], tool_choice="multiply")
+    res = chain.invoke({"foo": "bar", "bar": "gah"})
+    # res = chain.invoke(text)
     st.write(res)
