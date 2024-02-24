@@ -32,6 +32,7 @@ from langchain_google_vertexai import (
     HarmCategory,
     VertexAI,
 )
+from langchain.tools import StructuredTool
 from vertexai.preview.generative_models import Image
 
 from menu import menu
@@ -113,6 +114,18 @@ def image_to_file(uploaded_file):
     return image_message
 
 
+def get_current_date():
+    """
+    Gets the current date (today), in the format YYYY-MM-DD
+    """
+
+    from datetime import datetime
+
+    todays_date = datetime.today().strftime("%Y-%m-%d")
+
+    return todays_date
+
+
 # endregion
 
 
@@ -170,20 +183,25 @@ prompt = ChatPromptTemplate.from_template("what is {a} + {b}")
 
 text = st.text_input("输入问题")
 
+from langchain.agents import AgentType, initialize_agent, load_tools
 
 if st.button("执行"):
-    model = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
-    # chain1 = prompt | model
-    chain = (
-        {
-            "a": itemgetter("foo") | RunnableLambda(length_function),
-            "b": {"text1": itemgetter("foo"), "text2": itemgetter("bar")}
-            | RunnableLambda(multiple_length_function),
-        }
-        | prompt
-        | model
+    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
+    t_get_current_date = StructuredTool.from_function(get_current_date)
+
+    tools = [
+        t_get_current_date,
+    ]
+
+    tools = [
+        t_get_current_date,
+    ]
+
+    agent = initialize_agent(
+        tools,
+        llm,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True,
     )
-    # model_with_tools = model.bind_tools([multiply], tool_choice="multiply")
-    res = chain.invoke({"foo": "bar", "bar": "gah"})
     # res = chain.invoke(text)
-    st.write(res)
+    st.write(agent.run("What's today's date?"))
