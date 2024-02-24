@@ -9,6 +9,7 @@ from pathlib import Path
 
 import streamlit as st
 from langchain.agents import AgentExecutor, BaseMultiActionAgent, Tool
+from langchain.chains import LLMMathChain
 
 # from langchain.callbacks import StreamlitCallbackHandler
 from langchain.prompts import PromptTemplate
@@ -24,6 +25,7 @@ from langchain_core.messages import HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import RunnableConfig, RunnableLambda
+from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
 from langchain_google_vertexai import (
     ChatVertexAI,
     HarmBlockThreshold,
@@ -31,7 +33,7 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from vertexai.preview.generative_models import Image
-from langchain.chains import LLMMathChain
+
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
@@ -214,7 +216,8 @@ text = st.text_input("输入问题")
 
 if st.button("执行"):
     llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
-    llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
+    llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
     # text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
     message = HumanMessage(
         content=[
@@ -226,5 +229,5 @@ if st.button("执行"):
         ]
     )
     # res = llm_math.invoke([message])
-    res = llm_math.run(text)
+    res = llm_symbolic_math.run(text)
     st.write(res)
