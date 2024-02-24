@@ -144,90 +144,21 @@ def random_word(query: str) -> str:
     return "foo"
 
 
-search = SerpAPIWrapper()
-tools = [
-    Tool(
-        name="Search",
-        func=search.run,
-        description="useful for when you need to answer questions about current events",
-    ),
-    Tool(
-        name="RandomWord",
-        func=random_word,
-        description="call this to get a random word.",
-    ),
-]
-from typing import Any, List, Tuple, Union
-
-from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.tools import tool
+from langchain.output_parsers import JsonOutputToolsParser
 
 
-class FakeAgent(BaseMultiActionAgent):
-    """Fake Custom Agent."""
-
-    @property
-    def input_keys(self):
-        return ["input"]
-
-    def plan(
-        self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
-    ) -> Union[List[AgentAction], AgentFinish]:
-        """Given input, decided what to do.
-
-        Args:
-            intermediate_steps: Steps the LLM has taken to date,
-                along with observations
-            **kwargs: User inputs.
-
-        Returns:
-            Action specifying what tool to use.
-        """
-        if len(intermediate_steps) == 0:
-            return [
-                AgentAction(tool="Search", tool_input=kwargs["input"], log=""),
-                AgentAction(tool="RandomWord", tool_input=kwargs["input"], log=""),
-            ]
-        else:
-            return AgentFinish(return_values={"output": "bar"}, log="")
-
-    async def aplan(
-        self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
-    ) -> Union[List[AgentAction], AgentFinish]:
-        """Given input, decided what to do.
-
-        Args:
-            intermediate_steps: Steps the LLM has taken to date,
-                along with observations
-            **kwargs: User inputs.
-
-        Returns:
-            Action specifying what tool to use.
-        """
-        if len(intermediate_steps) == 0:
-            return [
-                AgentAction(tool="Search", tool_input=kwargs["input"], log=""),
-                AgentAction(tool="RandomWord", tool_input=kwargs["input"], log=""),
-            ]
-        else:
-            return AgentFinish(return_values={"output": "bar"}, log="")
+@tool
+def multiply(first_int: int, second_int: int) -> int:
+    """Multiply two integers together."""
+    return first_int * second_int
 
 
 text = st.text_input("输入问题")
 
 if st.button("执行"):
-    llm = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
-    # llm_math = LLMMathChain.from_llm(llm, verbose=True)
-    llm_symbolic_math = LLMSymbolicMathChain.from_llm(llm)
-    # text = "Who directed the 2023 film Oppenheimer and what is their age? What is their age in days (assume 365 days per year)?"
-    message = HumanMessage(
-        content=[
-            {
-                "type": "text",
-                "text": text,
-            },  # You can optionally provide text parts
-            # image_to_file(uploaded_file),
-        ]
-    )
-    # res = llm_math.invoke([message])
-    res = llm_symbolic_math.run(text)
+    model = ChatVertexAI(model_name="gemini-pro-vision", temperature=0.0, max_retries=1)
+    model_with_tools = model.bind_tools([multiply], tool_choice="multiply")
+    chain = model_with_tools | JsonOutputToolsParser()
+    res = chain.invoke(text)
     st.write(res)
