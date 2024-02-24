@@ -397,10 +397,7 @@ prompt = prompt_cols[0].text_area(
 
 prompt_cols[1].markdown("显示验证", help="✨ 显示验证提示词中的数学公式")
 view_prompt_container = prompt_cols[1].container(height=300)
-# TODO:删除
-text = '<div>Perform the indicated operation and simplify.<br>\n3) <span  class="math-inline" >\n<asciimath style="display: none;">(2p-2)/(p)-:(4p-4)/(9p^(2))</asciimath><latex style="display: none">\\frac{2 p-2}{p} \\div \\frac{4 p-4}{9 p^{2}}</latex></span></div>\n'
-view_prompt_container.markdown(text, unsafe_allow_html=True)
-# view_prompt_container.markdown(prompt, unsafe_allow_html=True)
+view_prompt_container.markdown(prompt, unsafe_allow_html=True)
 
 status = st.empty()
 tab0_btn_cols = st.columns([1, 1, 1, 1, 1, 5])
