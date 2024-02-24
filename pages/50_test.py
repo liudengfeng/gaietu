@@ -225,5 +225,6 @@ if st.button("执行"):
             # image_to_file(uploaded_file),
         ]
     )
-    res = llm_math.invoke([message])
+    # res = llm_math.invoke([message])
+    res = llm_math.run(text)
     st.write(res)
