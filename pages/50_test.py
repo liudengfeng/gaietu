@@ -161,7 +161,6 @@ from langchain.output_parsers import JsonOutputToolsParser
 from langchain_core.tools import tool
 
 
-@tool
 def multiply(first_int: int, second_int: int) -> int:
     """Multiply two integers together."""
     return first_int * second_int
@@ -193,14 +192,8 @@ if st.button("执行"):
         convert_system_message_to_human=True,
     )
     t_get_current_date = StructuredTool.from_function(get_current_date)
-
-    tools = [
-        t_get_current_date,
-    ]
-
-    tools = [
-        t_get_current_date,
-    ]
+    t_multiply = StructuredTool.from_function(multiply)
+    tools = [t_get_current_date, t_multiply]
 
     agent = initialize_agent(
         tools,
