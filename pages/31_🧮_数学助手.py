@@ -395,7 +395,9 @@ prompt = prompt_cols[0].text_area(
     label_visibility="collapsed",
 )
 
-prompt_cols[1].markdown("显示验证", help="✨ 显示验证提示词中的数学公式")
+prompt_cols[1].markdown(
+    "显示验证", help="✨ 显示验证提示词中的数学公式", unsafe_allow_html=True
+)
 view_prompt_container = prompt_cols[1].container(height=300)
 view_prompt_container.markdown(prompt)
 
@@ -439,7 +441,9 @@ if cls_btn:
 
 if ans_btn:
     if uploaded_file is None:
-        status.warning("似乎您还没有上传数学相关的图片。请上传以便AI更好地理解和解答您的问题。")
+        status.warning(
+            "似乎您还没有上传数学相关的图片。请上传以便AI更好地理解和解答您的问题。"
+        )
     if not prompt:
         status.error("请添加提示词")
         st.stop()
@@ -497,7 +501,7 @@ with demo_cols[2]:
                 language="markdown",
             )
 
-        st.markdown(math_text)
+        st.markdown(math_text, unsafe_allow_html=True)
 
 edit_btn_cols = demo_cols[0].columns(4)
 
