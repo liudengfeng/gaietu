@@ -226,4 +226,4 @@ if st.button("执行"):
         ]
     )
     res = llm_math.invoke([message])
-    st.markdown(res.content)
+    st.write(res)
