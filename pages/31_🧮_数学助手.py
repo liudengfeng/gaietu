@@ -436,40 +436,6 @@ prompt_elem = st.empty()
 if cls_btn:
     pass
 
-# if qst_btn:
-#     if uploaded_file is None:
-#         status.warning("您需要提取照片中的试题，但您似乎忘记了上传图片！")
-#         st.stop()
-#     response_container.empty()
-#     contents = process_file_and_prompt(uploaded_file, EXTRACT_TEST_QUESTION_PROMPT)
-#     view_example(response_container, EXTRACT_TEST_QUESTION_PROMPT)
-#     question = extract_test_question_text_for(
-#         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
-#     )
-#     response_container.markdown("##### 试题markdown代码")
-#     display_in_container(response_container, question, True)
-#     response_container.markdown("##### 显示的试题文本")
-#     # response_container.markdown(st.session_state["math-question"])
-#     display_in_container(response_container, question)
-#     update_sidebar_status(sidebar_status)
-
-# if tip_btn:
-#     if uploaded_file is None:
-#         status.warning("您是否忘记了上传图片或视频？")
-#         # st.stop()
-
-#     response_container.empty()
-#     view_example(
-#         response_container,
-#         prompt,
-#     )
-#     if "math-assistant" not in st.session_state:
-#         create_math_chat()
-#     with st.spinner(f"正在运行多模态模型提供解题思路..."):
-#         response = run_chain(prompt, uploaded_file)
-#     st.markdown("##### 解题思路")
-#     display_in_container(response_container, response.content)
-#     # st.code(response.content, language="markdown")
 
 if ans_btn:
     if uploaded_file is None:
