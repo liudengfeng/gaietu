@@ -473,10 +473,12 @@ if cls_btn:
 
 if ans_btn:
     if uploaded_file is None:
-        status.warning("您是否忘记了上传图片或视频？")
+        status.warning("似乎您还没有上传数学相关的图片。请上传以便AI更好地理解和解答您的问题。")
     if not prompt:
         status.error("请添加提示词")
         st.stop()
+    if "math-assistant" not in st.session_state:
+        create_math_chat()
     response_container.empty()
     view_example(response_container, prompt)
     with st.spinner(f"正在运行多模态模型获取{operation}..."):
