@@ -203,3 +203,11 @@ if st.button("执行"):
     )
     # res = chain.invoke(text)
     st.markdown(agent.run(text))
+
+if st.button("wiki", key="wiki"):
+    from langchain_community.tools import WikipediaQueryRun
+    from langchain_community.utilities import WikipediaAPIWrapper
+
+    api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=100)
+    tool = WikipediaQueryRun(api_wrapper=api_wrapper)
+    st.markdown(tool.run({"query": "langchain"}))
