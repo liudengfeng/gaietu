@@ -183,7 +183,7 @@ if st.button("执行"):
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True).with_types(
         input_type=AgentInput
     )
-    agent_executor.handle_parsing_errors = True
+    # agent_executor.handle_parsing_errors = True
     st.markdown(agent_executor.run(text))
 
 if st.button("graph", key="wiki"):
