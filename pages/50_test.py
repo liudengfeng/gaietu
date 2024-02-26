@@ -26,7 +26,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.messages import HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
-from langchain_core.runnables import RunnableConfig, RunnableLambda
+from langchain_core.runnables import RunnableBranch, RunnableConfig, RunnableLambda
 from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
 from langchain_google_vertexai import (
     ChatVertexAI,
@@ -198,9 +198,13 @@ Answer:"""
         | model
     )
 
-    full_chain = {"topic": chain, "question": lambda x: x["question"]} | RunnableLambda(
-        route
+    branch = RunnableBranch(
+        (lambda x: "anthropic" in x["topic"].lower(), anthropic_chain),
+        (lambda x: "langchain" in x["topic"].lower(), langchain_chain),
+        general_chain,
     )
+    full_chain = {"topic": chain, "question": lambda x: x["question"]} | branch
+    # full_chain.invoke({"question": "how do I use Anthropic?"})
 
     st.markdown(full_chain.invoke({"question": text}))
 
