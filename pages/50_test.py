@@ -132,6 +132,15 @@ uploaded_file = st.file_uploader(
 text = st.text_input("输入问题")
 
 
+def route(info):
+    if "anthropic" in info["topic"].lower():
+        return anthropic_chain
+    elif "langchain" in info["topic"].lower():
+        return langchain_chain
+    else:
+        return general_chain
+
+
 if st.button("执行"):
     model = ChatVertexAI(
         model_name="gemini-pro-vision",
@@ -139,8 +148,9 @@ if st.button("执行"):
         max_retries=1,
         convert_system_message_to_human=True,
     )
-    prompt = PromptTemplate.from_template(
-        """Given the user question below, classify it as either being about `LangChain`, `Anthropic`, or `Other`.
+    chain = (
+        PromptTemplate.from_template(
+            """Given the user question below, classify it as either being about `LangChain`, `Anthropic`, or `Other`.
 
 Do not respond with more than one word.
 
@@ -149,12 +159,47 @@ Do not respond with more than one word.
 </question>
 
 Classification:"""
+        )
+        | model
+        | StrOutputParser()
     )
-    output_parser = StrOutputParser()
+    langchain_chain = (
+        PromptTemplate.from_template(
+            """You are an expert in langchain. \
+Always answer questions starting with "As Harrison Chase told me". \
+Respond to the following question:
 
-    chain = prompt | model | output_parser
+Question: {question}
+Answer:"""
+        )
+        | model
+    )
+    anthropic_chain = (
+        PromptTemplate.from_template(
+            """You are an expert in anthropic. \
+Always answer questions starting with "As Dario Amodei told me". \
+Respond to the following question:
 
-    st.markdown(chain.invoke({"question": text}))
+Question: {question}
+Answer:"""
+        )
+        | model
+    )
+    general_chain = (
+        PromptTemplate.from_template(
+            """Respond to the following question:
+
+Question: {question}
+Answer:"""
+        )
+        | model
+    )
+
+    full_chain = {"topic": chain, "question": lambda x: x["question"]} | RunnableLambda(
+        route
+    )
+
+    st.markdown(full_chain.invoke({"question": text}))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
