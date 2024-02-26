@@ -148,7 +148,13 @@ class AgentInput(BaseModel):
 
 
 if st.button("执行"):
-    llm = ChatVertexAI(
+    # llm = ChatVertexAI(
+    #     model_name="gemini-pro-vision",
+    #     temperature=0.0,
+    #     max_retries=1,
+    #     convert_system_message_to_human=True,
+    # )
+    llm = VertexAI(
         model_name="gemini-pro-vision",
         temperature=0.0,
         max_retries=1,
