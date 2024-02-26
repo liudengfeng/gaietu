@@ -154,9 +154,7 @@ Classification:"""
 
     chain = prompt | model | output_parser
 
-    # res = chain.invoke(text)
-    # st.markdown(chain.invoke({"topic": text}))
-    st.markdown({"question": text})
+    st.markdown(chain.invoke({"question": text}))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
