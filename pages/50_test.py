@@ -12,7 +12,14 @@ from pathlib import Path
 from typing import List, Tuple
 
 import streamlit as st
-from langchain.agents import AgentExecutor, BaseMultiActionAgent, Tool
+from langchain.agents import (
+    AgentExecutor,
+    AgentType,
+    BaseMultiActionAgent,
+    Tool,
+    initialize_agent,
+    load_tools,
+)
 from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
 from langchain.chains import LLMMathChain
@@ -27,6 +34,7 @@ from langchain_google_vertexai import (
     HarmCategory,
     VertexAI,
 )
+
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
@@ -167,23 +175,28 @@ if st.button("执行"):
 
     llm_with_tools = llm.bind(functions=tools)
 
-    agent = (
-        {
-            "input": lambda x: x["input"],
-            "chat_history": lambda x: _format_chat_history(x["chat_history"]),
-            "agent_scratchpad": lambda x: format_to_openai_function_messages(
-                x["intermediate_steps"]
-            ),
-        }
-        | prompt
-        | llm_with_tools
-        | OpenAIFunctionsAgentOutputParser()
+    # agent = (
+    #     {
+    #         "input": lambda x: x["input"],
+    #         "chat_history": lambda x: _format_chat_history(x["chat_history"]),
+    #         "agent_scratchpad": lambda x: format_to_openai_function_messages(
+    #             x["intermediate_steps"]
+    #         ),
+    #     }
+    #     | prompt
+    #     | llm_with_tools
+    #     | OpenAIFunctionsAgentOutputParser()
+    # )
+    agent = initialize_agent(
+        tools,
+        llm,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True,
     )
-
-    agent_executor = AgentExecutor.from_agent_and_tools(
-        agent=agent, tools=tools, verbose=True
-    ).with_types(input_type=AgentInput)
-    st.markdown(agent_executor.invoke(text))
+    # agent_executor = AgentExecutor.from_agent_and_tools(
+    #     agent=agent, tools=tools, verbose=True
+    # ).with_types(input_type=AgentInput)
+    st.markdown(agent.run(text))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
