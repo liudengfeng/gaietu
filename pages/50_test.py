@@ -103,10 +103,14 @@ def image_to_dict(uploaded_file):
 
 
 # region langchain
-@tool
-def get_word_length(word: str) -> int:
-    """Returns the length of a word."""
-    return len(word)
+
+
+def _format_chat_history(chat_history: List[Tuple[str, str]]):
+    buffer = []
+    for human, ai in chat_history:
+        buffer.append(HumanMessage(content=human))
+        buffer.append(AIMessage(content=ai))
+    return buffer
 
 
 def get_current_date():
@@ -185,30 +189,16 @@ if st.button("执行"):
     you should probably use this tool to see if that can provide any information."""
     tavily_tool = TavilySearchResults(api_wrapper=search, description=description)
 
-    # t_get_current_date = StructuredTool.from_function(get_current_date)
-    # tools = [tavily_tool, t_get_current_date]
-    tools = [get_word_length]
+    tools = [tavily_tool]
 
-    # prompt = ChatPromptTemplate.from_messages(
-    #     [
-    #         MessagesPlaceholder(variable_name="chat_history"),
-    #         ("user", "{input}"),
-    #         MessagesPlaceholder(variable_name="agent_scratchpad"),
-    #     ]
-    # )
     prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are very powerful assistant, but bad at calculating lengths of words.",
-            ),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ]
     )
     # Function as tool is only supported for `gemini-pro` and `gemini-pro-001` models.
-    # llm_with_tools = llm.bind(functions=tools)
     llm_with_tools = llm.bind(functions=tools)
 
     # agent = (
@@ -229,22 +219,41 @@ if st.button("执行"):
     #     agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
     #     verbose=True,
     # )
+    # agent = (
+    #     {
+    #         "input": lambda x: x["input"],
+    #         "agent_scratchpad": lambda x: format_to_openai_tool_messages(
+    #             x["intermediate_steps"]
+    #         ),
+    #         "chat_history": lambda x: x["chat_history"],
+    #     }
+    #     | prompt
+    #     | llm_with_tools
+    #     | OpenAIToolsAgentOutputParser()
+    # )
     agent = (
         {
             "input": lambda x: x["input"],
-            "agent_scratchpad": lambda x: format_to_openai_tool_messages(
+            "chat_history": lambda x: _format_chat_history(x["chat_history"]),
+            "agent_scratchpad": lambda x: format_to_openai_function_messages(
                 x["intermediate_steps"]
             ),
-            "chat_history": lambda x: x["chat_history"],
         }
         | prompt
         | llm_with_tools
-        | OpenAIToolsAgentOutputParser()
+        | OpenAIFunctionsAgentOutputParser()
     )
+
     # agent_executor = AgentExecutor.from_agent_and_tools(
     #     agent=agent, tools=tools, verbose=True
     # ).with_types(input_type=AgentInput)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    # agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True).with_types(
+        input_type=AgentInput
+    )
+    # result = agent_executor.invoke(
+    #     {"input": text, "chat_history": st.session_state["chat_history"]}
+    # )
     result = agent_executor.invoke(
         {"input": text, "chat_history": st.session_state["chat_history"]}
     )
