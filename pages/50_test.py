@@ -4,6 +4,7 @@ import logging
 import mimetypes
 import os
 import tempfile
+from datetime import timedelta
 from operator import itemgetter
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.tools import StructuredTool
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_community.document_loaders import MathpixPDFLoader, WebBaseLoader
 from langchain_community.tools.tavily_search import TavilySearchResults
@@ -32,7 +34,6 @@ from langchain_google_vertexai import (
     HarmCategory,
     VertexAI,
 )
-from langchain.tools import StructuredTool
 from vertexai.preview.generative_models import Image
 
 from menu import menu
@@ -66,30 +67,8 @@ EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，不包含�
 """
 
 
+@st.cache_data(ttl=timedelta(hours=1))
 def image_to_dict(uploaded_file):
-    image_bytes = uploaded_file.getvalue()
-    mime_type = uploaded_file.type
-    # mime_type = mimetypes.guess_type(uploaded_file.name)[0]
-    st.warning(f"mime_type: {mime_type}")
-    if mime_type == "image/jpeg":
-        data_url = (
-            f"data:image/jpeg;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-        )
-    elif mime_type == "image/png":
-        data_url = (
-            f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-        )
-    else:
-        raise ValueError("Unsupported file type")
-
-    image_message = {
-        "type": "image_url",
-        "image_url": {"url": data_url},
-    }
-    return image_message
-
-
-def image_to_file(uploaded_file):
     # 获取图片数据
     image_bytes = uploaded_file.getvalue()
 
@@ -129,11 +108,9 @@ def get_current_date():
 # endregion
 
 
-# llm = VertexAI(model_name="gemini-pro-vision")
-# llm = VertexAI(model_name="gemini-pro")
+# region LCEL
 
-# st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-
+# endregion
 
 ANSWER_MATH_QUESTION_PROMPT = """
 Let's think step by step. You are proficient in mathematics, calculate the math problems in the image step by step.
@@ -152,59 +129,26 @@ uploaded_file = st.file_uploader(
 )
 
 
-def random_word(query: str) -> str:
-    print("\nNow I'm doing this!")
-    return "foo"
-
-
-from langchain.output_parsers import JsonOutputToolsParser
-from langchain_core.tools import tool
-
-
-def multiply(first_int: int, second_int: int) -> int:
-    """Multiply two integers together."""
-    return first_int * second_int
-
-
-def length_function(text):
-    return len(text)
-
-
-def _multiple_length_function(text1, text2):
-    return len(text1) * len(text2)
-
-
-def multiple_length_function(_dict):
-    return _multiple_length_function(_dict["text1"], _dict["text2"])
-
-
-prompt = ChatPromptTemplate.from_template("what is {a} + {b}")
-
 text = st.text_input("输入问题")
 
-from langchain.agents import AgentType, initialize_agent, load_tools
 
 if st.button("执行"):
-    llm = ChatVertexAI(
+    model = ChatVertexAI(
         model_name="gemini-pro-vision",
         temperature=0.0,
         max_retries=1,
         convert_system_message_to_human=True,
     )
-    t_get_current_date = StructuredTool.from_function(get_current_date)
-    t_multiply = StructuredTool.from_function(multiply)
-    tools = [t_get_current_date, t_multiply]
+    prompt = ChatPromptTemplate.from_template("tell me a short joke about {topic}")
+    output_parser = StrOutputParser()
 
-    agent = initialize_agent(
-        tools,
-        llm,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
-    )
+    chain = prompt | model | output_parser
+
+    chain.invoke({"topic": "ice cream"})
     # res = chain.invoke(text)
-    st.markdown(agent.run(text))
+    st.markdown(chain.invoke({"topic": text}))
 
-if st.button("wiki", key="wiki"):
+if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
     from langchain_community.utilities import WikipediaAPIWrapper
 
