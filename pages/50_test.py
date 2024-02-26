@@ -146,7 +146,8 @@ if st.button("执行"):
 
     chain.invoke({"topic": "ice cream"})
     # res = chain.invoke(text)
-    st.markdown(chain.invoke({"topic": text}))
+    # st.markdown(chain.invoke({"topic": text}))
+    st.markdown(chain.invoke(text))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
