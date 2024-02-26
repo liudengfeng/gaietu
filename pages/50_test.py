@@ -257,7 +257,7 @@ if st.button("执行"):
     result = agent_executor.invoke(
         {"input": text, "chat_history": st.session_state["chat_history"]}
     )
-    st.session_state["chat_history"].extend(
+    st.session_state["chat_history"].append(
         [
             HumanMessage(content=text),
             AIMessage(content=result["output"]),
