@@ -23,6 +23,7 @@ from langchain.agents import (
 from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
 from langchain.chains import LLMMathChain
+from langchain.tools import StructuredTool
 from langchain.utilities.tavily_search import TavilySearchAPIWrapper
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import AIMessage, HumanMessage
@@ -163,7 +164,8 @@ if st.button("执行"):
     you should probably use this tool to see if that can provide any information."""
     tavily_tool = TavilySearchResults(api_wrapper=search, description=description)
 
-    tools = [tavily_tool]
+    t_get_current_date = StructuredTool.from_function(get_current_date)
+    tools = [tavily_tool, t_get_current_date]
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -173,7 +175,7 @@ if st.button("执行"):
         ]
     )
 
-    llm_with_tools = llm.bind(functions=tools)
+    # llm_with_tools = llm.bind(functions=tools)
 
     # agent = (
     #     {
