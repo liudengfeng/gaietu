@@ -199,8 +199,9 @@ if st.button("执行"):
         [
             (
                 "system",
-                "You are very powerful assistant, but don't know current events",
+                "You are very powerful assistant, but bad at calculating lengths of words.",
             ),
+            MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ]
@@ -232,6 +233,7 @@ if st.button("执行"):
             "agent_scratchpad": lambda x: format_to_openai_tool_messages(
                 x["intermediate_steps"]
             ),
+            "chat_history": lambda x: x["chat_history"],
         }
         | prompt
         | llm_with_tools
@@ -241,7 +243,16 @@ if st.button("执行"):
     #     agent=agent, tools=tools, verbose=True
     # ).with_types(input_type=AgentInput)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    st.markdown(agent_executor.invoke({"input": text}))
+    result = agent_executor.invoke(
+        {"input": text, "chat_history": st.session_state["chat_history"]}
+    )
+    st.session_state["chat_history"].extend(
+        [
+            HumanMessage(content=text),
+            AIMessage(content=result["output"]),
+        ]
+    )
+    st.markdown(result["output"])
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
