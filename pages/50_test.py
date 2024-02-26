@@ -19,10 +19,16 @@ from langchain.agents import (
     Tool,
     initialize_agent,
     load_tools,
+    tool,
 )
+from langchain.agents.format_scratchpad.openai_tools import (
+    format_to_openai_tool_messages,
+)
+from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
 from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
 from langchain.chains import LLMMathChain
+from langchain.prompts import MessagesPlaceholder
 from langchain.tools import StructuredTool
 from langchain.utilities.tavily_search import TavilySearchAPIWrapper
 from langchain_community.tools.tavily_search import TavilySearchResults
@@ -93,6 +99,16 @@ def image_to_dict(uploaded_file):
     return image_message
 
 
+# endregion
+
+
+# region langchain
+@tool
+def get_word_length(word: str) -> int:
+    """Returns the length of a word."""
+    return len(word)
+
+
 def get_current_date():
     """
     Gets the current date (today), in the format YYYY-MM-DD
@@ -104,11 +120,6 @@ def get_current_date():
 
     return todays_date
 
-
-# endregion
-
-
-# region LCEL
 
 # endregion
 
@@ -147,19 +158,22 @@ class AgentInput(BaseModel):
     )
 
 
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
+
 if st.button("执行"):
-    # llm = ChatVertexAI(
-    #     model_name="gemini-pro-vision",
-    #     temperature=0.0,
-    #     max_retries=1,
-    #     convert_system_message_to_human=True,
-    # )
-    llm = VertexAI(
+    llm = ChatVertexAI(
         model_name="gemini-pro-vision",
         temperature=0.0,
         max_retries=1,
         convert_system_message_to_human=True,
     )
+    # llm = VertexAI(
+    #     model_name="gemini-pro-vision",
+    #     temperature=0.0,
+    #     max_retries=1,
+    #     convert_system_message_to_human=True,
+    # )
     # Create the tool
     search = TavilySearchAPIWrapper()
     description = """"A search engine optimized for comprehensive, accurate, \
@@ -170,18 +184,29 @@ if st.button("执行"):
     you should probably use this tool to see if that can provide any information."""
     tavily_tool = TavilySearchResults(api_wrapper=search, description=description)
 
-    t_get_current_date = StructuredTool.from_function(get_current_date)
-    tools = [tavily_tool, t_get_current_date]
+    # t_get_current_date = StructuredTool.from_function(get_current_date)
+    # tools = [tavily_tool, t_get_current_date]
+    tools = [get_word_length]
 
+    # prompt = ChatPromptTemplate.from_messages(
+    #     [
+    #         MessagesPlaceholder(variable_name="chat_history"),
+    #         ("user", "{input}"),
+    #         MessagesPlaceholder(variable_name="agent_scratchpad"),
+    #     ]
+    # )
     prompt = ChatPromptTemplate.from_messages(
         [
-            MessagesPlaceholder(variable_name="chat_history"),
+            (
+                "system",
+                "You are very powerful assistant, but don't know current events",
+            ),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ]
     )
-
     # llm_with_tools = llm.bind(functions=tools)
+    llm_with_tools = llm.bind(functions=tools)
 
     # agent = (
     #     {
@@ -195,16 +220,28 @@ if st.button("执行"):
     #     | llm_with_tools
     #     | OpenAIFunctionsAgentOutputParser()
     # )
-    agent = initialize_agent(
-        tools,
-        llm,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
+    # agent = initialize_agent(
+    #     tools,
+    #     llm,
+    #     agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+    #     verbose=True,
+    # )
+    agent = (
+        {
+            "input": lambda x: x["input"],
+            "agent_scratchpad": lambda x: format_to_openai_tool_messages(
+                x["intermediate_steps"]
+            ),
+        }
+        | prompt
+        | llm_with_tools
+        | OpenAIToolsAgentOutputParser()
     )
     # agent_executor = AgentExecutor.from_agent_and_tools(
     #     agent=agent, tools=tools, verbose=True
     # ).with_types(input_type=AgentInput)
-    st.markdown(agent.run(text))
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    st.markdown(agent_executor.invoke({"input": text}))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
