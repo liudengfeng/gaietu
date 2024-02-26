@@ -264,8 +264,8 @@ if btn_cols[1].button("执行", key="run"):
     )
     st.session_state["chat_history"].append(
         [
-            HumanMessage(content=text),
-            AIMessage(content=result["output"]),
+            text,
+            result["output"],
         ]
     )
     st.markdown(result["output"])
