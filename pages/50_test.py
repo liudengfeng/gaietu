@@ -184,7 +184,7 @@ if st.button("执行"):
         input_type=AgentInput
     )
     # agent_executor.handle_parsing_errors = True
-    st.markdown(agent_executor.run(text))
+    st.markdown(agent_executor.invoke(text))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
