@@ -139,15 +139,24 @@ if st.button("执行"):
         max_retries=1,
         convert_system_message_to_human=True,
     )
-    prompt = ChatPromptTemplate.from_template("tell me a short joke about {topic}")
+    prompt = PromptTemplate.from_template(
+        """Given the user question below, classify it as either being about `LangChain`, `Anthropic`, or `Other`.
+
+Do not respond with more than one word.
+
+<question>
+{question}
+</question>
+
+Classification:"""
+    )
     output_parser = StrOutputParser()
 
-    chain = {"topic": RunnablePassthrough()} | prompt | model | output_parser
+    chain = prompt | model | output_parser
 
-    chain.invoke({"topic": "ice cream"})
     # res = chain.invoke(text)
     # st.markdown(chain.invoke({"topic": text}))
-    st.markdown(chain.invoke(text))
+    st.markdown({"question": text})
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
