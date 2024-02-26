@@ -163,7 +163,8 @@ if "chat_history" not in st.session_state:
 
 if st.button("执行"):
     llm = ChatVertexAI(
-        model_name="gemini-pro-vision",
+        # model_name="gemini-pro-vision",
+        model_name="gemini-pro",
         temperature=0.0,
         max_retries=1,
         convert_system_message_to_human=True,
@@ -206,6 +207,7 @@ if st.button("执行"):
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ]
     )
+    # Function as tool is only supported for `gemini-pro` and `gemini-pro-001` models.
     # llm_with_tools = llm.bind(functions=tools)
     llm_with_tools = llm.bind(functions=tools)
 
