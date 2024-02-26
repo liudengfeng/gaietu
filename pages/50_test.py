@@ -134,10 +134,13 @@ text = st.text_input("输入问题")
 
 def route(info):
     if "anthropic" in info["topic"].lower():
+        logger.info("anthropic_chain")
         return anthropic_chain
     elif "langchain" in info["topic"].lower():
+        logger.info("langchain_chain")
         return langchain_chain
     else:
+        logger.info("general_chain")
         return general_chain
 
 
