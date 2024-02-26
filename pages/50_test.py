@@ -165,7 +165,12 @@ class AgentInput(BaseModel):
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = []
 
-if st.button("执行"):
+btn_cols = st.columns(8)
+
+if btn_cols[0].button("清空", key="clear"):
+    st.session_state["chat_history"] = []
+
+if btn_cols[1].button("执行", key="run"):
     llm = ChatVertexAI(
         # model_name="gemini-pro-vision",
         model_name="gemini-pro",
@@ -265,7 +270,7 @@ if st.button("执行"):
     )
     st.markdown(result["output"])
 
-if st.button("graph", key="wiki"):
+if btn_cols[2].button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
     from langchain_community.utilities import WikipediaAPIWrapper
 
