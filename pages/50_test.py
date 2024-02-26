@@ -142,7 +142,7 @@ if st.button("执行"):
     prompt = ChatPromptTemplate.from_template("tell me a short joke about {topic}")
     output_parser = StrOutputParser()
 
-    chain = prompt | model | output_parser
+    chain = {"topic": RunnablePassthrough()} | prompt | model | output_parser
 
     chain.invoke({"topic": "ice cream"})
     # res = chain.invoke(text)
