@@ -8,34 +8,26 @@ from datetime import timedelta
 from operator import itemgetter
 from pathlib import Path
 
+# from langchain.callbacks import StreamlitCallbackHandler
+from typing import List, Tuple
+
 import streamlit as st
 from langchain.agents import AgentExecutor, BaseMultiActionAgent, Tool
+from langchain.agents.format_scratchpad import format_to_openai_function_messages
+from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
 from langchain.chains import LLMMathChain
-
-# from langchain.callbacks import StreamlitCallbackHandler
-from langchain.prompts import PromptTemplate
-from langchain.schema import StrOutputParser
-from langchain.schema.runnable import RunnablePassthrough
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.tools import StructuredTool
-from langchain_community.callbacks import StreamlitCallbackHandler
-from langchain_community.document_loaders import MathpixPDFLoader, WebBaseLoader
+from langchain.utilities.tavily_search import TavilySearchAPIWrapper
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_community.utilities import SerpAPIWrapper
-from langchain_community.vectorstores import FAISS
-from langchain_core.messages import HumanMessage
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
-from langchain_core.runnables import RunnableBranch, RunnableConfig, RunnableLambda
-from langchain_experimental.llm_symbolic_math.base import LLMSymbolicMathChain
+from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_vertexai import (
     ChatVertexAI,
     HarmBlockThreshold,
     HarmCategory,
     VertexAI,
 )
-from vertexai.preview.generative_models import Image
-
 from menu import menu
 from mypylib.st_helper import add_exercises_to_db, check_access, configure_google_apis
 from mypylib.st_setting import general_config
@@ -132,81 +124,68 @@ uploaded_file = st.file_uploader(
 text = st.text_input("输入问题")
 
 
-def route(info):
-    if "anthropic" in info["topic"].lower():
-        logger.info("anthropic_chain")
-        return anthropic_chain
-    elif "langchain" in info["topic"].lower():
-        logger.info("langchain_chain")
-        return langchain_chain
-    else:
-        logger.info("general_chain")
-        return general_chain
+def _format_chat_history(chat_history: List[Tuple[str, str]]):
+    buffer = []
+    for human, ai in chat_history:
+        buffer.append(HumanMessage(content=human))
+        buffer.append(AIMessage(content=ai))
+    return buffer
+
+
+class AgentInput(BaseModel):
+    input: str
+    chat_history: List[Tuple[str, str]] = Field(
+        ..., extra={"widget": {"type": "chat", "input": "input", "output": "output"}}
+    )
 
 
 if st.button("执行"):
-    model = ChatVertexAI(
+    llm = ChatVertexAI(
         model_name="gemini-pro-vision",
         temperature=0.0,
         max_retries=1,
         convert_system_message_to_human=True,
     )
-    chain = (
-        PromptTemplate.from_template(
-            """Given the user question below, classify it as either being about `LangChain`, `Anthropic`, or `Other`.
+    # Create the tool
+    search = TavilySearchAPIWrapper()
+    description = """"A search engine optimized for comprehensive, accurate, \
+    and trusted results. Useful for when you need to answer questions \
+    about current events or about recent information. \
+    Input should be a search query. \
+    If the user is asking about something that you don't know about, \
+    you should probably use this tool to see if that can provide any information."""
+    tavily_tool = TavilySearchResults(api_wrapper=search, description=description)
 
-Do not respond with more than one word.
+    tools = [tavily_tool]
 
-<question>
-{question}
-</question>
-
-Classification:"""
-        )
-        | model
-        | StrOutputParser()
-    )
-    langchain_chain = (
-        PromptTemplate.from_template(
-            """You are an expert in langchain. \
-Always answer questions starting with "As Harrison Chase told me". \
-Respond to the following question:
-
-Question: {question}
-Answer:"""
-        )
-        | model
-    )
-    anthropic_chain = (
-        PromptTemplate.from_template(
-            """You are an expert in anthropic. \
-Always answer questions starting with "As Dario Amodei told me". \
-Respond to the following question:
-
-Question: {question}
-Answer:"""
-        )
-        | model
-    )
-    general_chain = (
-        PromptTemplate.from_template(
-            """Respond to the following question:
-
-Question: {question}
-Answer:"""
-        )
-        | model
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+            MessagesPlaceholder(variable_name="agent_scratchpad"),
+        ]
     )
 
-    branch = RunnableBranch(
-        (lambda x: "anthropic" in x["topic"].lower(), anthropic_chain),
-        (lambda x: "langchain" in x["topic"].lower(), langchain_chain),
-        general_chain,
-    )
-    full_chain = {"topic": chain, "question": lambda x: x["question"]} | branch
-    # full_chain.invoke({"question": "how do I use Anthropic?"})
+    llm_with_tools = llm.bind(functions=tools)
 
-    st.markdown(full_chain.invoke({"question": text}))
+    agent = (
+        {
+            "input": lambda x: x["input"],
+            "chat_history": lambda x: _format_chat_history(x["chat_history"]),
+            "agent_scratchpad": lambda x: format_to_openai_function_messages(
+                x["intermediate_steps"]
+            ),
+        }
+        | prompt
+        | llm_with_tools
+        | OpenAIFunctionsAgentOutputParser()
+    )
+
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True).with_types(
+        input_type=AgentInput
+    )
+    agent_executor.handle_parsing_errors = True
+    st.markdown(agent_executor.run(text))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
