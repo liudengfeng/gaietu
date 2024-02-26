@@ -180,11 +180,11 @@ if st.button("执行"):
         | OpenAIFunctionsAgentOutputParser()
     )
 
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True).with_types(
-        input_type=AgentInput
-    )
-    # agent_executor.handle_parsing_errors = True
-    st.markdown(agent_executor.invoke([text]))
+    agent_executor = AgentExecutor.from_agent_and_tools(
+        agent=agent, tools=tools, verbose=True
+    ).with_types(input_type=AgentInput)
+    agent_executor.handle_parsing_errors = True
+    st.markdown(agent_executor.invoke(text))
 
 if st.button("graph", key="wiki"):
     from langchain_community.tools import WikipediaQueryRun
