@@ -263,10 +263,10 @@ if btn_cols[1].button("执行", key="run"):
         {"input": text, "chat_history": st.session_state["chat_history"]}
     )
     st.session_state["chat_history"].append(
-        [
+        (
             text,
             result["output"],
-        ]
+        )
     )
     st.markdown(result["output"])
 
