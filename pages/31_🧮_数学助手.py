@@ -70,6 +70,9 @@ if "math-question" not in st.session_state:
 if "math-question-prompt" not in st.session_state:
     st.session_state["math-question-prompt"] = ""
 
+if "math-assistant-response" not in st.session_state:
+    st.session_state["math-assistant-response"] = ""
+
 
 def initialize_writing_chat():
     model_name = "gemini-pro"
@@ -117,14 +120,15 @@ Markdown math examples:
 """
 
 
-SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是按照以下要求为图中的数学题提供解题思路：
-1. 这是一道{question_type}题，你需要根据题型规范来回答。
-2. 简要描述解决问题的步骤和使用的方法。
-3. 列出必要的数学公式和计算流程，但不需要进行具体的数值运算。
-4. 你的受众是{grade}学生，需要提供与其能力匹配的解题思路和方法。
-5. 使用`$`或`$$`来正确标识行内或块级数学变量及公式。
+SOLUTION_THOUGHT_PROMPT = """You are proficient in mathematics, and your task is to provide a solution strategy for the math problem in the image according to the following requirements:
+1. Your audience is students in {grade}, and you need to provide a problem-solving strategy and method that matches their abilities.
+2. If the difficulty of the problem does not match the specified grade, you need to politely guide the user back to the topic suitable for their grade.
+3. This is a {question_type} problem, and you need to answer according to the norms of the question type.
+4. Briefly describe the steps and methods used to solve the problem.
+5. List the necessary mathematical formulas and calculation processes, but there is no need to perform specific numerical calculations.
+6. Use `$` or `$$` to correctly identify inline or block-level mathematical variables and formulas.
 
-**不得提供具体的答案。**
+**You must not provide specific answers.**
 """
 
 ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下要求解答图中的数学题：
@@ -428,16 +432,6 @@ demo_btn_1 = tab0_btn_cols[1].button(
     on_click=reset_text_value,
     args=("user_prompt_key", get_prompt_templature(operation, checked)),
 )
-# qst_btn = tab0_btn_cols[2].button(
-#     "试题[:toolbox:]",
-#     help="✨ 点击按钮，将从图片中提取试题文本，并在右侧文本框中显示。",
-#     key="extract_text",
-# )
-# tip_btn = tab0_btn_cols[3].button(
-#     "思路[:bulb:]",
-#     help="✨ 点击按钮，让AI为您展示解题思路。",
-#     key="provide_tip",
-# )
 ans_btn = tab0_btn_cols[2].button(
     "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
@@ -508,7 +502,7 @@ with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
     ai_tip_container = st.container(border=True, height=300)
     with ai_tip_container:
-        if math_prompt := st.chat_input("向AI提问数学公式的写法，比如举例分数的写法"):
+        if math_prompt := st.chat_input("向AI提问数学公式的写法，比如：举例分数的写法"):
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
             math_code = gen_tip_for(math_prompt)
