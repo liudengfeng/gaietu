@@ -102,10 +102,10 @@ EXAMPLES = """
 For inline variable code, use: $x$
 For mathematical formula blocks, use: 
 $$
-\begin{align*}
+\\begin{align*}
 x + y &= 10 \\
 2x - y &= 3
-\end{align*}
+\\end{align*}
 $$
 """
 
