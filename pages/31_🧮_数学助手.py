@@ -120,15 +120,14 @@ Markdown math examples:
 """
 
 
-SOLUTION_THOUGHT_PROMPT = """You are proficient in mathematics, and your task is to provide a solution strategy for the math problem in the image according to the following requirements:
-1. Your audience is students in {grade}, and you need to provide a problem-solving strategy and method that matches their abilities.
-2. If the difficulty of the problem does not match the specified grade, you need to politely guide the user back to the topic suitable for their grade.
-3. This is a {question_type} problem, and you need to answer according to the norms of the question type.
-4. Briefly describe the steps and methods used to solve the problem.
-5. List the necessary mathematical formulas and calculation processes, but there is no need to perform specific numerical calculations.
-6. Use `$` or `$$` to correctly identify inline or block-level mathematical variables and formulas.
+SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是根据以下要求，为图片中的数学问题提供解题思路：
+1. 你的受众是{grade}年级的学生，你需要提供与他们能力匹配的解题方法。
+2. 如果问题的难度与指定的年级不匹配，你需要以尊重和理解的态度，礼貌地指出这一点给用户。
+3. 这是一道{question_type}题目，你需要按照该类型题目的解题规则进行回答。
+4. 简要阐述解决问题的步骤和所采用的方法，列出必要的数学公式和计算流程，但无需进行详细的数值运算。
+5. 使用`$`或`$$`来正确标识行内或块级的数学变量和公式。
 
-**You must not provide specific answers.**
+**你不能提供具体的答案。**
 """
 
 ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下要求解答图中的数学题：
