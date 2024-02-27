@@ -259,7 +259,7 @@ def cached_generated_content_for(
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
-    model_name = "gemini-pro-vision"
+    model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         temperature=st.session_state["temperature-vision"],
@@ -466,7 +466,7 @@ elif item_menu == "多模态AI":
     # region 边栏
     st.sidebar.markdown(
         """:rainbow[运行设置]\n
-:gemini: 模型：gemini-pro-vision            
+:gemini: 模型：gemini-1.0-pro-vision-001            
     """
     )
     st.sidebar.divider()
@@ -743,7 +743,7 @@ elif item_menu == "示例教程":
     tabs = st.tabs([f"{emoji} {item}" for emoji, item in zip(items_emoji, items)])
 
     text_model = load_vertex_model("gemini-pro")
-    vision_model = load_vertex_model("gemini-pro-vision")
+    vision_model = load_vertex_model("gemini-1.0-pro-vision-001")
 
     with tabs[0]:
         st.write("使用 Gemini Pro - 文本模型")
@@ -1047,7 +1047,7 @@ elif item_menu == "示例教程":
                         item_name = "演示：家具推荐"
                         full_response = cached_generated_content_for(
                             item_name,
-                            "gemini-pro-vision",
+                            "gemini-1.0-pro-vision-001",
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
@@ -1089,7 +1089,7 @@ elif item_menu == "示例教程":
                         item_name = "烤箱使用说明演示"
                         full_response = cached_generated_content_for(
                             item_name,
-                            "gemini-pro-vision",
+                            "gemini-1.0-pro-vision-001",
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
@@ -1126,7 +1126,7 @@ elif item_menu == "示例教程":
                         item_name = "演示：ER 图"
                         full_response = cached_generated_content_for(
                             item_name,
-                            "gemini-pro-vision",
+                            "gemini-1.0-pro-vision-001",
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
@@ -1210,7 +1210,7 @@ elif item_menu == "示例教程":
                         item_name = "演示：眼镜推荐"
                         full_response = cached_generated_content_for(
                             item_name,
-                            "gemini-pro-vision",
+                            "gemini-1.0-pro-vision-001",
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
@@ -1263,7 +1263,7 @@ elif item_menu == "示例教程":
                         item_name = "演示：眼镜推荐"
                         full_response = cached_generated_content_for(
                             item_name,
-                            "gemini-pro-vision",
+                            "gemini-1.0-pro-vision-001",
                             gemini_pro_vision_generation_config,
                             content_dict_list,
                         )
@@ -1313,7 +1313,7 @@ elif item_menu == "示例教程":
                             item_name = "演示：视频描述"
                             full_response = cached_generated_content_for(
                                 item_name,
-                                "gemini-pro-vision",
+                                "gemini-1.0-pro-vision-001",
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )
@@ -1358,7 +1358,7 @@ elif item_menu == "示例教程":
                             item_name = "演示：为视频生成标签"
                             full_response = cached_generated_content_for(
                                 item_name,
-                                "gemini-pro-vision",
+                                "gemini-1.0-pro-vision-001",
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )
@@ -1410,7 +1410,7 @@ elif item_menu == "示例教程":
                             item_name = "演示：视频集锦"
                             full_response = cached_generated_content_for(
                                 item_name,
-                                "gemini-pro-vision",
+                                "gemini-1.0-pro-vision-001",
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )
@@ -1470,7 +1470,7 @@ elif item_menu == "示例教程":
                             item_name = "演示：视频位置标签"
                             full_response = cached_generated_content_for(
                                 item_name,
-                                "gemini-pro-vision",
+                                "gemini-1.0-pro-vision-001",
                                 gemini_pro_vision_generation_config,
                                 content_dict_list,
                             )

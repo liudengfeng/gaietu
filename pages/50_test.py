@@ -164,14 +164,14 @@ if btn_cols[0].button("清空", key="clear"):
 
 if btn_cols[1].button("执行", key="run"):
     llm = ChatVertexAI(
-        # model_name="gemini-pro-vision",
+        # model_name="gemini-1.0-pro-vision-001",
         model_name="gemini-pro",
         temperature=0.0,
         max_retries=1,
         convert_system_message_to_human=True,
     )
     # llm = VertexAI(
-    #     model_name="gemini-pro-vision",
+    #     model_name="gemini-1.0-pro-vision-001",
     #     temperature=0.0,
     #     max_retries=1,
     #     convert_system_message_to_human=True,

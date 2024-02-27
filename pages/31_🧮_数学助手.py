@@ -268,7 +268,7 @@ def ensure_math_code_wrapped_with_dollar(math_code):
 )
 def extract_test_question_text_for(uploaded_file, prompt):
     contents = process_file_and_prompt(uploaded_file, prompt)
-    model_name = "gemini-pro-vision"
+    model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         temperature=0.0,
@@ -287,7 +287,7 @@ def extract_test_question_text_for(uploaded_file, prompt):
 
 
 def generate_content_from_files_and_prompt(contents, placeholder):
-    model_name = "gemini-pro-vision"
+    model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
         temperature=0.0,
@@ -336,7 +336,7 @@ def create_math_chat():
     # if uploaded_file is None:
     #     return
     st.session_state["math-assistant"] = ChatVertexAI(
-        model_name="gemini-pro-vision",
+        model_name="gemini-1.0-pro-vision-001",
         # convert_system_message_to_human=True,
         safety_settings={
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
