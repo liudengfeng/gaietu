@@ -98,7 +98,7 @@ CORRECTION_PROMPT_TEMPLATE = """
 ...在此处输入修订后的题目...
 """
 
-EXAMPLES = """\
+EXAMPLES = """
 For inline variable code, use: $x$
 For mathematical formula blocks, use: 
 $$
