@@ -198,12 +198,12 @@ def image_to_dict(uploaded_file):
     # 根据 MIME 类型获取文件扩展名
     ext = mimetypes.guess_extension(mime_type)
 
-    logger.info(f"ext: {ext}")
+    # logger.info(f"ext: {ext}")
 
     # 返回临时文件的路径
     image_message = {
         "type": "image_url",
-        "image_url": {"url": f"data:image/{ext};base64,{image_bytes}"},
+        "image_url": {"url": f"data:image/{ext[1:]};base64,{image_bytes}"},
     }
     return image_message
 
