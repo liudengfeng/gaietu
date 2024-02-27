@@ -356,8 +356,7 @@ def gen_tip_for(question):
 def create_math_chat():
     # if uploaded_file is None:
     #     return
-    # st.session_state["math-assistant"] = ChatVertexAI(
-    st.session_state["math-assistant"] = VertexAI(
+    st.session_state["math-assistant"] = ChatVertexAI(
         model_name="gemini-1.0-pro-vision-001",
         # convert_system_message_to_human=True,
         safety_settings={
