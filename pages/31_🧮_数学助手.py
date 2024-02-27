@@ -100,7 +100,13 @@ CORRECTION_PROMPT_TEMPLATE = """
 
 EXAMPLES = """
 For inline variable code, use: $x$
-For mathematical formula blocks, use: $$x^2 + y^2 = 1$$
+For mathematical formula blocks, use: 
+$$
+\begin{align*}
+x + y &= 10 \\
+2x - y &= 3
+\end{align*}
+$$
 """
 
 EXTRACT_TEST_QUESTION_PROMPT = f"""
