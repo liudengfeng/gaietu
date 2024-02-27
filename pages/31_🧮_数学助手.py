@@ -190,11 +190,11 @@ def view_example(container, prompt):
 
 
 def get_prompt_templature(op, checked):
-    if op == "思路":
+    if op == "提供解题思路":
         return SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
-    elif op == "题目":
+    elif op == "提取图中的试题":
         return EXTRACT_TEST_QUESTION_PROMPT
-    elif op == "解答":
+    elif op == "提供完整解答":
         if not checked:
             return ANSWER_MATH_QUESTION_PROMPT.format(
                 grade=grade, question_type=question_type
@@ -207,7 +207,7 @@ def get_prompt_templature(op, checked):
                 + "\n"
                 + CORRECTION_PROMPT_TEMPLATE
             )
-    elif op == "思路":
+    elif op == "提供解题思路":
         if not checked:
             return SOLUTION_THOUGHT_PROMPT.format(
                 grade=grade, question_type=question_type
@@ -373,7 +373,7 @@ question_type = grade_cols[1].selectbox(
 )
 operation = grade_cols[2].selectbox(
     "您的操作",
-    ["题目", "思路", "解答"],
+    ["提取图中的试题", "提供解题思路", "提供完整解答"],
 )
 checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
@@ -439,9 +439,11 @@ if cls_btn:
 
 if ans_btn:
     if uploaded_file is None:
-        status.warning(
-            "似乎您还没有上传数学相关的图片。请上传以便AI更好地理解和解答您的问题。"
-        )
+        if operation == "提取图中的试题":
+            status.error(
+                "您是否需要从图像中提取试题文本？目前似乎还未接收到您上传的数学相关图片。请上传图片，以便 AI 能更准确地理解和回答您的问题。"
+            )
+            st.stop()
     if not prompt:
         status.error("请添加提示词")
         st.stop()
