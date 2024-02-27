@@ -373,7 +373,7 @@ question_type = grade_cols[1].selectbox(
 )
 operation = grade_cols[2].selectbox(
     "您的操作",
-    ["思路", "解答", "题目"],
+    ["题目", "思路", "解答"],
 )
 checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
@@ -408,10 +408,10 @@ cls_btn = tab0_btn_cols[0].button(
     on_click=reset_text_value,
     args=("user_prompt_key",),
 )
-demo_btn = tab0_btn_cols[1].button(
+demo_btn_1 = tab0_btn_cols[1].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
-    help="✨ 演示当前使用的提示词模板",
+    help="✨ 展示当前所应用的提示词模板",
     on_click=reset_text_value,
     args=("user_prompt_key", get_prompt_templature(operation, checked)),
 )

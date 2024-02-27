@@ -147,14 +147,6 @@ uploaded_file = st.file_uploader(
 text = st.text_input("输入问题")
 
 
-def _format_chat_history(chat_history: List[Tuple[str, str]]):
-    buffer = []
-    for human, ai in chat_history:
-        buffer.append(HumanMessage(content=human))
-        buffer.append(AIMessage(content=ai))
-    return buffer
-
-
 class AgentInput(BaseModel):
     input: str
     chat_history: List[Tuple[str, str]] = Field(
@@ -204,7 +196,7 @@ if btn_cols[1].button("执行", key="run"):
         ]
     )
     # Function as tool is only supported for `gemini-pro` and `gemini-pro-001` models.
-    llm_with_tools = llm.bind(functions=tools)
+    llm_with_tools = llm.bind(tools=tools)
 
     # agent = (
     #     {
