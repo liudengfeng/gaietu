@@ -460,7 +460,10 @@ if ans_btn:
     view_example(response_container, prompt)
     with st.spinner(f"正在运行多模态模型获取{operation}..."):
         response = run_chain(prompt, uploaded_file)
-    st.markdown("##### AI响应")
+    response_container.markdown("##### AI响应")
+    response_container.markdown("###### 代码")
+    display_in_container(response_container, response.content, True)
+    response_container.markdown("###### 显示")
     display_in_container(response_container, response.content)
     update_sidebar_status(sidebar_status)
 
