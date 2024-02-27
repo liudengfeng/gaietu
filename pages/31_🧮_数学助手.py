@@ -389,7 +389,7 @@ grade = grade_cols[0].selectbox(
 )
 question_type = grade_cols[1].selectbox(
     "题型",
-    ["选择题", "填空题", "计算题", "证明题", "推理题", "解答题"],
+    ["选择题", "填空题", "计算题", "证明题", "判断题", "推理题", "解答题"],
     # index=None,
     key="question_type",
     help="选择题型",
