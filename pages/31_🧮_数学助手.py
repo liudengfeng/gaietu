@@ -207,7 +207,16 @@ def view_example(container, prompt):
 
 def get_prompt_templature(op, checked):
     if op == "提供解题思路":
-        return SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+        if not checked:
+            return SOLUTION_THOUGHT_PROMPT.format(
+                grade=grade, question_type=question_type
+            )
+        else:
+            return (
+                SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+                + "\n"
+                + CORRECTION_PROMPT_TEMPLATE
+            )
     elif op == "提取图中的试题":
         return EXTRACT_TEST_QUESTION_PROMPT
     elif op == "提供完整解答":
