@@ -130,12 +130,10 @@ SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是根据以下要求
 **你不能提供具体的答案。**
 """
 
-ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下要求解答图中的数学题：
+ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下要求，分步解答图中的数学题：
 1. 这是一道{question_type}题，你需要根据题型规范来回答。
 2. 您的受众是中国{grade}学生，需要提供与其学习阶段相匹配的解题思路和方法。
 3. 使用`$`或`$$`来正确标识行内或块级数学变量及公式。
-
-Let's think step by step.
 """
 
 
