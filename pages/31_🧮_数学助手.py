@@ -98,11 +98,7 @@ CORRECTION_PROMPT_TEMPLATE = """
 ...在此处输入修订后的题目...
 """
 
-EXTRACT_TEST_QUESTION_PROMPT = """从图片中提取数学题文本，包括数学表达式，但不包含示意图、插图。
-使用`$`或`$$`正确标识变量和数学表达式。如行内变量代码使用```$x$```；数学公式块：```$$x^2 + y^2 = 1$$```。
-如果内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
-输出 Markdown 代码。
-**只需要提取数学题文本，不需要提供解题思路和具体的答案。**
+EXTRACT_TEST_QUESTION_PROMPT = """Extract the text of the math problem from the image, including mathematical expressions, but excluding diagrams and illustrations. Use $ or $$ to correctly identify variables and mathematical expressions. For inline variable code, use $x$; for mathematical formula blocks, use $$x^2 + y^2 = 1$$. If the content is presented in the form of a table, it should be written using the HTML table syntax in Markdown. Output the Markdown code. Only the text of the math problem needs to be extracted, there is no need to provide problem-solving strategies and specific answers.
 """
 
 SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是按照以下要求为图中的数学题提供解题思路：
