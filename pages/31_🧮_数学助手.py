@@ -508,7 +508,7 @@ with demo_cols[2]:
     st.markdown("检查数学公式是否正确")
     ai_tip_container = st.container(border=True, height=300)
     with ai_tip_container:
-        if math_prompt := st.chat_input("向AI提问数学公式的写法"):
+        if math_prompt := st.chat_input("向AI提问数学公式的写法，比如举例分数的写法"):
             if "AI-Formula-Assistant" not in st.session_state:
                 initialize_writing_chat()
             math_code = gen_tip_for(math_prompt)
