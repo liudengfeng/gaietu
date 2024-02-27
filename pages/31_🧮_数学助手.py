@@ -195,7 +195,7 @@ def image_to_dict(uploaded_file):
     # 获取文件的 MIME 类型
     mime_type = uploaded_file.type
 
-    # 根据 MIME 类型获取文件扩展名
+    # 根据 MIME 类型获取文件扩展名 '.png'
     ext = mimetypes.guess_extension(mime_type)
 
     # logger.info(f"ext: {ext}")
@@ -203,7 +203,7 @@ def image_to_dict(uploaded_file):
     # 返回临时文件的路径
     image_message = {
         "type": "image_url",
-        "image_url": {"url": f"data:image/jpeg;base64,{image_bytes}"},
+        "image_url": {"url": f"data:image/{ext[1:]};base64,{image_bytes}"},
     }
     return image_message
 
@@ -356,7 +356,8 @@ def gen_tip_for(question):
 def create_math_chat():
     # if uploaded_file is None:
     #     return
-    st.session_state["math-assistant"] = ChatVertexAI(
+    # st.session_state["math-assistant"] = ChatVertexAI(
+    st.session_state["math-assistant"] = VertexAI(
         model_name="gemini-1.0-pro-vision-001",
         # convert_system_message_to_human=True,
         safety_settings={
