@@ -98,8 +98,18 @@ CORRECTION_PROMPT_TEMPLATE = """
 ...在此处输入修订后的题目...
 """
 
-EXTRACT_TEST_QUESTION_PROMPT = """Extract the text of the math problem from the image, including mathematical expressions, but excluding diagrams and illustrations. Use $ or $$ to correctly identify variables and mathematical expressions. For inline variable code, use $x$; for mathematical formula blocks, use $$x^2 + y^2 = 1$$. If the content is presented in the form of a table, it should be written using the HTML table syntax in Markdown. Output the Markdown code. Only the text of the math problem needs to be extracted, there is no need to provide problem-solving strategies and specific answers.
+EXAMPLES = """
+For inline variable code, use: $x$
+For mathematical formula blocks, use: $$x^2 + y^2 = 1$$
 """
+
+EXTRACT_TEST_QUESTION_PROMPT = f"""
+Extract the text of the math problem from the image, including mathematical expressions, but excluding diagrams and illustrations. If the content is presented in the form of a table, it should be written using the HTML table syntax in Markdown. Output the Markdown code. Only the text of the math problem needs to be extracted, there is no need to provide problem-solving strategies and specific answers.
+
+Markdown math examples: 
+{EXAMPLES}
+"""
+
 
 SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是按照以下要求为图中的数学题提供解题思路：
 1. 这是一道{question_type}题，你需要根据题型规范来回答。
