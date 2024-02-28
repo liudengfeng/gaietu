@@ -160,10 +160,15 @@ text = st.text_input("输入问题")
 
 # endregion
 
+
 # region graph
 
 
-def initialize_model():
+class AgentState(TypedDict):
+    messages: Annotated[Sequence[BaseMessage], operator.add]
+
+
+def initialize_app():
     model = ChatVertexAI(
         model_name="gemini-1.0-pro-vision-001",
         temperature=0.0,
@@ -171,65 +176,50 @@ def initialize_model():
         streaming=True,
         convert_system_message_to_human=True,
     )
-    # TODO
+    # TODO：根据需要修改
     tools = [TavilySearchResults(max_results=1)]
     model = model.bind(tools=tools)
-    st.session_state["model-graph"] = model
-    st.session_state["tool_executor"] = ToolExecutor(tools)
+    tool_executor = ToolExecutor(tools)
 
+    # Define the function that determines whether to continue or not
+    def should_continue(state):
+        messages = state["messages"]
+        last_message = messages[-1]
+        # If there is no function call, then we finish
+        if "function_call" not in last_message.additional_kwargs:
+            return "end"
+        # Otherwise if there is, we continue
+        else:
+            return "continue"
 
-if "model-graph" not in st.session_state:
-    initialize_model()
+    # Define the function that calls the model
+    def call_model(state):
+        messages = state["messages"]
+        response = model.invoke(messages)
+        # We return a list, because this will get added to the existing list
+        return {"messages": [response]}
 
+    # Define the function to execute tools
+    def call_tool(state):
+        tool_executor = st.session_state["tool_executor"]
+        messages = state["messages"]
+        # Based on the continue condition
+        # we know the last message involves a function call
+        last_message = messages[-1]
+        # We construct an ToolInvocation from the function_call
+        action = ToolInvocation(
+            tool=last_message.additional_kwargs["function_call"]["name"],
+            tool_input=json.loads(
+                last_message.additional_kwargs["function_call"]["arguments"]
+            ),
+        )
+        # We call the tool_executor and get back a response
+        response = tool_executor.invoke(action)
+        # We use the response to create a FunctionMessage
+        function_message = FunctionMessage(content=str(response), name=action.tool)
+        # We return a list, because this will get added to the existing list
+        return {"messages": [function_message]}
 
-class AgentState(TypedDict):
-    messages: Annotated[Sequence[BaseMessage], operator.add]
-
-
-# Define the function that determines whether to continue or not
-def should_continue(state):
-    messages = state["messages"]
-    last_message = messages[-1]
-    # If there is no function call, then we finish
-    if "function_call" not in last_message.additional_kwargs:
-        return "end"
-    # Otherwise if there is, we continue
-    else:
-        return "continue"
-
-
-# Define the function that calls the model
-def call_model(state):
-    model = st.session_state["model-graph"]
-    messages = state["messages"]
-    response = model.invoke(messages)
-    # We return a list, because this will get added to the existing list
-    return {"messages": [response]}
-
-
-# Define the function to execute tools
-def call_tool(state):
-    tool_executor = st.session_state["tool_executor"]
-    messages = state["messages"]
-    # Based on the continue condition
-    # we know the last message involves a function call
-    last_message = messages[-1]
-    # We construct an ToolInvocation from the function_call
-    action = ToolInvocation(
-        tool=last_message.additional_kwargs["function_call"]["name"],
-        tool_input=json.loads(
-            last_message.additional_kwargs["function_call"]["arguments"]
-        ),
-    )
-    # We call the tool_executor and get back a response
-    response = tool_executor.invoke(action)
-    # We use the response to create a FunctionMessage
-    function_message = FunctionMessage(content=str(response), name=action.tool)
-    # We return a list, because this will get added to the existing list
-    return {"messages": [function_message]}
-
-
-def create_workflow(call_model, call_tool, should_continue):
     # Define a new graph
     workflow = StateGraph(AgentState)
 
@@ -259,7 +249,7 @@ def create_workflow(call_model, call_tool, should_continue):
 
 
 if "workflow" not in st.session_state:
-    create_workflow(call_model, call_tool, should_continue)
+    initialize_app()
 
 # endregion
 
