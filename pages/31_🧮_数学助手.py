@@ -203,7 +203,7 @@ def image_to_dict(uploaded_file):
     # 返回临时文件的路径
     image_message = {
         "type": "image_url",
-        "image_url": {"url": f"data:image/{ext[1:]};base64,{image_bytes}"},
+        "image_url": {"url": f"data:image/jpeg;base64,{image_bytes}"},
     }
     return image_message
 
