@@ -187,7 +187,7 @@ def _process_media(uploaded_file):
 #     return image_message
 
 
-@st.cache_data(ttl=timedelta(hours=1))
+# @st.cache_data(ttl=timedelta(hours=1))
 def image_to_dict(uploaded_file):
     # 获取图片数据
     image_bytes = uploaded_file.getvalue()
