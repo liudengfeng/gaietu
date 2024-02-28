@@ -3,6 +3,7 @@ import json
 import logging
 import mimetypes
 import os
+import re
 import tempfile
 from datetime import timedelta
 from operator import itemgetter
@@ -21,12 +22,13 @@ from langchain.agents import (
     load_tools,
     tool,
 )
+from functools import partial
+from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.format_scratchpad.openai_tools import (
     format_to_openai_tool_messages,
 )
-from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
-from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
+from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
 from langchain.chains import LLMMathChain
 from langchain.prompts import MessagesPlaceholder
 from langchain.tools import StructuredTool
@@ -147,23 +149,15 @@ uploaded_file = st.file_uploader(
 text = st.text_input("输入问题")
 
 
-# ergion graph
-from langchain_community.tools.tavily_search import TavilySearchResults
-
-
-from langgraph.prebuilt import ToolExecutor
-
-
 import json
-from langchain_core.messages import FunctionMessage
-from typing import TypedDict, Annotated, Sequence
 import operator
-from langchain_core.messages import BaseMessage
-from langgraph.prebuilt import ToolInvocation
-from langgraph.graph import StateGraph, END
+from typing import Annotated, List, Sequence, TypedDict
 
-
-from typing import TypedDict, List
+# ergion graph
+from langchain_core.messages import BaseMessage, FunctionMessage
+from langgraph.graph import END, StateGraph
+from langgraph.prebuilt import ToolExecutor, ToolInvocation
+from langchain_community.tools.tavily_search import TavilySearchResults
 
 
 class ReWOO(TypedDict):
@@ -173,6 +167,16 @@ class ReWOO(TypedDict):
     results: dict
     result: str
 
+
+if "model-graph" not in st.session_state:
+    st.session_state["model-graph"] = ChatVertexAI(
+        model_name="gemini-1.0-pro-vision-001",
+        # model_name="gemini-pro",
+        temperature=0.0,
+        max_retries=1,
+        streaming=True,
+        convert_system_message_to_human=True,
+    )
 
 prompt = """For the following task, make plans that can solve the problem step by step. For each plan, indicate \
 which external tool together with tool input to retrieve evidence. You can store the evidence into a \
@@ -199,15 +203,77 @@ Describe your plans with rich details. Each Plan should be followed by only one 
 
 Task: {task}"""
 
-if "model-graph" not in st.session_state:
-    st.session_state["model-graph"] = ChatVertexAI(
-        model_name="gemini-1.0-pro-vision-001",
-        # model_name="gemini-pro",
-        temperature=0.0,
-        max_retries=1,
-        streaming=True,
-        convert_system_message_to_human=True,
-    )
+# Regex to match expressions of the form E#... = ...[...]
+regex_pattern = r"Plan:\s*(.+)\s*(#E\d+)\s*=\s*(\w+)\s*\[([^\]]+)\]"
+prompt_template = ChatPromptTemplate.from_messages([("user", prompt)])
+
+solve_prompt = """Solve the following task or problem. To solve the problem, we have made step-by-step Plan and \
+retrieved corresponding Evidence to each Plan. Use them with caution since long evidence might \
+contain irrelevant information.
+
+{plan}
+
+Now solve the question or task according to provided Evidence above. Respond with the answer
+directly with no extra words.
+
+Task: {task}
+Response:"""
+
+
+def get_plan(state: ReWOO, planner):
+    task = state["task"]
+    result = planner.invoke({"task": task})
+    # Find all matches in the sample text
+    matches = re.findall(regex_pattern, result.content)
+    return {"steps": matches, "plan_string": result.content}
+
+
+def _get_current_task(state: ReWOO):
+    if state["results"] is None:
+        return 1
+    if len(state["results"]) == len(state["steps"]):
+        return None
+    else:
+        return len(state["results"]) + 1
+
+
+def tool_execution(state: ReWOO):
+    """Worker node that executes the tools of a given plan."""
+    _step = _get_current_task(state)
+    _, step_name, tool, tool_input = state["steps"][_step - 1]
+    _results = state["results"] or {}
+    for k, v in _results.items():
+        tool_input = tool_input.replace(k, v)
+    if tool == "Google":
+        result = search.invoke(tool_input)
+    elif tool == "LLM":
+        result = st.session_state["model-graph"].invoke(tool_input)
+    else:
+        raise ValueError
+    _results[step_name] = str(result)
+    return {"results": _results}
+
+
+def solve(state: ReWOO):
+    plan = ""
+    for _plan, step_name, tool, tool_input in state["steps"]:
+        _results = state["results"] or {}
+        for k, v in _results.items():
+            tool_input = tool_input.replace(k, v)
+        plan += f"Plan: {_plan}\n{step_name} = {tool}[{tool_input}]"
+    prompt = solve_prompt.format(plan=plan, task=state["task"])
+    result = st.session_state["model-graph"].invoke(prompt)
+    return {"result": result.content}
+
+
+def _route(state):
+    _step = _get_current_task(state)
+    if _step is None:
+        # We have executed all tasks
+        return "solve"
+    else:
+        # We are still executing tasks, loop back to the "tool" node
+        return "tool"
 
 
 class AgentState(TypedDict):
@@ -333,5 +399,20 @@ if btn_cols[1].button("执行", key="run"):
     st.markdown(app.invoke(inputs))
 
 if btn_cols[2].button("graph", key="graph"):
-    result = st.session_state["model-graph"].invoke(prompt.format(task=text))
-    st.markdown(result.content)
+    planner = prompt_template | st.session_state["model-graph"]
+    search = TavilySearchResults()
+    graph = StateGraph(ReWOO)
+    graph.add_node("plan", partial(get_plan, planner=planner))
+    graph.add_node("tool", tool_execution)
+    graph.add_node("solve", solve)
+    graph.add_edge("plan", "tool")
+    graph.add_edge("solve", END)
+    graph.add_conditional_edges("tool", _route)
+    graph.set_entry_point("plan")
+
+    app = graph.compile()
+
+    result = app.stream({"task": text})
+    st.write_stream(result)
+
+    # st.markdown(result.content)
