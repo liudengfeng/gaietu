@@ -178,7 +178,7 @@ def initialize_app():
     )
     # TODO：根据需要修改
     tools = [TavilySearchResults(max_results=1)]
-    model = model.bind(tools=tools)
+    model = model.bind(functions=tools)
     tool_executor = ToolExecutor(tools)
 
     # Define the function that determines whether to continue or not
@@ -253,13 +253,10 @@ if "workflow" not in st.session_state:
 # endregion
 
 
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = []
-
 btn_cols = st.columns(8)
 
-if btn_cols[0].button("清空", key="clear"):
-    st.session_state["chat_history"] = []
+if btn_cols[0].button("重置", key="clear"):
+    initialize_app()
 
 if btn_cols[1].button("执行", key="run"):
     model = ChatVertexAI(
