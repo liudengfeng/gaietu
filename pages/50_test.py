@@ -201,7 +201,6 @@ def initialize_app():
 
     # Define the function to execute tools
     def call_tool(state):
-        tool_executor = st.session_state["tool_executor"]
         messages = state["messages"]
         # Based on the continue condition
         # we know the last message involves a function call
