@@ -14,3 +14,5 @@ def general_config():
         os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
     if "SERPAPI_API_KEY" not in os.environ:
         os.environ["SERPAPI_API_KEY"] = st.secrets["SERPAPI_API_KEY"]
+    if "LANGCHAIN_PROJECT" not in os.environ:
+        os.environ["LANGCHAIN_PROJECT"] = "ReWOO"
