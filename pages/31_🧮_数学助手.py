@@ -428,7 +428,7 @@ prompt = prompt_cols[0].text_area(
     "您的提示词",
     # value=st.session_state["math-question-prompt"],
     key="user_prompt_key",
-    placeholder="请提示词模板",
+    placeholder="输入提示词或点击`模板`按钮选择提示词。",
     max_chars=12288,
     height=300,
     label_visibility="collapsed",
