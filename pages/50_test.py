@@ -164,19 +164,22 @@ text = st.text_input("输入问题")
 
 
 def initialize_model():
-    if "model-graph" not in st.session_state:
-        model = ChatVertexAI(
-            model_name="gemini-1.0-pro-vision-001",
-            temperature=0.0,
-            max_retries=1,
-            streaming=True,
-            convert_system_message_to_human=True,
-        )
-        # TODO
-        tools = [TavilySearchResults(max_results=1)]
-        model = model.bind(tools=tools)
-        st.session_state["model-graph"] = model
-        st.session_state["tool_executor"] = ToolExecutor(tools)
+    model = ChatVertexAI(
+        model_name="gemini-1.0-pro-vision-001",
+        temperature=0.0,
+        max_retries=1,
+        streaming=True,
+        convert_system_message_to_human=True,
+    )
+    # TODO
+    tools = [TavilySearchResults(max_results=1)]
+    model = model.bind(tools=tools)
+    st.session_state["model-graph"] = model
+    st.session_state["tool_executor"] = ToolExecutor(tools)
+
+
+if "model-graph" not in st.session_state:
+    initialize_model()
 
 
 class AgentState(TypedDict):
@@ -227,34 +230,36 @@ def call_tool(state):
 
 
 def create_workflow(call_model, call_tool, should_continue):
-    if "workflow" not in st.session_state:
-        # Define a new graph
-        workflow = StateGraph(AgentState)
+    # Define a new graph
+    workflow = StateGraph(AgentState)
 
-        # Define the two nodes we will cycle between
-        workflow.add_node("agent", call_model)
-        workflow.add_node("action", call_tool)
+    # Define the two nodes we will cycle between
+    workflow.add_node("agent", call_model)
+    workflow.add_node("action", call_tool)
 
-        # Set the entrypoint as `agent`
-        workflow.set_entry_point("agent")
+    # Set the entrypoint as `agent`
+    workflow.set_entry_point("agent")
 
-        # We now add a conditional edge
-        workflow.add_conditional_edges(
-            "agent",
-            should_continue,
-            {
-                "continue": "action",
-                "end": END,
-            },
-        )
+    # We now add a conditional edge
+    workflow.add_conditional_edges(
+        "agent",
+        should_continue,
+        {
+            "continue": "action",
+            "end": END,
+        },
+    )
 
-        # We now add a normal edge from `tools` to `agent`.
-        workflow.add_edge("action", "agent")
+    # We now add a normal edge from `tools` to `agent`.
+    workflow.add_edge("action", "agent")
 
-        # Finally, we compile it!
-        app = workflow.compile()
-        st.session_state["workflow"] = app
+    # Finally, we compile it!
+    app = workflow.compile()
+    st.session_state["workflow"] = app
 
+
+if "workflow" not in st.session_state:
+    create_workflow(call_model, call_tool, should_continue)
 
 # endregion
 
@@ -330,9 +335,6 @@ if btn_cols[1].button("执行", key="run"):
     st.markdown(app.invoke(inputs))
 
 if btn_cols[2].button("graph", key="graph"):
-    # 调用函数
-    initialize_model()
-    create_workflow(call_model, call_tool, should_continue)
     app = st.session_state["workflow"]
     inputs = {"messages": [HumanMessage(content=text)]}
     result = app.stream(inputs)
