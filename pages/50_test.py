@@ -170,7 +170,9 @@ class AgentState(TypedDict):
 
 def initialize_app():
     model = ChatVertexAI(
-        model_name="gemini-1.0-pro-vision-001",
+        # 400 Function as tool is only supported for `gemini-pro` and `gemini-pro-001` models.
+        # model_name="gemini-1.0-pro-vision-001",
+        model_name="gemini-pro-001",
         temperature=0.0,
         max_retries=1,
         streaming=True,
