@@ -106,10 +106,10 @@ EXAMPLES = r"""
 - 对于行内的数学表达式，使用 `$x = y + z$`
 - 对于数学公式块，使用：
 $$
-\\begin{cases}
-x + y = 10 \\\\
+\begin{cases}
+x + y = 10 \\
 2x - y = 3
-\\end{cases}
+\end{cases}
 $$
 """
 
