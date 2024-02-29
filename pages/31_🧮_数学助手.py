@@ -101,9 +101,10 @@ CORRECTION_PROMPT_TEMPLATE = """
 ...在此处输入修订后的题目...
 """
 
-EXAMPLES = """
-For inline variable code, use: $x$
-For mathematical formula blocks, use: 
+EXAMPLES = r"""
+对于行内的变量代码，使用：$x$
+对于行内的数学表达式，使用 `$x = y + z$`
+对于数学公式块，使用：
 $$
 \\begin{cases}
 x + y = 10 \\\\
@@ -113,9 +114,14 @@ $$
 """
 
 EXTRACT_TEST_QUESTION_PROMPT = f"""
-Extract the text of the math problem from the image, including mathematical expressions, but excluding diagrams and illustrations. If the content is presented in the form of a table, it should be written using the HTML table syntax in Markdown. Output the Markdown code. Only the text of the math problem needs to be extracted, there is no need to provide problem-solving strategies and specific answers.
+根据以下要求，从图片中提取数学问题的文本：
+- 只提取试题的文本内容，不包括插图或附注。
+- 所有的数学变量、表达式和数学公式都需要使用 $ 或 $$ 进行正确的标注。
+- 如果试题中的内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
+- 输出 Markdown 代码。
+- 只需要提取数学问题的文本，无需提供解题策略和具体答案。
 
-Markdown math examples: 
+Markdown数学变量、表达式、公式格式示例： 
 {EXAMPLES}
 """
 
