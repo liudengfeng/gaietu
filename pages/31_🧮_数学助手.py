@@ -102,9 +102,9 @@ CORRECTION_PROMPT_TEMPLATE = """
 """
 
 EXAMPLES = r"""
-对于行内的变量代码，使用：$x$
-对于行内的数学表达式，使用 `$x = y + z$`
-对于数学公式块，使用：
+- 对于行内的变量代码，使用：$x$
+- 对于行内的数学表达式，使用 `$x = y + z$`
+- 对于数学公式块，使用：
 $$
 \\begin{cases}
 x + y = 10 \\\\
@@ -122,6 +122,7 @@ EXTRACT_TEST_QUESTION_PROMPT = f"""
 - 只需要提取数学问题的文本，无需提供解题策略和具体答案。
 
 Markdown数学变量、表达式、公式格式示例： 
+
 {EXAMPLES}
 """
 
