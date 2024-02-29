@@ -35,6 +35,7 @@ from mypylib.google_ai import (
     load_vertex_model,
     parse_generated_content_and_update_token,
 )
+from mypylib.math import remove_text_keep_illustrations
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -169,7 +170,7 @@ def _process_media(uploaded_file):
 
 
 @st.cache_data(ttl=timedelta(hours=1))
-def image_to_dict(uploaded_file):
+def create_temp_file_from_upload(uploaded_file):
     # 获取图片数据
     image_bytes = uploaded_file.getvalue()
 
@@ -187,11 +188,17 @@ def image_to_dict(uploaded_file):
     temp_file.close()
 
     # 返回临时文件的路径
+    return temp_file.name
+
+
+@st.cache_data(ttl=timedelta(hours=1))
+def image_to_dict(uploaded_file):
+    # 返回临时文件的路径
     image_message = {
         "type": "image_url",
-        "image_url": {"url": temp_file.name},
+        "image_url": {"url": create_temp_file_from_upload(uploaded_file)},
     }
-    logger.info(f"url: {temp_file.name}")
+    # logger.info(f"url: {temp_file.name}")
     return image_message
 
 
@@ -289,7 +296,7 @@ def ensure_math_code_wrapped_with_dollar(math_code):
 @st.cache_data(
     ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，提取数学试题..."
 )
-def extract_test_question_text_for(uploaded_file, prompt):
+def extract_math_question_text_for(uploaded_file, prompt):
     contents = process_file_and_prompt(uploaded_file, prompt)
     model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
@@ -367,6 +374,15 @@ def create_math_chat():
     )
 
 
+def get_math_question():
+    uploaded_file = st.session_state["uploaded_file"]
+    if uploaded_file is None:
+        return
+    st.session_state["math-question"] = extract_math_question_text_for(
+        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+    )
+
+
 @st.cache_data(ttl=timedelta(hours=1), show_spinner=False)
 def run_chain(prompt, uploaded_file=None):
     text_message = {
@@ -391,6 +407,10 @@ def run_chain(prompt, uploaded_file=None):
 
 
 # region 主页
+
+if "math-assistant" not in st.session_state:
+    create_math_chat()
+
 st.subheader(":bulb: :blue[数学解题助手]", divider="rainbow", anchor=False)
 
 st.markdown("""✨ :red[请上传清晰、正面、未旋转的数学试题图片。]""")
@@ -400,7 +420,7 @@ uploaded_file = elem_cols[0].file_uploader(
     accept_multiple_files=False,
     key="uploaded_file",
     type=["png", "jpg"],
-    on_change=create_math_chat,
+    on_change=get_math_question,
     help="""
 支持的格式
 - 图片：PNG、JPG
@@ -425,8 +445,15 @@ checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
 
+
+question_cols = st.columns(2)
+
 if uploaded_file is not None:
-    st.image(uploaded_file.getvalue(), "试题图片")
+    question_cols[0].image(uploaded_file.getvalue(), "试题图片")
+    math_fp = create_temp_file_from_upload(uploaded_file)
+    illustration = remove_text_keep_illustrations(math_fp, output_to_file=True)
+    question_cols[1].image(illustration, "试题插图")
+    question_cols[1].markdown(st.session_state["math-question"])
 
 
 prompt_cols = st.columns([1, 1])
