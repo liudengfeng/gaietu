@@ -374,10 +374,7 @@ def create_math_chat():
     )
 
 
-def get_math_question():
-    uploaded_file = st.session_state["uploaded_file"]
-    if uploaded_file is None:
-        return
+def extract_math_question(uploaded_file):
     st.session_state["math-question"] = extract_math_question_text_for(
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
     )
@@ -420,7 +417,7 @@ uploaded_file = elem_cols[0].file_uploader(
     accept_multiple_files=False,
     key="uploaded_file",
     type=["png", "jpg"],
-    on_change=get_math_question,
+    # on_change=get_math_question,
     help="""
 支持的格式
 - 图片：PNG、JPG
@@ -450,6 +447,7 @@ question_cols = st.columns(2)
 
 if uploaded_file is not None:
     question_cols[0].image(uploaded_file.getvalue(), "试题图片")
+    extract_math_question(uploaded_file)
     math_fp = create_temp_file_from_upload(uploaded_file)
     illustration = remove_text_keep_illustrations(math_fp, output_to_file=True)
     question_cols[1].image(illustration, "试题插图")
