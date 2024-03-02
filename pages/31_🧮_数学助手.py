@@ -344,7 +344,7 @@ def gen_tip_for(question):
         "top_p": 1.0,
         "max_output_tokens": 1024,
     }
-    question = "你是markdown数学公式编辑专家，回答问题：{question}"
+    question = f"你是markdown数学公式编辑专家，回答问题：{question}"
     assistant_config = GenerationConfig(**Assistant_Configuration)
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(question), "duration": None}
