@@ -4,6 +4,34 @@ import os
 import tempfile
 import pandas as pd
 import pytesseract
+import cv2
+
+
+def find_combined_box(image_path):
+    # 读取图像
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+    # 使用 Otsu's 方法自动计算阈值
+    _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+    # 找到所有的轮廓
+    contours, _ = cv2.findContours(
+        binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    # 计算所有轮廓的边界矩形
+    boxes = [cv2.boundingRect(contour) for contour in contours]
+
+    # 找到所有矩形的最小 x 坐标、最小 y 坐标、最大 x 坐标和最大 y 坐标
+    min_x = min(x for x, y, w, h in boxes)
+    min_y = min(y for x, y, w, h in boxes)
+    max_x = max(x + w for x, y, w, h in boxes)
+    max_y = max(y + h for x, y, w, h in boxes)
+
+    # 创建一个新的矩形
+    combined_box = (min_x, min_y, max_x - min_x, max_y - min_y)
+
+    return combined_box
 
 
 def is_text_line(
@@ -61,7 +89,7 @@ def is_text_line(
     return ratio > 0.5
 
 
-def remove_text_keep_illustrations(image_path, output_to_file=False):
+def _remove_text_keep_illustrations(image_path, output_to_file=False):
     """
     Removes text from an image while preserving illustrations.
 
@@ -130,3 +158,34 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
 
     else:
         return img_copy
+
+
+def remove_text_keep_illustrations(image_path, output_to_file=False):
+    img_fp = _remove_text_keep_illustrations(image_path, True)
+
+    # 使用 find_combined_box 函数获取联合边界矩形
+    combined_box = find_combined_box(img_fp)
+
+    # 从新生成的图像文件中读取图像
+    img = cv2.imread(image_path)
+
+    # 使用联合边界矩形的坐标来裁剪图像，只保留插图部分
+    cropped_img = img[
+        combined_box[1] : combined_box[1] + combined_box[3],
+        combined_box[0] : combined_box[0] + combined_box[2],
+    ]
+
+    if output_to_file:
+        # 获取原路径中的扩展名
+        _, ext = os.path.splitext(image_path)
+
+        # 创建临时文件输出路径
+        output_path = tempfile.mktemp(suffix=ext)
+
+        # 保存图像
+        Image.fromarray(cropped_img).save(output_path)
+
+        return output_path
+
+    else:
+        return cropped_img
