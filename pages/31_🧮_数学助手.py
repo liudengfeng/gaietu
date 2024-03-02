@@ -344,12 +344,12 @@ def gen_tip_for(question):
         "top_p": 1.0,
         "max_output_tokens": 1024,
     }
-    question = f"你精通 Markdown 数学公式语法。请回答以下问题，并以 Markdown 数学公式代码的形式输出答案：{question}"
+    question = f"你精通 Markdown 数学公式语法。为以下问题提供 Markdown 数学公式代码（不需要化简）：{question}"
     assistant_config = GenerationConfig(**Assistant_Configuration)
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(question), "duration": None}
     ]
-    return parse_generated_content_and_update_token(
+    response = parse_generated_content_and_update_token(
         "AI Formula Assistant",
         "gemini-pro",
         st.session_state["AI-Formula-Assistant"].send_message,
@@ -357,6 +357,7 @@ def gen_tip_for(question):
         assistant_config,
         stream=False,
     )
+    return response.replace("```", "")
 
 
 # endregion
