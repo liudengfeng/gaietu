@@ -40,3 +40,4 @@ numexpr==2.9.0
 sympy==1.12
 langgraph==0.0.26
 pytesseract==0.3.10
+opencv-python==4.9.0.80
