@@ -29,7 +29,7 @@ from langchain_google_vertexai import (
 )
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import Content, GenerationConfig, Part
-
+from PIL import Image
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -387,7 +387,10 @@ def extract_math_question(uploaded_file):
     )
 
 
-def is_blank(image):
+def is_blank(image_path):
+    # 使用 PIL 库打开图片
+    image = Image.open(image_path)
+
     # 将图像转换为 numpy 数组
     img_array = np.array(image)
 
