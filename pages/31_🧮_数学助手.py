@@ -1,4 +1,5 @@
 import base64
+from functools import partial
 import io
 import logging
 import mimetypes
@@ -28,13 +29,14 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from moviepy.editor import VideoFileClip
-from vertexai.preview.generative_models import Content, GenerationConfig, Part
-from PIL import Image
+from vertexai.preview.generative_models import Content, GenerationConfig, Part, Image
+from PIL import Image as PIL_Image
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
     load_vertex_model,
     parse_generated_content_and_update_token,
+    parse_json_string,
 )
 from mypylib.math import remove_text_keep_illustrations
 from mypylib.st_helper import (
@@ -221,6 +223,87 @@ def image_to_dict(uploaded_file):
 #     }
 #     return image_message
 
+ANALYZE_IMAGE_COORDINATES_TEMPLATE = """
+结合已经提取的文本和以下两幅图像，指出插图的 box 坐标。
+方法介绍：
+- 从原图中遮掩已经提取的文本部分。
+- 参考分离的图片，分离的图片包含了插图，但可能错误保留了文本。
+- 结合两幅图像，指出插图的 box 坐标，字典列表以JSON格式输出。
+
+
+原图：
+{original}
+
+提取的文本：
+{text}
+
+分离的图片：
+{image}
+
+输出示例：
+```json
+[
+    {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+    },
+]
+```       
+"""
+
+
+def analyze_coordinates_prompt(
+    original_image_path, separated_image_path, extracted_text
+):
+    contents_info = []
+    prompt = """
+结合已经提取的文本和以下两幅图像，指出插图的 box 坐标。
+方法介绍：
+- 从原图中遮掩已经提取的文本部分。
+- 参考分离的图片，分离的图片包含了插图，但可能错误保留了文本。
+- 结合两幅图像，指出插图的 box 坐标，字典列表以JSON格式输出。
+
+原图："""
+    contents_info.append(
+        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+    )
+    contents_info.append(
+        {
+            "mime_type": "text",
+            "part": Image.load_from_file(original_image_path),
+            "duration": None,
+        }
+    )
+    prompt = f"提取的文本：{extracted_text}\n\n分离的图片："
+    contents_info.append(
+        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+    )
+    contents_info.append(
+        {
+            "mime_type": "text",
+            "part": Image.load_from_file(separated_image_path),
+            "duration": None,
+        }
+    )
+    prompt = """输出示例：
+```json
+[
+    {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+    },
+]
+```  
+"""
+    contents_info.append(
+        {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
+    )
+    return contents_info
+
 
 def process_file_and_prompt(uploaded_file, prompt):
     # 没有案例
@@ -321,6 +404,32 @@ def extract_math_question_text_for(uploaded_file, prompt):
     )
 
 
+@st.cache_data(
+    ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，修正提取插图..."
+)
+def analyze_coordinates_for(original_image_path, separated_image_path, extracted_text):
+    contents = analyze_coordinates_prompt(
+        original_image_path, separated_image_path, extracted_text
+    )
+    model_name = "gemini-1.0-pro-vision-001"
+    model = load_vertex_model(model_name)
+    generation_config = GenerationConfig(
+        temperature=0.0,
+        top_p=1.0,
+        top_k=32,
+        max_output_tokens=2048,
+    )
+    return parse_generated_content_and_update_token(
+        "多模态AI修正提取插图",
+        model_name,
+        model.generate_content,
+        contents,
+        generation_config,
+        stream=False,
+        parser=partial(parse_json_string, prefix="```json", suffix="```"),
+    )
+
+
 def generate_content_from_files_and_prompt(contents, placeholder):
     model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
@@ -389,7 +498,7 @@ def extract_math_question(uploaded_file):
 
 def is_blank(image_path):
     # 使用 PIL 库打开图片
-    image = Image.open(image_path)
+    image = PIL_Image.open(image_path)
 
     # 将图像转换为 numpy 数组
     img_array = np.array(image)
@@ -399,7 +508,8 @@ def is_blank(image_path):
 
 
 @st.cache_data(ttl=timedelta(hours=1), show_spinner=False)
-def run_chain(prompt, uploaded_file=None):
+def run_chain(prompt):
+    uploaded_file = st.session_state["math-illustration"]
     text_message = {
         "type": "text",
         "text": prompt,
@@ -515,31 +625,49 @@ demo_btn_1 = tab0_btn_cols[1].button(
 ans_btn = tab0_btn_cols[2].button(
     "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
+fx_btn = tab0_btn_cols[3].button(
+    "修复[:black_nib:]", key="fix_button", help="✨ 点击按钮，修复插图。"
+)
 
 
 response_container = st.container(height=300)
 prompt_elem = st.empty()
+
+if fx_btn:
+    math_fp = create_temp_file_from_upload(uploaded_file)
+    illustration = st.session_state["math-illustration"]
+    text = st.session_state["math-question"]
+    if is_blank(illustration):
+        st.stop()
+    boxes = analyze_coordinates_for(math_fp, illustration, text)
+    # 使用解析的坐标列表显示插图
+    for box in boxes:
+        x, y, width, height = box["x"], box["y"], box["width"], box["height"]
+        with st.empty():
+            st.image(
+                PIL_Image.open(math_fp).crop((x, y, x + width, y + height)),
+                "修复后的插图",
+            )
+
 
 if cls_btn:
     pass
 
 
 if ans_btn:
-    if uploaded_file is None:
-        if operation == "提取图中的试题":
-            status.error(
-                "您是否需要从图像中提取试题文本？目前似乎还未接收到您上传的数学相关图片。请上传图片，以便 AI 能更准确地理解和回答您的问题。"
-            )
-            st.stop()
+    # if uploaded_file is None:
+    #     if operation == "提取图中的试题":
+    #         status.error(
+    #             "您是否需要从图像中提取试题文本？目前似乎还未接收到您上传的数学相关图片。请上传图片，以便 AI 能更准确地理解和回答您的问题。"
+    #         )
+    #         st.stop()
     if not prompt:
         status.error("请添加提示词")
         st.stop()
-    if "math-assistant" not in st.session_state:
-        create_math_chat()
     response_container.empty()
     view_example(response_container, prompt)
     with st.spinner(f"正在运行多模态模型获取{operation}..."):
-        response = run_chain(prompt, uploaded_file)
+        response = run_chain(prompt)
     response_container.markdown("##### AI响应")
     response_container.markdown("###### 代码")
     display_in_container(response_container, response.content, True)
