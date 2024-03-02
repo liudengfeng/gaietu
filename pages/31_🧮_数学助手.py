@@ -344,7 +344,7 @@ def gen_tip_for(question):
         "top_p": 1.0,
         "max_output_tokens": 1024,
     }
-    question = f"你精通 Markdown 数学公式语法。为以下问题提供 Markdown 数学公式代码（不需要化简）：{question}"
+    question = f"你精通 Markdown 数学公式语法。请专注于回答与 Markdown 数学公式相关的问题。如果用户的问题与此无关，以礼貌的方式引导他们提出相关问题。现在，请为以下问题提供 Markdown 数学公式代码（不需要化简）：{question}"
     assistant_config = GenerationConfig(**Assistant_Configuration)
     contents_info = [
         {"mime_type": "text", "part": Part.from_text(question), "duration": None}
