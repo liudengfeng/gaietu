@@ -7,6 +7,7 @@ import tempfile
 from datetime import timedelta
 from pathlib import Path
 
+import numpy as np
 import streamlit as st
 from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chains import ConversationChain, LLMMathChain
@@ -67,6 +68,9 @@ sidebar_status = st.sidebar.empty()
 
 if "math-question" not in st.session_state:
     st.session_state["math-question"] = ""
+
+if "math-illustration" not in st.session_state:
+    st.session_state["math-illustration"] = None
 
 if "math-question-prompt" not in st.session_state:
     st.session_state["math-question-prompt"] = ""
@@ -383,6 +387,14 @@ def extract_math_question(uploaded_file):
     )
 
 
+def is_blank(image):
+    # 将图像转换为 numpy 数组
+    img_array = np.array(image)
+
+    # 检查所有像素值是否都相同
+    return np.all(img_array == img_array[0, 0])
+
+
 @st.cache_data(ttl=timedelta(hours=1), show_spinner=False)
 def run_chain(prompt, uploaded_file=None):
     text_message = {
@@ -439,7 +451,7 @@ question_type = grade_cols[1].selectbox(
 )
 operation = grade_cols[2].selectbox(
     "您的操作",
-    ["提取图中的试题", "提供解题思路", "提供完整解答"],
+    ["提供解题思路", "提供完整解答"],
 )
 checked = grade_cols[0].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
@@ -456,8 +468,14 @@ if uploaded_file is not None:
     math_fp = create_temp_file_from_upload(uploaded_file)
     illustration = remove_text_keep_illustrations(math_fp, output_to_file=True)
     question_cols[1].markdown("##### 分离出的试题插图")
-    question_cols[1].image(illustration, "试题插图")
-
+    if is_blank(illustration):
+        question_cols[1].markdown("没有分离出的插图。")
+        st.session_state["math-illustration"] = None
+    else:
+        st.session_state["math-illustration"] = illustration
+        question_cols[1].image(st.session_state["math-illustration"], "试题插图")
+else:
+    st.session_state["math-illustration"] = None
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
