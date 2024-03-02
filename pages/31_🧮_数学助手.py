@@ -269,9 +269,10 @@ def analyze_coordinates_prompt(
     contents_info.append(
         {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
     )
+    mime_type = mimetypes.guess_type(original_image_path.name)[0]
     contents_info.append(
         {
-            "mime_type": "text",
+            "mime_type":mime_type,
             "part": Image.load_from_file(original_image_path),
             "duration": None,
         }
@@ -280,9 +281,10 @@ def analyze_coordinates_prompt(
     contents_info.append(
         {"mime_type": "text", "part": Part.from_text(prompt), "duration": None}
     )
+    mime_type = mimetypes.guess_type(separated_image_path.name)[0]
     contents_info.append(
         {
-            "mime_type": "text",
+            "mime_type": mime_type,
             "part": Image.load_from_file(separated_image_path),
             "duration": None,
         }
