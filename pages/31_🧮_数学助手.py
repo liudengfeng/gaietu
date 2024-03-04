@@ -63,7 +63,7 @@ menu()
 check_access(False)
 configure_google_apis()
 add_exercises_to_db()
-general_config()
+general_config(True)
 sidebar_status = st.sidebar.empty()
 
 # region 会话状态
@@ -272,7 +272,7 @@ def analyze_coordinates_prompt(
     mime_type = mimetypes.guess_type(original_image_path)[0]
     contents_info.append(
         {
-            "mime_type":mime_type,
+            "mime_type": mime_type,
             "part": Image.load_from_file(original_image_path),
             "duration": None,
         }

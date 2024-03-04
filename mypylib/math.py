@@ -8,89 +8,16 @@ import cv2
 from scipy import stats
 
 
-# def find_combined_box(image_path):
-#     # 读取图像
-#     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-
-#     # 使用 Otsu's 方法自动计算阈值
-#     _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-
-#     # 找到所有的轮廓
-#     contours, _ = cv2.findContours(
-#         binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-#     )
-
-#     # 计算所有轮廓的边界矩形
-#     boxes = [cv2.boundingRect(contour) for contour in contours]
-
-#     # 找到所有矩形的最小 x 坐标、最小 y 坐标、最大 x 坐标和最大 y 坐标
-#     min_x = min(x for x, y, w, h in boxes)
-#     min_y = min(y for x, y, w, h in boxes)
-#     max_x = max(x + w for x, y, w, h in boxes)
-#     max_y = max(y + h for x, y, w, h in boxes)
-
-#     # 创建一个新的矩形
-#     combined_box = (min_x, min_y, max_x - min_x, max_y - min_y)
-
-#     return combined_box
-
-
-# def is_text_line(
-#     block_data,
-#     line_num,
-#     img_width,
-#     img_height,
-#     size_threshold=0.01,
-#     area_threshold=0.005,
-# ):
-#     # 获取指定行的数据
-#     line_data = block_data[block_data["line_num"] == line_num]
-
-#     # 找出 level == 4 的行
-#     level_4_row = line_data[line_data["level"] == 4].iloc[0]
-
-#     # 计算行的面积
-#     line_area = level_4_row["width"] * level_4_row["height"]
-
-#     # 如果行的面积小于阈值，则认为不是文本
-#     if line_area < img_width * img_height * area_threshold:
-#         # print(
-#         #     f'Block: {block_data["block_num"].iloc[0]}, Line: {line_num} has area less than threshold.'
-#         # )
-#         return False
-
-#     # 如果行的宽度或高度小于图像宽度或高度的阈值，则认为不是文本
-#     if (
-#         level_4_row["width"] < img_width * size_threshold
-#         or level_4_row["height"] < img_height * size_threshold
-#     ):
-#         # print(
-#         #     f'Block: {block_data["block_num"].iloc[0]}, Line: {line_num} has width or height less than threshold.'
-#         # )
-#         return False
-
-#     # 获取 level == 5 的行
-#     word_level_data = line_data[line_data["level"] == 5]
-
-#     # 获取 level == 5 且 conf > 0 且 text 不为空或者不是 NaN 的单词的宽度
-#     # 获取满足条件的行
-#     conf_positive_rows = word_level_data[
-#         (word_level_data["level"] == 5)
-#         & (word_level_data["conf"] > 0)
-#         & word_level_data["text"].notnull()
-#         & word_level_data["text"].str.strip().ne("")
-#     ]
-
-#     # 计算满足条件的单词的宽度
-#     conf_positive_width = conf_positive_rows["width"].sum()
-#     # 计算比例
-#     ratio = conf_positive_width / level_4_row["width"]
-
-#     # 如果比例大于 50%，则返回 True，否则返回 False
-#     return ratio > 0.5
-
-
 def get_combined_bounding_box(img):
+    # If the proportion of black or white pixels is more than 99%, return None
+    black_pixels = np.sum(img == 0)
+    white_pixels = np.sum(img == 255)
+    total_pixels = img.size
+    black_proportion = black_pixels / total_pixels
+    white_proportion = white_pixels / total_pixels
+    if black_proportion > 0.99 or white_proportion > 0.99:
+        return None
+
     # Apply binary thresholding
     _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
@@ -106,7 +33,6 @@ def get_combined_bounding_box(img):
         y_min = min([cv2.boundingRect(c)[1] for c in contours])
         x_max = max([cv2.boundingRect(c)[0] + cv2.boundingRect(c)[2] for c in contours])
         y_max = max([cv2.boundingRect(c)[1] + cv2.boundingRect(c)[3] for c in contours])
-
         return (x_min, y_min, x_max, y_max)
     else:
         return None
@@ -152,8 +78,6 @@ def is_text_block(block, img_width, img_height, mode_height):
 
 
 def get_text_blocks(img):
-    # img = Image.open(fp)
-    # img = np.array(img)
     data = pytesseract.image_to_data(
         img, lang="osd", output_type=pytesseract.Output.DATAFRAME
     )
@@ -198,12 +122,12 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
         # Calculate the area of the box
         box_area = box_width * box_height
         if box_area < 0.05 * img_area:
-            pass
+            return None
         else:
             # Crop the original image to the combined bounding box
             out[y_min:y_max, x_min:x_max] = img[y_min:y_max, x_min:x_max]
     else:
-        out = img
+        return None
 
     if output_to_file:
         # 获取原路径中的扩展名
