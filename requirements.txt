@@ -29,7 +29,7 @@ werkzeug==3.0.1
 langdetect==1.0.9
 firebase-admin==6.4.0
 scipy==1.12.0
-langchain==0.1.8
+langchain==0.1.11
 langchain-google-vertexai==0.0.5
 langchain-community==0.0.21
 langsmith==0.1.3
