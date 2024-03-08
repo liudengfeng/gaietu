@@ -8,138 +8,173 @@ import cv2
 from scipy import stats
 
 
-def get_combined_bounding_box(img):
-    # If the proportion of black or white pixels is more than 99%, return None
-    black_pixels = np.sum(img == 0)
-    white_pixels = np.sum(img == 255)
-    total_pixels = img.size
-    black_proportion = black_pixels / total_pixels
-    white_proportion = white_pixels / total_pixels
-    if black_proportion > 0.99 or white_proportion > 0.99:
-        return None
-
-    # Apply binary thresholding
-    _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-
-    # Find the contours
-    contours, _ = cv2.findContours(
-        binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
-
-    # Check if any contour is found
-    if contours:
-        # Find the combined bounding box of all contours
-        x_min = min([cv2.boundingRect(c)[0] for c in contours])
-        y_min = min([cv2.boundingRect(c)[1] for c in contours])
-        x_max = max([cv2.boundingRect(c)[0] + cv2.boundingRect(c)[2] for c in contours])
-        y_max = max([cv2.boundingRect(c)[1] + cv2.boundingRect(c)[3] for c in contours])
-        return (x_min, y_min, x_max, y_max)
-    else:
-        return None
+if "TESSDATA_PREFIX" not in os.environ:
+    os.environ["TESSDATA_PREFIX"] = os.getcwd()
 
 
-def is_text_line(row, mode_height):
-    # Check if the height of the row is close to the mode height
-    # and the conf value is greater than 20
-    if (
-        abs(row["height"] - mode_height) <= mode_height * 0.3 and row["conf"] > 20.0
-    ):  # 10% tolerance
-        return True
-    return False
+def get_text_rows(data, height_range):
+    # 提取图片的宽高
+    img_width, _ = data["width"].max(), data["height"].max()
+    # 初始化一个空列表来存储文字行
+    text_rows = []
+
+    # 按照 block_num 和 line_num 进行分组
+    grouped = data.groupby(["block_num", "line_num"])
+
+    # 对于每个组，检查单词的高度是否在给定的范围内
+    for _, group in grouped:
+        words_in_range = group[
+            (group["level"] == 5)
+            & (group["height"] >= height_range[0])
+            & (group["height"] <= height_range[1])
+        ]
+
+        # 如果有至少5个单词的高度在给定的范围内，那么这个组就是一个文字行
+        if len(words_in_range) >= 5:
+            line = group[(group["level"] == 4)].iloc[0]
+            if line["width"] >= img_width * 0.2:
+                text_rows.append(line)
+
+    return text_rows
 
 
-def is_text_block(block, img_width, img_height, mode_height):
-    # Calculate the width and height of the block
-    block_width = block["left"].max() + block["width"].max() - block["left"].min()
-    block_height = block["top"].max() + block["height"].max() - block["top"].min()
+def get_height_range(data, factor):
+    # 选择 level==5 的行，这些行对应单词
+    words = data[
+        (data["level"] == 5)
+        & (data["text"].notnull())
+        & (data["text"].ne(""))
+        & (data["conf"] > 30)
+    ]
 
-    # Check if the width or height of the block is less than 1% of the image's width or height
-    if block_width < img_width * 0.01 or block_height < img_height * 0.01:
-        # 打印信息
-        # print(
-        #     f"Block num: {block['block_num']} Block Width: {block_width}, Block Height: {block_height}"
-        # )
-        return False
+    # 获取单词高度的众数
+    mode_word_height = words["height"].mode()
 
-    level_5_lines = block[block["level"] == 5]
-    text_lines = []
-    for _, row in level_5_lines.iterrows():
-        res = is_text_line(row, mode_height)
-        # print(f"Row: {row['block_num']},{row['line_num']} Is Text Line: {res}")
-        text_lines.append(res)
+    # 计算众数的平均值
+    average_mode_word_height = mode_word_height.mean()
 
-    text_lines = sum(text_lines)
+    # 计算高度范围
+    min_height = round(average_mode_word_height * (1 - factor))
+    max_height = round(average_mode_word_height * (1 + factor))
 
-    # Check if the number of text lines is more than 1
-    if text_lines >= 1:
-        return True
-
-    return False
+    return min_height, max_height
 
 
-def get_text_blocks(img):
-    data = pytesseract.image_to_data(
-        img, lang="osd", output_type=pytesseract.Output.DATAFRAME
-    )
-    mode_height = stats.mode(data[data["level"] == 5]["height"])[0]
-    grouped = data.groupby("block_num")
-    text_blocks = []
-    for name, group in grouped:
-        if name == 0:  # Skip block number 0
-            continue
-        is_text = is_text_block(group, img.shape[1], img.shape[0], mode_height)
-        # print(f"Block Number: {name}, Is Text Block: {is_text}")
-        if is_text:
-            text_blocks.append(group.iloc[0])  # Add the first row of the group
+def expand_bounding_box(text_rows, original_box, img_array, pixel_expansion_limit=30):
+    # Initialize the expanded bounding box to the original bounding box
+    x_min_exp, y_min_exp, x_max_exp, y_max_exp = original_box
 
-    return text_blocks
+    for direction in ["up", "down", "left", "right"]:
+        pixel_expansion_count = 0
+        while pixel_expansion_count < pixel_expansion_limit:
+            if direction == "up" and y_min_exp > 0:
+                y_min_exp -= 1
+            elif direction == "left" and x_min_exp > 0:
+                x_min_exp -= 1
+            elif direction == "right" and x_max_exp < img_array.shape[1] - 1:
+                x_max_exp += 1
+            elif direction == "down" and y_max_exp < img_array.shape[0] - 1:
+                y_max_exp += 1
+            else:
+                break
+
+            pixel_expansion_count += 1
+
+            # Check if the expanded area intersects with any text row
+            for row in text_rows:
+                row_x_min = row["left"]
+                row_y_min = row["top"]
+                row_x_max = row["left"] + row["width"]
+                row_y_max = row["top"] + row["height"]
+
+                if (
+                    x_min_exp < row_x_max
+                    and x_max_exp > row_x_min
+                    and y_min_exp < row_y_max
+                    and y_max_exp > row_y_min
+                ):
+                    # If it intersects, stop expanding in this direction
+                    if direction == "up":
+                        y_min_exp += 1
+                    elif direction == "left":
+                        x_min_exp += 1
+                    elif direction == "right":
+                        x_max_exp -= 1
+                    elif direction == "down":
+                        y_max_exp -= 1
+                    break
+
+    return x_min_exp, y_min_exp, x_max_exp, y_max_exp
 
 
 def remove_text_keep_illustrations(image_path, output_to_file=False):
-    # Use PIL to read image file
-    img_pil = Image.open(image_path)
+    # Use PIL to read the image
+    pil_img = Image.open(image_path)
+    img_gray = pil_img.convert("L")
+    # Convert the PIL image to a NumPy array
+    img_array = np.array(img_gray)
 
-    # Convert the image to grayscale
-    img = np.array(img_pil.convert("L"))
-    img_copy = np.copy(img)  # Copy the image
+    # Perform OCR on the image to get the text bounding boxes
+    data = pytesseract.image_to_data(
+        img_array,
+        lang="chi_sim",
+        output_type=pytesseract.Output.DATAFRAME,
+    )
 
-    text_blocks = get_text_blocks(img)
+    min_height, max_height = get_height_range(data, 0.3)
 
-    # Set the pixels of the text blocks to 255 in the copied image
-    for block in text_blocks:
-        img_copy[
-            block["top"] : block["top"] + block["height"],
-            block["left"] : block["left"] + block["width"],
-        ] = 255
-
-    box = get_combined_bounding_box(img_copy)
-    img_area = img.shape[0] * img.shape[1]
-    if box:
-        out = np.full_like(img, 255)
-        x_min, y_min, x_max, y_max = box
-        box_width = x_max - x_min
-        box_height = y_max - y_min
-        # Calculate the area of the box
-        box_area = box_width * box_height
-        if box_area < 0.05 * img_area:
-            return None
-        else:
-            # Crop the original image to the combined bounding box
-            out[y_min:y_max, x_min:x_max] = img[y_min:y_max, x_min:x_max]
+    # Check if the image is already grayscale
+    if len(img_array.shape) == 2:
+        gray = img_array
     else:
-        return None
+        gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
+    # Use a higher threshold for edge detection
+    edges = cv2.Canny(gray, 50, 300)  # Increase the thresholds
+    # Find contours in the image
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    # Initialize the list of bounding boxes
+    boxes = []
+    # For each contour, check if it is likely to be an illustration
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        # Only add bounding boxes with area greater than 300 to all_boxes
+        if w > 30 and h > 30:
+            # This contour is likely to be an illustration, so add its bounding box to the list
+            boxes.append([x, y, x + w, y + h])
+
+    # Create a blank image with the same size as the original image
+    blank_img = np.full((*img_array.shape, 3), 255)
+    # Check if boxes is empty
+    if boxes:
+        # Combine the bounding boxes into a large bounding box
+        original_box = (
+            min(box[0] for box in boxes),
+            min(box[1] for box in boxes),
+            max(box[2] for box in boxes),
+            max(box[3] for box in boxes),
+        )
+        text_rows = get_text_rows(data, (min_height, max_height))
+
+        # Initialize the expanded bounding box to the original bounding box
+        x_min_exp, y_min_exp, x_max_exp, y_max_exp = expand_bounding_box(
+            text_rows, original_box, img_array
+        )
+
+        # Convert the grayscale image to a color image
+        if len(img_array.shape) == 2:
+            img_array = cv2.cvtColor(img_array, cv2.COLOR_GRAY2BGR)
+
+        # Update the blank image with the expanded bounding box
+        blank_img[y_min_exp:y_max_exp, x_min_exp:x_max_exp] = img_array[
+            y_min_exp:y_max_exp, x_min_exp:x_max_exp
+        ]
+
+    # If output_to_file is True, save the image to a file
     if output_to_file:
-        # 获取原路径中的扩展名
-        _, ext = os.path.splitext(image_path)
+        _, temp_filename = tempfile.mkstemp(suffix=os.path.splitext(image_path)[1])
+        cv2.imwrite(temp_filename, blank_img)
+        return temp_filename
 
-        # 创建临时文件输出路径
-        output_path = tempfile.mktemp(suffix=ext)
-
-        # 保存图像
-        Image.fromarray(out).save(output_path)
-
-        return output_path
-
-    else:
-        return out
+    # Return the image array
+    return blank_img
