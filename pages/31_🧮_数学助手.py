@@ -577,6 +577,11 @@ checked = grade_cols[0].checkbox(
 )
 
 
+@st.cache_data(ttl=timedelta(hours=12), show_spinner="提取插图...")
+def get_illustrations(math_fp, output_to_file):
+    return remove_text_keep_illustrations(math_fp, output_to_file)
+
+
 question_cols = st.columns(2)
 
 if uploaded_file is not None:
@@ -586,7 +591,7 @@ if uploaded_file is not None:
     question_cols[1].markdown(st.session_state["math-question"])
     math_fp = create_temp_file_from_upload(uploaded_file)
     start = time.time()
-    illustration = remove_text_keep_illustrations(math_fp, output_to_file=True)
+    illustration = get_illustrations(math_fp, output_to_file=True)
     st.write(f"耗时：{time.time() - start:.2f} 秒")
     question_cols[1].markdown("##### 分离出的试题插图")
     if is_blank(illustration):
