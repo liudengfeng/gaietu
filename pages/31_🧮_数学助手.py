@@ -5,6 +5,7 @@ import logging
 import mimetypes
 import re
 import tempfile
+import time
 from datetime import timedelta
 from pathlib import Path
 import os
@@ -584,7 +585,9 @@ if uploaded_file is not None:
     question_cols[1].markdown("##### 试题文本")
     question_cols[1].markdown(st.session_state["math-question"])
     math_fp = create_temp_file_from_upload(uploaded_file)
+    start = time.time()
     illustration = remove_text_keep_illustrations(math_fp, output_to_file=True)
+    st.write(f"耗时：{time.time() - start:.2f} 秒")
     question_cols[1].markdown("##### 分离出的试题插图")
     if is_blank(illustration):
         question_cols[1].markdown("没有分离出的插图。")
