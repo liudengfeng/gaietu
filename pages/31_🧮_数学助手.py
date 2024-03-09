@@ -7,7 +7,7 @@ import re
 import tempfile
 from datetime import timedelta
 from pathlib import Path
-
+import os
 import numpy as np
 import streamlit as st
 from langchain.callbacks import StreamlitCallbackHandler
@@ -67,6 +67,9 @@ general_config(True)
 sidebar_status = st.sidebar.empty()
 
 # region 会话状态
+if "TESSDATA_PREFIX" not in os.environ:
+    os.environ["TESSDATA_PREFIX"] = CURRENT_CWD / "tessdata"
+
 
 if "math-question" not in st.session_state:
     st.session_state["math-question"] = ""

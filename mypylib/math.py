@@ -8,10 +8,6 @@ import cv2
 from scipy import stats
 
 
-if "TESSDATA_PREFIX" not in os.environ:
-    os.environ["TESSDATA_PREFIX"] = os.getcwd()
-
-
 def get_text_rows(data, height_range):
     # 提取图片的宽高
     img_width, _ = data["width"].max(), data["height"].max()
