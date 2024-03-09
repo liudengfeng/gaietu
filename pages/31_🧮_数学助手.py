@@ -589,6 +589,7 @@ if uploaded_file is not None:
     question_cols[0].image(uploaded_file.getvalue(), "试题图片")
     extract_math_question(uploaded_file)
     question_cols[1].markdown("##### 试题文本")
+    question_cols[1].code(st.session_state["math-question"], language="markdown")
     question_cols[1].markdown(st.session_state["math-question"])
     math_fp = create_temp_file_from_upload(uploaded_file)
     start = time.time()
