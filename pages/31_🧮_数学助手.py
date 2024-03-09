@@ -498,9 +498,12 @@ def create_math_chat():
 
 
 def extract_math_question(uploaded_file):
-    st.session_state["math-question"] = extract_math_question_text_for(
-        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
-    )
+    try:
+        st.session_state["math-question"] = extract_math_question_text_for(
+            uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+        )
+    except Exception as e:
+        st.session_state["math-question"] = ""
 
 
 def is_blank(image_path):
