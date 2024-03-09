@@ -103,7 +103,12 @@ def expand_bounding_box(text_rows, original_box, img_array, pixel_expansion_limi
     return x_min_exp, y_min_exp, x_max_exp, y_max_exp
 
 
+import time
+
+
 def remove_text_keep_illustrations(image_path, output_to_file=False):
+    start_time = time.time()
+
     # Use PIL to read the image
     pil_img = Image.open(image_path)
     img_gray = pil_img.convert("L")
@@ -111,11 +116,14 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
     img_array = np.array(img_gray)
 
     # Perform OCR on the image to get the text bounding boxes
+    start_ocr = time.time()
     data = pytesseract.image_to_data(
         img_array,
-        lang="chi_sim",
+        # lang="chi_sim",
+        lang="osd",
         output_type=pytesseract.Output.DATAFRAME,
     )
+    print(f"OCR time: {time.time() - start_ocr:.2f} seconds")
 
     min_height, max_height = get_height_range(data, 0.3)
 
@@ -127,7 +135,9 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
     # Use a higher threshold for edge detection
     edges = cv2.Canny(gray, 50, 300)  # Increase the thresholds
     # Find contours in the image
+    start_contours = time.time()
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    print(f"Find contours time: {time.time() - start_contours:.2f} seconds")
 
     # Initialize the list of bounding boxes
     boxes = []
@@ -171,6 +181,8 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
         _, temp_filename = tempfile.mkstemp(suffix=os.path.splitext(image_path)[1])
         cv2.imwrite(temp_filename, blank_img)
         return temp_filename
+
+    print(f"Total time: {time.time() - start_time:.2f} seconds")
 
     # Return the image array
     return blank_img

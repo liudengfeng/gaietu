@@ -68,8 +68,8 @@ general_config(True)
 sidebar_status = st.sidebar.empty()
 
 # region 会话状态
-if "TESSDATA_PREFIX" not in os.environ:
-    os.environ["TESSDATA_PREFIX"] = str(CURRENT_CWD / "tessdata")
+# if "TESSDATA_PREFIX" not in os.environ:
+#     os.environ["TESSDATA_PREFIX"] = str(CURRENT_CWD / "tessdata")
 
 
 if "math-question" not in st.session_state:
