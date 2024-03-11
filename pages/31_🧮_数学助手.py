@@ -486,9 +486,10 @@ def create_math_chat():
 
 def extract_math_question(uploaded_file):
     reference = st.session_state["math-question"]
-    st.session_state["math-question"] = extract_math_question_text_for(
+    question = extract_math_question_text_for(
         uploaded_file, EXTRACT_TEST_QUESTION_PROMPT.format(reference)
     )
+    st.session_state["math-question"] = replace_brackets_with_dollar(question)
 
 
 def is_blank(image_path):

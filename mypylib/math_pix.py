@@ -29,11 +29,9 @@ def mathpix_ocr_read(bytes_data, include_word_data=False, timeout=10) -> dict:
             "ocr": ["text", "math"],
             "formats": [
                 "text",
-                "wolfram",
-                "mathml",
             ],
             "math_inline_delimiters": ["$", "$"],
-            # "include_line_data": True,
+            "rm_fonts": True,
             "include_word_data": include_word_data,
         },
         headers=default_headers,
