@@ -375,7 +375,9 @@ def replace_brackets_with_dollar(content):
 
 def display_in_container(container, content, code_fmt=False):
     if not code_fmt:
-        container.markdown(replace_brackets_with_dollar(content), unsafe_allow_html=True)
+        container.markdown(
+            replace_brackets_with_dollar(content), unsafe_allow_html=True
+        )
     else:
         container.code(replace_brackets_with_dollar(content), language="markdown")
 
@@ -641,14 +643,15 @@ if extract_btn:
     ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
     st.session_state["math-question"] = ocr["text"]
 
-    response_container.markdown("##### Mathpix OCR 提取的试题文本")
-    response_container.code(st.session_state["math-question"], language="markdown")
-    response_container.markdown(st.session_state["math-question"])
+    # response_container.markdown("##### Mathpix OCR 提取的试题文本")
+    # response_container.code(st.session_state["math-question"], language="markdown")
+    # response_container.markdown(st.session_state["math-question"])
 
-    response_container.markdown("##### Gemini 修正后的试题文本")
+    # response_container.markdown("##### Gemini 修正后的试题文本")
     extract_math_question(uploaded_file)
-    response_container.code(st.session_state["math-question"], language="markdown")
-    response_container.markdown(st.session_state["math-question"])
+    # response_container.code(st.session_state["math-question"], language="markdown")
+    # response_container.markdown(st.session_state["math-question"])
+    display_in_container(response_container, st.session_state["math-question"])
 
 
 if cls_btn:
