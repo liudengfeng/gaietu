@@ -356,15 +356,13 @@ def get_prompt_templature(op):
         st.error("请先提取数学试题文本。")
         st.stop()
     if op == "提供解题思路":
-        return SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
+        return SOLUTION_THOUGHT_PROMPT.format(
+            grade=grade, question=question, question_type=question_type
+        )
     elif op == "提取图中的试题":
         return EXTRACT_TEST_QUESTION_PROMPT
     elif op == "提供完整解答":
         return ANSWER_MATH_QUESTION_PROMPT.format(
-            grade=grade, question=question, question_type=question_type
-        )
-    elif op == "提供解题思路":
-        return SOLUTION_THOUGHT_PROMPT.format(
             grade=grade, question=question, question_type=question_type
         )
     return ""
