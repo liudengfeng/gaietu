@@ -560,10 +560,7 @@ uploaded_file = elem_cols[0].file_uploader(
 - 图片：PNG、JPG
 """,
 )
-grade_cols = elem_cols[2].columns(4)
-has_graph = grade_cols[0].checkbox(
-    "是否有插图", value=False, help="✨ 请勾选此项，如果您的试题中包含插图。"
-)
+grade_cols = elem_cols[2].columns(3)
 grade = grade_cols[1].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
@@ -578,7 +575,10 @@ operation = grade_cols[3].selectbox(
     "您的操作",
     ["提供解题思路", "提供完整解答"],
 )
-checked = grade_cols[0].checkbox(
+has_graph = grade_cols[0].checkbox(
+    "是否有插图", value=False, help="✨ 请勾选此项，如果您的试题中包含插图。"
+)
+checked = grade_cols[1].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
 )
 
