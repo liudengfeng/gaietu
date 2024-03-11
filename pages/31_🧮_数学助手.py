@@ -147,8 +147,12 @@ EXTRACT_TEST_QUESTION_PROMPT = """\
 
 提取的文本
 ```
-{}
+{question}
 ```
+
+Markdown数学变量、表达式、公式格式示例：
+
+{exmples}
 """
 
 
@@ -164,6 +168,10 @@ SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是根据以下要求
 {question}
 ```
 
+Markdown数学变量、表达式、公式格式示例：
+
+{exmples}
+
 **你不能提供具体的答案。**
 """
 
@@ -176,6 +184,10 @@ ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下�
 ```
 {question}
 ```
+
+Markdown数学变量、表达式、公式格式示例：
+
+{exmples}
 """
 
 
@@ -357,13 +369,19 @@ def get_prompt_templature(op):
         st.stop()
     if op == "提供解题思路":
         return SOLUTION_THOUGHT_PROMPT.format(
-            grade=grade, question=question, question_type=question_type
+            grade=grade,
+            question=question,
+            question_type=question_type,
+            exmples=EXAMPLES,
         )
     elif op == "提取图中的试题":
-        return EXTRACT_TEST_QUESTION_PROMPT
+        return EXTRACT_TEST_QUESTION_PROMPT.format(question=question, exmples=EXAMPLES)
     elif op == "提供完整解答":
         return ANSWER_MATH_QUESTION_PROMPT.format(
-            grade=grade, question=question, question_type=question_type
+            grade=grade,
+            question=question,
+            question_type=question_type,
+            exmples=EXAMPLES,
         )
     return ""
 
