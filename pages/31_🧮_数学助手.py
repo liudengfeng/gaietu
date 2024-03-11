@@ -422,12 +422,10 @@ def extract_math_question_text_for(uploaded_file, prompt):
 
 
 @st.cache_data(
-    ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，修正提取插图..."
+    ttl=timedelta(hours=1), show_spinner="正在运行多模态模型，解答数学试题..."
 )
-def analyze_coordinates_for(original_image_path, separated_image_path, extracted_text):
-    contents = analyze_coordinates_prompt(
-        original_image_path, separated_image_path, extracted_text
-    )
+def answer_math_question_for(uploaded_file, prompt):
+    contents = process_file_and_prompt(uploaded_file, prompt)
     model_name = "gemini-1.0-pro-vision-001"
     model = load_vertex_model(model_name)
     generation_config = GenerationConfig(
@@ -437,33 +435,12 @@ def analyze_coordinates_for(original_image_path, separated_image_path, extracted
         max_output_tokens=2048,
     )
     return parse_generated_content_and_update_token(
-        "多模态AI修正提取插图",
+        "多模态AI解答数学试题",
         model_name,
         model.generate_content,
         contents,
         generation_config,
         stream=False,
-        parser=partial(parse_json_string, prefix="```json", suffix="```"),
-    )
-
-
-def generate_content_from_files_and_prompt(contents, placeholder):
-    model_name = "gemini-1.0-pro-vision-001"
-    model = load_vertex_model(model_name)
-    generation_config = GenerationConfig(
-        temperature=0.0,
-        top_p=1.0,
-        top_k=32,
-        max_output_tokens=2048,
-    )
-    display_generated_content_and_update_token(
-        "多模态AI解答数学题",
-        model_name,
-        model.generate_content,
-        contents,
-        generation_config,
-        stream=True,
-        placeholder=placeholder,
     )
 
 
@@ -683,14 +660,9 @@ if ans_btn:
         st.stop()
     response_container.empty()
     view_example(response_container, prompt)
-    with st.spinner(f"正在运行多模态模型获取{operation}..."):
-        response = run_chain(prompt)
+    answer = answer_math_question_for(uploaded_file, prompt)
     response_container.markdown("##### AI响应")
-    # response_container.markdown("###### 代码")
-    # display_in_container(response_container, response.content, True)
-    response_container.markdown("###### 显示")
-    # response_container.markdown(response.content, unsafe_allow_html=True)
-    display_in_container(response_container, response.content)
+    display_in_container(response_container, answer)
     update_sidebar_status(sidebar_status)
 
 # endregion
