@@ -642,17 +642,17 @@ cls_btn = tab0_btn_cols[0].button(
     on_click=reset_text_value,
     args=("user_prompt_key",),
 )
-extract_btn = tab0_btn_cols[3].button(
+extract_btn = tab0_btn_cols[1].button(
     "提取[:scissors:]", key="extract_btn", help="✨ 点击按钮，提取数学试题文本。"
 )
-demo_btn_1 = tab0_btn_cols[1].button(
+demo_btn_1 = tab0_btn_cols[2].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
     help="✨ 展示当前所应用的提示词模板",
     on_click=reset_text_value,
     args=("user_prompt_key", get_prompt_templature(operation, checked)),
 )
-ans_btn = tab0_btn_cols[2].button(
+ans_btn = tab0_btn_cols[3].button(
     "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
 
