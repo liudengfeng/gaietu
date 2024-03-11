@@ -669,7 +669,7 @@ if extract_btn:
     response_container.markdown(st.session_state["math-question"])
     
     response_container.markdown("##### Gemini 修正后的试题文本")
-    extract_math_question(uploaded_file, has_graph)
+    extract_math_question(uploaded_file)
     response_container.code(st.session_state["math-question"], language="markdown")
     response_container.markdown(st.session_state["math-question"])
 
