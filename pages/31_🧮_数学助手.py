@@ -369,14 +369,13 @@ def get_prompt_templature(op):
 
 
 def replace_brackets_with_dollar(content):
-    content = re.sub(r"\\\(", "$", content)
-    content = re.sub(r"\\\)", "$", content)
+    content = content.replace("\\(", "$").replace("\\)", "$")
     return content
 
 
 def display_in_container(container, content, code_fmt=False):
     if not code_fmt:
-        container.markdown(replace_brackets_with_dollar(content))
+        container.markdown(replace_brackets_with_dollar(content), unsafe_allow_html=True)
     else:
         container.code(replace_brackets_with_dollar(content), language="markdown")
 
@@ -674,8 +673,8 @@ if ans_btn:
     # response_container.markdown("###### 代码")
     # display_in_container(response_container, response.content, True)
     response_container.markdown("###### 显示")
-    response_container.markdown(response.content,unsafe_allow_html=True)
-    # display_in_container(response_container, response.content)
+    # response_container.markdown(response.content, unsafe_allow_html=True)
+    display_in_container(response_container, response.content)
     update_sidebar_status(sidebar_status)
 
 # endregion
