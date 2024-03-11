@@ -159,6 +159,11 @@ SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是根据以下要求
 4. 简要阐述解决问题的步骤和所采用的方法，列出必要的数学公式和计算流程，但无需进行详细的数值运算。
 5. 使用`$`或`$$`来正确标识行内或块级的数学变量和公式。
 
+你只需要参考图片中的插图，试题文本如下：
+```
+{question}
+```
+
 **你不能提供具体的答案。**
 """
 
@@ -166,6 +171,11 @@ ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下�
 1. 这是一道{question_type}题，你需要按照题型的标准范式进行解答。
 2. 您的受众是中国{grade}学生，需要提供与其学习阶段相匹配的解题方法。
 3. 使用`$`或`$$`来正确标识行内或块级数学变量及公式。
+
+你只需要参考图片中的插图，试题文本如下：
+```
+{question}
+```
 """
 
 
@@ -340,44 +350,23 @@ def view_example(container, prompt):
     container.markdown(prompt)
 
 
-def get_prompt_templature(op, checked):
+def get_prompt_templature(op):
+    question = st.session_state["math-question"]
+    if not question:
+        st.error("请先提取数学试题文本。")
+        st.stop()
     if op == "提供解题思路":
-        if not checked:
-            return SOLUTION_THOUGHT_PROMPT.format(
-                grade=grade, question_type=question_type
-            )
-        else:
-            return (
-                SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
-                + "\n"
-                + CORRECTION_PROMPT_TEMPLATE
-            )
+        return SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
     elif op == "提取图中的试题":
         return EXTRACT_TEST_QUESTION_PROMPT
     elif op == "提供完整解答":
-        if not checked:
-            return ANSWER_MATH_QUESTION_PROMPT.format(
-                grade=grade, question_type=question_type
-            )
-        else:
-            return (
-                ANSWER_MATH_QUESTION_PROMPT.format(
-                    grade=grade, question_type=question_type
-                )
-                + "\n"
-                + CORRECTION_PROMPT_TEMPLATE
-            )
+        return ANSWER_MATH_QUESTION_PROMPT.format(
+            grade=grade, question=question, question_type=question_type
+        )
     elif op == "提供解题思路":
-        if not checked:
-            return SOLUTION_THOUGHT_PROMPT.format(
-                grade=grade, question_type=question_type
-            )
-        else:
-            return (
-                SOLUTION_THOUGHT_PROMPT.format(grade=grade, question_type=question_type)
-                + "\n"
-                + CORRECTION_PROMPT_TEMPLATE
-            )
+        return SOLUTION_THOUGHT_PROMPT.format(
+            grade=grade, question=question, question_type=question_type
+        )
     return ""
 
 
@@ -589,9 +578,6 @@ operation = grade_cols[2].selectbox(
 has_graph = grade_cols[0].checkbox(
     "是否有插图", value=True, help="✨ 请勾选此项，如果您的试题中包含插图。"
 )
-checked = grade_cols[1].checkbox(
-    "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
-)
 
 
 # @st.cache_data(ttl=timedelta(hours=12), show_spinner="提取插图...")
@@ -645,15 +631,20 @@ cls_btn = tab0_btn_cols[0].button(
 extract_btn = tab0_btn_cols[1].button(
     "提取[:scissors:]", key="extract_btn", help="✨ 点击按钮，提取数学试题文本。"
 )
-demo_btn_1 = tab0_btn_cols[2].button(
+prompt_btn = tab0_btn_cols[2].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
     help="✨ 展示当前所应用的提示词模板",
     on_click=reset_text_value,
-    args=("user_prompt_key", get_prompt_templature(operation, checked)),
+    args=(
+        "user_prompt_key",
+        get_prompt_templature(
+            operation,
+        ),
+    ),
 )
 ans_btn = tab0_btn_cols[3].button(
-    "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
+    "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
 
 
@@ -661,13 +652,14 @@ response_container = st.container(height=300)
 prompt_elem = st.empty()
 
 if extract_btn:
+    response_container.empty()
     ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
     st.session_state["math-question"] = ocr["text"]
 
     response_container.markdown("##### Mathpix OCR 提取的试题文本")
     response_container.code(st.session_state["math-question"], language="markdown")
     response_container.markdown(st.session_state["math-question"])
-    
+
     response_container.markdown("##### Gemini 修正后的试题文本")
     extract_math_question(uploaded_file)
     response_container.code(st.session_state["math-question"], language="markdown")
@@ -675,7 +667,7 @@ if extract_btn:
 
 
 if cls_btn:
-    pass
+    st.session_state["math-question"] = ""
 
 
 if ans_btn:
