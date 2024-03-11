@@ -126,19 +126,29 @@ x + y = 10 \\
 $$
 """
 
-EXTRACT_TEST_QUESTION_PROMPT = f"""
-根据以下要求，从图片中提取数学问题的文本：
-- 只提取试题的文本内容，不包括插图或附注。
-- 数学公式使用 LaTeX 语法。
-- 所有的数学变量、表达式和数学公式都需要合理使用 `$` 或 `$$` 进行标注。
-- 如果试题中的内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
-- 项目列表应使用标准的 Markdown 格式进行编写。
-- 输出 Markdown 代码。
-- 只需要提取数学问题的文本，无需提供解题策略和具体答案。
+# EXTRACT_TEST_QUESTION_PROMPT = f"""
+# 根据以下要求，从图片中提取数学问题的文本：
+# - 只提取试题的文本内容，不包括插图或附注。
+# - 数学公式使用 LaTeX 语法。
+# - 所有的数学变量、表达式和数学公式都需要合理使用 `$` 或 `$$` 进行标注。
+# - 如果试题中的内容以表格形式呈现，应使用 Markdown 中的 HTML 表格语法进行编写。
+# - 项目列表应使用标准的 Markdown 格式进行编写。
+# - 输出 Markdown 代码。
+# - 只需要提取数学问题的文本，无需提供解题策略和具体答案。
 
-Markdown数学变量、表达式、公式格式示例： 
+# Markdown数学变量、表达式、公式格式示例：
 
-{EXAMPLES}
+# {EXAMPLES}
+# """
+
+EXTRACT_TEST_QUESTION_PROMPT = """\
+从下图中提取数学试题文本。
+你可参考已经提取的文本，如果发现错误，请修正。
+
+提取的文本
+```
+{}
+```
 """
 
 
@@ -500,8 +510,9 @@ def create_math_chat():
 
 
 def extract_math_question(uploaded_file):
+    reference = st.session_state["math-question"]
     st.session_state["math-question"] = extract_math_question_text_for(
-        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT.format(reference)
     )
 
 
@@ -592,15 +603,7 @@ question_cols = st.columns(2)
 
 if uploaded_file is not None:
     question_cols[0].image(uploaded_file.getvalue(), "试题图片")
-    ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
-    st.session_state["math-question"] = ocr["text"]
 
-    # extract_math_question(uploaded_file, has_graph)
-    
-    question_cols[1].markdown("##### 试题文本")
-    question_cols[1].code(st.session_state["math-question"], language="markdown")
-    question_cols[1].markdown(st.session_state["math-question"])
-    
     # math_fp = create_temp_file_from_upload(uploaded_file)
     # start = time.time()
     # illustration = get_illustrations(math_fp, output_to_file=True)
@@ -612,8 +615,7 @@ if uploaded_file is not None:
     # else:
     #     st.session_state["math-illustration"] = illustration
     #     question_cols[1].image(st.session_state["math-illustration"], "试题插图")
-else:
-    st.session_state["math-illustration"] = None
+
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
@@ -640,6 +642,9 @@ cls_btn = tab0_btn_cols[0].button(
     on_click=reset_text_value,
     args=("user_prompt_key",),
 )
+extract_btn = tab0_btn_cols[3].button(
+    "提取[:scissors:]", key="extract_btn", help="✨ 点击按钮，提取数学试题文本。"
+)
 demo_btn_1 = tab0_btn_cols[1].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
@@ -650,29 +655,23 @@ demo_btn_1 = tab0_btn_cols[1].button(
 ans_btn = tab0_btn_cols[2].button(
     "提交[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
-fx_btn = tab0_btn_cols[3].button(
-    "修复[:black_nib:]", key="fix_button", help="✨ 点击按钮，修复插图。"
-)
 
 
 response_container = st.container(height=300)
 prompt_elem = st.empty()
 
-if fx_btn:
-    math_fp = create_temp_file_from_upload(uploaded_file)
-    illustration = st.session_state["math-illustration"]
-    text = st.session_state["math-question"]
-    if is_blank(illustration):
-        st.stop()
-    boxes = analyze_coordinates_for(math_fp, illustration, text)
-    # 使用解析的坐标列表显示插图
-    for box in boxes:
-        x, y, width, height = box["x"], box["y"], box["width"], box["height"]
-        with st.empty():
-            st.image(
-                PIL_Image.open(math_fp).crop((x, y, x + width, y + height)),
-                "修复后的插图",
-            )
+if extract_btn:
+    ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
+    st.session_state["math-question"] = ocr["text"]
+
+    response_container.markdown("##### Mathpix OCR 提取的试题文本")
+    response_container.code(st.session_state["math-question"], language="markdown")
+    response_container.markdown(st.session_state["math-question"])
+    
+    response_container.markdown("##### Gemini 修正后的试题文本")
+    extract_math_question(uploaded_file, has_graph)
+    response_container.code(st.session_state["math-question"], language="markdown")
+    response_container.markdown(st.session_state["math-question"])
 
 
 if cls_btn:
