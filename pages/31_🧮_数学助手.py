@@ -146,12 +146,9 @@ EXTRACT_TEST_QUESTION_PROMPT = """\
 你可参考已经提取的文本，如果发现错误，请修正。
 
 提取的文本
-```
 {question}
-```
 
 Markdown数学变量、表达式、公式格式示例：
-
 {exmples}
 """
 
@@ -164,12 +161,10 @@ SOLUTION_THOUGHT_PROMPT = """你精通数学，你的任务是根据以下要求
 5. 使用`$`或`$$`来正确标识行内或块级的数学变量和公式。
 
 你只需要参考图片中的插图，试题文本如下：
-```
 {question}
-```
+
 
 Markdown数学变量、表达式、公式格式示例：
-
 {exmples}
 
 **你不能提供具体的答案。**
@@ -181,12 +176,9 @@ ANSWER_MATH_QUESTION_PROMPT = """你精通数学，你的任务是按照以下�
 3. 使用`$`或`$$`来正确标识行内或块级数学变量及公式。
 
 你只需要参考图片中的插图，试题文本如下：
-```
 {question}
-```
 
 Markdown数学变量、表达式、公式格式示例：
-
 {exmples}
 """
 
@@ -597,11 +589,6 @@ has_graph = grade_cols[0].checkbox(
 )
 
 
-# @st.cache_data(ttl=timedelta(hours=12), show_spinner="提取插图...")
-# def get_illustrations(math_fp, output_to_file):
-#     return remove_text_keep_illustrations(math_fp, output_to_file)
-
-
 question_cols = st.columns(2)
 
 if uploaded_file is not None:
@@ -636,7 +623,12 @@ cls_btn = tab0_btn_cols[0].button(
 extract_btn = tab0_btn_cols[1].button(
     "提取[:scissors:]", key="extract_btn", help="✨ 点击按钮，提取数学试题文本。"
 )
-prompt_btn = tab0_btn_cols[2].button(
+code_btn = tab0_btn_cols[2].button(
+    "代码[📜]",
+    key="code_btn",
+    help="✨ 显示数学试题的Markdown数学代码，点击框内的复制按钮进行复制。",
+)
+prompt_btn = tab0_btn_cols[3].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
     help="✨ 展示当前所应用的提示词模板",
@@ -648,7 +640,7 @@ prompt_btn = tab0_btn_cols[2].button(
         ),
     ),
 )
-ans_btn = tab0_btn_cols[3].button(
+ans_btn = tab0_btn_cols[4].button(
     "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
 )
 
@@ -675,6 +667,9 @@ if extract_btn:
 if cls_btn:
     st.session_state["math-question"] = ""
 
+if code_btn:
+    response_container.empty()
+    display_in_container(response_container, st.session_state["math-question"], True)
 
 if ans_btn:
     # if uploaded_file is None:
