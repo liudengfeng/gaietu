@@ -576,7 +576,7 @@ operation = grade_cols[2].selectbox(
     ["提供解题思路", "提供完整解答"],
 )
 has_graph = grade_cols[0].checkbox(
-    "是否有插图", value=False, help="✨ 请勾选此项，如果您的试题中包含插图。"
+    "是否有插图", value=True, help="✨ 请勾选此项，如果您的试题中包含插图。"
 )
 checked = grade_cols[1].checkbox(
     "是否修正试题", value=False, help="✨ 请勾选此项，如果您需要修正试题文本。"
