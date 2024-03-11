@@ -588,18 +588,6 @@ question_cols = st.columns(2)
 if uploaded_file is not None:
     question_cols[0].image(uploaded_file.getvalue(), "试题图片")
 
-    # math_fp = create_temp_file_from_upload(uploaded_file)
-    # start = time.time()
-    # illustration = get_illustrations(math_fp, output_to_file=True)
-    # st.write(f"耗时：{time.time() - start:.2f} 秒")
-    # question_cols[1].markdown("##### 分离出的试题插图")
-    # if is_blank(illustration):
-    #     question_cols[1].markdown("没有分离出的插图。")
-    #     st.session_state["math-illustration"] = None
-    # else:
-    #     st.session_state["math-illustration"] = illustration
-    #     question_cols[1].image(st.session_state["math-illustration"], "试题插图")
-
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
@@ -683,10 +671,11 @@ if ans_btn:
     with st.spinner(f"正在运行多模态模型获取{operation}..."):
         response = run_chain(prompt)
     response_container.markdown("##### AI响应")
-    response_container.markdown("###### 代码")
-    display_in_container(response_container, response.content, True)
+    # response_container.markdown("###### 代码")
+    # display_in_container(response_container, response.content, True)
     response_container.markdown("###### 显示")
-    display_in_container(response_container, response.content)
+    response_container.markdown(response.content,unsafe_allow_html=True)
+    # display_in_container(response_container, response.content)
     update_sidebar_status(sidebar_status)
 
 # endregion
