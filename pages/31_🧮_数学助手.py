@@ -561,17 +561,17 @@ uploaded_file = elem_cols[0].file_uploader(
 """,
 )
 grade_cols = elem_cols[2].columns(3)
-grade = grade_cols[1].selectbox(
+grade = grade_cols[0].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
-question_type = grade_cols[2].selectbox(
+question_type = grade_cols[1].selectbox(
     "题型",
     ["选择题", "填空题", "计算题", "证明题", "判断题", "推理题", "解答题"],
     # index=None,
     key="question_type",
     help="选择题型",
 )
-operation = grade_cols[3].selectbox(
+operation = grade_cols[2].selectbox(
     "您的操作",
     ["提供解题思路", "提供完整解答"],
 )
