@@ -4,4 +4,8 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
+    "files.associations": {
+        "MLTable": "yaml",
+        "iostream": "cpp"
+    },
 }

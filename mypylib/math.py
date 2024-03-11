@@ -104,7 +104,6 @@ def expand_bounding_box(text_rows, original_box, img_array, pixel_expansion_limi
 
 
 def remove_text_keep_illustrations(image_path, output_to_file=False):
-
     # Use PIL to read the image
     pil_img = Image.open(image_path)
     img_gray = pil_img.convert("L")
@@ -115,6 +114,79 @@ def remove_text_keep_illustrations(image_path, output_to_file=False):
     data = pytesseract.image_to_data(
         img_array,
         # lang="chi_sim",
+        lang="osd",
+        output_type=pytesseract.Output.DATAFRAME,
+    )
+
+    min_height, max_height = get_height_range(data, 0.3)
+
+    # Check if the image is already grayscale
+    if len(img_array.shape) == 2:
+        gray = img_array
+    else:
+        gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
+    # Use a higher threshold for edge detection
+    edges = cv2.Canny(gray, 50, 300)  # Increase the thresholds
+    # Find contours in the image
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Initialize the list of bounding boxes
+    boxes = []
+    # For each contour, check if it is likely to be an illustration
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        # Only add bounding boxes with area greater than 300 to all_boxes
+        if w > 30 and h > 30:
+            # This contour is likely to be an illustration, so add its bounding box to the list
+            boxes.append([x, y, x + w, y + h])
+
+    # Create a blank image with the same size as the original image
+    blank_img = np.full((*img_array.shape, 3), 255)
+    # Check if boxes is empty
+    if boxes:
+        # Combine the bounding boxes into a large bounding box
+        original_box = (
+            min(box[0] for box in boxes),
+            min(box[1] for box in boxes),
+            max(box[2] for box in boxes),
+            max(box[3] for box in boxes),
+        )
+        text_rows = get_text_rows(data, (min_height, max_height))
+
+        # Initialize the expanded bounding box to the original bounding box
+        x_min_exp, y_min_exp, x_max_exp, y_max_exp = expand_bounding_box(
+            text_rows, original_box, img_array
+        )
+
+        # Convert the grayscale image to a color image
+        if len(img_array.shape) == 2:
+            img_array = cv2.cvtColor(img_array, cv2.COLOR_GRAY2BGR)
+
+        # Update the blank image with the expanded bounding box
+        blank_img[y_min_exp:y_max_exp, x_min_exp:x_max_exp] = img_array[
+            y_min_exp:y_max_exp, x_min_exp:x_max_exp
+        ]
+
+    # If output_to_file is True, save the image to a file
+    if output_to_file:
+        _, temp_filename = tempfile.mkstemp(suffix=os.path.splitext(image_path)[1])
+        cv2.imwrite(temp_filename, blank_img)
+        return temp_filename
+
+    # Return the image array
+    return blank_img
+
+
+def remove_illustrations_keep_text(image_path, output_to_file=False):
+    # Use PIL to read the image
+    pil_img = Image.open(image_path)
+    img_gray = pil_img.convert("L")
+    # Convert the PIL image to a NumPy array
+    img_array = np.array(img_gray)
+
+    # Perform OCR on the image to get the text bounding boxes
+    data = pytesseract.image_to_data(
+        img_array,
         lang="osd",
         output_type=pytesseract.Output.DATAFRAME,
     )

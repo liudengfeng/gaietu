@@ -39,7 +39,9 @@ from mypylib.google_ai import (
     parse_generated_content_and_update_token,
     parse_json_string,
 )
-from mypylib.math import remove_text_keep_illustrations
+
+# from mypylib.math import remove_text_keep_illustrations
+from mypylib.math_pix import erase_diagram_and_recognize
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -498,12 +500,9 @@ def create_math_chat():
 
 
 def extract_math_question(uploaded_file):
-    try:
-        st.session_state["math-question"] = extract_math_question_text_for(
-            uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
-        )
-    except Exception as e:
-        st.session_state["math-question"] = ""
+    st.session_state["math-question"] = extract_math_question_text_for(
+        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT
+    )
 
 
 def is_blank(image_path):
@@ -561,18 +560,21 @@ uploaded_file = elem_cols[0].file_uploader(
 - 图片：PNG、JPG
 """,
 )
-grade_cols = elem_cols[2].columns(3)
-grade = grade_cols[0].selectbox(
+grade_cols = elem_cols[2].columns(4)
+has_graph = grade_cols[0].checkbox(
+    "是否有插图", value=False, help="✨ 请勾选此项，如果您的试题中包含插图。"
+)
+grade = grade_cols[1].selectbox(
     "年级", ["小学", "初中", "高中", "大学"], key="grade", help="选择年级"
 )
-question_type = grade_cols[1].selectbox(
+question_type = grade_cols[2].selectbox(
     "题型",
     ["选择题", "填空题", "计算题", "证明题", "判断题", "推理题", "解答题"],
     # index=None,
     key="question_type",
     help="选择题型",
 )
-operation = grade_cols[2].selectbox(
+operation = grade_cols[3].selectbox(
     "您的操作",
     ["提供解题思路", "提供完整解答"],
 )
@@ -581,30 +583,35 @@ checked = grade_cols[0].checkbox(
 )
 
 
-@st.cache_data(ttl=timedelta(hours=12), show_spinner="提取插图...")
-def get_illustrations(math_fp, output_to_file):
-    return remove_text_keep_illustrations(math_fp, output_to_file)
+# @st.cache_data(ttl=timedelta(hours=12), show_spinner="提取插图...")
+# def get_illustrations(math_fp, output_to_file):
+#     return remove_text_keep_illustrations(math_fp, output_to_file)
 
 
 question_cols = st.columns(2)
 
 if uploaded_file is not None:
     question_cols[0].image(uploaded_file.getvalue(), "试题图片")
-    extract_math_question(uploaded_file)
+    ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
+    st.session_state["math-question"] = ocr["text"]
+
+    # extract_math_question(uploaded_file, has_graph)
+    
     question_cols[1].markdown("##### 试题文本")
     question_cols[1].code(st.session_state["math-question"], language="markdown")
     question_cols[1].markdown(st.session_state["math-question"])
-    math_fp = create_temp_file_from_upload(uploaded_file)
-    start = time.time()
-    illustration = get_illustrations(math_fp, output_to_file=True)
-    st.write(f"耗时：{time.time() - start:.2f} 秒")
-    question_cols[1].markdown("##### 分离出的试题插图")
-    if is_blank(illustration):
-        question_cols[1].markdown("没有分离出的插图。")
-        st.session_state["math-illustration"] = None
-    else:
-        st.session_state["math-illustration"] = illustration
-        question_cols[1].image(st.session_state["math-illustration"], "试题插图")
+    
+    # math_fp = create_temp_file_from_upload(uploaded_file)
+    # start = time.time()
+    # illustration = get_illustrations(math_fp, output_to_file=True)
+    # st.write(f"耗时：{time.time() - start:.2f} 秒")
+    # question_cols[1].markdown("##### 分离出的试题插图")
+    # if is_blank(illustration):
+    #     question_cols[1].markdown("没有分离出的插图。")
+    #     st.session_state["math-illustration"] = None
+    # else:
+    #     st.session_state["math-illustration"] = illustration
+    #     question_cols[1].image(st.session_state["math-illustration"], "试题插图")
 else:
     st.session_state["math-illustration"] = None
 
