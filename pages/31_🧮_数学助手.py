@@ -642,6 +642,10 @@ if uploaded_file is not None:
     draw = ImageDraw.Draw(img)
     try:
         draw.rectangle([left, top, right, bottom], outline="red")
+        draw.text((left, top), '左上(left)', fill='blue')
+        draw.text((right, top), '右上(top)', fill='blue')
+        draw.text((left, bottom), '左下(right)', fill='blue')
+        draw.text((right, bottom), '右下(bottom)', fill='blue')
         images_cols[0].image(img, "上传的图片")
         # 使用滑块的值来裁剪图像
         cropped_image = img.crop((left, top, right, bottom))
