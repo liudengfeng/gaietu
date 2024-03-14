@@ -653,17 +653,16 @@ if uploaded_file is not None:
         draw.text((left, bottom), "right", fill="blue")
         draw.text((right, bottom), "bottom", fill="blue")
         images_cols[0].image(img, "上传的图片")
-        # 创建两个新的全白色图像
-        graph_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
-        text_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
+        # 创建新的全白色图像
+        white_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
 
         # 将裁剪后的图像粘贴到插图图像的相应位置
-        graph_image.paste(cropped_image, (left, top))
+        white_image.paste(cropped_image, (left, top))
 
-        images_cols[1].image(graph_image, "插图部分")
+        images_cols[1].image(white_image, "插图部分")
 
         # 将原图与插图图像进行差值运算，得到文本部分
-        text_image = ImageChops.difference(img, graph_image)
+        text_image = ImageChops.difference(img, white_image)
         images_cols[2].image(text_image, "文本部分")
     except Exception as e:
         images_cols[1].error(f"裁剪失败，原因：{str(e)}")
