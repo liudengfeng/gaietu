@@ -561,7 +561,10 @@ if "right" not in st.session_state:
 if "bottom" not in st.session_state:
     st.session_state["bottom"] = st.session_state["default_height"]
 
-st.sidebar.subheader("插图裁剪",help="""✨ 使用滑块来调整插图的裁剪区域。"上" 和 "下" 滑块控制裁剪区域的上边界和下边界，"左" 和 "右" 滑块控制裁剪区域的左边界和右边界。""")
+st.sidebar.subheader(
+    "插图裁剪",
+    help="""✨ 使用滑块来调整插图的裁剪区域。"上" 和 "下" 滑块控制裁剪区域的上边界和下边界，"左" 和 "右" 滑块控制裁剪区域的左边界和右边界。""",
+)
 # 创建滑块，使用会话状态中的值作为默认值
 top = st.sidebar.slider(
     "上",
