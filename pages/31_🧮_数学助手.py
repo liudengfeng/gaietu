@@ -633,12 +633,13 @@ has_graph = grade_cols[0].checkbox(
 )
 
 
-images_cols = st.columns(4)
+images_cols_1 = st.columns(2)
+images_cols_2 = st.columns(2)
 
 if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     image = PIL_Image.open(io.BytesIO(image_data))
-    images_cols[0].image(image_data, "上传的图片")
+    images_cols_1[0].image(image_data, "上传的图片")
     # 使用滑块的值来裁剪图像
     cropped_image = image.crop(
         (
@@ -648,7 +649,13 @@ if uploaded_file is not None:
             bottom,
         )
     )
-    images_cols[1].image(cropped_image, "裁剪部分")
+    images_cols_1[1].image(cropped_image, "裁剪部分")
+
+with st.expander("浏览裁剪效果"):
+    pass
+#     images_cols_2[0].image(graph_image, "文本部分")
+#     images_cols_2[1].image(text_image, "插图部分")
+
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
