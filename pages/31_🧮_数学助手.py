@@ -640,16 +640,19 @@ if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     image = PIL_Image.open(io.BytesIO(image_data))
     images_cols_1[0].image(image_data, "上传的图片")
-    # 使用滑块的值来裁剪图像
-    cropped_image = image.crop(
-        (
-            left,
-            top,
-            right,
-            bottom,
+    try:
+        # 使用滑块的值来裁剪图像
+        cropped_image = image.crop(
+            (
+                left,
+                top,
+                right,
+                bottom,
+            )
         )
-    )
-    images_cols_1[1].image(cropped_image, "裁剪部分")
+        images_cols_1[1].image(cropped_image, "裁剪部分")
+    except Exception as e:
+        images_cols_1[1].error(f"裁剪失败，原因：{str(e)}")
 
 with st.expander("浏览裁剪效果"):
     pass
