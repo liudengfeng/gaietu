@@ -639,13 +639,16 @@ images_cols = st.columns(3)
 if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
+    st.write(img.ndim)
     # 使用滑块的值来裁剪图像
     # 由于滑块已经正确设置了范围，现在要对裁剪有效性进行检查
     if left >= right or top >= bottom:
         images_cols[0].error("裁剪区域无效，请重新设置。")
         st.stop()
-    cropped_image = img.crop((left, top, right, bottom))
-    draw = ImageDraw.Draw(img)
+    img_copy = img.copy()
+    cropped_image = img_copy.crop((left, top, right, bottom))
+    st.write(cropped_image.ndim)
+    draw = ImageDraw.Draw(img_copy)
     try:
         draw.rectangle([left, top, right, bottom], outline="red")
         draw.text((left, top), "left", fill="blue")
@@ -658,6 +661,7 @@ if uploaded_file is not None:
 
         # 将裁剪后的图像粘贴到插图图像的相应位置
         white_image.paste(cropped_image, (left, top))
+        st.write(white_image.ndim)
 
         images_cols[1].image(white_image, "插图部分")
 
