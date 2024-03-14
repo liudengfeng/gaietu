@@ -32,7 +32,7 @@ from langchain_google_vertexai import (
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import Content, GenerationConfig, Part, Image
 from PIL import Image as PIL_Image
-from PIL import ImageChops, ImageDraw
+from PIL import ImageChops, ImageDraw, ImageOps
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -668,6 +668,8 @@ if uploaded_file is not None:
 
         # 将原图与插图图像进行差值运算，得到文本部分
         text_image = ImageChops.difference(img, white_image)
+        # 反转 text_image 的颜色
+        text_image = ImageOps.invert(text_image)
         images_cols[2].image(text_image, "文本部分")
     except Exception as e:
         images_cols[1].error(f"裁剪失败，原因：{str(e)}")
