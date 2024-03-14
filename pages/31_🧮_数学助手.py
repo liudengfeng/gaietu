@@ -656,7 +656,7 @@ if uploaded_file is not None:
         draw.text((right, top), "top", fill="blue")
         draw.text((left, bottom), "right", fill="blue")
         draw.text((right, bottom), "bottom", fill="blue")
-        images_cols[0].image(img, "上传的图片")
+        images_cols[0].image(img_copy, "上传的图片")
         # 创建新的全白色图像
         white_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
         white_image = white_image.convert("RGB")
