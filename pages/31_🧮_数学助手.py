@@ -471,6 +471,8 @@ def gen_tip_for(question):
 def update_slider_max():
     # 读取图像
     uploaded_file = st.session_state.uploaded_file
+    if uploaded_file is None:
+        return
     image_data = uploaded_file.getvalue()
     image = PIL_Image.open(io.BytesIO(image_data))
 
