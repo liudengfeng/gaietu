@@ -32,6 +32,7 @@ from langchain_google_vertexai import (
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import Content, GenerationConfig, Part, Image
 from PIL import Image as PIL_Image
+from PIL import ImageChops
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -633,31 +634,29 @@ has_graph = grade_cols[0].checkbox(
 )
 
 
-images_cols_1 = st.columns(2)
-images_cols_2 = st.columns(2)
+images_cols = st.columns(3)
 
 if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
-    image = PIL_Image.open(io.BytesIO(image_data))
-    images_cols_1[0].image(image_data, "上传的图片")
+    img = PIL_Image.open(io.BytesIO(image_data))
+    images_cols[0].image(image_data, "上传的图片")
     try:
         # 使用滑块的值来裁剪图像
-        cropped_image = image.crop(
-            (
-                left,
-                top,
-                right,
-                bottom,
-            )
-        )
-        images_cols_1[1].image(cropped_image, "裁剪部分")
-    except Exception as e:
-        images_cols_1[1].error(f"裁剪失败，原因：{str(e)}")
+        cropped_image = img.crop((left, top, right, bottom))
+        # 创建两个新的全白色图像
+        graph_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
+        text_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
 
-with st.expander("浏览裁剪效果"):
-    pass
-#     images_cols_2[0].image(graph_image, "文本部分")
-#     images_cols_2[1].image(text_image, "插图部分")
+        # 将裁剪后的图像粘贴到插图图像的相应位置
+        graph_image.paste(cropped_image, (left, top))
+
+        images_cols[1].image(graph_image, "插图部分")
+
+        # 将原图与插图图像进行差值运算，得到文本部分
+        text_image = ImageChops.difference(img, graph_image)
+        images_cols[2].image(text_image, "文本部分")
+    except Exception as e:
+        images_cols[1].error(f"裁剪失败，原因：{str(e)}")
 
 
 prompt_cols = st.columns([1, 1])
