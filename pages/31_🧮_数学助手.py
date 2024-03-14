@@ -471,7 +471,7 @@ def update_slider_max():
     # 读取图像
     uploaded_file = st.session_state.uploaded_file
     image_data = uploaded_file.getvalue()
-    image = Image.open(io.BytesIO(image_data))
+    image = PIL_Image.open(io.BytesIO(image_data))
 
     st.session_state["default_width"] = image.width
     st.session_state["default_height"] = image.height
