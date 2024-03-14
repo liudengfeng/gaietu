@@ -639,11 +639,13 @@ images_cols = st.columns(3)
 if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
-    draw = ImageDraw.Draw(img)
+    # 使用滑块的值来裁剪图像
     # 由于滑块已经正确设置了范围，现在要对裁剪有效性进行检查
     if left >= right or top >= bottom:
         images_cols[0].error("裁剪区域无效，请重新设置。")
         st.stop()
+    cropped_image = img.crop((left, top, right, bottom))
+    draw = ImageDraw.Draw(img)
     try:
         draw.rectangle([left, top, right, bottom], outline="red")
         draw.text((left, top), '左上(left)', fill='blue')
@@ -651,8 +653,6 @@ if uploaded_file is not None:
         draw.text((left, bottom), '左下(right)', fill='blue')
         draw.text((right, bottom), '右下(bottom)', fill='blue')
         images_cols[0].image(img, "上传的图片")
-        # 使用滑块的值来裁剪图像
-        cropped_image = img.crop((left, top, right, bottom))
         # 创建两个新的全白色图像
         graph_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
         text_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
