@@ -636,43 +636,57 @@ has_graph = grade_cols[0].checkbox(
 )
 
 
-images_cols = st.columns(3)
-
-if uploaded_file is not None:
+def process_image(uploaded_file, left, top, right, bottom):
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
-    img = img.convert("RGB")
-    # 使用滑块的值来裁剪图像
-    # 由于滑块已经正确设置了范围，现在要对裁剪有效性进行检查
-    if left >= right or top >= bottom:
-        images_cols[0].error("裁剪区域无效，请重新设置。")
+    # 只在需要时转换图像
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+
+    if left >= right:
+        st.error(
+            f"裁剪区域无效，左边界（{left}）不能大于或等于右边界（{right}），请重新设置。"
+        )
         st.stop()
+
+    if top >= bottom:
+        st.error(
+            f"裁剪区域无效，上边界（{top}）不能大于或等于下边界（{bottom}），请重新设置。"
+        )
+        st.stop()
+
     img_copy = img.copy()
     cropped_image = img_copy.crop((left, top, right, bottom))
     draw = ImageDraw.Draw(img_copy)
-    try:
-        draw.rectangle([left, top, right, bottom], outline="red")
-        draw.text((left, top), "left", fill="blue")
-        draw.text((right, top), "top", fill="blue")
-        draw.text((left, bottom), "right", fill="blue")
-        draw.text((right, bottom), "bottom", fill="blue")
-        images_cols[0].image(img_copy, "上传的图片")
-        # 创建新的全白色图像
-        white_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
-        white_image = white_image.convert("RGB")
+    draw.rectangle([left, top, right, bottom], outline="red")
+    offset = 10  # 偏移量
+    draw.text((left + offset, top + offset), "left", fill="blue")
+    draw.text((right - offset, top + offset), "top", fill="blue")
+    draw.text((left + offset, bottom - offset), "right", fill="blue")
+    draw.text((right - offset, bottom - offset), "bottom", fill="blue")
 
-        # 将裁剪后的图像粘贴到插图图像的相应位置
-        white_image.paste(cropped_image, (left, top))
+    illustration_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
+    illustration_image = illustration_image.convert("RGB")
+    illustration_image.paste(cropped_image, (left, top))
 
-        images_cols[1].image(white_image, "插图部分")
+    text_image = ImageChops.difference(img, illustration_image)
+    text_image = ImageOps.invert(text_image)
 
-        # 将原图与插图图像进行差值运算，得到文本部分
-        text_image = ImageChops.difference(img, white_image)
-        # 反转 text_image 的颜色
-        text_image = ImageOps.invert(text_image)
-        images_cols[2].image(text_image, "文本部分")
-    except Exception as e:
-        images_cols[1].error(f"裁剪失败，原因：{str(e)}")
+    return img_copy, illustration_image, text_image
+
+
+images_cols = st.columns(3)
+
+if uploaded_file is not None:
+    img_copy, illustration_image, text_image = process_image(
+        uploaded_file, left, top, right, bottom
+    )
+    images_cols[0].markdown("原图")
+    images_cols[0].image(img_copy, use_column_width=True, caption="原图")
+    images_cols[1].markdown("插图")
+    images_cols[1].image(illustration_image, use_column_width=True, caption="插图")
+    images_cols[2].markdown("文本")
+    images_cols[2].image(text_image, use_column_width=True, caption="文本")
 
 
 prompt_cols = st.columns([1, 1])
