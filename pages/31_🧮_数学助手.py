@@ -67,7 +67,7 @@ check_access(False)
 configure_google_apis()
 add_exercises_to_db()
 general_config(True)
-sidebar_status = st.sidebar.empty()
+
 
 # region 会话状态
 # if "TESSDATA_PREFIX" not in os.environ:
@@ -467,6 +467,20 @@ def gen_tip_for(question):
     return response.replace("```", "")
 
 
+def update_slider_max():
+    # 读取图像
+    uploaded_file = st.session_state.uploaded_file
+    image_data = uploaded_file.getvalue()
+    image = Image.open(io.BytesIO(image_data))
+
+    st.session_state["default_width"] = image.width
+    st.session_state["default_height"] = image.height
+
+    # 更新会话状态中的滑块最大值
+    st.session_state["right"] = image.width
+    st.session_state["bottom"] = image.height
+
+
 # endregion
 
 # region langchain
@@ -526,8 +540,43 @@ def run_chain(prompt):
 
 # endregion
 
+# region 侧边栏
+sidebar_status = st.sidebar.empty()
+# 检查会话状态中是否已经有默认的屏幕宽度和高度，如果没有，则设置为默认值
+if "default_width" not in st.session_state:
+    st.session_state["default_width"] = 1920
+if "default_height" not in st.session_state:
+    st.session_state["default_height"] = 1080
+
+# 检查会话状态中是否已经有滑块的值，如果没有，则设置为默认值
+if "left" not in st.session_state:
+    st.session_state["left"] = 0
+if "top" not in st.session_state:
+    st.session_state["top"] = 0
+if "right" not in st.session_state:
+    st.session_state["right"] = st.session_state["default_width"]
+if "bottom" not in st.session_state:
+    st.session_state["bottom"] = st.session_state["default_height"]
+
+# 创建滑块，使用会话状态中的值作为默认值
+left = st.sidebar.slider(
+    "Left", 0, st.session_state["default_width"], st.session_state["left"]
+)
+top = st.sidebar.slider(
+    "Top", 0, st.session_state["default_height"], st.session_state["top"]
+)
+right = st.sidebar.slider(
+    "Right", 0, st.session_state["default_width"], st.session_state["right"]
+)
+bottom = st.sidebar.slider(
+    "Bottom", 0, st.session_state["default_height"], st.session_state["bottom"]
+)
+
+
+# endregion
 
 # region 主页
+
 
 if "math-assistant" not in st.session_state:
     create_math_chat()
@@ -541,7 +590,7 @@ uploaded_file = elem_cols[0].file_uploader(
     accept_multiple_files=False,
     key="uploaded_file",
     type=["png", "jpg"],
-    # on_change=get_math_question,
+    on_change=update_slider_max,
     help="""
 支持的格式
 - 图片：PNG、JPG
