@@ -561,16 +561,32 @@ if "bottom" not in st.session_state:
 st.sidebar.subheader("插图裁剪")
 # 创建滑块，使用会话状态中的值作为默认值
 left = st.sidebar.slider(
-    "Left", 0, st.session_state["default_width"], st.session_state["left"]
+    "Left",
+    0,
+    st.session_state["default_width"],
+    st.session_state["left"],
+    key="sidebar-image-left",
 )
 top = st.sidebar.slider(
-    "Top", 0, st.session_state["default_height"], st.session_state["top"]
+    "Top",
+    0,
+    st.session_state["default_height"],
+    st.session_state["top"],
+    key="sidebar-image-top",
 )
 right = st.sidebar.slider(
-    "Right", 0, st.session_state["default_width"], st.session_state["right"]
+    "Right",
+    0,
+    st.session_state["default_width"],
+    st.session_state["right"],
+    key="sidebar-image-right",
 )
 bottom = st.sidebar.slider(
-    "Bottom", 0, st.session_state["default_height"], st.session_state["bottom"]
+    "Bottom",
+    0,
+    st.session_state["default_height"],
+    st.session_state["bottom"],
+    key="sidebar-image-bottom",
 )
 
 
@@ -617,11 +633,22 @@ has_graph = grade_cols[0].checkbox(
 )
 
 
-question_cols = st.columns(2)
+images_cols = st.columns(4)
 
 if uploaded_file is not None:
-    question_cols[0].image(uploaded_file.getvalue(), "试题图片")
-
+    image_data = uploaded_file.getvalue()
+    image = PIL_Image.open(io.BytesIO(image_data))
+    images_cols[0].image(image_data, "上传的图片")
+    # 使用滑块的值来裁剪图像
+    cropped_image = image.crop(
+        (
+            left,
+            top,
+            right,
+            bottom,
+        )
+    )
+    images_cols[1].image(cropped_image, "裁剪部分")
 
 prompt_cols = st.columns([1, 1])
 prompt_cols[0].markdown("您的提示词")
