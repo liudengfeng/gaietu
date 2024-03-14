@@ -558,6 +558,7 @@ if "right" not in st.session_state:
 if "bottom" not in st.session_state:
     st.session_state["bottom"] = st.session_state["default_height"]
 
+st.sidebar.subheader("插图裁剪")
 # 创建滑块，使用会话状态中的值作为默认值
 left = st.sidebar.slider(
     "Left", 0, st.session_state["default_width"], st.session_state["left"]
