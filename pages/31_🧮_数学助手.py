@@ -640,6 +640,10 @@ if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
     draw = ImageDraw.Draw(img)
+    # 由于滑块已经正确设置了范围，现在要对裁剪有效性进行检查
+    if left >= right or top >= bottom:
+        images_cols[0].error("裁剪区域无效，请重新设置。")
+        st.stop()
     try:
         draw.rectangle([left, top, right, bottom], outline="red")
         draw.text((left, top), '左上(left)', fill='blue')
