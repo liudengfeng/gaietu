@@ -648,10 +648,10 @@ if uploaded_file is not None:
     draw = ImageDraw.Draw(img)
     try:
         draw.rectangle([left, top, right, bottom], outline="red")
-        draw.text((left, top), '左上(left)', fill='blue')
-        draw.text((right, top), '右上(top)', fill='blue')
-        draw.text((left, bottom), '左下(right)', fill='blue')
-        draw.text((right, bottom), '右下(bottom)', fill='blue')
+        draw.text((left, top), 'left', fill='blue')
+        draw.text((right, top), 'top', fill='blue')
+        draw.text((left, bottom), 'right', fill='blue')
+        draw.text((right, bottom), 'bottom', fill='blue')
         images_cols[0].image(img, "上传的图片")
         # 创建两个新的全白色图像
         graph_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
