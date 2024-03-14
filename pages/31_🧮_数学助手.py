@@ -563,13 +563,6 @@ if "bottom" not in st.session_state:
 
 st.sidebar.subheader("插图裁剪")
 # 创建滑块，使用会话状态中的值作为默认值
-left = st.sidebar.slider(
-    "Left",
-    0,
-    st.session_state["default_width"],
-    st.session_state["left"],
-    key="sidebar-image-left",
-)
 top = st.sidebar.slider(
     "Top",
     0,
@@ -577,19 +570,26 @@ top = st.sidebar.slider(
     st.session_state["top"],
     key="sidebar-image-top",
 )
-right = st.sidebar.slider(
-    "Right",
-    0,
-    st.session_state["default_width"],
-    st.session_state["right"],
-    key="sidebar-image-right",
-)
 bottom = st.sidebar.slider(
     "Bottom",
     0,
     st.session_state["default_height"],
     st.session_state["bottom"],
     key="sidebar-image-bottom",
+)
+left = st.sidebar.slider(
+    "Left",
+    0,
+    st.session_state["default_width"],
+    st.session_state["left"],
+    key="sidebar-image-left",
+)
+right = st.sidebar.slider(
+    "Right",
+    0,
+    st.session_state["default_width"],
+    st.session_state["right"],
+    key="sidebar-image-right",
 )
 
 
