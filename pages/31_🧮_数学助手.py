@@ -659,7 +659,7 @@ def process_image(uploaded_file, left, top, right, bottom):
     cropped_image = img_copy.crop((left, top, right, bottom))
     draw = ImageDraw.Draw(img_copy)
     draw.rectangle([left, top, right, bottom], outline="red")
-    offset = 10  # 偏移量
+    offset = 20  # 偏移量
     draw.text((left + offset, top + offset), "left", fill="blue")
     draw.text((right - offset, top + offset), "top", fill="blue")
     draw.text((left + offset, bottom - offset), "right", fill="blue")
