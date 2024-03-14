@@ -32,7 +32,7 @@ from langchain_google_vertexai import (
 from moviepy.editor import VideoFileClip
 from vertexai.preview.generative_models import Content, GenerationConfig, Part, Image
 from PIL import Image as PIL_Image
-from PIL import ImageChops
+from PIL import ImageChops, ImageDraw
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -639,8 +639,10 @@ images_cols = st.columns(3)
 if uploaded_file is not None:
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
-    images_cols[0].image(image_data, "上传的图片")
+    draw = ImageDraw.Draw(img)
     try:
+        draw.rectangle([left, top, right, bottom], outline="red")
+        images_cols[0].image(img, "上传的图片")
         # 使用滑块的值来裁剪图像
         cropped_image = img.crop((left, top, right, bottom))
         # 创建两个新的全白色图像
