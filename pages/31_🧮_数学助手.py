@@ -1,14 +1,15 @@
 import base64
-from functools import partial
 import io
 import logging
 import mimetypes
+import os
 import re
 import tempfile
 import time
 from datetime import timedelta
+from functools import partial
 from pathlib import Path
-import os
+
 import numpy as np
 import streamlit as st
 from langchain.callbacks import StreamlitCallbackHandler
@@ -30,9 +31,10 @@ from langchain_google_vertexai import (
     VertexAI,
 )
 from moviepy.editor import VideoFileClip
-from vertexai.preview.generative_models import Content, GenerationConfig, Part, Image
 from PIL import Image as PIL_Image
 from PIL import ImageChops, ImageDraw, ImageOps
+from vertexai.preview.generative_models import Content, GenerationConfig, Image, Part
+
 from menu import menu
 from mypylib.google_ai import (
     display_generated_content_and_update_token,
@@ -42,7 +44,7 @@ from mypylib.google_ai import (
 )
 
 # from mypylib.math import remove_text_keep_illustrations
-from mypylib.math_pix import erase_diagram_and_recognize
+from mypylib.math_pix import mathpix_ocr_read
 from mypylib.st_helper import (
     add_exercises_to_db,
     check_access,
@@ -684,7 +686,7 @@ if uploaded_file is not None:
     img_copy, illustration_image, text_image = crop_and_highlight_image(
         uploaded_file, left, top, right, bottom, has_graph
     )
-    st.write(f"插图是否为空：{is_blank(illustration_image)}")
+    # st.write(f"插图是否为空：{is_blank(illustration_image)}")
     images_cols[0].markdown("原图")
     images_cols[0].image(img_copy, use_column_width=True, caption="原图")
     images_cols[1].markdown("插图")
@@ -748,18 +750,25 @@ prompt_elem = st.empty()
 
 if extract_btn:
     response_container.empty()
-    ocr = erase_diagram_and_recognize(uploaded_file.getvalue(), has_graph)
-    st.session_state["math-question"] = ocr["text"]
+    if has_graph and is_blank(illustration_image):
+        status.error("图片中的插图部分为空，请重新裁剪图片。")
+        st.stop()
+    if uploaded_file:
+        img_copy, illustration_image, text_image = crop_and_highlight_image(
+            uploaded_file, left, top, right, bottom, has_graph
+        )
+        if is_blank(text_image):
+            status.error("图片中的文本部分为空，请重新裁剪图片。")
+            st.stop()
+        # 假设 text_image 是你的 PIL 图像对象
+        output = io.BytesIO()
+        text_image.save(output, format="PNG")
+        byte_data = output.getvalue()
+        ocr = mathpix_ocr_read(byte_data, False)
+        st.session_state["math-question"] = ocr["text"]
+        extract_math_question(uploaded_file)
 
-    # response_container.markdown("##### Mathpix OCR 提取的试题文本")
-    # response_container.code(st.session_state["math-question"], language="markdown")
-    # response_container.markdown(st.session_state["math-question"])
-
-    # response_container.markdown("##### Gemini 修正后的试题文本")
-    extract_math_question(uploaded_file)
-    # response_container.code(st.session_state["math-question"], language="markdown")
-    # response_container.markdown(st.session_state["math-question"])
-    display_in_container(response_container, st.session_state["math-question"])
+display_in_container(response_container, st.session_state["math-question"])
 
 
 if cls_btn:
@@ -794,10 +803,10 @@ st.subheader("数学公式编辑演示", divider="rainbow", anchor="数学公式
 
 demo_cols = st.columns([10, 1, 10])
 demo_cols[0].markdown("在此输入包含数学公式的markdown格式文本")
-MATH_VARIABLE_DEMO = "$x$"
-FRACTION_DEMO = "$\\frac{a}{b}$"  # 分数，a/b
-SUBSCRIPT_DEMO = "$a_{i}$"  # 下标，a_i
-FORMULA_DEMO = "$a^2 + b^2 = c^2$"  # 公式，勾股定理
+MATH_VARIABLE_DEMO = r"$x$"
+FRACTION_DEMO = r"$\frac{a}{b}$"  # 分数，a/b
+SUBSCRIPT_DEMO = r"$a_{i}$"  # 下标，a_i
+FORMULA_DEMO = r"$a^2 + b^2 = c^2$"  # 公式，勾股定理
 INTEGRAL_DEMO = r"$$\int_0^\infty \frac{1}{x^2}\,dx$$"  # 积分
 DEMO = f"""\
 #### 数学公式编辑演示
@@ -841,23 +850,23 @@ demo_btn = edit_btn_cols[0].button(
     on_click=reset_text_value,
     args=("demo-math-text", DEMO),
 )
-cls_edit_btn = edit_btn_cols[1].button(
+demo_cls_edit_btn = edit_btn_cols[1].button(
     "清除[:wastebasket:]",
     key="clear_math_text",
     help="✨ 清空数学公式",
     on_click=reset_text_value,
     args=("demo-math-text",),
 )
-code_btn = edit_btn_cols[2].button(
+demo_code_btn = edit_btn_cols[2].button(
     "代码[:clipboard:]",
     key="code_math_text",
     help="✨ 点击按钮，将原始文本转换为Markdown格式的代码，并在右侧显示，以便复制。",
 )
 
-if cls_edit_btn:
+if demo_cls_edit_btn:
     pass
 
-if code_btn:
+if demo_code_btn:
     st.code(f"{math_text}", language="markdown")
 
 with st.expander(":bulb: 怎样有效利用数学助手？", expanded=False):
@@ -873,11 +882,11 @@ with st.expander(":bulb: 如何编辑数学公式？", expanded=False):
     st.markdown("常用数学符号示例代码")
     # 创建一个列表，每一项包括名称、LaTeX 代码、Markdown 代码和示例
     math_symbols = [
-        ["分数", "\\frac{a}{b}", "\\frac{a}{b}", "\\frac{a}{b}"],
-        ["平方", "x^2", "x^2", "x^2"],
-        ["立方", "x^3", "x^3", "x^3"],
-        ["求和", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i", "\\sum_{i=1}^n a_i"],
-        ["积分", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx", "\\int_a^b f(x) dx"],
+        ["分数", r"\frac{a}{b}", r"\frac{a}{b}", r"\frac{a}{b}"],
+        ["平方", r"x^2", r"x^2", r"x^2"],
+        ["立方", r"x^3", r"x^3", r"x^3"],
+        ["求和", r"\sum_{i=1}^n a_i", r"\sum_{i=1}^n a_i", r"\sum_{i=1}^n a_i"],
+        ["积分", r"\int_a^b f(x) dx", r"\int_a^b f(x) dx", r"\int_a^b f(x) dx"],
     ]
 
     math_demo_cols = st.columns(4)
