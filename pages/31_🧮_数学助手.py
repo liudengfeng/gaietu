@@ -509,10 +509,7 @@ def extract_math_question(uploaded_file):
     st.session_state["math-question"] = replace_brackets_with_dollar(question)
 
 
-def is_blank(image_path):
-    # 使用 PIL 库打开图片
-    image = PIL_Image.open(image_path)
-
+def is_blank(image):
     # 将图像转换为 numpy 数组
     img_array = np.array(image)
 
@@ -635,16 +632,22 @@ operation = grade_cols[2].selectbox(
     ["提供解题思路", "提供完整解答"],
 )
 has_graph = grade_cols[0].checkbox(
-    "是否有插图", value=True, help="✨ 请勾选此项，如果您的试题中包含插图。"
+    "是否有插图",
+    value=False,
+    help="✨ 请勾选此项，如果您的试题中包含插图。分离插图可以提高OCR对文本的识别准确性。",
 )
 
 
-def process_image(uploaded_file, left, top, right, bottom):
+def crop_and_highlight_image(uploaded_file, left, top, right, bottom, has_graph):
     image_data = uploaded_file.getvalue()
     img = PIL_Image.open(io.BytesIO(image_data))
     # 只在需要时转换图像
     if img.mode != "RGB":
         img = img.convert("RGB")
+    illustration_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
+    illustration_image = illustration_image.convert("RGB")
+    if not has_graph:
+        return img, illustration_image, img
 
     if left >= right:
         st.error(
@@ -668,10 +671,7 @@ def process_image(uploaded_file, left, top, right, bottom):
     draw.text((left + offset, bottom - offset), "right", fill="blue")
     draw.text((right - offset, bottom - offset), "bottom", fill="blue")
 
-    illustration_image = PIL_Image.new("RGB", img.size, (255, 255, 255))
-    illustration_image = illustration_image.convert("RGB")
     illustration_image.paste(cropped_image, (left, top))
-
     text_image = ImageChops.difference(img, illustration_image)
     text_image = ImageOps.invert(text_image)
 
@@ -681,9 +681,10 @@ def process_image(uploaded_file, left, top, right, bottom):
 images_cols = st.columns(3)
 
 if uploaded_file is not None:
-    img_copy, illustration_image, text_image = process_image(
-        uploaded_file, left, top, right, bottom
+    img_copy, illustration_image, text_image = crop_and_highlight_image(
+        uploaded_file, left, top, right, bottom, has_graph
     )
+    st.write(f"插图是否为空：{is_blank(illustration_image)}")
     images_cols[0].markdown("原图")
     images_cols[0].image(img_copy, use_column_width=True, caption="原图")
     images_cols[1].markdown("插图")
