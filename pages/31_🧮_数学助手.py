@@ -781,6 +781,7 @@ if extract_btn:
         byte_data = output.getvalue()
         ocr = mathpix_ocr_read(byte_data, False)
         st.session_state["math-question"] = ocr["text"]
+        logger.info(f'ocr math-question: {ocr["text"]}')
         extract_math_question(uploaded_file)
 
 display_in_container(response_container, st.session_state["math-question"])
