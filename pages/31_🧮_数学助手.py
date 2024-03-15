@@ -562,6 +562,13 @@ if "right" not in st.session_state:
 if "bottom" not in st.session_state:
     st.session_state["bottom"] = st.session_state["default_height"]
 
+
+def on_slider_change():
+    has_graph = st.session_state["has_graph"]
+    if not has_graph:
+        sidebar_status.warning("选项卡未选中插图，滑块裁剪无效。")
+
+
 st.sidebar.subheader(
     "插图裁剪",
     help="""✨ 使用滑块来调整插图的裁剪区域。"上" 和 "下" 滑块控制裁剪区域的上边界和下边界，"左" 和 "右" 滑块控制裁剪区域的左边界和右边界。""",
@@ -573,6 +580,7 @@ top = st.sidebar.slider(
     st.session_state["default_height"],
     st.session_state["top"],
     key="sidebar-image-top",
+    on_change=on_slider_change,
 )
 bottom = st.sidebar.slider(
     "下",
@@ -580,6 +588,7 @@ bottom = st.sidebar.slider(
     st.session_state["default_height"],
     st.session_state["bottom"],
     key="sidebar-image-bottom",
+    on_change=on_slider_change,
 )
 left = st.sidebar.slider(
     "左",
@@ -587,6 +596,7 @@ left = st.sidebar.slider(
     st.session_state["default_width"],
     st.session_state["left"],
     key="sidebar-image-left",
+    on_change=on_slider_change,
 )
 right = st.sidebar.slider(
     "右",
@@ -594,6 +604,7 @@ right = st.sidebar.slider(
     st.session_state["default_width"],
     st.session_state["right"],
     key="sidebar-image-right",
+    on_change=on_slider_change,
 )
 
 
@@ -634,9 +645,11 @@ question_type = grade_cols[1].selectbox(
 operation = grade_cols[2].selectbox(
     "您的操作",
     ["提供解题思路", "提供完整解答"],
+    key="operation",
 )
 has_graph = grade_cols[0].checkbox(
     "是否有插图",
+    key="has_graph",
     value=False,
     help="✨ 请勾选此项，如果您的试题中包含插图。分离插图可以提高OCR对文本的识别准确性。",
 )
