@@ -545,7 +545,6 @@ def run_chain(prompt):
 # endregion
 
 # region 侧边栏
-sidebar_status = st.sidebar.empty()
 # 检查会话状态中是否已经有默认的屏幕宽度和高度，如果没有，则设置为默认值
 if "default_width" not in st.session_state:
     st.session_state["default_width"] = 1920
@@ -568,7 +567,7 @@ def on_slider_change():
     if not has_graph:
         sidebar_status.warning("选项卡未选中插图，滑块裁剪无效。")
 
-
+sidebar_status = st.sidebar.empty()
 st.sidebar.subheader(
     "插图裁剪",
     help="""✨ 使用滑块来调整插图的裁剪区域。"上" 和 "下" 滑块控制裁剪区域的上边界和下边界，"左" 和 "右" 滑块控制裁剪区域的左边界和右边界。""",
