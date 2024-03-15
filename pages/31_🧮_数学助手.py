@@ -504,11 +504,13 @@ def create_math_chat():
 
 
 def extract_math_question(uploaded_file):
-    reference = st.session_state["math-question"]
+    question = st.session_state["math-question"]
     question = extract_math_question_text_for(
-        uploaded_file, EXTRACT_TEST_QUESTION_PROMPT.format(reference)
+        uploaded_file,
+        EXTRACT_TEST_QUESTION_PROMPT.format(question=question, exmples=EXAMPLES),
     )
-    st.session_state["math-question"] = replace_brackets_with_dollar(question)
+    # st.session_state["math-question"] = replace_brackets_with_dollar(question)
+    st.session_state["math-question"] = question
 
 
 def is_blank(image):
