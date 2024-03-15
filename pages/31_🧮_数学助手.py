@@ -359,9 +359,9 @@ def view_example(container, prompt):
 
 def get_prompt_templature(op):
     question = st.session_state["math-question"]
-    if not question:
-        st.error("请先提取数学试题文本。")
-        st.stop()
+    # if not question:
+    #     st.error("请先提取数学试题文本。")
+    #     st.stop()
     if op == "提供解题思路":
         return SOLUTION_THOUGHT_PROMPT.format(
             grade=grade,
@@ -732,13 +732,13 @@ prompt_btn = tab0_btn_cols[3].button(
     "模板[:eyes:]",
     key="demo_prompt_text",
     help="✨ 展示当前所应用的提示词模板",
-    on_click=reset_text_value,
-    args=(
-        "user_prompt_key",
-        get_prompt_templature(
-            operation,
-        ),
-    ),
+    # on_click=reset_text_value,
+    # args=(
+    #     "user_prompt_key",
+    #     get_prompt_templature(
+    #         operation,
+    #     ),
+    # ),
 )
 ans_btn = tab0_btn_cols[4].button(
     "解答[:black_nib:]", key="generate_button", help="✨ 点击按钮，获取AI响应。"
@@ -777,6 +777,10 @@ if cls_btn:
 if code_btn:
     response_container.empty()
     display_in_container(response_container, st.session_state["math-question"], True)
+
+if prompt_btn:
+    prompt = get_prompt_templature(operation)
+    view_prompt_container.markdown(prompt, unsafe_allow_html=True)
 
 if ans_btn:
     # if uploaded_file is None:
