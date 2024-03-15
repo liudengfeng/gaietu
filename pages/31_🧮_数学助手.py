@@ -561,13 +561,14 @@ if "right" not in st.session_state:
 if "bottom" not in st.session_state:
     st.session_state["bottom"] = st.session_state["default_height"]
 
+sidebar_status = st.sidebar.empty()
 
 def on_slider_change():
     has_graph = st.session_state["has_graph"]
     if not has_graph:
         sidebar_status.warning("选项卡未选中插图，滑块裁剪无效。")
 
-sidebar_status = st.sidebar.empty()
+
 st.sidebar.subheader(
     "插图裁剪",
     help="""✨ 使用滑块来调整插图的裁剪区域。"上" 和 "下" 滑块控制裁剪区域的上边界和下边界，"左" 和 "右" 滑块控制裁剪区域的左边界和右边界。""",
